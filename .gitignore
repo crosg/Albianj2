@@ -10,3 +10,16 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+Albianj.Security.Impl
+Albianj.TAF*
+Albianj.UNID.Client.Test
+Albianj.Restful.Service
+Albianj.Restful.Jetty
+Albianj.Main
+Albianj.JobManager.Impl
+Albianj.JobManager
+Albianj.Dispatcher
+Albianj.DFS.YDB.Client.Test
+Albianj.DFS.YDB.Client.Impl
+Albianj.DFS.YDB.Client
+*.prefs

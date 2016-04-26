@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 此配置文件提供所有的servie功能，所有的业务service必须使用此配置文件； 使用此配置文件的对象必须实现IAlbianService或者继承FreeAlbianService -->
+<Services>
+	<!-- Kernel ，这部分必须存在并且不要更改任何项，此部分是albianj的基础服务 -->
+	<Service Id="AlbianLoggerService" Type="org.albianj.logger.impl.AlbianLoggerService" />
+	<Service Id="AlbianKernelService" Type="org.albianj.kernel.impl.AlbianKernelParserService" />
+	<Service Id="AlbianThreadPoolService" Type="org.albianj.concurrent.impl.AlbianThreadPoolService" />
+	<!--  
+	<Service Id="AlbianStorageService" Type="org.albianj.persistence.impl.storage.AlbianStorageParserService" />
+	<Service Id="AlbianDataRouterService" Type="org.albianj.persistence.impl.routing.AlbianDataRouterParserService" />
+	<Service Id="AlbianPersistenceService" Type="org.albianj.persistence.impl.persistence.AlbianPersistenceParserService" />
+	
+	<Service Id="AlbianRemoteIdService" Type="org.albianj.unid.service.impl.AlbianRemoteUNIDService" />
+	<Service Id="AlbianCachedService" Type="org.albianj.cached.impl.service.AlbianCachedService" />
+	<Service Id="AlbianConfigurtionService" Type="org.albianj.configurtion.impl.AlbianConfigurtionService" />
+	-->
+	<Service Id="RestfulTest" Type="org.albianj.restful.service.AlbianRestfulService" />
+	
+</Services>
