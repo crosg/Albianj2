@@ -17,6 +17,7 @@ public class KernelSetting {
 	private static String fpath = "../config/";
 	private static String kernelpath = "../config/";
 	private static int system = 0;
+	private static String machineKey="wefet45y56gd&^%&$($$fbf943sf98^&*&*%$@%$34tksdjfvh823r2=sdfssdfsdp[sfshfwwefwffwe";
 
 	public static String getKernelId() {
 		return kernelId;
@@ -127,5 +128,13 @@ public class KernelSetting {
 	
 	public static String getExtDir(){
 		 return System.getProperty("java.ext.dirs");
+	}
+	
+	public static String getMachineKey(){
+		return machineKey;
+	}
+	
+	public static void setMachineKey(String mKey){
+		 machineKey = mKey;
 	}
 }

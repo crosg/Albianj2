@@ -3,16 +3,11 @@
 <AlbianObjects>	
 	<AlbianObject Interface="org.albianj.qidian.test.object.IUser" 
 	Type="org.albianj.qidian.test.object.impl.User">
-	
 		<Cache Enable="false" LifeTime="300" Name=""></Cache>
-		
 		<!-- 删除了缓存服务。所以这部分配置一直为false，等待开启了缓存服务，再更加实际情况配置 -->
 		<Members> <!-- 所有对象的属性映射，如果使用默认，可以不需要配置 -->
 			<Member Name="Id" FieldName="id" AllowNull="false"
 				 DbType="Bigint" IsSave="true" PrimaryKey="true" />
 		</Members>
-		
 	</AlbianObject>
-	
-	
 </AlbianObjects>

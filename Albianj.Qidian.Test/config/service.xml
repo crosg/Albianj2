@@ -29,4 +29,6 @@
 		Type="org.albianj.configurtion.impl.AlbianConfigurtionService" />
 -->
 	<Service Id="UserService" Type="org.albianj.qidian.test.service.impl.UserService" />
+	
+	<Service Id="YuewenPPLog" Type="com.yuewen.pplogstat.YuewenPPLogStatService" />
 </Services>

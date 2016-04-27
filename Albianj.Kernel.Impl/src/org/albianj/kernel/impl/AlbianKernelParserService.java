@@ -78,6 +78,11 @@ public class AlbianKernelParserService extends FreeAlbianParserService
 		} else {
 			KernelSetting.setAlbianStartupMode(AlbianStartupMode.Async);
 		}
+		
+		String sMachineKey = PropertiesParser.getValue(props, "MachineKey");
+		if (!Validate.isNullOrEmptyOrAllSpace(sMachineKey)) {
+			KernelSetting.setMachineKey(sMachineKey);
+		}
 	}
 
 	

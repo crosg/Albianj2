@@ -3,6 +3,8 @@ package org.albianj.persistence.impl.db;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.albianj.logger.IAlbianLoggerService;
+import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.IPersistenceCommand;
 import org.albianj.persistence.db.ISqlParameter;
 import org.albianj.persistence.db.PersistenceCommandType;
@@ -13,26 +15,29 @@ import org.albianj.persistence.object.IDataRoutersAttribute;
 import org.albianj.persistence.object.IMemberAttribute;
 import org.albianj.persistence.object.IStorageAttribute;
 import org.albianj.persistence.object.PersistenceDatabaseStyle;
+import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
 
 public class RemoveCommandAdapter implements IPersistenceUpdateCommand {
 
-	public IPersistenceCommand builder(IAlbianObject object, IDataRoutersAttribute routings,
+	public IPersistenceCommand builder(String sessionId,IAlbianObject object, IDataRoutersAttribute routings,
 			IAlbianObjectAttribute albianObject, Map<String, Object> mapValue,
-			IDataRouterAttribute routing, IStorageAttribute storage) {
+			IDataRouterAttribute routing, IStorageAttribute storage) throws AlbianDataServiceException {
+		
+		if(object.getIsAlbianNew()) {
+			AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianSqlLoggerName,
+					AlbianDataServiceException.class, "DataService is error.",
+					"the new albianj object can not be delete.please load the object from database first. job id:%s.", sessionId);
+		}
+		
 		IPersistenceCommand cmd = new PersistenceCommand();
 		StringBuilder text = new StringBuilder();
 		
-		Map<String, ISqlParameter> sqlParas = makeRomoveCommand(object, routings, albianObject, mapValue, routing,
+		Map<String, ISqlParameter> sqlParas = makeRomoveCommand(sessionId,object, routings, albianObject, mapValue, routing,
 				storage, text);
-		
-		
-		
 		StringBuilder rollbackText = new StringBuilder();
-		
 		Map<String, ISqlParameter> rollbackParas = CreateCommandAdapter.makeCreateCommand(object, routings, albianObject, mapValue, routing,
 				storage, rollbackText);
-		
 		cmd.setCommandText(text.toString());
 		cmd.setCommandType(PersistenceCommandType.Text);
 		cmd.setParameters(sqlParas);
@@ -45,7 +50,7 @@ public class RemoveCommandAdapter implements IPersistenceUpdateCommand {
 		return cmd;
 	}
 
-	public static Map<String, ISqlParameter> makeRomoveCommand(IAlbianObject object, IDataRoutersAttribute routings,
+	public static Map<String, ISqlParameter> makeRomoveCommand(String sessionId,IAlbianObject object, IDataRoutersAttribute routings,
 			IAlbianObjectAttribute albianObject, Map<String, Object> mapValue, IDataRouterAttribute routing,
 			IStorageAttribute storage, StringBuilder text) {
 		StringBuilder where = new StringBuilder();
@@ -93,9 +98,9 @@ public class RemoveCommandAdapter implements IPersistenceUpdateCommand {
 		return sqlParas;
 	}
 	
-	public IPersistenceCommand builder(IAlbianObject object, IDataRoutersAttribute routings, IAlbianObjectAttribute albianObject,
-			Map<String, Object> mapValue, IDataRouterAttribute routing, IStorageAttribute storage, String[] members) throws NoSuchMethodException{
-		throw new NoSuchMethodException();
+	public IPersistenceCommand builder(String sessionId,IAlbianObject object, IDataRoutersAttribute routings, IAlbianObjectAttribute albianObject,
+			Map<String, Object> mapValue, IDataRouterAttribute routing, IStorageAttribute storage, String[] members) throws AlbianDataServiceException{
+		throw new AlbianDataServiceException("no impl the service.");
 	}
 
 	

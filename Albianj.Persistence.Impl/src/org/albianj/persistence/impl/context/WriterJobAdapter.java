@@ -34,13 +34,10 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
 	protected void buildWriterJob(IAlbianObject object, IWriterJob writerJob,
 			IPersistenceUpdateCommand update) throws AlbianDataServiceException {
 		String className = object.getClass().getName();
-
 		IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-		
 		String interName = amps.getAlbianObjectInterface(className);
 		IAlbianDataRouterParserService adrps = AlbianServiceRouter.getSingletonService(IAlbianDataRouterParserService.class,IAlbianDataRouterParserService.Name);
 		IDataRoutersAttribute routings = adrps.getDataRouterAttribute(interName);
-		
 		IAlbianObjectAttribute albianObject = amps.getAlbianObjectAttribute(interName);
 		if (null == albianObject) {
 			AlbianServiceRouter.getLogger().errorAndThrow(
@@ -59,27 +56,18 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
 		}
 		Map<String, Object> mapValue = buildSqlParameter(writerJob.getId(),object, albianObject,
 				propertyDesc);
-
 		List<IDataRouterAttribute> useRoutings = parserRoutings(writerJob.getId(),object,
 				routings, albianObject);
-
 		IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
-		
-
 		
 		for (IDataRouterAttribute routing : useRoutings) {
 			String storageName = parserRoutingStorage(writerJob.getId(),object, routing,
 					routings.getDataRouter(), albianObject);
-
 			IStorageAttribute storage =asps.getStorageAttribute(storageName);
-			
 			String database = parserRoutingDatabase(writerJob.getId(),object, storage,
 					routings.getDataRouter(), albianObject);
-
-
-			IPersistenceCommand cmd = update.builder(object, routings, albianObject,
+			IPersistenceCommand cmd = update.builder(writerJob.getId(),object, routings, albianObject,
 					mapValue, routing, storage);
-
 			String key = storageName + database;
 			if (null == cmd)
 				continue;// no the upload operator
@@ -111,18 +99,12 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
 	protected void buildWriterJob(IAlbianObject object, IWriterJob writerJob,
 			IPersistenceUpdateCommand update,String[] members) throws AlbianDataServiceException {
 		String className = object.getClass().getName();
-
 		IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-		
 		String interName = amps.getAlbianObjectInterface(className);
-//		String interName = (String) AlbianObjectInheritMap.get(className);
 		IAlbianDataRouterParserService adrps = AlbianServiceRouter.getSingletonService(IAlbianDataRouterParserService.class,IAlbianDataRouterParserService.Name);
 		IDataRoutersAttribute routings = adrps.getDataRouterAttribute(interName);
-		
 		IAlbianObjectAttribute albianObject = amps.getAlbianObjectAttribute(interName);
 		
-//		IAlbianObjectAttribute albianObject = (IAlbianObjectAttribute) AlbianObjectsMap
-//				.get(interName);
 		if (null == albianObject) {
 			AlbianServiceRouter.getLogger().errorAndThrow(
 					IAlbianLoggerService.AlbianSqlLoggerName,
@@ -140,26 +122,20 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
 		}
 		Map<String, Object> mapValue = buildSqlParameter(writerJob.getId(),object, albianObject,
 				propertyDesc);
-
 		List<IDataRouterAttribute> useRoutings = parserRoutings(writerJob.getId(),object,
 				routings, albianObject);
-		
 		IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
 
 		for (IDataRouterAttribute routing : useRoutings) {
 			String storageName = parserRoutingStorage(writerJob.getId(),object, routing,
 					routings.getDataRouter(), albianObject);
-
 			IStorageAttribute storage =asps.getStorageAttribute(storageName);
-
 			String database = parserRoutingDatabase(writerJob.getId(),object, storage,
 					routings.getDataRouter(), albianObject);
-			
 			String key = storageName + database;
-			
 			IPersistenceCommand cmd = null;
 			try {
-				cmd = update.builder(object, routings, albianObject,
+				cmd = update.builder(writerJob.getId(),  object, routings, albianObject,
 						mapValue, routing, storage,members);
 			} catch (NoSuchMethodException e) {
 				AlbianServiceRouter.getLogger().errorAndThrow(
@@ -271,19 +247,8 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
 										albianObject.getType(), dra.getName(),jobId);
 								
 								break;
-								//return ras;
 							}
 						}
-						
-						
-						
-						
-//						IDataRouterAttribute dra = albianObject.getDefaultRouting();
-//						AlbianServiceRouter.getLogger()
-//						.warn(IAlbianLoggerService.AlbianSqlLoggerName,
-//								"albian-object:%s writer-data-router arithmetic is null then use default storage:%s.job id:%s.",
-//								albianObject.getType(), dra.getName(),jobId);
-//						useRoutings.add(dra);
 					} else {
 						List<IDataRouterAttribute> writerRoutings = hashMapping
 								.mappingWriterRouting(
@@ -327,7 +292,6 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
 					"the writer data router of object:%s is null.job id:%s.",
 					albianObject.getType(),jobId);
 		}
-
 		if (null == hashMapping) {
 			String name = routing.getStorageName();
 			AlbianServiceRouter.getLogger()
@@ -360,7 +324,6 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
 					"the writer data router of object:%s is null.job id:%s.",
 					albianObject.getType(),jobId);
 		}
-
 		if (null == hashMapping) {
 			String name = storage.getDatabase();
 			AlbianServiceRouter.getLogger()

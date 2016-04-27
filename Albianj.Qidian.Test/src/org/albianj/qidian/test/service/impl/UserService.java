@@ -98,7 +98,7 @@ public class UserService extends FreeAlbianService implements IUserService {
 			fe.or("unit", LogicalOperation.Equal, "unit");
 			
 
-			getPersistenceService().loadObjects("", IUser.class,LoadType.quickly, fe, null);
+			getPersistenceService().loadObjects("", IUser.class,LoadType.quickly, fe);
 
 			
 		} catch (AlbianDataServiceException e) {
