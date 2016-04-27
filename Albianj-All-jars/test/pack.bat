@@ -1,0 +1,1 @@
+java -Djava.ext.dirs=E:\sync\tencent\java\dev\albianJars2.0\jars -jar E:\sync\tencent\java\dev\albianJars2.0\test\Albianj.Main.jar E:\sync\tencent\java\dev\albianJars2.0\test\config

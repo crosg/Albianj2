@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 数据路由配置文件，使用此配置的类必须实现IAlbianObjectHashMapping或者继承FreeAlbianObjectHashMapping -->
+<AlbianObjects>
+
+	
+	<AlbianObject Interface="org.albianj.explame.IAlbianTestObject" Type="org.albianj.explame.impl.AlbianTestObject"
+		Router= "org.albianj.persistence.impl.object.AlbianObjectDataRouter">
+		<WriterRouters Enable="true">
+			<WriterRouter Name="AlbianConfigWriterRouter" StorageName="albianj1"
+				TableName="test" Enable="true"></WriterRouter>
+		</WriterRouters>
+		<ReaderRouters Enable="true">
+			<ReaderRouter Name="AlbianConfigReaderRouter" StorageName="albianj2"
+				TableName="ntest" Enable="true"></ReaderRouter>
+		</ReaderRouters>
+	</AlbianObject>
+	
+	<AlbianObject Interface="org.albianj.explame.IAlbianNTestObject" Type="org.albianj.explame.impl.AlbianNTestObject"
+		Router= "org.albianj.persistence.impl.object.AlbianObjectDataRouter">
+		<WriterRouters Enable="true">
+			<WriterRouter Name="AlbianConfigWriterRouter" StorageName="albianj2"
+				TableName="ntest" Enable="true"></WriterRouter>
+		</WriterRouters>
+		<ReaderRouters Enable="true">
+			<ReaderRouter Name="AlbianConfigReaderRouter" StorageName="albianj2"
+				TableName="ntest" Enable="true"></ReaderRouter>
+		</ReaderRouters>
+	</AlbianObject>
+	
+</AlbianObjects>
