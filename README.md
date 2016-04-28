@@ -75,6 +75,7 @@ qq群：514089546
 4. config文件夹中存放有albianj所有的配置文件，将整个文件夹cp到你的项目文件夹中即可；  
 5. 根据你现实的情况，更改你的配置文件和声明你的java代码；  
 6. Albianj.Qidian.Test是albianj的一个例子，它主要向大家说明应该怎么玩albianj。  
+7. 为了降低难度，请使用EntityGenerator开源项目生成albianj的java文件和配置文件  
 
 # 关于我们：  
 
