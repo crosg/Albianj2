@@ -95,32 +95,30 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
 		try {
 			Class<?> cls = AlbianClassLoader.getInstance().loadClass(type);
 			Class<?> itf =  AlbianClassLoader.getInstance().loadClass(inter);
-			if(!cls.isAssignableFrom(itf)){
+			if(!itf.isAssignableFrom(cls)){
 				AlbianServiceRouter.getLogger()
 				.errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
 						new TypeNotPresentException("assignable is fail.", null), 
-						"the albian-object class:%s is not assignable from interface:%s.", type,inter);
+						"the albian-object class:%s is not implements from interface:%s.", type,inter);
 			}
 			
-			if(!cls.isAssignableFrom(IAlbianObject.class)){
+			if(!IAlbianObject.class.isAssignableFrom(cls)){
 				AlbianServiceRouter.getLogger()
 				.errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
 						new TypeNotPresentException("assignable is fail.", null), 
-						"the albian-object class:%s is not assignable from interface: IAlbianObject.", type);
+						"the albian-object class:%s is not implements from interface: IAlbianObject.", type);
 			}
 			
-			if(!itf.isAssignableFrom(IAlbianObject.class)){
+			if(!IAlbianObject.class.isAssignableFrom(itf)){
 				AlbianServiceRouter.getLogger()
 				.errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
 						new TypeNotPresentException("assignable is fail.", null), 
-						"the albian-object interface:%s is not assignable from interface: IAlbianObject.",inter);
+						"the albian-object interface:%s is not implements from interface: IAlbianObject.",inter);
 			}
 			
 		} catch (ClassNotFoundException e) {
-			
 				AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
 						AlbianParserException.class,e,"not found type.", "the type:%s is not found", type);
-		
 		}
 		
 
@@ -135,11 +133,11 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
 		
 		try {
 			Class<?> cls = AlbianClassLoader.getInstance().loadClass(hashMapping);
-			if(!cls.isAssignableFrom(IAlbianObjectDataRouter.class)){
+			if(!IAlbianObjectDataRouter.class.isAssignableFrom(cls)){
 				AlbianServiceRouter.getLogger()
 				.errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
 						new TypeNotPresentException("assignable is fail.", null), 
-						"the datarouter class:%s is not assignable from IAlbianObjectDataRouter.", type);
+						"the datarouter class:%s is not implements from IAlbianObjectDataRouter.", type);
 			}
 			
 			routing.setDataRouter((IAlbianObjectDataRouter) cls

@@ -121,22 +121,22 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
 		try {
 			Class<?> cls = AlbianClassLoader.getInstance().loadClass(type);
 			Class<?> itf = AlbianClassLoader.getInstance().loadClass(inter);
-			if (!cls.isAssignableFrom(itf)) {
+			if (!itf.isAssignableFrom(cls)) {
 				AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
 						new TypeNotPresentException("assignable is fail.", null),
-						"the albian-object class:%s is not assignable from interface:%s.", type, inter);
+						"the albian-object class:%s is not implements from interface:%s.", type, inter);
 			}
 
-			if (!cls.isAssignableFrom(IAlbianObject.class)) {
+			if (!IAlbianObject.class.isAssignableFrom(cls)) {
 				AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
 						new TypeNotPresentException("assignable is fail.", null),
-						"the albian-object class:%s is not assignable from interface: IAlbianObject.", type);
+						"the albian-object class:%s is not implements from interface: IAlbianObject.", type);
 			}
 
-			if (!itf.isAssignableFrom(IAlbianObject.class)) {
+			if (!IAlbianObject.class.isAssignableFrom(itf)) {
 				AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
 						new TypeNotPresentException("assignable is fail.", null),
-						"the albian-object interface:%s is not assignable from interface: IAlbianObject.", inter);
+						"the albian-object interface:%s is not implements from interface: IAlbianObject.", inter);
 			}
 
 		} catch (ClassNotFoundException e1) {
