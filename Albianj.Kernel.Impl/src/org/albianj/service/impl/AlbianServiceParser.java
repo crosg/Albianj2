@@ -105,6 +105,11 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
 			return null;
 		}
 		serviceAttr.setType(type);
+		
+		String sitf = XmlParser.getAttributeValue(elt, "Interface");
+		if (!Validate.isNullOrEmptyOrAllSpace(sitf)) {
+			serviceAttr.setInterface(sitf);
+		}
 		return serviceAttr;
 	}
 

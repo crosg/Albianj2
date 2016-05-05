@@ -45,4 +45,7 @@ public interface IAlbianServiceAttribute {
 	public String getType();
 
 	public void setType(String type) throws IllegalArgumentException;
+	
+	public void setInterface(String itf);
+	public String getInterface();
 }

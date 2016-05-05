@@ -45,10 +45,12 @@ import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.persistence.impl.object.DataRouterAttribute;
 import org.albianj.persistence.object.DataRoutersAttribute;
+import org.albianj.persistence.object.IAlbianObject;
 import org.albianj.persistence.object.IAlbianObjectDataRouter;
 import org.albianj.persistence.object.IDataRouterAttribute;
 import org.albianj.persistence.object.IDataRoutersAttribute;
 import org.albianj.service.AlbianServiceRouter;
+import org.albianj.service.parser.AlbianParserException;
 import org.albianj.verify.Validate;
 import org.albianj.xml.XmlParser;
 import org.dom4j.Element;
@@ -59,7 +61,7 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
 	public static final String DEFAULT_ROUTING_NAME = "!@#$%Albianj_Default_DataRouter%$#@!";
 
 	protected Map<String, IDataRouterAttribute> parserRoutings(
-			@SuppressWarnings("rawtypes") List nodes) {
+			@SuppressWarnings("rawtypes") List nodes) throws AlbianParserException {
 		for (Object node : nodes) {
 			IDataRoutersAttribute routingsAttribute = getRoutingsAttribute((Element) node);
 			if (null == routingsAttribute)
@@ -70,7 +72,7 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
 		return null;
 	}
 
-	private static IDataRoutersAttribute getRoutingsAttribute(Element elt) {
+	private static IDataRoutersAttribute getRoutingsAttribute(Element elt) throws AlbianParserException {
 		IDataRoutersAttribute routing = new DataRoutersAttribute();
 		String inter = XmlParser.getAttributeValue(elt, "Interface");
 		if (Validate.isNullOrEmptyOrAllSpace(inter)) {
@@ -89,6 +91,38 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
 							"The albianObject's type is empty or null.");
 			return null;
 		}
+		
+		try {
+			Class<?> cls = AlbianClassLoader.getInstance().loadClass(type);
+			Class<?> itf =  AlbianClassLoader.getInstance().loadClass(inter);
+			if(!cls.isAssignableFrom(itf)){
+				AlbianServiceRouter.getLogger()
+				.errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
+						new TypeNotPresentException("assignable is fail.", null), 
+						"the albian-object class:%s is not assignable from interface:%s.", type,inter);
+			}
+			
+			if(!cls.isAssignableFrom(IAlbianObject.class)){
+				AlbianServiceRouter.getLogger()
+				.errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
+						new TypeNotPresentException("assignable is fail.", null), 
+						"the albian-object class:%s is not assignable from interface: IAlbianObject.", type);
+			}
+			
+			if(!itf.isAssignableFrom(IAlbianObject.class)){
+				AlbianServiceRouter.getLogger()
+				.errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
+						new TypeNotPresentException("assignable is fail.", null), 
+						"the albian-object interface:%s is not assignable from interface: IAlbianObject.",inter);
+			}
+			
+		} catch (ClassNotFoundException e) {
+			
+				AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
+						AlbianParserException.class,e,"not found type.", "the type:%s is not found", type);
+		
+		}
+		
 
 		routing.setType(type);
 		String hashMapping = XmlParser.getAttributeValue(elt, "Router");
@@ -101,6 +135,13 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
 		
 		try {
 			Class<?> cls = AlbianClassLoader.getInstance().loadClass(hashMapping);
+			if(!cls.isAssignableFrom(IAlbianObjectDataRouter.class)){
+				AlbianServiceRouter.getLogger()
+				.errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
+						new TypeNotPresentException("assignable is fail.", null), 
+						"the datarouter class:%s is not assignable from IAlbianObjectDataRouter.", type);
+			}
+			
 			routing.setDataRouter((IAlbianObjectDataRouter) cls
 					.newInstance());
 

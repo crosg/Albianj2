@@ -44,6 +44,7 @@ public class AlbianServiceAttribute implements IAlbianServiceAttribute {
 
 	private String id = "";
 	private String type = "";
+	private String itf ;
 
 	public String getId() {
 		return this.id;
@@ -66,6 +67,13 @@ public class AlbianServiceAttribute implements IAlbianServiceAttribute {
 		}
 		this.type = type;
 
+	}
+	
+	public void setInterface(String itf){
+		this.itf = itf;
+	}
+	public String getInterface(){
+		return this.itf;
 	}
 
 }

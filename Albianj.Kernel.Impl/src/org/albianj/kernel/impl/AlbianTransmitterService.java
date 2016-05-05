@@ -196,6 +196,30 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
 								"the class:%s is not found.",serviceAttr.getType());
 						throw new  ClassNotFoundException(serviceAttr.getType());
 					}	
+					
+					if(!Validate.isNullOrEmptyOrAllSpace(serviceAttr.getInterface())) {
+						Class<?> itf = AlbianClassLoader.getInstance().loadClass(serviceAttr.getInterface());
+						if(!cla.isAssignableFrom(itf)) {
+							log.info(IAlbianLoggerService.AlbianRunningLoggerName,
+									"init albian service :%s the class:%s is not assignable from interface:%s.",
+									serviceAttr.getId(), serviceAttr.getType(),serviceAttr.getInterface());
+						}
+						
+						if(!itf.isAssignableFrom(IAlbianService.class)) {
+							log.info(IAlbianLoggerService.AlbianRunningLoggerName,
+									"init albian service :%s the interface:%s must assignable from IAlbianService  .",
+									serviceAttr.getId(), serviceAttr.getInterface());
+							throw new  TypeNotPresentException(serviceAttr.getType(),null);
+						}
+					}
+					
+					if(!cla.isAssignableFrom(IAlbianService.class)) {
+						log.info(IAlbianLoggerService.AlbianRunningLoggerName,
+								"init albian service :%s the class:%s must assignable from IAlbianService  .",
+								serviceAttr.getId(), serviceAttr.getType());
+						throw new  TypeNotPresentException(serviceAttr.getType(),null);
+					}
+					
 					IAlbianService service = (IAlbianService) cla.newInstance();
 					service.beforeLoad();
 					service.loading();

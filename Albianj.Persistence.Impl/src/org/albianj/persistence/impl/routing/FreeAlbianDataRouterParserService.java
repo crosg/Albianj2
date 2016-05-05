@@ -105,7 +105,7 @@ public abstract class FreeAlbianDataRouterParserService extends FreeAlbianParser
 	}
 
 	protected abstract Map<String, IDataRouterAttribute> parserRoutings(
-			@SuppressWarnings("rawtypes") List nodes);
+			@SuppressWarnings("rawtypes") List nodes) throws AlbianParserException;
 	
 	
 	public void addDataRouterAttribute(String name,IDataRoutersAttribute dra){
