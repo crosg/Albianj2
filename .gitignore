@@ -20,4 +20,5 @@ Albianj.Dispatcher
 Albianj.DFS.YDB.Client.Test
 Albianj.DFS.YDB.Client.Impl
 Albianj.DFS.YDB.Client
+Yuewen.PPLogStat.Impl
 *.prefs

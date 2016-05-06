@@ -65,5 +65,15 @@ public class AlbianCachedServerAttribute implements IAlbianCachedServerAttribute
 		// TODO Auto-generated method stub
 		this.port = port;
 	}
+	
+	
+	String _pwd = null;
+	public String getPassword(){
+		return _pwd;
+	}
+	public void setPassword(String pwd){
+		this._pwd = pwd;
+	}
+	
 
 }

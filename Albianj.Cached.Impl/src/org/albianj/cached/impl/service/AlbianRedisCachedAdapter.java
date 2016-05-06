@@ -119,6 +119,10 @@ public class AlbianRedisCachedAdapter extends FreeAlbianService implements
 			for (IAlbianCachedServerAttribute s : servers) {
 				JedisShardInfo jsi = new JedisShardInfo(s.getHost(),
 						s.getPort());
+				
+				if(!Validate.isNullOrEmpty(s.getPassword())){
+					jsi.setPassword(s.getPassword());
+				}
 				jsis.add(jsi);
 			}
 			sjp = new ShardedJedisPool(gopc, jsis);

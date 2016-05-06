@@ -28,4 +28,7 @@ public interface IAlbianCachedServerAttribute {
 	
 	int getPort();
 	void setPort(int port);
+	
+	String getPassword();
+	void setPassword(String pwd);
 }

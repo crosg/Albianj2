@@ -262,6 +262,12 @@ public class AlbianCachedService extends FreeAlbianCachedParser implements
 		IAlbianCachedServerAttribute csa = new AlbianCachedServerAttribute();
 		csa.setHost(host);
 		csa.setPort(new Integer(port));
+		
+		String pwd = XmlParser.getAttributeValue(node, "Password");
+		if (!Validate.isNullOrEmpty(pwd)) {
+			csa.setPassword(pwd);
+		}
+		
 		return csa;
 	}
 

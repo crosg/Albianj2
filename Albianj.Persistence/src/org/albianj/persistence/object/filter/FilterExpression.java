@@ -116,10 +116,6 @@ public class FilterExpression implements IFilterExpression {
 		_chains.add(fe);
 		return this;
 		// TODO Auto-generated method stub
-//		fe.setRelationalOperator(RelationalOperator.And);
-//		this._curr.setLeft(fe);
-//		this._curr = fe;
-//		return this;
 	}
 
 	@Override
@@ -167,7 +163,7 @@ public class FilterExpression implements IFilterExpression {
 	public IFilterExpression or(String fieldName, String aliasName, LogicalOperation lo, Object value) {
 		// TODO Auto-generated method stub
 		IFilterExpression ce = new FilterExpression(fieldName,aliasName, lo, value);
-		this.and(ce);
+		this.or(ce);
 		return this;
 	}
 
