@@ -52,6 +52,7 @@ public class ResultConvert {
 	@SuppressWarnings("deprecation")
 	public static Object toBoxValue(Class<?> cls, Object o) throws Exception {
 		String type = cls.getSimpleName().toLowerCase();
+		String fulltype = cls.getName().toLowerCase();
 		if ("string".equalsIgnoreCase(type)) {
 			return o.toString();
 		} else if ("bigdecimal".equalsIgnoreCase(type)) {
@@ -88,6 +89,9 @@ public class ResultConvert {
 				}catch(Exception e){
 					throw e; 
 				}
+			}
+			if(fulltype.equalsIgnoreCase("java.sql.date")){
+				return new java.sql.Date(d.getTime());
 			}
 			return d;
 			
