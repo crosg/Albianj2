@@ -48,9 +48,4 @@ public abstract class FreeAlbianParserService extends FreeAlbianService implemen
 		init();
 		super.loading();
 	}
-	
-
-	
-	
-	
 }

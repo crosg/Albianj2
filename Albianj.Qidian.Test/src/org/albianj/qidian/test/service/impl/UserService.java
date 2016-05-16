@@ -65,11 +65,23 @@ import org.albianj.service.FreeAlbianService;
 
 public class UserService extends FreeAlbianService implements IUserService {
 
-	private static IAlbianPersistenceService getPersistenceService() {
-		IAlbianPersistenceService aps = AlbianServiceRouter.getService(IAlbianPersistenceService.class,
-				IAlbianPersistenceService.Name, true);
-		return aps;
+
+	IAlbianPersistenceService aps = null;
+	public void setPersistenceService(IAlbianPersistenceService aps) {
+		this.aps  = aps;
 	}
+	public IAlbianPersistenceService getPersistenceService() {
+		return this.aps;
+	}
+
+	String cfName;
+	public void setConfigFileName(String cfn){
+		this.cfName = cfn;
+	}
+	public String getConfigFileName(){
+		return this.cfName;
+	}
+
 
 	@Override
 	public boolean create(String sessionId, IUser user) {

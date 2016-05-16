@@ -37,18 +37,19 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.service.impl;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.logger.impl.AlbianLoggerService;
-import org.albianj.service.AlbianServiceRouter;
-import org.albianj.service.FreeAlbianServiceParser;
-import org.albianj.service.IAlbianServiceAttribute;
+import org.albianj.service.*;
+import org.albianj.service.parser.AlbianParserException;
 import org.albianj.verify.Validate;
 import org.albianj.xml.XmlParser;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 public class AlbianServiceParser extends FreeAlbianServiceParser {
 
@@ -110,7 +111,51 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
 		if (!Validate.isNullOrEmptyOrAllSpace(sitf)) {
 			serviceAttr.setInterface(sitf);
 		}
+
+		List nodes = elt.selectNodes("Properties/Property");
+		if(null != nodes){
+			List<IAlbianServicePropertyAttribute> ps = parserAlbianServicePropertiesAttribute(id,nodes);
+			if(!Validate.isNullOrEmpty(ps)) {
+				serviceAttr.setServiceProperties(ps);
+			}
+
+		}
+
 		return serviceAttr;
+	}
+
+	protected List<IAlbianServicePropertyAttribute> parserAlbianServicePropertiesAttribute(String id,List nodes) {
+		List<IAlbianServicePropertyAttribute> pas = new ArrayList<>();
+		for (Object node : nodes) {
+			IAlbianServicePropertyAttribute pa = parserAlbianServicePropertyAttribute(id,(Element)node);
+			pas.add(pa);
+		}
+		return pas;
+	}
+
+	protected  IAlbianServicePropertyAttribute parserAlbianServicePropertyAttribute(String id,Element e) {
+			String name = XmlParser.getAttributeValue(e,"Name");
+			IAlbianServicePropertyAttribute pa = new AlbianServicePropertyAttribute();
+			if(Validate.isNullOrEmptyOrAllSpace(name)){
+				AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
+						NullPointerException.class,"Albianj service fail.","the service:%s's name of property is null or empty.",
+						id);
+			}
+		pa.setName(name);
+			String type = XmlParser.getAttributeValue(e,"Type");
+			if(Validate.isNullOrEmptyOrAllSpace(name)){
+				AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
+						NullPointerException.class,"Albianj service fail.","the service:%s's type of property is null or empty.",
+						id);
+			}
+		pa.setType(type);
+			String value = XmlParser.getAttributeValue(e,"Value");
+			if(!Validate.isNullOrEmptyOrAllSpace(name)){
+				pa.setValue(value);
+			}
+
+		return pa;
+
 	}
 
 }

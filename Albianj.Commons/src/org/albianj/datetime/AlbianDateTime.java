@@ -38,6 +38,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.datetime;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -64,6 +65,15 @@ public class AlbianDateTime {
 	public static String getDateTimeString(Date date, String format) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat(format);
 		return dateFormat.format(date);
+	}
+
+	public static Date parserChineseFormatDateTime(String s){
+		SimpleDateFormat dateFormat = new SimpleDateFormat(CHINESE_FORMAT);
+		try {
+			return dateFormat.parse(s);
+		} catch (ParseException e) {
+			return null;
+		}
 	}
 	
 	public static String getDateString() {

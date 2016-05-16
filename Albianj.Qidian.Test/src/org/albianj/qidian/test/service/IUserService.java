@@ -41,13 +41,21 @@ import java.math.BigInteger;
 import java.util.List;
 
 import org.albianj.persistence.object.IAlbianObject;
+import org.albianj.persistence.service.IAlbianPersistenceService;
 import org.albianj.qidian.test.object.IUser;
 import org.albianj.service.IAlbianService;
 
 public interface IUserService extends IAlbianService {
 	
 	final static String Name="UserService";
-	
+
+	public void setPersistenceService(IAlbianPersistenceService aps) ;
+	public IAlbianPersistenceService getPersistenceService() ;
+
+	public void setConfigFileName(String cfn);
+	public String getConfigFileName();
+
+
 	public boolean create(String sessionId,IUser user);
 	public boolean create(String sessionId,List<IAlbianObject> users);
 	public boolean modifyName(String sessionId,BigInteger id,String name);

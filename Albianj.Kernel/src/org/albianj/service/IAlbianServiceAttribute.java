@@ -37,6 +37,8 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.service;
 
+import java.util.List;
+
 public interface IAlbianServiceAttribute {
 	public String getId();
 
@@ -45,7 +47,12 @@ public interface IAlbianServiceAttribute {
 	public String getType();
 
 	public void setType(String type) throws IllegalArgumentException;
-	
+
 	public void setInterface(String itf);
+
 	public String getInterface();
+
+	List<IAlbianServicePropertyAttribute> getServiceProperties();
+
+	void setServiceProperties(List<IAlbianServicePropertyAttribute> ps);
 }

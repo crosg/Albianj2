@@ -57,15 +57,15 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
 
 	public final static String ALBIANJSERVICEKEY = "@$#&ALBIANJ_ALL_SERVICE&#$@";
 
-	public void setConfigFileName(String fileName) {
-		this.file = fileName;
+	public String getConfigFileName() {
+		return file;
 	}
-	
+
 	public void init() throws AlbianParserException {
 
 		Document doc = null;
 		try {
-			doc = XmlParser.load(Path.getExtendResourcePath(KernelSetting.getAlbianConfigFilePath() + file));
+			doc = XmlParser.load(Path.getExtendResourcePath(KernelSetting.getAlbianConfigFilePath() + getConfigFileName()));
 		} catch (Exception e) {
 
 			AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName, AlbianParserException.class, e,
@@ -93,7 +93,7 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
 	}
 
 	protected abstract Map<String, IAlbianServiceAttribute> parserServices(String tarName,
-			@SuppressWarnings("rawtypes") List nodes) throws NullPointerException, AlbianServiceException;
+			@SuppressWarnings("rawtypes") List nodes) throws NullPointerException;
 
 	protected abstract IAlbianServiceAttribute parserService(String name, Element node)
 			throws NullPointerException, AlbianServiceException;

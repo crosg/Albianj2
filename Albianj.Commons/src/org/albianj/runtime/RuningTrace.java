@@ -71,4 +71,6 @@ public class RuningTrace {
 		trace.setLineNumber(stacks[stacksLen - 1].getLineNumber());
 		return trace;
 	}
+
+
 }

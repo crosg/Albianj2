@@ -40,13 +40,21 @@ package org.albianj.loader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
 
+import org.albianj.datetime.AlbianDateTime;
 import org.albianj.kernel.AlbianState;
 import org.albianj.kernel.IAlbianTransmitterService;
 import org.albianj.net.MemoryToIOStream;
 import org.albianj.verify.Validate;
 import org.apache.commons.codec.binary.Base64;
+
+import static com.sun.javafx.tools.resource.DeployResource.Type.jar;
 
 public class AlbianBootService {
 	@SuppressWarnings("resource")
@@ -94,7 +102,44 @@ public class AlbianBootService {
 	}
 	
 	public static boolean start(String classpath,String kernelPath, String configPath){
-		String jar = "Albianj.spx";
+		String loaderJar = "Albianj.Loader.jar";
+		File loaderJarFile ;
+
+		String epath = System.getProperty("java.ext.dirs");
+		loaderJarFile = new File(epath + File.separator + loaderJar);
+		if (!loaderJarFile.exists()) {
+			System.err.println("not found Albianj.Loader.jar.please input this file to ext path. ");
+			return false;
+		}
+
+		String sVersion = null;
+		InputStream is = null;
+		try {
+			is = new FileInputStream(loaderJarFile);
+			if (is != null) {
+				JarInputStream jis = new JarInputStream(is);
+				Manifest mainmanifest = jis.getManifest();
+				sVersion = mainmanifest.getMainAttributes().getValue("Albianj-Version");
+			} else {
+
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		finally {
+			if(null != is)
+				try {
+					is.close();
+				} catch (IOException e) {
+					System.err.println("not found Albianj.Loader.jar.please input this file to ext path. ");
+					return false;
+				}
+		}
+		Date dVersion = AlbianDateTime.parserChineseFormatDateTime(sVersion);
+		String defVersion = AlbianDateTime.getDateTimeString(dVersion);
+
+
+		String jar = "Albianj_" + defVersion + ".spx";
 		File jarf = null;
 		if(!Validate.isNullOrEmptyOrAllSpace(classpath)) {
 			jarf = new File(classpath + File.separator + jar);
@@ -105,7 +150,6 @@ public class AlbianBootService {
 		} else {
 			jarf = new File(jar);
 			if (!jarf.exists()) {
-				String epath = System.getProperty("java.ext.dirs");
 				System.out.println(epath);
 				jarf = new File(epath + File.separator + jar);
 				if (!jarf.exists()) {

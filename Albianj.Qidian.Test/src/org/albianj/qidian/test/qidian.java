@@ -52,7 +52,12 @@ public class qidian {
 
 	public static void main(String[] argv){
 		try {
-		AlbianBootService.start(argv[0],argv[0]);
+
+			AlbianBootService.start("/Users/xuhaifeng/share/tencent/src/cc/java/dev/albianJars2.0/jar-pkg",
+					"/Users/xuhaifeng/share/tencent/src/cc/java/dev/albianj/Albianj.Main/config",
+					"/Users/xuhaifeng/share/tencent/src/cc/java/dev/albianj/Albianj.Main/config");
+
+			AlbianBootService.start(argv[0],argv[0]);
 		
 		IUserService us = AlbianServiceRouter.getService(IUserService.class, IUserService.Name, true);
 		BigInteger id = IdGenerator.make();

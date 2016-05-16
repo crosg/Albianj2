@@ -219,7 +219,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
 			Object[] vars = new Object[] { "Error:" + id + "," + eInfo };
 			T throwObject = null;
 			try {
-				throwObject = AlbianReflect.newInstance(cls, clss, vars);
+				throwObject = (T) AlbianReflect.newInstance(cls, clss, vars);
 			} catch (Exception e1) {
 
 			}
@@ -247,7 +247,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
 			Object[] vars = new Object[] { "Error:" + id + "," + eInfo };
 			T throwObject = null;
 			try {
-				throwObject = AlbianReflect.newInstance(cls, clss, vars);
+				throwObject = (T) AlbianReflect.newInstance(cls, clss, vars);
 			} catch (Exception e1) {
 
 			}
@@ -302,7 +302,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
 			Object[] vars = new Object[] { "Warn:" + id + "," + eInfo };
 			T throwObject = null;
 			try {
-				throwObject = AlbianReflect.newInstance(cls, clss, vars);
+				throwObject = (T) AlbianReflect.newInstance(cls, clss, vars);
 			} catch (Exception e1) {
 
 			}
@@ -330,7 +330,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
 			Object[] vars = new Object[] { "Warn:" + id + "," + eInfo };
 			T throwObject = null;
 			try {
-				throwObject = AlbianReflect.newInstance(cls, clss, vars);
+				throwObject = (T) AlbianReflect.newInstance(cls, clss, vars);
 			} catch (Exception e1) {
 
 			}
@@ -385,7 +385,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
 			Object[] vars = new Object[] { "Info:" + id + "," + eInfo };
 			T throwObject = null;
 			try {
-				throwObject = AlbianReflect.newInstance(cls, clss, vars);
+				throwObject = (T) AlbianReflect.newInstance(cls, clss, vars);
 			} catch (Exception e1) {
 
 			}
@@ -413,7 +413,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
 			Object[] vars = new Object[] { "EID" + id + "." + eInfo };
 			T throwObject = null;
 			try {
-				throwObject = AlbianReflect.newInstance(cls, clss, vars);
+				throwObject = (T) AlbianReflect.newInstance(cls, clss, vars);
 			} catch (Exception e1) {
 
 			}
@@ -468,7 +468,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
 			Object[] vars = new Object[] { "Debug:" + id + "," + eInfo };
 			T throwObject = null;
 			try {
-				throwObject = AlbianReflect.newInstance(cls, clss, vars);
+				throwObject = (T) AlbianReflect.newInstance(cls, clss, vars);
 			} catch (Exception e1) {
 
 			}
@@ -496,7 +496,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
 			Object[] vars = new Object[] { "Debug" + id + "," + eInfo };
 			T throwObject = null;
 			try {
-				throwObject = AlbianReflect.newInstance(cls, clss, vars);
+				throwObject = (T) AlbianReflect.newInstance(cls, clss, vars);
 			} catch (Exception e1) {
 
 			}
