@@ -117,4 +117,21 @@ public class WriterTask implements IWriterTask {
 		this.rollbackStatements = statements;
 	}
 
+
+	List<IPersistenceCommand> rbkCmds = null;
+	public List<IPersistenceCommand> getRollbackCommands() {
+		return this.rbkCmds;
+	}
+	public void setRollbackCommands(List<IPersistenceCommand> rollbackCmds){
+		this.rbkCmds = rollbackCmds;
+	}
+
+	boolean compensating = true;
+	public boolean getCompensating(){
+		return this.compensating;
+	}
+	public void setCompensating(boolean compensating){
+		this.compensating = compensating;
+	}
+
 }

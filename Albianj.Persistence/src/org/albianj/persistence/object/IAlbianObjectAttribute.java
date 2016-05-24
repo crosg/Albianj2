@@ -67,4 +67,8 @@ public interface IAlbianObjectAttribute {
 	public Map<String, IMemberAttribute> getMembers();
 
 	public void setMembers(Map<String, IMemberAttribute> members);
+
+	public void setCompensating(boolean compensating);
+
+	public boolean getCompensating();
 }

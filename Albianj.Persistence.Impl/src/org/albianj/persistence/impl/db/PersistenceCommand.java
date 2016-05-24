@@ -54,6 +54,9 @@ public class PersistenceCommand implements IPersistenceCommand {
 	private Map<String, ISqlParameter> rollbackParamsters = null;
 	private Map<Integer, String> rollbackParameterMapper = null;
 
+	//this default value must the same as AlbianObjectAttribute.compensating
+	private boolean compensating = true;
+
 	public String getCommandText() {
 		// TODO Auto-generated method stub
 		return this.commandText;
@@ -133,6 +136,13 @@ public class PersistenceCommand implements IPersistenceCommand {
 		this.rollbackParamsters = parameters;
 	}
 
+	public void setCompensating(boolean compensating){
+		this.compensating  = compensating;
+	}
+
+	public boolean getCompensating(){
+		return this.compensating;
+	}
 	
 
 }

@@ -59,7 +59,7 @@ public class qidian {
 
 			AlbianBootService.start(argv[0],argv[0]);
 		
-		IUserService us = AlbianServiceRouter.getService(IUserService.class, IUserService.Name, true);
+		IUserService us = AlbianServiceRouter.getSingletonService(IUserService.class, IUserService.Name, true);
 		BigInteger id = IdGenerator.make();
 		IUser u11 = us.load("session", id);
 		

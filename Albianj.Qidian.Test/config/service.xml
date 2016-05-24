@@ -18,13 +18,15 @@
     <Service Id="AlbianPersistenceService"
              Type="org.albianj.persistence.impl.service.AlbianPersistenceService"/>
 
-    <!--
         <Service Id="AlbianRemoteIdService"
             Type="org.albianj.unid.service.impl.AlbianRemoteUNIDService" />
 
         <Service Id="AlbianCachedService"
             Type="org.albianj.cached.impl.service.AlbianCachedService" />
 
+
+
+    <!--
         <Service Id="AlbianConfigurtionService"
             Type="org.albianj.configurtion.impl.AlbianConfigurtionService" />
     -->

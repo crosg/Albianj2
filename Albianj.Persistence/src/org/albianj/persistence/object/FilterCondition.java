@@ -39,7 +39,6 @@ package org.albianj.persistence.object;
 
 import org.albianj.persistence.object.filter.IFilterExpression;
 
-@Deprecated
 public class FilterCondition implements IFilterCondition {
 	private RelationalOperator relationalOperator = RelationalOperator.And;
 	private String fieldName = null;

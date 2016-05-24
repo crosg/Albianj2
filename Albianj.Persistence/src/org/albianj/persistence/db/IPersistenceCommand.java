@@ -127,4 +127,8 @@ public interface IPersistenceCommand {
 	 * @param parameters
 	 */
 	public void setRollbackParameters(Map<String, ISqlParameter> parameters);
+
+	public boolean getCompensating();
+
+	public void  setCompensating(boolean compensating);
 }

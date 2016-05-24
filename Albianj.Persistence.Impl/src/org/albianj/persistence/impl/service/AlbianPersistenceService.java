@@ -66,11 +66,13 @@ import org.albianj.service.FreeAlbianService;
 import org.albianj.verify.Validate;
 
 public class AlbianPersistenceService extends FreeAlbianService implements IAlbianPersistenceService {	
-	
+
+	@Deprecated
 	public boolean create(String sessionId, IAlbianObject object) throws AlbianDataServiceException{
 		return create(sessionId,object,null,null,null,null);
 	}
 
+	@Deprecated
 	public boolean create(String sessionId, IAlbianObject object, IPersistenceNotify notifyCallback,
 			Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
 			Object compensateCallbackObject) throws AlbianDataServiceException{
@@ -88,10 +90,12 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
 		return tcs.execute(job);
 	}
 
+	@Deprecated
 	public boolean create(String sessionId, List<? extends IAlbianObject> objects) throws AlbianDataServiceException{
 		return this.create(sessionId, objects,null,null,null,null);
 	}
-	
+
+	@Deprecated
 	public boolean create(String sessionId, List<? extends IAlbianObject> objects, IPersistenceNotify notifyCallback,
 			Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
 			Object compensateCallbackObject) throws AlbianDataServiceException{
@@ -109,9 +113,11 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
 		return tcs.execute(job);
 	}
 
+	@Deprecated
 	public boolean modify(String sessionId, IAlbianObject object) throws AlbianDataServiceException{
 		return this.modify(sessionId, object, null, null, null, null);
 	}
+	@Deprecated
 	public boolean modify(String sessionId, IAlbianObject object, IPersistenceNotify notifyCallback,
 			Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
 			Object compensateCallbackObject) throws AlbianDataServiceException{
@@ -129,9 +135,11 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
 		return tcs.execute(job);
 	}
 
+	@Deprecated
 	public boolean modify(String sessionId, List<? extends IAlbianObject> objects) throws AlbianDataServiceException{
 		return this.modify(sessionId, objects, null, null, null, null);
 	}
+	@Deprecated
 	public boolean modify(String sessionId, List<? extends IAlbianObject> objects,
 			IPersistenceNotify notifyCallback,
 			Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
@@ -149,10 +157,12 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
 		IPersistenceTransactionClusterScope tcs = new PersistenceTransactionClusterScope();
 		return tcs.execute(job);
 	}
-	
+
+	@Deprecated
 	public boolean remove(String sessionId, IAlbianObject object) throws AlbianDataServiceException{
 		return this.remove(sessionId, object, null, null, null, null);
 	}
+	@Deprecated
 	public boolean remove(String sessionId, IAlbianObject object, IPersistenceNotify notifyCallback,
 			Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
 			Object compensateCallbackObject) throws AlbianDataServiceException{
@@ -169,10 +179,11 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
 		IPersistenceTransactionClusterScope tcs = new PersistenceTransactionClusterScope();
 		return tcs.execute(job);
 	}
+	@Deprecated
 	public boolean remove(String sessionId, List<? extends IAlbianObject> objects) throws AlbianDataServiceException{
 		return this.remove(sessionId, objects, null, null, null, null);
 	}
-
+	@Deprecated
 	public boolean remove(String sessionId, List<? extends IAlbianObject> objects, IPersistenceNotify notifyCallback,
 			Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
 			Object compensateCallbackObject) throws AlbianDataServiceException{
@@ -337,22 +348,25 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
 	public <T extends IAlbianObject> long loadObjectsCount(String sessionId,Class<T> cls,
 			LoadType loadType, String rountingName, IChainExpression wheres)
 			throws AlbianDataServiceException{
+		long count = 0;
 		if(LoadType.exact == loadType){
-			long count = doLoadPageingCount(sessionId,cls, true, rountingName, wheres, null);
-			return count;
+			 count = doLoadPageingCount(sessionId,cls, true, rountingName, wheres, null);
+			AlbianPersistenceCache.setPagesize(cls, wheres, null, count);
+		} else {
+			if(LoadType.dirty == loadType){
+				 count = doLoadPageingCount(sessionId,cls, false, rountingName, wheres, null);
+				AlbianPersistenceCache.setPagesize(cls, wheres, null, count);
+			} else {
+				count = AlbianPersistenceCache.findPagesize(cls, wheres, null);
+				if (0 <= count) {
+					return count;
+				}
+				count = doLoadPageingCount(sessionId, cls, false, rountingName, wheres, null);
+				AlbianPersistenceCache.setPagesize(cls, wheres, null, count);
+			}
+
 		}
-		if(LoadType.dirty == loadType){
-			long count = doLoadPageingCount(sessionId,cls, false, rountingName, wheres, null);
-			return count;
-		}
-		
-		long count = AlbianPersistenceCache.findPagesize(cls, wheres, null);
-		if(0 <= count){
-			return count;
-		}
-		count = doLoadPageingCount(sessionId,cls, true, rountingName, wheres, null);
-		
-		AlbianPersistenceCache.setPagesize(cls, wheres, null, count);
+
 		return count;
 	}
 	

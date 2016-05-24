@@ -171,12 +171,21 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
 			defaultRouting.setTableName(csn);
 		}
 
+		IAlbianObjectAttribute albianObjectAttribute = new AlbianObjectAttribute();
+		Node tnode = node.selectSingleNode("Transaction");
+		if(null != tnode){
+			String sCompensating = XmlParser.getAttributeValue(node, "Compensating");
+			if(!Validate.isNullOrEmptyOrAllSpace(sCompensating)){
+				 albianObjectAttribute.setCompensating(new Boolean(sCompensating));
+			}
+		}
+
 		@SuppressWarnings("rawtypes")
 		List nodes = node.selectNodes(memberTagName);
 		if (!Validate.isNullOrEmpty(nodes)) {
 			parserAlbianObjectMembers(type, nodes, map);
 		}
-		IAlbianObjectAttribute albianObjectAttribute = new AlbianObjectAttribute();
+
 		albianObjectAttribute.setCache(cached);
 		albianObjectAttribute.setMembers(map);
 		albianObjectAttribute.setType(type);

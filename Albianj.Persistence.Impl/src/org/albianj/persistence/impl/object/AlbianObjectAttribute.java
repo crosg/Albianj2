@@ -51,6 +51,7 @@ public class AlbianObjectAttribute implements IAlbianObjectAttribute {
 	private Map<String, IMemberAttribute> members = null;
 	private String type = null;
 	private String inter = null;
+	private boolean compensating = true;
 
 	public String getInterface() {
 		return inter;
@@ -95,4 +96,13 @@ public class AlbianObjectAttribute implements IAlbianObjectAttribute {
 		// TODO Auto-generated method stub
 		this.members = members;
 	}
+
+	public void setCompensating(boolean compensating){
+		this.compensating = compensating;
+	}
+
+	public boolean getCompensating(){
+		return this.compensating;
+	}
+
 }

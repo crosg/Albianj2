@@ -43,6 +43,7 @@ import java.util.List;
 
 import org.albianj.persistence.db.IPersistenceCommand;
 import org.albianj.persistence.object.IRunningStorageAttribute;
+import sun.print.IPPPrintService;
 
 /**
  * 写事务的任务
@@ -123,4 +124,11 @@ public interface IWriterTask {
 	 * @param statements
 	 */
 	public void setRollbackStatements(List<Statement> statements);
+
+
+	public List<IPersistenceCommand> getRollbackCommands();
+	public void setRollbackCommands(List<IPersistenceCommand> rollbackCmds);
+
+	public boolean getCompensating();
+	public void setCompensating(boolean compensating);
 }

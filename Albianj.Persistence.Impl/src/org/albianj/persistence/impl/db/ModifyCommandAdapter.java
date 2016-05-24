@@ -71,13 +71,20 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
 		StringBuilder cols = new StringBuilder();
 		StringBuilder where = new StringBuilder();
 		
-		StringBuilder rollbackText = new StringBuilder();
-		StringBuilder rollbackCols = new StringBuilder();
-		StringBuilder rollbackWhere = new StringBuilder();
-		
+		StringBuilder rollbackText = null;
+		StringBuilder rollbackCols = null;
+		StringBuilder rollbackWhere = null;
+		if(albianObject.getCompensating()) {
+			 rollbackText = new StringBuilder();
+			 rollbackCols = new StringBuilder();
+			 rollbackWhere = new StringBuilder();
+		}
+
 		
 		text.append("UPDATE ");// .append(routing.getTableName());
-		rollbackText.append("UPDATE ");// .append(routing.getTableName());
+		if(albianObject.getCompensating()) {
+			rollbackText.append("UPDATE ");// .append(routing.getTableName());
+		}
 		String tableName = null;
 		if (null != routings && null != routings.getDataRouter()) {
 			tableName = routings.getDataRouter().mappingWriterTable(routing, object);
@@ -85,10 +92,14 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
 		tableName = Validate.isNullOrEmptyOrAllSpace(tableName) ? routing.getTableName() : tableName;
 		if (storage.getDatabaseStyle() == PersistenceDatabaseStyle.MySql) {
 			text.append("`").append(tableName).append("`");
-			rollbackText.append("`").append(tableName).append("`");
+			if(albianObject.getCompensating()) {
+				rollbackText.append("`").append(tableName).append("`");
+			}
 		} else {
 			text.append("[").append(tableName).append("]");
-			rollbackText.append("[").append(tableName).append("]");
+			if(albianObject.getCompensating()) {
+				rollbackText.append("[").append(tableName).append("]");
+			}
 		}
 
 		Map<String, IMemberAttribute> mapMemberAttributes = albianObject.getMembers();
@@ -104,16 +115,24 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
 
 			if (member.getPrimaryKey()) {
 				where.append(" AND ");
-				rollbackWhere.append(" AND ");
+				if(albianObject.getCompensating()) {
+					rollbackWhere.append(" AND ");
+				}
 				if (storage.getDatabaseStyle() == PersistenceDatabaseStyle.MySql) {
 					where.append("`").append(member.getSqlFieldName()).append("`");
-					rollbackWhere.append("`").append(member.getSqlFieldName()).append("`");
+					if(albianObject.getCompensating()) {
+						rollbackWhere.append("`").append(member.getSqlFieldName()).append("`");
+					}
 				} else {
 					where.append("[").append( member.getSqlFieldName()).append("]");
-					rollbackWhere.append("[").append( member.getSqlFieldName()).append("]");
+					if(albianObject.getCompensating()) {
+						rollbackWhere.append("[").append(member.getSqlFieldName()).append("]");
+					}
 				}
 				where.append(" = ").append("#").append(member.getSqlFieldName()).append("# ");
-				rollbackWhere.append(" = ").append("#").append(member.getSqlFieldName()).append("# ");
+				if(albianObject.getCompensating()) {
+					rollbackWhere.append(" = ").append("#").append(member.getSqlFieldName()).append("# ");
+				}
 			} else {
 				// cols
 				 oldValue = object.getOldAlbianObject(name);
@@ -128,47 +147,60 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
 				}
 				if (storage.getDatabaseStyle() == PersistenceDatabaseStyle.MySql) {
 					cols.append("`").append(member.getSqlFieldName()).append("`");
-					rollbackCols.append("`").append(member.getSqlFieldName()).append("`");
+					if(albianObject.getCompensating()) {
+						rollbackCols.append("`").append(member.getSqlFieldName()).append("`");
+					}
 				} else {
 					cols.append("[").append( member.getSqlFieldName()).append("]");
-					rollbackCols.append("[").append( member.getSqlFieldName()).append("]");
+					if(albianObject.getCompensating()) {
+						rollbackCols.append("[").append(member.getSqlFieldName()).append("]");
+					}
 				}
 				cols.append(" = ").append("#").append(member.getSqlFieldName()).append("# ,");
-				rollbackCols.append(" = ").append("#").append(member.getSqlFieldName()).append("# ,");
+				if(albianObject.getCompensating()) {
+					rollbackCols.append(" = ").append("#").append(member.getSqlFieldName()).append("# ,");
+				}
 			}
 			ISqlParameter para = new SqlParameter();
 			para.setName(name);
 			para.setSqlFieldName(member.getSqlFieldName());
 			para.setSqlType(member.getDatabaseType());
 			para.setValue(newValue);
-			
-			ISqlParameter rollbackPara = new SqlParameter();
-			rollbackPara.setName(name);
-			rollbackPara.setSqlFieldName(member.getSqlFieldName());
-			rollbackPara.setSqlType(member.getDatabaseType());
-			rollbackPara.setValue(oldValue);
-			
 			sqlParas.put(String.format("#%1$s#", member.getSqlFieldName()), para);
-			rollbackParas.put(String.format("#%1$s#", member.getSqlFieldName()), rollbackPara);
+
+			if(albianObject.getCompensating()) {
+				ISqlParameter rollbackPara = new SqlParameter();
+				rollbackPara.setName(name);
+				rollbackPara.setSqlFieldName(member.getSqlFieldName());
+				rollbackPara.setSqlType(member.getDatabaseType());
+				rollbackPara.setValue(oldValue);
+				rollbackParas.put(String.format("#%1$s#", member.getSqlFieldName()), rollbackPara);
+			}
 		}
 
 		if (0 == cols.length())
 			return null;// no the upload operator
 		if (0 < cols.length()) {
 			cols.deleteCharAt(cols.length() - 1);
-			rollbackCols.deleteCharAt(cols.length() - 1);
+			if(albianObject.getCompensating()) {
+				rollbackCols.deleteCharAt(cols.length() - 1);
+			}
 		}
 
 		text.append(" SET ").append(cols).append(" WHERE 1=1 ").append(where);
-		rollbackText.append(" SET ").append(rollbackCols).append(" WHERE 1=1 ").append(rollbackWhere);
+		if(albianObject.getCompensating()) {
+			rollbackText.append(" SET ").append(rollbackCols).append(" WHERE 1=1 ").append(rollbackWhere);
+		}
 		
 		cmd.setCommandText(text.toString());
 		cmd.setCommandType(PersistenceCommandType.Text);
 		cmd.setParameters(sqlParas);
-		
-		cmd.setRollbackCommandText(rollbackText.toString());
-		cmd.setRollbackCommandType(PersistenceCommandType.Text);
-		cmd.setRollbackParameters(rollbackParas);
+
+		if(albianObject.getCompensating()) {
+			cmd.setRollbackCommandText(rollbackText.toString());
+			cmd.setRollbackCommandType(PersistenceCommandType.Text);
+			cmd.setRollbackParameters(rollbackParas);
+		}
 		
 		PersistenceNamedParameter.parseSql(cmd);
 		return cmd;

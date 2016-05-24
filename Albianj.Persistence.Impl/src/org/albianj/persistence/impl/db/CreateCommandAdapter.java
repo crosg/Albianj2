@@ -72,18 +72,19 @@ public class CreateCommandAdapter implements IPersistenceUpdateCommand {
 				
 		Map<String, ISqlParameter> sqlParas = makeCreateCommand(object, routings, albianObject, mapValue, routing,
 				storage, sqlText);
-		
-		StringBuilder rollbackText = new StringBuilder();
-		Map<String, ISqlParameter> rollbackParas = RemoveCommandAdapter.makeRomoveCommand(sessionId,object, routings, albianObject, mapValue, routing,
-				storage, rollbackText);
-		
 		cmd.setCommandText(sqlText.toString());
 		cmd.setCommandType(PersistenceCommandType.Text);
 		cmd.setParameters(sqlParas);
-		
-		cmd.setRollbackCommandText(rollbackText.toString());
-		cmd.setRollbackCommandType(PersistenceCommandType.Text);
-		cmd.setRollbackParameters(rollbackParas);
+
+		if(albianObject.getCompensating()) {
+			StringBuilder rollbackText = new StringBuilder();
+			Map<String, ISqlParameter> rollbackParas = RemoveCommandAdapter.makeRomoveCommand(sessionId,
+					object, routings, albianObject, mapValue, routing,
+					storage, rollbackText);
+			cmd.setRollbackCommandText(rollbackText.toString());
+			cmd.setRollbackCommandType(PersistenceCommandType.Text);
+			cmd.setRollbackParameters(rollbackParas);
+		}
 		
 		PersistenceNamedParameter.parseSql(cmd);
 		return cmd;

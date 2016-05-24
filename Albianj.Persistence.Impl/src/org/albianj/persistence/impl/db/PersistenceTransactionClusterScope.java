@@ -264,13 +264,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
 		for (Map.Entry<String, IWriterTask> task : tasks.entrySet()) {
 			IWriterTask t = task.getValue();
 			if(!t.getIsCommited()) continue;// not commit then use auto rollback
-//			IStorageAttribute storage = t.getStorage();
-//			if (null == storage) {
-//				AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianSqlLoggerName,
-//						AlbianDataServiceException.class,
-//						"DataService is error.","The storage for task is null when manual rollbacking.job id:%s.",writerJob.getId());
-//			}
-			
+
 			List<IPersistenceCommand> cmds = t.getCommands();
 			if (Validate.isNullOrEmpty(cmds)) {
 				AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianSqlLoggerName,
@@ -278,8 +272,10 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
 						"DataService is error.","The commands for task is empty or null when manual rollbacking.job id:%s.",writerJob.getId());
 			}
 			List<Statement> statements = new Vector<Statement>();
+			List<IPersistenceCommand> rbkCmds = new Vector<>();
 			try {
 			for (IPersistenceCommand cmd : cmds) {
+				if(!cmd.getCompensating()) continue;
 				PreparedStatement prepareStatement = t
 						.getConnection().prepareStatement(cmd.getRollbackCommandText());
 				Map<Integer, String> map = cmd.getRollbackParameterMapper();
@@ -298,13 +294,18 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
 					}
 				}
 				statements.add(prepareStatement);
+				rbkCmds.add(cmd);
 			}
 			}catch(SQLException e){
 				AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianSqlLoggerName,
 						AlbianDataServiceException.class,e,
 						"DataService is error.","make sql command for task is empty or null when maunal rollbacking.job id:%s.",writerJob.getId());
 			}
-			t.setRollbackStatements(statements);
+			if(!Validate.isNullOrEmpty(statements)) {
+				t.setRollbackStatements(statements);
+				t.setRollbackCommands(rbkCmds);
+				t.setCompensating(true);
+			}
 		}
 	}
 
@@ -317,8 +318,10 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
 		for (Map.Entry<String, IWriterTask> task : tasks.entrySet()) {
 			IWriterTask t = task.getValue();
 			if(!t.getIsCommited()) continue;
+			if(!t.getCompensating()) continue;;
 			List<Statement> statements = t.getRollbackStatements();
-			List<IPersistenceCommand> cmds = t.getCommands();
+			List<IPersistenceCommand> cmds = t.getRollbackCommands();
+			if(Validate.isNullOrEmpty(statements)) continue;;
 			for(int i = 0;i< statements.size();i++){
 				try {
 					IPersistenceCommand cmd = cmds.get(i);
@@ -346,7 +349,9 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
 			IWriterTask t = task.getValue();
 			if(!t.getIsCommited()) continue;
 			try {
-				t.getConnection().commit();
+				if(t.getCompensating()) {
+					t.getConnection().commit();
+				}
 			} catch (SQLException e) {
 				IRunningStorageAttribute rsa = t.getStorage();
 				AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianSqlLoggerName,
