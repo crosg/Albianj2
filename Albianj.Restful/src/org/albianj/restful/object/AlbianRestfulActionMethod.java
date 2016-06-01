@@ -35,40 +35,27 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 偶发性、特殊性、惩罚性或任何结果的损害（包括但不限于替代商品或劳务之购用、使用损失、资料损失、利益损失、业务中断等等），
 不负任何责任，即在该种使用已获事前告知可能会造成此类损害的情形下亦然。
 */
-package org.albianj.service;
-
-import org.albianj.aop.AlbianAopAttribute;
-import org.albianj.kernel.AlbianKernel;
-import org.albianj.service.parser.AlbianParserException;
+package org.albianj.restful.object;
 
 /**
- * ??????albianj???service??????????????????????????????FreeAlbianService???????
- * ????????????????????
+ * albianj的restful支持的http方法
  * 
- * @author Seapeak
- *
+ * @author seapeak
+ * @since v2.1
  */
-@AlbianKernel
-public interface IAlbianService {
-
-	@AlbianAopAttribute(avoid = true)
-	public AlbianServiceLifetime getAlbianServiceState();
-
-	@AlbianAopAttribute(avoid = true)
-	public void beforeLoad() throws RuntimeException;
-
-	@AlbianAopAttribute(avoid = true)
-	public void loading() throws RuntimeException,AlbianParserException;
-
-	@AlbianAopAttribute(avoid = true)
-	public void afterLoading() throws RuntimeException;
-
-	@AlbianAopAttribute(avoid = true)
-	public void beforeUnload() throws RuntimeException;
-
-	@AlbianAopAttribute(avoid = true)
-	public void unload() throws RuntimeException;
-
-	@AlbianAopAttribute(avoid = true)
-	public void afterUnload() throws RuntimeException;
+public class AlbianRestfulActionMethod {
+	
+		/**
+		 * 关闭这个action
+		 */
+		public final static  int CLOSED = 0x00;
+		/**
+		 * 这个action支持get方法
+		 */
+		public final static int GET = 0x01;
+		/**
+		 * 这个action支持post方法
+		 */
+		public final static int POST = 0x02;
+	//	public final static int HEAD = 0x04;
 }

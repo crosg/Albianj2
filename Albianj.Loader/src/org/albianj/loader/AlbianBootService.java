@@ -37,10 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.loader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -58,12 +55,10 @@ import static com.sun.javafx.tools.resource.DeployResource.Type.jar;
 
 public class AlbianBootService {
 	@SuppressWarnings("resource")
-	private static ArrayList<byte[]> unpack(File target) {
-		FileInputStream fis = null;
+	private static ArrayList<byte[]> unpack(FileInputStream fis) {
 		ArrayList<byte[]> list = null;
 		try {
 			list = new ArrayList<byte[]>();
-			fis = new FileInputStream(target);
 			byte[] bsize = new byte[4];
 			fis.read(bsize);
 			long size = MemoryToIOStream.netStreamToInt(bsize, 0);
@@ -81,97 +76,78 @@ public class AlbianBootService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		try {
-			if (null != fis) {
-				fis.close();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("unzip kernel jars is fail.then exit the system.");
-			System.exit(1);
-		}
 		return null;
 	}
 
-	public static boolean start() {
-		return start(null, null);
-	}
-
-	public static boolean start(String configPath) {
-		return start(null,null, configPath);
-	}
-	
 	public static boolean start(String classpath,String kernelPath, String configPath){
-		String loaderJar = "Albianj.Loader.jar";
-		File loaderJarFile ;
-
+		String sVersion = null;
 		String epath = System.getProperty("java.ext.dirs");
-		loaderJarFile = new File(epath + File.separator + loaderJar);
-		if (!loaderJarFile.exists()) {
-			System.err.println("not found Albianj.Loader.jar.please input this file to ext path. ");
+		File dir = new File(classpath);
+		if (!dir.isDirectory()) {
 			return false;
 		}
+		File jarf = null;
+		File[] files = dir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return (name.endsWith(".spx"));
+			}
+		});
+		if(0 != files.length){
+			jarf = files[0];
+		} else {
+			dir = new File(epath);
+			files = dir.listFiles(new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					return (name.endsWith(".spx"));
+				}
+			});
+			if(0 != files.length) {
+				jarf = files[0];
+			}
+		}
 
-		String sVersion = null;
-		InputStream is = null;
+		if(null == jarf) {
+			System.out.println("not found Albian's spx file.please put spx file to classpath or exts-path.");
+			return false;
+		}
+		String fname = jarf.getName();
+		int begin = fname.indexOf("Albianj_");
+		int end = fname.indexOf(".spx");
+		sVersion = fname.substring(begin + "Albianj_".length(),end);
+
+		FileInputStream fis = null;
 		try {
-			is = new FileInputStream(loaderJarFile);
-			if (is != null) {
-				JarInputStream jis = new JarInputStream(is);
-				Manifest mainmanifest = jis.getManifest();
-				sVersion = mainmanifest.getMainAttributes().getValue("Albianj-Version");
-			} else {
+			fis = new FileInputStream(jarf);
+			byte[] bVersion = new byte[14];
+			fis.read(bVersion);
+			String sFVersion = bVersion.toString();
+			if(!sFVersion.equalsIgnoreCase(sVersion)){
 
 			}
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		finally {
-			if(null != is)
-				try {
-					is.close();
-				} catch (IOException e) {
-					System.err.println("not found Albianj.Loader.jar.please input this file to ext path. ");
-					return false;
-				}
-		}
-		Date dVersion = AlbianDateTime.parserChineseFormatDateTime(sVersion);
-		String defVersion = AlbianDateTime.getDateTimeString(dVersion);
 
-
-		String jar = "Albianj_" + defVersion + ".spx";
-		File jarf = null;
-		if(!Validate.isNullOrEmptyOrAllSpace(classpath)) {
-			jarf = new File(classpath + File.separator + jar);
-			if (!jarf.exists()) {
-				System.err.println("not found albianj.spx.please input this file to current file or ext path. ");
+			ArrayList<byte[]> list = unpack(fis);
+			if (Validate.isNullOrEmpty(list)) {
+				System.err.println("unzip the jars is null. ");
 				return false;
 			}
-		} else {
-			jarf = new File(jar);
-			if (!jarf.exists()) {
-				System.out.println(epath);
-				jarf = new File(epath + File.separator + jar);
-				if (!jarf.exists()) {
-					System.err.println("not found albianj.spx.please input this file to current file or ext path. ");
-					return false;
-				}
-			} 
-		}
-
-		ArrayList<byte[]> list = unpack(jarf);
-		if (Validate.isNullOrEmpty(list)) {
-			System.err.println("unzip the jars is null. ");
-			return false;
-		}
-
-		try {
 			for (byte[] bs : list) {
 				AlbianClassLoader.getInstance().regeditPlugin(bs);
 			}
-		} catch (IOException e) {
+
+		}catch (Exception e){
 			e.printStackTrace();
 			return false;
+		}
+		finally {
+			if(null != fis){
+				try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		try {
@@ -196,7 +172,12 @@ public class AlbianBootService {
 		return true;
 	}
 
-	public static boolean start(String kernelPath, String configPath) {
-		return start(null,kernelPath,configPath);
+	public static boolean start(String classpath, String configPath) {
+		return start(classpath,configPath);
 	}
+
+	public static boolean start(String configPath) {
+		return start(null,configPath,configPath);
+	}
+
 }

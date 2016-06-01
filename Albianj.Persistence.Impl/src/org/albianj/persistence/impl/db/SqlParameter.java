@@ -82,20 +82,4 @@ public class SqlParameter implements ISqlParameter {
 		return this.sqlFieldName;
 	}
 
-	// public Class getValueClass()
-	// {
-	// return valueClass;
-	// }
-	// public void setValueClass(Class<?> valueClass)
-	// {
-	// this.valueClass = valueClass;
-	// }
-	// public int getLength()
-	// {
-	// return length;
-	// }
-	// public void setLength(int length)
-	// {
-	// this.length = length;
-	// }
 }

@@ -42,14 +42,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.albianj.aop.IAlbianServiceAopAttribute;
+import org.albianj.aop.impl.AlbianServiceAopAttribute;
+import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.IAlbianLoggerService;
-import org.albianj.logger.impl.AlbianLoggerService;
 import org.albianj.service.*;
-import org.albianj.service.parser.AlbianParserException;
 import org.albianj.verify.Validate;
 import org.albianj.xml.XmlParser;
 import org.dom4j.Element;
-import org.dom4j.Node;
 
 public class AlbianServiceParser extends FreeAlbianServiceParser {
 
@@ -121,6 +121,15 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
 
 		}
 
+		List aopNodes = elt.selectNodes("Aop/Aspect");
+		if(!Validate.isNullOrEmpty(aopNodes)){
+			List<IAlbianServiceAopAttribute> aas = parserAlbianServiceAopAttribute(id,nodes);
+			if(!Validate.isNullOrEmpty(aas)) {
+				serviceAttr.setAopAttributes(aas);
+			}
+
+		}
+
 		return serviceAttr;
 	}
 
@@ -143,7 +152,7 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
 			}
 		pa.setName(name);
 			String type = XmlParser.getAttributeValue(e,"Type");
-			if(Validate.isNullOrEmptyOrAllSpace(name)){
+			if(Validate.isNullOrEmptyOrAllSpace(type)){
 				AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
 						NullPointerException.class,"Albianj service fail.","the service:%s's type of property is null or empty.",
 						id);
@@ -155,6 +164,95 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
 			}
 
 		return pa;
+
+	}
+
+	protected List<IAlbianServiceAopAttribute> parserAlbianServiceAopAttribute(String id, List nodes) {
+		List<IAlbianServiceAopAttribute> aas = new ArrayList<>();
+		for (Object node : nodes) {
+			IAlbianServiceAopAttribute pa = parserAlbianServiceAopAttribute(id,(Element)node);
+			aas.add(pa);
+		}
+		return aas;
+	}
+
+	protected IAlbianServiceAopAttribute parserAlbianServiceAopAttribute(String id, Element e) {
+
+
+		IAlbianServiceAopAttribute aa = new AlbianServiceAopAttribute();
+		String beginWith = XmlParser.getAttributeValue( e, "BeginWith");
+		if(!Validate.isNullOrEmptyOrAllSpace(beginWith)){
+			aa.setBeginWith(beginWith);
+		}
+
+		String notBeginWith = XmlParser.getAttributeValue( e, "NotBeginWith");
+		if(!Validate.isNullOrEmptyOrAllSpace(notBeginWith)){
+			aa.setNotBeginWith(notBeginWith);
+		}
+
+		String endWith = XmlParser.getAttributeValue( e, "EndWith");
+		if(!Validate.isNullOrEmptyOrAllSpace(endWith)){
+			aa.setEndWith(endWith);
+		}
+
+		String notEndWith = XmlParser.getAttributeValue( e, "NotEndWith");
+		if(!Validate.isNullOrEmptyOrAllSpace(notEndWith)){
+			aa.setNotEndWith(notEndWith);
+		}
+
+		String contain = XmlParser.getAttributeValue( e, "Contain");
+		if(!Validate.isNullOrEmptyOrAllSpace(contain)){
+			aa.setContain(contain);
+		}
+
+		String notContain = XmlParser.getAttributeValue( e, "NotContain");
+		if(!Validate.isNullOrEmptyOrAllSpace(notContain)){
+			aa.setNotContain(notContain);
+		}
+
+		String sExceptions = XmlParser.getAttributeValue( e, "Exceptions");
+		List<Class> list = new ArrayList<>();
+		if(!Validate.isNullOrEmptyOrAllSpace(sExceptions)){
+			aa.setStringExceptions(sExceptions);
+			if(!sExceptions.contains(",")){
+				Class<?> cls = null;
+				try {
+					cls = AlbianClassLoader.getInstance().loadClass(sExceptions);
+				} catch (ClassNotFoundException e1) {
+					AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
+							NullPointerException.class,"Albianj service fail.",
+							"the service:%s's exception:%s of aop is not loaded.",
+							id,sExceptions);
+				}
+				list.add(cls);
+			} else {
+				String[] ses = sExceptions.split(",");
+				for(String se : ses){
+					Class<?> cls = null;
+					try {
+						cls = AlbianClassLoader.getInstance().loadClass(se);
+					} catch (ClassNotFoundException e1) {
+						AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
+								NullPointerException.class,"Albianj service fail.",
+								"the service:%s's exception:%s of aop is not loaded.",
+								id,se);
+					}
+					list.add(cls);
+				}
+			}
+			aa.setExceptions(list);
+		}
+
+
+		String proxy = XmlParser.getAttributeValue(e,"Proxy");
+		if(Validate.isNullOrEmptyOrAllSpace(proxy)){
+			AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName,
+					NullPointerException.class,"Albianj service fail.","the service:%s's proxy of aop is null or empty.",
+					id);
+		}
+		aa.setServiceName(proxy);
+
+		return aa;
 
 	}
 

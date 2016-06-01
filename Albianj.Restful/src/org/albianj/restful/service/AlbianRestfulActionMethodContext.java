@@ -35,40 +35,115 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 偶发性、特殊性、惩罚性或任何结果的损害（包括但不限于替代商品或劳务之购用、使用损失、资料损失、利益损失、业务中断等等），
 不负任何责任，即在该种使用已获事前告知可能会造成此类损害的情形下亦然。
 */
-package org.albianj.service;
+package org.albianj.restful.service;
 
-import org.albianj.aop.AlbianAopAttribute;
-import org.albianj.kernel.AlbianKernel;
-import org.albianj.service.parser.AlbianParserException;
+import java.lang.reflect.Method;
+
+import org.albianj.restful.object.AlbianRestfulActionMethod;
+
 
 /**
- * ??????albianj???service??????????????????????????????FreeAlbianService???????
- * ????????????????????
- * 
- * @author Seapeak
+ * restful的service被反射时候的上下文.
  *
+ * @author seapeak
+ * @since v1.1
  */
-@AlbianKernel
-public interface IAlbianService {
+public class AlbianRestfulActionMethodContext implements IAlbianRestfulActionMethodContext {
 
-	@AlbianAopAttribute(avoid = true)
-	public AlbianServiceLifetime getAlbianServiceState();
+	Method _action = null;
+	
+	Method _before = null;
+	
+	Method _after = null;
+	
+	Method _verfiy = null;
+	
+	private int _method = AlbianRestfulActionMethod.GET;
+	
+	/* (non-Javadoc)
+	 * @see org.albianj.restful.service.IAlbianRestfulActionMethodContext#setMethod(int)
+	 */
+	public void setMethod(int method){
+		this._method = method;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.albianj.restful.service.IAlbianRestfulActionMethodContext#getMethod()
+	 */
+	public int getMethod(){
+		return this._method;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.albianj.restful.service.IAlbianRestfulActionMethodContext#setAction(java.lang.reflect.Method)
+	 */
+	@Override
+	public void setAction(Method m) {
+		// TODO Auto-generated method stub
+		this._action = m;
+	}
 
-	@AlbianAopAttribute(avoid = true)
-	public void beforeLoad() throws RuntimeException;
+	/* (non-Javadoc)
+	 * @see org.albianj.restful.service.IAlbianRestfulActionMethodContext#getAction()
+	 */
+	@Override
+	public Method getAction() {
+		// TODO Auto-generated method stub
+		return this._action;
+	}
 
-	@AlbianAopAttribute(avoid = true)
-	public void loading() throws RuntimeException,AlbianParserException;
+	/* (non-Javadoc)
+	 * @see org.albianj.restful.service.IAlbianRestfulActionMethodContext#setBefore(java.lang.reflect.Method)
+	 */
+	@Override
+	public void setBefore(Method m) {
+		// TODO Auto-generated method stub
+		this._before = m;
+	}
 
-	@AlbianAopAttribute(avoid = true)
-	public void afterLoading() throws RuntimeException;
+	/* (non-Javadoc)
+	 * @see org.albianj.restful.service.IAlbianRestfulActionMethodContext#getBefore()
+	 */
+	@Override
+	public Method getBefore() {
+		// TODO Auto-generated method stub
+		return this._before;
+	}
 
-	@AlbianAopAttribute(avoid = true)
-	public void beforeUnload() throws RuntimeException;
+	/* (non-Javadoc)
+	 * @see org.albianj.restful.service.IAlbianRestfulActionMethodContext#setAfter(java.lang.reflect.Method)
+	 */
+	@Override
+	public void setAfter(Method m) {
+		// TODO Auto-generated method stub
+		this._after = m;
+	}
 
-	@AlbianAopAttribute(avoid = true)
-	public void unload() throws RuntimeException;
+	/* (non-Javadoc)
+	 * @see org.albianj.restful.service.IAlbianRestfulActionMethodContext#getAfter()
+	 */
+	@Override
+	public Method getAfter() {
+		// TODO Auto-generated method stub
+		return this._after ;
+	}
 
-	@AlbianAopAttribute(avoid = true)
-	public void afterUnload() throws RuntimeException;
+	/* (non-Javadoc)
+	 * @see org.albianj.restful.service.IAlbianRestfulActionMethodContext#setVerfiy(java.lang.reflect.Method)
+	 */
+	@Override
+	public void setVerfiy(Method m) {
+		// TODO Auto-generated method stub
+		this._verfiy = m;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.albianj.restful.service.IAlbianRestfulActionMethodContext#getVerfiy()
+	 */
+	@Override
+	public Method getVerfiy() {
+		// TODO Auto-generated method stub
+		return this._verfiy;
+	}
+
 }

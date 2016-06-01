@@ -37,6 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.kernel.impl;
 
+import org.albianj.aop.impl.AlbianServiceAopProxy;
 import org.albianj.kernel.*;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.IAlbianLoggerService;
@@ -49,6 +50,8 @@ import org.albianj.verify.Validate;
 
 import javax.management.InstanceNotFoundException;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.*;
 
 /**
@@ -250,7 +253,18 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
                     service.beforeLoad();
                     service.loading();
                     service.afterLoading();
-                    ServiceContainer.addService(entry.getKey(), service);
+
+
+                    if(Validate.isNullOrEmpty(serviceAttr.getAopAttributes())) {
+                        ServiceContainer.addService(entry.getKey(), service);
+                    } else {
+                        InvocationHandler handler = new AlbianServiceAopProxy(service,serviceAttr.getAopAttributes());
+                        IAlbianService serviceProxy = (IAlbianService) Proxy.newProxyInstance(
+                                handler.getClass().getClassLoader(), service
+                                .getClass().getInterfaces(), handler);
+                        ServiceContainer.addService(entry.getKey(), serviceProxy);
+                    }
+
                 } catch (Exception exc) {
                     e = exc;
                     currentFailSize++;

@@ -123,13 +123,17 @@ public class AlbianClassLoader extends ClassLoader {
 		String path = name.replace('.', '/').concat(".class");
 		ByteBuffer buffer = entryMap.get(path);
 		if (buffer == null) {
+			Class<?> c = Class.forName(path); //when use web container such as jetty then use
+			if(null != c) {
+				return c;
+			}
 			return super.findClass(name);
 		} else {
 			byte[] bytes = buffer.array();
 			return defineClass(name, bytes, 0, bytes.length);
 		}
 	}
-	
+
 	private byte[] getBytes(JarInputStream jis) throws IOException {
 		int len = 0;
 		byte[] bytes = new byte[8192];

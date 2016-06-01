@@ -43,12 +43,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
+import org.albianj.datetime.AlbianDateTime;
 import org.albianj.net.MemoryToIOStream;
 import org.apache.commons.codec.binary.Base64;
+import org.omg.IOP.Encoding;
 
 public class AlbianClassZip {
-	public static void pack(String srcDir, String destPath) {
+	public static void pack(String srcDir, String destPath,String sVersion) {
 		File dir = new File(srcDir);
 		if (!dir.isDirectory()) {
 			System.err.println("not found the path:" + srcDir);
@@ -77,10 +81,15 @@ public class AlbianClassZip {
 		FileOutputStream fos = null;
 		try {
 			fos = new FileOutputStream(target);
+			byte[] bVersion = sVersion.getBytes();
+			fos.write(bVersion);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
 		int size = files.length;
 		byte[] bsSize = MemoryToIOStream.intToNetStream(size);
 		try {
@@ -129,6 +138,6 @@ public class AlbianClassZip {
 	}
 	
 	public static void main(String[] args) {
-		pack(args[0],args[0]);
+		pack(args[0],args[0],args[1]);
 	}
 }

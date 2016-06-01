@@ -35,40 +35,20 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 偶发性、特殊性、惩罚性或任何结果的损害（包括但不限于替代商品或劳务之购用、使用损失、资料损失、利益损失、业务中断等等），
 不负任何责任，即在该种使用已获事前告知可能会造成此类损害的情形下亦然。
 */
-package org.albianj.service;
+package org.albianj.restful.impl.service;
 
-import org.albianj.aop.AlbianAopAttribute;
-import org.albianj.kernel.AlbianKernel;
-import org.albianj.service.parser.AlbianParserException;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * ??????albianj???service??????????????????????????????FreeAlbianService???????
- * ????????????????????
- * 
- * @author Seapeak
- *
- */
-@AlbianKernel
-public interface IAlbianService {
-
-	@AlbianAopAttribute(avoid = true)
-	public AlbianServiceLifetime getAlbianServiceState();
-
-	@AlbianAopAttribute(avoid = true)
-	public void beforeLoad() throws RuntimeException;
-
-	@AlbianAopAttribute(avoid = true)
-	public void loading() throws RuntimeException,AlbianParserException;
-
-	@AlbianAopAttribute(avoid = true)
-	public void afterLoading() throws RuntimeException;
-
-	@AlbianAopAttribute(avoid = true)
-	public void beforeUnload() throws RuntimeException;
-
-	@AlbianAopAttribute(avoid = true)
-	public void unload() throws RuntimeException;
-
-	@AlbianAopAttribute(avoid = true)
-	public void afterUnload() throws RuntimeException;
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Inherited
+@Documented
+public @interface AlbianRestfulActionAOPAttribute {
+	TriggerPointStyle TriggerPoint() default  TriggerPointStyle.normal;
+	String ServiceName() default "";
 }

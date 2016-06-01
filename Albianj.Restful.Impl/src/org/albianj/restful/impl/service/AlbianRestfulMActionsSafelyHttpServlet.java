@@ -52,6 +52,7 @@ import org.albianj.kernel.KernelSetting;
 import org.albianj.net.AlbianHost;
 import org.albianj.restful.impl.object.AlbianRestfulResult;
 import org.albianj.restful.impl.util.AlbianRestfulUtils;
+import org.albianj.restful.object.AlbianRestfulActionMethod;
 import org.albianj.restful.object.AlbianRestfulResultStyle;
 import org.albianj.restful.object.IAlbianRestfulActionContext;
 import org.albianj.restful.object.IAlbianRestfulResult;
@@ -61,12 +62,10 @@ import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializeFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.yuewen.pplogstat.IYuewenPPLogStatService;
 
-public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
-
+public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
 
 	/**
 	 * 
@@ -77,7 +76,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		AlbianRestfulUtils restfulUtils = new AlbianRestfulUtils();
-		IAlbianRestfulActionContext ctx = restfulUtils.AlbianRestfulActionContext(req, resp);
+		IAlbianRestfulActionContext ctx = restfulUtils.AlbianRestfulActionContext_Safe(req, resp);
 		String format = ctx.getCurrentParameters().get("format");
 		if (format == null)
 			format = "json";
@@ -128,7 +127,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("application/" + format + "; charset=UTF-8");
 
-		IAlbianRestfulMActionsService service = AlbianServiceRouter.getService(
+		IAlbianRestfulMActionsService service = AlbianServiceRouter.getSingletonService(
 				IAlbianRestfulMActionsService.class, serviceName, false);
 		if (null == service) {
 			AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
@@ -149,6 +148,18 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 					sessionId);
 			return;
 		}
+		
+		int method = service.getActionMethod(action);
+		if(AlbianRestfulActionMethod.GET  != (AlbianRestfulActionMethod.GET & method)){
+			AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
+					"verify service:%s is not passing,the method is not get.sessionid:%s.",
+					serviceName, sessionId);
+			sendErrorResponse(resp,
+					"application/" + format + "; charset=UTF-8", 412, "验证未通过",
+					sessionId);
+			return;
+		}
+		
 		Object[] args = new Object[] { ctx };
 		
 		Method mv = service.getActionVerify(action);
@@ -169,6 +180,16 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 					"application/" + format + "; charset=UTF-8", 412, "验证未通过",
 					sessionId);
 			return;
+		}
+		
+		Method before = service.getActionBefore(action);
+		if(null != before){
+			try {
+				before.invoke(service,args);
+			} catch (Exception e) {
+				AlbianServiceRouter.getLogger().info(IAlbianRestfulLogger.Name,
+						"sesseionid=%s exec action:%s before function is error.", sessionId,serviceName);
+			}
 		}
 		
 		long begin = Calendar.getInstance().getTimeInMillis();
@@ -205,7 +226,6 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 						queryTime, req.getRemoteAddr(),serviceName,AlbianHost.getLocalIP(),serviceName,ctx.getCurrentActionName(),ctx.getResult().getReturnCode(),
 						false, e1 - begin,false);
 			}
-			
 			return;
 		}
 		
@@ -219,7 +239,18 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 					queryTime, req.getRemoteAddr(),serviceName,AlbianHost.getLocalIP(),serviceName,ctx.getCurrentActionName(),ctx.getResult().getReturnCode(),
 					true, e1 - begin,false);
 		}
+		
 
+		Method after = service.getActionAfter(action);
+		if(null != after){
+			try {
+				after.invoke(service,args);
+			} catch (Exception e) {
+				AlbianServiceRouter.getLogger().info(IAlbianRestfulLogger.Name,
+						"sesseionid=%s exec action:%s after function is error.", sessionId,serviceName);
+			}
+		}
+		
 		resp.setStatus(HttpServletResponse.SC_OK);
 		String body = null;
 		if (AlbianRestfulResultStyle.Xml == ctx.getResultStyle()) {
@@ -234,15 +265,16 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 		} else {
 			if(ctx.getShowNull()) {
 				body = JSON.toJSONString(ctx.getResult(),
-						SerializerFeature.WriteDateUseDateFormat,
 						SerializerFeature.SkipTransientField,
+						SerializerFeature.WriteDateUseDateFormat,
 						SerializerFeature.WriteMapNullValue,
 						SerializerFeature.WriteNullBooleanAsFalse,
 						SerializerFeature.WriteNullListAsEmpty,
 						SerializerFeature.WriteNullNumberAsZero,
 						SerializerFeature.WriteNullStringAsEmpty,
 						SerializerFeature.DisableCircularReferenceDetect
-						);
+
+				);
 			} else {
 			body = JSON.toJSONString(ctx.getResult(),
 					SerializerFeature.SkipTransientField,
@@ -251,13 +283,6 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 			);
 			}
 		}
-		
-//		AlbianLoggerService
-//		.info(IAlbianRestfulLogger.Name,
-//				"SP=%s|request=%s|response=%s|IP=%s|service=%s|paras=%s|sesseionid=%s",
-//				sp, req.getRequestURI().toString(), body,
-//				req.getRemoteAddr(),
-//				serviceName, req.getQueryString(), sessionId);
 		
 		PrintWriter out = resp.getWriter();
 		try {
@@ -287,7 +312,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		AlbianRestfulUtils restfulUtils = new AlbianRestfulUtils();
-		IAlbianRestfulActionContext ctx = restfulUtils.AlbianRestfulActionContext(req, resp);
+		IAlbianRestfulActionContext ctx = restfulUtils.AlbianRestfulActionContext_Safe(req, resp);
 		String sessionId = ctx.getCurrentSessionId();
 		String format = ctx.getCurrentParameters().get("format");
 		if (format == null)
@@ -361,6 +386,17 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 			return;
 		}
 
+		int method = service.getActionMethod(action);
+		if(AlbianRestfulActionMethod.POST  != (AlbianRestfulActionMethod.POST & method)){
+			AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
+					"verify service:%s is not passing,the method is not get.sessionid:%s.",
+					serviceName, sessionId);
+			sendErrorResponse(resp,
+					"application/" + format + "; charset=UTF-8", 412, "验证未通过",
+					sessionId);
+			return;
+		}
+		
 		long begin = Calendar.getInstance().getTimeInMillis();
 
 		Method m = service.getAction(action);

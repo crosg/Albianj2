@@ -37,6 +37,8 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.service;
 
+import org.albianj.aop.IAlbianServiceAopAttribute;
+
 import java.util.List;
 
 public interface IAlbianServiceAttribute {
@@ -55,4 +57,7 @@ public interface IAlbianServiceAttribute {
 	List<IAlbianServicePropertyAttribute> getServiceProperties();
 
 	void setServiceProperties(List<IAlbianServicePropertyAttribute> ps);
+
+	List<IAlbianServiceAopAttribute> getAopAttributes();
+	void setAopAttributes(List<IAlbianServiceAopAttribute> aopAttributes);
 }

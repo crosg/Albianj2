@@ -75,6 +75,15 @@ public class AlbianDateTime {
 			return null;
 		}
 	}
+
+	public static Date parserDefaultFormatDateTime(String s){
+		SimpleDateFormat dateFormat = new SimpleDateFormat(DEFAULT_FORMAT);
+		try {
+			return dateFormat.parse(s);
+		} catch (ParseException e) {
+			return null;
+		}
+	}
 	
 	public static String getDateString() {
 		return getDateTimeString(new Date(), DEFAULT_DATE_FORMAT);

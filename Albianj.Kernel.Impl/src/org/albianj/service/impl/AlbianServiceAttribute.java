@@ -37,6 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.service.impl;
 
+import org.albianj.aop.IAlbianServiceAopAttribute;
 import org.albianj.service.IAlbianServiceAttribute;
 import org.albianj.service.IAlbianServicePropertyAttribute;
 import org.albianj.verify.Validate;
@@ -88,6 +89,14 @@ public class AlbianServiceAttribute implements IAlbianServiceAttribute {
 	@Override
 	public void setServiceProperties(List<IAlbianServicePropertyAttribute> ps) {
 		this.ps = ps;
+	}
+
+	List<IAlbianServiceAopAttribute> aopAttributes = null;
+	public List<IAlbianServiceAopAttribute> getAopAttributes(){
+		return this.aopAttributes;
+	}
+	public void setAopAttributes(List<IAlbianServiceAopAttribute> aopAttributes){
+		this.aopAttributes = aopAttributes;
 	}
 
 }

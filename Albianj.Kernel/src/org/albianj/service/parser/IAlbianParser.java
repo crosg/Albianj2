@@ -37,6 +37,10 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.service.parser;
 
+import org.albianj.aop.AlbianAopAttribute;
+
 public interface IAlbianParser {
-	 void init() throws AlbianParserException;
+
+	@AlbianAopAttribute(avoid = true)
+	void init() throws AlbianParserException;
 }
