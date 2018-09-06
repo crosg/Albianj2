@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Services>
+    <Service Id="AlbianKernelService" Type="org.albianj.kernel.impl.AlbianKernelParserService"/>
+    <Service Id="AlbianStorageService" Type="org.albianj.persistence.impl.storage.AlbianStorageParserService"/>
+</Services>

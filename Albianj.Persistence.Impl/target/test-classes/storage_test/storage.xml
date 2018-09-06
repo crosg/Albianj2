@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 所有数据库连接的配置 开发环境用户名和密码可以不用加密，online必须加密 -->
+<!-- 注意：如果不在routing.xml中对对象进行数据路由的话，默认都会存放入第一个storage节点的数据库中 -->
+<Storages>
+    <Storage>
+        <Name>ccTestDB</Name>
+        <DatabaseStyle>MySql</DatabaseStyle>
+        <Server>10.97.19.151</Server>
+        <!--<Port>3306</Port>-->
+        <Database>ccTestDB</Database>
+        <User>root</User>
+        <Password>db2202</Password>
+        <Pooling>true</Pooling>
+        <MinPoolSize>1</MinPoolSize>
+        <MaxPoolSize>5</MaxPoolSize>
+        <Timeout>60</Timeout>
+        <PoolStyle>HIKARICP</PoolStyle>
+        <Charset>utf8</Charset>
+        <Transactional>true</Transactional>
+    </Storage>
+</Storages>
