@@ -43,10 +43,7 @@ import org.albianj.net.MemoryToIOStream;
 import org.albianj.verify.Validate;
 import org.apache.commons.codec.binary.Base64;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class AlbianBootService {
@@ -76,74 +73,74 @@ public class AlbianBootService {
     }
 
     public static boolean start(String classpath, String kernelPath, String configPath) {
-        String sVersion = null;
-        String epath = System.getProperty("java.ext.dirs");
-        File dir = new File(classpath);
-        if (!dir.isDirectory()) {
-            return false;
-        }
-        File jarf = null;
-        File[] files = dir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return (name.endsWith(".spx"));
-            }
-        });
-        if (0 != files.length) {
-            jarf = files[0];
-        } else {
-            dir = new File(epath);
-            files = dir.listFiles(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return (name.endsWith(".spx"));
-                }
-            });
-            if (0 != files.length) {
-                jarf = files[0];
-            }
-        }
-
-        if (null == jarf) {
-            System.out.println("not found Albian's spx file.please put spx file to classpath or exts-path.");
-            return false;
-        }
-        String fname = jarf.getName();
-        int begin = fname.indexOf("Albianj_");
-        int end = fname.indexOf(".spx");
-        sVersion = fname.substring(begin + "Albianj_".length(), end);
-
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(jarf);
-            byte[] bVersion = new byte[14];
-            fis.read(bVersion);
-            String sFVersion = bVersion.toString();
-            if (!sFVersion.equalsIgnoreCase(sVersion)) {
-
-            }
-
-            ArrayList<byte[]> list = unpack(fis);
-            if (Validate.isNullOrEmpty(list)) {
-                System.err.println("unzip the jars is null. ");
-                return false;
-            }
-            for (byte[] bs : list) {
-                AlbianClassLoader.getInstance().regeditPlugin(bs);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            if (null != fis) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+//        String sVersion = null;
+//        String epath = System.getProperty("java.ext.dirs");
+//        File dir = new File(classpath);
+//        if (!dir.isDirectory()) {
+//            return false;
+//        }
+//        File jarf = null;
+//        File[] files = dir.listFiles(new FilenameFilter() {
+//            @Override
+//            public boolean accept(File dir, String name) {
+//                return (name.endsWith(".spx"));
+//            }
+//        });
+//        if (0 != files.length) {
+//            jarf = files[0];
+//        } else {
+//            dir = new File(epath);
+//            files = dir.listFiles(new FilenameFilter() {
+//                @Override
+//                public boolean accept(File dir, String name) {
+//                    return (name.endsWith(".spx"));
+//                }
+//            });
+//            if (0 != files.length) {
+//                jarf = files[0];
+//            }
+//        }
+//
+//        if (null == jarf) {
+//            System.out.println("not found Albian's spx file.please put spx file to classpath or exts-path.");
+//            return false;
+//        }
+//        String fname = jarf.getName();
+//        int begin = fname.indexOf("Albianj_");
+//        int end = fname.indexOf(".spx");
+//        sVersion = fname.substring(begin + "Albianj_".length(), end);
+//
+//        FileInputStream fis = null;
+//        try {
+//            fis = new FileInputStream(jarf);
+//            byte[] bVersion = new byte[14];
+//            fis.read(bVersion);
+//            String sFVersion = bVersion.toString();
+//            if (!sFVersion.equalsIgnoreCase(sVersion)) {
+//
+//            }
+//
+//            ArrayList<byte[]> list = unpack(fis);
+//            if (Validate.isNullOrEmpty(list)) {
+//                System.err.println("unzip the jars is null. ");
+//                return false;
+//            }
+//            for (byte[] bs : list) {
+//                AlbianClassLoader.getInstance().regeditPlugin(bs);
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        } finally {
+//            if (null != fis) {
+//                try {
+//                    fis.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
 
         try {
             Class<?> clss = AlbianClassLoader.getInstance()

@@ -39,15 +39,19 @@ package org.albianj.service.impl;
 
 import org.albianj.aop.IAlbianServiceAopAttribute;
 import org.albianj.aop.impl.AlbianServiceAopAttribute;
+import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.*;
 import org.albianj.verify.Validate;
 import org.albianj.xml.XmlParser;
+import org.apache.xpath.operations.Bool;
 import org.dom4j.Element;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -114,23 +118,42 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
         }
         serviceAttr.setType(type);
 
+        Class clzz = null;
+        try {
+             clzz = AlbianClassLoader.getInstance().loadClass(type);
+
+        }catch (Exception e){
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+                    IAlbianLoggerService2.InnerThreadName,AlbianLoggerLevel.Error,e,
+                    AlbianModuleType.AlbianKernel,"Kernel is error.",
+                    "service -> %s type -> %s is not load.",
+                    id, type);
+        }
+
+        serviceAttr.setServiceClass(clzz);
+
         String sitf = XmlParser.getAttributeValue(elt, "Interface");
         if (!Validate.isNullOrEmptyOrAllSpace(sitf)) {
             serviceAttr.setInterface(sitf);
         }
 
+        String enable = XmlParser.getAttributeValue(elt, "Enable");
+        if (!Validate.isNullOrEmptyOrAllSpace(enable)) {
+            serviceAttr.setEnable(Boolean.parseBoolean(enable));
+        }
+
         List nodes = elt.selectNodes("Properties/Property");
         if (!Validate.isNullOrEmpty(nodes)) {
-            List<IAlbianServicePropertyAttribute> ps = parserAlbianServicePropertiesAttribute(id, nodes);
+            Map<String,IAlbianServiceFieldAttribute> ps = parserAlbianServiceFieldsAttribute(clzz,id, nodes);
             if (!Validate.isNullOrEmpty(ps)) {
-                serviceAttr.setServiceProperties(ps);
+                serviceAttr.setServiceFields(ps);
             }
 
         }
 
         List aopNodes = elt.selectNodes("Aop/Aspect");
         if (!Validate.isNullOrEmpty(aopNodes)) {
-            List<IAlbianServiceAopAttribute> aas = parserAlbianServiceAopAttribute(id, aopNodes);
+            Map<String,IAlbianServiceAopAttribute> aas = parserAlbianServiceAopAttribute(id, aopNodes);
             if (!Validate.isNullOrEmpty(aas)) {
                 serviceAttr.setAopAttributes(aas);
             }
@@ -140,18 +163,18 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
         return serviceAttr;
     }
 
-    protected List<IAlbianServicePropertyAttribute> parserAlbianServicePropertiesAttribute(String id, List nodes) {
-        List<IAlbianServicePropertyAttribute> pas = new ArrayList<>();
+    protected Map<String,IAlbianServiceFieldAttribute> parserAlbianServiceFieldsAttribute(Class<?> clzz, String id, List nodes) {
+        Map<String,IAlbianServiceFieldAttribute> pas = new HashMap<>();
         for (Object node : nodes) {
-            IAlbianServicePropertyAttribute pa = parserAlbianServicePropertyAttribute(id, (Element) node);
-            pas.add(pa);
+            IAlbianServiceFieldAttribute pa = parserAlbianServiceFieldAttribute(clzz,id, (Element) node);
+            pas.put(pa.getName(),pa);
         }
         return pas;
     }
 
-    protected IAlbianServicePropertyAttribute parserAlbianServicePropertyAttribute(String id, Element e) {
+    protected IAlbianServiceFieldAttribute parserAlbianServiceFieldAttribute(Class<?> clzz, String id, Element e) {
         String name = XmlParser.getAttributeValue(e, "Name");
-        IAlbianServicePropertyAttribute pa = new AlbianServicePropertyAttribute();
+        IAlbianServiceFieldAttribute pa = new AlbianServiceFieldAttribute();
         if (Validate.isNullOrEmptyOrAllSpace(name)) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName,AlbianLoggerLevel.Error,
@@ -174,15 +197,31 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
             pa.setValue(value);
         }
 
+        String allowNull = XmlParser.getAttributeValue(e, "AllowNull");
+        if (!Validate.isNullOrEmptyOrAllSpace(allowNull)) {
+            pa.setAllowNull(Boolean.parseBoolean(allowNull));
+        }
+
+        try {
+            Field f = clzz.getDeclaredField(name);
+            pa.setField(f);
+        } catch (NoSuchFieldException exc) {
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+                    IAlbianLoggerService2.InnerThreadName,AlbianLoggerLevel.Error,exc,
+                    AlbianModuleType.AlbianKernel,"Kernel is error.",
+                    "service -> %s is not exist field -> %s.",
+                    id,name );
+        }
+
         return pa;
 
     }
 
-    protected List<IAlbianServiceAopAttribute> parserAlbianServiceAopAttribute(String id, List nodes) {
-        List<IAlbianServiceAopAttribute> aas = new ArrayList<>();
+    protected Map<String,IAlbianServiceAopAttribute> parserAlbianServiceAopAttribute(String id, List nodes) {
+        Map<String,IAlbianServiceAopAttribute> aas = new HashMap<>();
         for (Object node : nodes) {
             IAlbianServiceAopAttribute pa = parserAlbianServiceAopAttribute(id, (Element) node);
-            aas.add(pa);
+            aas.put(pa.getProxyName(),pa);
         }
         return aas;
     }
@@ -241,6 +280,19 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
                     id);
         }
         aa.setServiceName(proxy);
+
+
+        String proxyName = XmlParser.getAttributeValue(e, "ProxyName");
+        if (Validate.isNullOrEmptyOrAllSpace(proxyName)) {
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+                    IAlbianLoggerService2.InnerThreadName,
+                    AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianKernel,
+                    "Kernel is error.",
+                    "the service:%s's proxyName of aop is null or empty.",
+                    id);
+        }
+        aa.setProxyName(proxyName);
+
 
         return aa;
 

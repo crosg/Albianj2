@@ -14,16 +14,17 @@ import org.albianj.verify.Validate;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xuhaifeng on 16/5/30.
  */
 public class AlbianServiceAopProxy implements MethodInterceptor {
     IAlbianService _service = null;
-    List<IAlbianServiceAopAttribute> _aopAttributes = null;
+    Map<String,IAlbianServiceAopAttribute> _aopAttributes = null;
 
 
-    public Object newInstance(IAlbianService service, List<IAlbianServiceAopAttribute> aopAttributes) {
+    public Object newInstance(IAlbianService service, Map<String,IAlbianServiceAopAttribute> aopAttributes) {
         this._service = service;
         this._aopAttributes = aopAttributes;
         try {
@@ -70,7 +71,7 @@ public class AlbianServiceAopProxy implements MethodInterceptor {
         IAlbianAopContext ctx = new AlbianAopContext();
 
         Object rc = null;
-        for(IAlbianServiceAopAttribute asaa : _aopAttributes) {
+        for(IAlbianServiceAopAttribute asaa : _aopAttributes.values()) {
             IAlbianAopService aas = AlbianServiceRouter.getSingletonService(
                     IAlbianAopService.class, asaa.getServiceName(), false);
             if (null == aas) continue;
@@ -96,7 +97,7 @@ public class AlbianServiceAopProxy implements MethodInterceptor {
                     "execute the proxy service:%s method:%s is fail.",this._service.getServiceName(),mName);
         }
 
-        for(IAlbianServiceAopAttribute asaa : _aopAttributes) {
+        for(IAlbianServiceAopAttribute asaa : _aopAttributes.values()) {
             IAlbianAopService aas = AlbianServiceRouter.getSingletonService(
                     IAlbianAopService.class, asaa.getServiceName(), false);
             if (null == aas) continue;

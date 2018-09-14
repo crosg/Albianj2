@@ -1,0 +1,37 @@
+2018-08-14
+    fixed bug：query from database maybe cannot use field name in the persistence.xml.
+2017-08-17
+    fixed bug:when use databse connection pool with c3p0,maybe throws exception:"An attempt by a client to checkout a Connection has timed out" when get connection.
+2017-09-06
+    add the maunal command with third-party.
+2017-09-29
+    fixed the database pool minsize to 2,and the minsize can not be modified with storage.xml
+2017-11-11
+    增加链接返回到链接池操作，并且将读取数据库和操作数据库操作全部改用链接池返回操作，而不是自己关闭自己
+    对链接池获取链接和返还链接加入log，记录到sql-log文件
+    对c3p0默认开启 链接池中正在被使用的链接在120s后还未返还到链接池将强行回收
+    将链接池默认由HikariCP换成c3p0，有兴趣的可以使用hikaricp
+    更新将更新persistence接口jar和spx文件
+    对c3p0开启了未返还链接的debug模式，可能会产生日志增量，需要注意
+2017-11-13
+    对restful的post方式action增加了pplog的监控
+2017-11-15
+    应木木要求，为所有的查询增加强行执行索引功能，该功能仅对mysql起作用
+2018-01-11
+    更改restful中的getData方法，解决bug：当数据大于1024的时候接收数据可能会导致转到utf8出现乱码
+2018-08-17
+    小鱼儿：更改数据库链接池的锁范围，缩小到每个storage（不是run-stotage），所以在使用storage配置
+            为模版时，同一模版的storage获取链接依然会可能有性能瓶颈
+          增加getconnection的监控
+2018-08-17
+    更改默认的数据库链接池默认使用hikaricp
+
+2018-09-07
+    去掉load中加载spx文件的功能，将albianj改为不需要spx文件，直接通过maven来管理jar，
+    通过2层classload和3层classload来加载
+    增加service的Rant注解，支持通过service。xml中配置Package节来自动扫描和加载service
+    增加AOP的Rant注解，但是更改<Aspect IsAll="true" Proxy="UserAopService"></Aspect>
+        配置为<Aspect Name="yourname" IsAll="true" Proxy="UserAopService"></Aspect>
+        此条件和原来的albianj不兼容，需要注意
+    增加service中的Field的rant，提供具有Rant的Field自动赋值功能
+    更改albianj的启动，目前的启动由原来的load service一步变成load service和set field两步。

@@ -52,6 +52,8 @@ import org.omg.CORBA.portable.InvokeHandler;
 @AlbianKernel
 public interface IAlbianService{
 
+    String FullName= "org.albianj.service.IAlbianService";
+
     @AlbianAopAttribute(avoid = true)
     public AlbianServiceLifetime getAlbianServiceState();
 

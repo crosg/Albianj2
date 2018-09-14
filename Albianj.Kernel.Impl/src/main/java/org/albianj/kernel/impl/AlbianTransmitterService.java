@@ -47,13 +47,16 @@ import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.reflection.AlbianReflect;
 import org.albianj.reflection.AlbianTypeConvert;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.runtime.AlbianRuntimeException;
 import org.albianj.service.*;
 import org.albianj.service.impl.AlbianServiceParser;
+import org.albianj.service.impl.FreeAlbianServiceParser;
 import org.albianj.service.parser.IAlbianParserService;
 import org.albianj.verify.Validate;
+import org.apache.bcel.generic.IALOAD;
 
-import javax.management.InstanceNotFoundException;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -192,15 +195,19 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
 
 
 
-        LinkedHashMap<String, IAlbianServiceAttribute> totalMap = (LinkedHashMap<String, IAlbianServiceAttribute>)
+        Map<String, IAlbianServiceAttribute> totalMap = (Map<String, IAlbianServiceAttribute>)
                 ServiceAttributeMap
                         .get(FreeAlbianServiceParser.ALBIANJSERVICEKEY);
 
         @SuppressWarnings("unchecked")
-        LinkedHashMap<String, IAlbianServiceAttribute> map = (LinkedHashMap<String, IAlbianServiceAttribute>)
+        Map<String, IAlbianServiceAttribute> map = (Map<String, IAlbianServiceAttribute>)
                 ServiceAttributeMap
                         .get(FreeAlbianServiceParser.ALBIANJSERVICEKEY);
-        LinkedHashMap<String, IAlbianServiceAttribute> failMap = new LinkedHashMap<String, IAlbianServiceAttribute>();
+
+        Map<String,IAlbianServiceAttribute> mapAttr = new HashMap<>();
+        mapAttr.putAll(map); // copy it for field setter
+
+        Map<String, IAlbianServiceAttribute> failMap = new LinkedHashMap<String, IAlbianServiceAttribute>();
         int lastFailSize = 0;
         int currentFailSize = 0;
         Exception e = null;
@@ -216,7 +223,7 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
                     IAlbianServiceAttribute serviceAttr = entry.getValue();
                     sType = serviceAttr.getType();
                     id = serviceAttr.getId();
-                    if(ServiceContainer.existService(id)) continue;
+
                     sInterface = serviceAttr.getInterface();
                     Class<?> cla = AlbianClassLoader.getInstance().loadClass(serviceAttr.getType());
                     if (null == cla) {
@@ -257,84 +264,85 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
 
 
                     IAlbianService service = (IAlbianService) cla.newInstance();
-                    if (!Validate.isNullOrEmpty(serviceAttr.getServiceProperties())) {
-                        PropertyDescriptor[] pds = AlbianReflect.getBeanPropertyDescriptor(
-                                AlbianClassLoader.getInstance(), serviceAttr.getType());
-                        HashMap<String, PropertyDescriptor> hm = new HashMap<>();
-                        for (PropertyDescriptor pd : pds) {
-                            hm.put(pd.getName().toLowerCase(), pd);
-                        }
-                        for (IAlbianServicePropertyAttribute ps : serviceAttr.getServiceProperties()) {
-                            if (!hm.containsKey(ps.getName().toLowerCase())) {
-                                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                        IAlbianLoggerService2.InnerThreadName,AlbianLoggerLevel.Error,
-                                        null,AlbianModuleType.AlbianKernel,"the property:%s of service:%s is not exist",
-                                        serviceAttr.getId(), ps.getName());
-                            }
-                            PropertyDescriptor pd = hm.get(ps.getName().toLowerCase());
-                            if (ps.getType().toLowerCase().equals("ref")) {
-                                String value = ps.getValue();
-                                Object realObject = null;
-                                int indexof = value.indexOf(".");
-                                if (-1 == indexof) {
-                                    realObject = AlbianServiceRouter.getSingletonService(
-                                            IAlbianService.class, value, false);
-                                    if (null == realObject) {
-                                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                                IAlbianLoggerService2.InnerThreadName,
-                                                AlbianLoggerLevel.Warn,null,AlbianModuleType.AlbianKernel,
-                                                "Transmitter is fail.",
-                                                "the ref service:%s for service:%s is not found. ",
-                                                value, serviceAttr.getId());
-                                    }
-                                } else {
-                                    String psn = value.substring(0, indexof);
-                                    String exp = value.substring(indexof + 1);
-                                    realObject = AlbianServiceRouter.getSingletonService(
-                                            IAlbianService.class, psn, false);
-                                    if (null == realObject) {
-                                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                                IAlbianLoggerService2.InnerThreadName,
-                                                AlbianLoggerLevel.Warn,null,AlbianModuleType.AlbianKernel,
-                                                "Transmitter is fail.",
-                                                "the ref service:%s and child:%s for service:%s is not found. ",
-                                                psn, exp, serviceAttr.getId());
-                                    }
-
-                                    IAlbianServiceAttribute psa = totalMap.get(psn);
-                                    Class<?> pcla = AlbianClassLoader.getInstance().loadClass(psa.getType());
-                                    if (null == pcla) {
-                                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                                IAlbianLoggerService2.InnerThreadName,
-                                                AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianKernel,
-                                                "Transmitter is fail.","the class:%s is not found.", psa.getType());
-                                    }
-                                    Object rov = pcla.cast(realObject);
-                                    try {
-                                        realObject = Ognl.getValue(exp, rov);
-                                    } catch (Exception oe) {
-                                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                                IAlbianLoggerService2.InnerThreadName,
-                                                AlbianLoggerLevel.Error,oe,AlbianModuleType.AlbianKernel,
-                                                "Transmitter is fail.",
-                                                "get child object:%s from service:%s for service:%s is fail. ",
-                                                exp, psn, serviceAttr.getId());
-                                    }
-                                }
-                                pd.getWriteMethod().invoke(service, realObject);
-                            } else {
-                                Object o = AlbianTypeConvert.toRealObject(
-                                        ps.getType(), ps.getValue());
-                                pd.getWriteMethod().invoke(service, o);
-                            }
-                        }
-                    }
+                    //change to set field
+//                    if (!Validate.isNullOrEmpty(serviceAttr.getServiceFields())) {
+//                        PropertyDescriptor[] pds = AlbianReflect.getBeanPropertyDescriptor(
+//                                AlbianClassLoader.getInstance(), serviceAttr.getType());
+//                        HashMap<String, PropertyDescriptor> hm = new HashMap<>();
+//                        for (PropertyDescriptor pd : pds) {
+//                            hm.put(pd.getName().toLowerCase(), pd);
+//                        }
+//                        for (IAlbianServiceFieldAttribute ps : serviceAttr.getServiceFields().values()) {
+//                            if (!hm.containsKey(ps.getName().toLowerCase())) {
+//                                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+//                                        IAlbianLoggerService2.InnerThreadName,AlbianLoggerLevel.Error,
+//                                        null,AlbianModuleType.AlbianKernel,"the property:%s of service:%s is not exist",
+//                                        serviceAttr.getId(), ps.getName());
+//                            }
+//                            PropertyDescriptor pd = hm.get(ps.getName().toLowerCase());
+//                            if (ps.getType().toLowerCase().equals("ref")) {
+//                                String value = ps.getValue();
+//                                Object realObject = null;
+//                                int indexof = value.indexOf(".");
+//                                if (-1 == indexof) {
+//                                    realObject = AlbianServiceRouter.getSingletonService(
+//                                            IAlbianService.class, value, false);
+//                                    if (null == realObject) {
+//                                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+//                                                IAlbianLoggerService2.InnerThreadName,
+//                                                AlbianLoggerLevel.Warn,null,AlbianModuleType.AlbianKernel,
+//                                                "Transmitter is fail.",
+//                                                "the ref service:%s for service:%s is not found. ",
+//                                                value, serviceAttr.getId());
+//                                    }
+//                                } else {
+//                                    String psn = value.substring(0, indexof);
+//                                    String exp = value.substring(indexof + 1);
+//                                    realObject = AlbianServiceRouter.getSingletonService(
+//                                            IAlbianService.class, psn, false);
+//                                    if (null == realObject) {
+//                                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+//                                                IAlbianLoggerService2.InnerThreadName,
+//                                                AlbianLoggerLevel.Warn,null,AlbianModuleType.AlbianKernel,
+//                                                "Transmitter is fail.",
+//                                                "the ref service:%s and child:%s for service:%s is not found. ",
+//                                                psn, exp, serviceAttr.getId());
+//                                    }
+//
+//                                    IAlbianServiceAttribute psa = totalMap.get(psn);
+//                                    Class<?> pcla = AlbianClassLoader.getInstance().loadClass(psa.getType());
+//                                    if (null == pcla) {
+//                                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+//                                                IAlbianLoggerService2.InnerThreadName,
+//                                                AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianKernel,
+//                                                "Transmitter is fail.","the class:%s is not found.", psa.getType());
+//                                    }
+//                                    Object rov = pcla.cast(realObject);
+//                                    try {
+//                                        realObject = Ognl.getValue(exp, rov);
+//                                    } catch (Exception oe) {
+//                                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+//                                                IAlbianLoggerService2.InnerThreadName,
+//                                                AlbianLoggerLevel.Error,oe,AlbianModuleType.AlbianKernel,
+//                                                "Transmitter is fail.",
+//                                                "get child object:%s from service:%s for service:%s is fail. ",
+//                                                exp, psn, serviceAttr.getId());
+//                                    }
+//                                }
+//                                pd.getWriteMethod().invoke(service, realObject);
+//                            } else {
+//                                Object o = AlbianTypeConvert.toRealObject(
+//                                        ps.getType(), ps.getValue());
+//                                pd.getWriteMethod().invoke(service, o);
+//                            }
+//                        }
+//                    }
 
                     service.beforeLoad();
                     service.loading();
                     service.afterLoading();
                     if (Validate.isNullOrEmpty(serviceAttr.getAopAttributes())) {
-                        ServiceContainer.addService(entry.getKey(), service);
+                        ServiceContainer.addService(id, service);
                     } else {
                         AlbianServiceAopProxy proxy = new AlbianServiceAopProxy();
                         IAlbianService serviceProxy = (IAlbianService) proxy.newInstance(service, serviceAttr.getAopAttributes());
@@ -342,7 +350,7 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
                         serviceProxy.beforeLoad();
                         serviceProxy.loading();
                         serviceProxy.afterLoading();
-                        ServiceContainer.addService(entry.getKey(), serviceProxy);
+                        ServiceContainer.addService(id, serviceProxy);
                     }
 
                 } catch (Exception exc) {
@@ -358,13 +366,12 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
             if (0 == currentFailSize) {
                 // if open the distributed mode,
                 // please contact to manager machine to logout the system.
-                state = AlbianState.Running;
                     AlbianServiceRouter.getLogger2().log(IAlbianLoggerService.AlbianRunningLoggerName,
                             IAlbianLoggerService2.InnerThreadName,
                             AlbianLoggerLevel.Info,
-                            "startup albianj engine is success!");
+                            "load service is success,then set field in the services!");
 
-                break;// all successen
+                break;// load service successen
             }
 
             if (lastFailSize == currentFailSize) {
@@ -388,7 +395,157 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
                 failMap.clear();
             }
         }
+
+        //set field in service
+        if(!setServiceFields(totalMap)) {
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService.AlbianRunningLoggerName,
+                    IAlbianLoggerService2.InnerThreadName,
+                    AlbianLoggerLevel.Error,
+                    " set field in the services is fail!startup albianj is fail.");
+            throw new AlbianRuntimeException("startup albianj is fail.");
+
+        }
+        state = AlbianState.Running;
+        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService.AlbianRunningLoggerName,
+                IAlbianLoggerService2.InnerThreadName,
+                AlbianLoggerLevel.Info,
+                "set fields in the service over.Startup albianj is success!");
+
     }
+
+    private boolean setServiceFields(Map<String,IAlbianServiceAttribute> attrMap) {
+        // set fields last
+        // set fields at the end because for ref service across at some servics
+        int last_fail_times = 0;
+        int curr_fail_times = 0;
+        while(true) {
+            for (IAlbianServiceAttribute attr : attrMap.values()) {
+                if (Validate.isNullOrEmpty(attr.getServiceFields())) {
+                    continue;
+                }
+                IAlbianService service = ServiceContainer.getService(attr.getId());
+                for (IAlbianServiceFieldAttribute fAttr : attr.getServiceFields().values()) {
+                    if(fAttr.isReady()) {
+                        continue; // already set
+                    }
+                    if (!fAttr.getType().toLowerCase().equals("ref")) { // not set ref
+                        try {
+                            Object o = AlbianTypeConvert.toRealObject(
+                                    fAttr.getType(), fAttr.getValue());
+                            fAttr.getField().set(service, o);
+                            fAttr.setReady(true);
+                        }catch (Exception e){
+                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                                    IAlbianLoggerService2.InnerThreadName,
+                                    AlbianLoggerLevel.Warn,e,
+                                    "set field %s.%s = %s is fail.the field type is not ref.",
+                                    attr.getId(), fAttr.getName(), fAttr.getValue());
+                            ++curr_fail_times;
+                        }
+                        continue;
+                    }
+
+                    String value = fAttr.getValue();
+                    Object realObject = null;
+                    int indexof = value.indexOf(".");
+                    if (-1 == indexof) { // real ref service
+                        realObject = AlbianServiceRouter.getSingletonService(
+                                IAlbianService.class, value, false);
+                        if (!fAttr.getAllowNull() && null == realObject) {
+                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                                    IAlbianLoggerService2.InnerThreadName,
+                                    AlbianLoggerLevel.Warn,
+                                    "not found ref service ->%s to set field -> %s in service -> %s. ",
+                                    value, fAttr.getName(), attr.getId());
+                            ++curr_fail_times;
+                            continue;
+                        }
+
+                        if (null != realObject) {
+                            try {
+                                fAttr.getField().set(service, realObject);
+                                fAttr.setReady(true);
+                            }catch (Exception e) {
+                                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                                        IAlbianLoggerService2.InnerThreadName,
+                                        AlbianLoggerLevel.Warn,e,
+                                        "set field %s.%s = %s is fail.the field type is ref.",
+                                        attr.getId(), fAttr.getName(), fAttr.getValue());
+                                ++curr_fail_times;
+                            }
+                        }
+                        continue;
+                    }
+
+                    String refServiceId = value.substring(0, indexof);
+                    String exp = value.substring(indexof + 1);
+                    IAlbianService refService = AlbianServiceRouter.getSingletonService(
+                            IAlbianService.class, refServiceId, false);
+
+                    if (!fAttr.getAllowNull() && null == refService) {
+                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                                IAlbianLoggerService2.InnerThreadName,
+                                AlbianLoggerLevel.Warn,
+                                " %s.%s = %s.%s is fail. not found ref service -> %s exp -> %s. ",
+                                attr.getId(), fAttr.getName(), refServiceId, exp, refServiceId, exp);
+                        ++curr_fail_times;
+                        continue;
+                    }
+
+                    if (null != refService) {
+                        IAlbianServiceAttribute sAttr = attrMap.get(refServiceId);
+                        Object refRealObj = sAttr.getServiceClass().cast(refService);//must get service full type sign
+                        try {
+                            realObject = Ognl.getValue(exp, refRealObj);// get read value from full-sgin ref service
+                        }catch (Exception e){
+                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                                    IAlbianLoggerService2.InnerThreadName,
+                                    AlbianLoggerLevel.Warn,e,
+                                    " %s.%s = %s.%s is fail. not found exp -> %s in ref service -> %s. ",
+                                    attr.getId(), fAttr.getName(), refServiceId, exp, exp,refServiceId);
+                            ++curr_fail_times;
+                            continue;
+                        }
+                        if (null == realObject && !fAttr.getAllowNull()) {
+                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                                    IAlbianLoggerService2.InnerThreadName,
+                                    AlbianLoggerLevel.Warn,
+                                    " %s.%s = %s.%s is fail. not found ref service -> %s exp -> %s. ",
+                                    attr.getId(), fAttr.getName(), refServiceId, exp, refServiceId, exp);
+                            ++curr_fail_times;
+                            continue;
+                        }
+                        if (null != realObject) {
+                            try {
+                                fAttr.getField().set(service, realObject);
+                                fAttr.setReady(true);
+                            }catch (Exception e) {
+                                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                                        IAlbianLoggerService2.InnerThreadName,
+                                        AlbianLoggerLevel.Warn,e,
+                                        " %s.%s = %s.%s is fail. ",
+                                        attr.getId(), fAttr.getName(), refServiceId, exp);
+                                ++curr_fail_times;
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if( 0 == curr_fail_times) {
+                break;
+            }
+            if(curr_fail_times == last_fail_times){//across ref in the service
+
+                return false;
+            }
+            last_fail_times = curr_fail_times;
+            curr_fail_times = 0;
+        }
+        return true;
+    }
+
 
     /* (non-Javadoc)
      * @see org.albianj.kernel.impl.IAlbianBootService#requestHandlerContext()

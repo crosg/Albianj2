@@ -40,6 +40,7 @@ package org.albianj.service;
 import org.albianj.aop.IAlbianServiceAopAttribute;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IAlbianServiceAttribute {
     public String getId();
@@ -54,11 +55,23 @@ public interface IAlbianServiceAttribute {
 
     public void setInterface(String itf);
 
-    List<IAlbianServicePropertyAttribute> getServiceProperties();
+    Map<String,IAlbianServiceFieldAttribute> getServiceFields();
 
-    void setServiceProperties(List<IAlbianServicePropertyAttribute> ps);
+    void setServiceFields(Map<String,IAlbianServiceFieldAttribute> ps);
 
-    List<IAlbianServiceAopAttribute> getAopAttributes();
+    Map<String,IAlbianServiceAopAttribute> getAopAttributes();
 
-    void setAopAttributes(List<IAlbianServiceAopAttribute> aopAttributes);
+    void setAopAttributes(Map<String,IAlbianServiceAopAttribute> aopAttributes);
+
+    Class<? extends IAlbianService> getServiceClass();
+
+    void setServiceClass(Class<? extends IAlbianService> clazz);
+
+    public boolean getEnable();
+
+    public void setEnable(boolean enable);
+
+//    public boolean getModifyIdWhenLoading();
+
+//    void setModifyIdWhenLoading(boolean modifyIdWhenLoading);
 }

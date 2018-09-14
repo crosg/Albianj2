@@ -38,19 +38,24 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.service.impl;
 
 import org.albianj.aop.IAlbianServiceAopAttribute;
+import org.albianj.service.IAlbianService;
 import org.albianj.service.IAlbianServiceAttribute;
-import org.albianj.service.IAlbianServicePropertyAttribute;
+import org.albianj.service.IAlbianServiceFieldAttribute;
 import org.albianj.verify.Validate;
 
 import java.util.List;
+import java.util.Map;
 
 public class AlbianServiceAttribute implements IAlbianServiceAttribute {
 
-    List<IAlbianServicePropertyAttribute> ps;
-    List<IAlbianServiceAopAttribute> aopAttributes = null;
+    Map<String,IAlbianServiceFieldAttribute> ps;
+    Map<String,IAlbianServiceAopAttribute> aopAttributes = null;
     private String id = "";
     private String type = "";
     private String itf;
+    private Class<? extends IAlbianService> clzz = null;
+    private boolean enable = true;
+//    private  boolean modifyIdWhenLoading = false;
 
     public String getId() {
         return this.id;
@@ -84,21 +89,51 @@ public class AlbianServiceAttribute implements IAlbianServiceAttribute {
     }
 
     @Override
-    public List<IAlbianServicePropertyAttribute> getServiceProperties() {
+    public Map<String,IAlbianServiceFieldAttribute> getServiceFields() {
         return this.ps;
     }
 
     @Override
-    public void setServiceProperties(List<IAlbianServicePropertyAttribute> ps) {
+    public void setServiceFields(Map<String,IAlbianServiceFieldAttribute> ps) {
         this.ps = ps;
     }
 
-    public List<IAlbianServiceAopAttribute> getAopAttributes() {
+    public Map<String,IAlbianServiceAopAttribute> getAopAttributes() {
         return this.aopAttributes;
     }
 
-    public void setAopAttributes(List<IAlbianServiceAopAttribute> aopAttributes) {
+    public void setAopAttributes(Map<String,IAlbianServiceAopAttribute> aopAttributes) {
         this.aopAttributes = aopAttributes;
     }
+
+    @Override
+    public Class<? extends IAlbianService> getServiceClass() {
+        return clzz;
+    }
+
+    @Override
+    public void setServiceClass(Class<? extends IAlbianService> clazz) {
+        clzz = clazz;
+    }
+
+    @Override
+    public boolean getEnable() {
+        return enable;
+    }
+
+    @Override
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+//    @Override
+//    public boolean getModifyIdWhenLoading() {
+//        return modifyIdWhenLoading;
+//    }
+
+//    @Override
+//    public void setModifyIdWhenLoading(boolean modifyIdWhenLoading) {
+//        this.modifyIdWhenLoading = modifyIdWhenLoading;
+//    }
 
 }
