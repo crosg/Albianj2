@@ -72,7 +72,7 @@ public interface IAlbianDataRouterParserService extends IAlbianParserService {
      * @param dra  路由的元信息
      * @since v2.0
      */
-    public void addDataRouterAttribute(String name, IDataRoutersAttribute dra);
+//    public void addDataRouterAttribute(String name, IDataRoutersAttribute dra);
 
     /**
      * 获取指定接口的对象的路由信息
@@ -81,5 +81,5 @@ public interface IAlbianDataRouterParserService extends IAlbianParserService {
      * @return 路由的元信息
      * @since v2.0
      */
-    public IDataRoutersAttribute getDataRouterAttribute(String name);
+//    public IDataRoutersAttribute getDataRouterAttribute(String name);
 }

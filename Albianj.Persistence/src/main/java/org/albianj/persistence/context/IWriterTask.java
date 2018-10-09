@@ -149,4 +149,21 @@ public interface IWriterTask {
     public void setDatabasePool(IDataBasePool pool);
 
     public IDataBasePool getDatabasePool();
+
+//    /*
+//        开发者指定storage名称
+//        该值出现的情况下，不需要走路由获取
+//     */
+//    String getStorageAliasName();
+//
+//    void setStorageAliasName(String storageAliasName);
+//
+//    /*
+//     开发者指定的实体对应的数据库表名
+//     一般和storageAliasName一起指定
+//     当tableAliasName不存在并且不走路由的情况下，使用实体类名作为默认值
+//     */
+//    String getTableAliasName();
+//
+//    void setTableAliasName();
 }

@@ -46,24 +46,24 @@ public class DataRoutersAttribute implements IDataRoutersAttribute {
     private Map<String, IDataRouterAttribute> writerRoutings = null;
     private Map<String, IDataRouterAttribute> readerRoutings = null;
     private IAlbianObjectDataRouter hashMapping = null;
-    private String type = null;
-    private String inter = null;
+//    private String type = null;
+//    private String inter = null;
 
-    public String getInterface() {
-        return inter;
-    }
-
-    public void setInterface(String inter) {
-        this.inter = inter;
-    }
-
-    public String getType() {
-        return this.type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+//    public String getInterface() {
+//        return inter;
+//    }
+//
+//    public void setInterface(String inter) {
+//        this.inter = inter;
+//    }
+//
+//    public String getType() {
+//        return this.type;
+//    }
+//
+//    public void setType(String type) {
+//        this.type = type;
+//    }
 
     public boolean getWriterRouterEnable() {
         // TODO Auto-generated method stub

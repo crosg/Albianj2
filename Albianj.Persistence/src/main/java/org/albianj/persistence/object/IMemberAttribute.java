@@ -70,4 +70,12 @@ public interface IMemberAttribute {
     public boolean getIsSave();
 
     public void setIsSave(boolean isSave);
+
+    String getVarField();
+
+    void setVarField(String varField);
+
+    boolean isAutoGenKey();
+
+    void setAutoGenKey(boolean autoGenKey);
 }

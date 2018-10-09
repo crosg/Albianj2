@@ -44,103 +44,43 @@ import java.util.Map;
  * @author Seapeak
  */
 public interface IAlbianObjectDataRouter {
-
-    /**
-     * @param routings
-     * @param obj
-     * @return
-     */
-    public List<IDataRouterAttribute> mappingWriterRouting(
+    //reader routing
+     List<IDataRouterAttribute> mappingWriterRouting(
             Map<String, IDataRouterAttribute> routings, IAlbianObject obj);
-
-    /**
-     * @param routing
-     * @param obj
-     * @return
-     */
-    public String mappingWriterRoutingStorage(IDataRouterAttribute routing,
+     String mappingWriterRoutingStorage(IDataRouterAttribute routing,
                                               IAlbianObject obj);
-
-    public String mappingWriterRoutingDatabase(IStorageAttribute storage,
+     String mappingWriterRoutingDatabase(IStorageAttribute storage,
                                                IAlbianObject obj);
-
-    /**
-     * @param routing
-     * @param obj
-     * @return
-     */
-    public String mappingWriterTable(IDataRouterAttribute routing,
+     String mappingWriterTable(IDataRouterAttribute routing,
                                      IAlbianObject obj);
 
-    /**
-     * @param routings
-     * @param wheres
-     * @param orderbys
-     * @return
-     */
-    public IDataRouterAttribute mappingReaderRouting(
+     //writer routing
+     IDataRouterAttribute mappingReaderRouting(
             Map<String, IDataRouterAttribute> routings,
             Map<String, IFilterCondition> wheres,
             Map<String, IOrderByCondition> orderbys);
-
-    /**
-     * @param routing
-     * @param wheres
-     * @param orderbys
-     * @return
-     */
-    public String mappingReaderRoutingStorage(IDataRouterAttribute routing,
+     String mappingReaderRoutingStorage(IDataRouterAttribute routing,
                                               Map<String, IFilterCondition> wheres,
                                               Map<String, IOrderByCondition> orderbys);
-
-    public String mappingReaderRoutingDatabase(IStorageAttribute storage,
+     String mappingReaderRoutingDatabase(IStorageAttribute storage,
                                                Map<String, IFilterCondition> wheres,
                                                Map<String, IOrderByCondition> orderbys);
-
-
-    /**
-     * @param routing
-     * @param wheres
-     * @param orderbys
-     * @return
-     */
-    public String mappingReaderTable(IDataRouterAttribute routing,
+     String mappingReaderTable(IDataRouterAttribute routing,
                                      Map<String, IFilterCondition> wheres,
                                      Map<String, IOrderByCondition> orderbys);
 
-
-    /**
-     * @param routings
-     * @param wheres
-     * @param orderbys
-     * @return
-     */
-    public IDataRouterAttribute mappingExactReaderRouting(
+    //exact reader routing
+     IDataRouterAttribute mappingExactReaderRouting(
             Map<String, IDataRouterAttribute> routings,
             Map<String, IFilterCondition> wheres,
             Map<String, IOrderByCondition> orderbys);
-
-    /**
-     * @param routing
-     * @param wheres
-     * @param orderbys
-     * @return
-     */
-    public String mappingExactReaderRoutingStorage(IDataRouterAttribute routing,
+     String mappingExactReaderRoutingStorage(IDataRouterAttribute routing,
                                                    Map<String, IFilterCondition> wheres,
                                                    Map<String, IOrderByCondition> orderbys);
-
-    public String mappingExactReaderRoutingDatabase(IStorageAttribute storage,
+     String mappingExactReaderRoutingDatabase(IStorageAttribute storage,
                                                     Map<String, IFilterCondition> wheres,
                                                     Map<String, IOrderByCondition> orderbys);
-
-    /**
-     * @param routing
-     * @param wheres
-     * @param orderbys
-     * @return
-     */
-    public String mappingExactReaderTable(IDataRouterAttribute routing,
+     String mappingExactReaderTable(IDataRouterAttribute routing,
                                           Map<String, IFilterCondition> wheres,
                                           Map<String, IOrderByCondition> orderbys);
 }

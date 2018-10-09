@@ -37,6 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.object;
 
+import org.albianj.persistence.context.dactx.AlbianDataAccessOpt;
 import org.albianj.persistence.db.AlbianDataServiceException;
 
 import java.io.Serializable;
@@ -99,6 +100,9 @@ public interface IAlbianObject extends Serializable {
      */
     public Object getOldAlbianObject(String key);
 
+
     boolean needUpdate() throws AlbianDataServiceException;
+
     boolean needUpdate(String sessionId) throws AlbianDataServiceException;
+
 }

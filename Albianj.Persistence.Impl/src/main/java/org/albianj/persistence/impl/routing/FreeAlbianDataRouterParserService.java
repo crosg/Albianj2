@@ -128,12 +128,12 @@ public abstract class FreeAlbianDataRouterParserService extends FreeAlbianParser
             @SuppressWarnings("rawtypes") List nodes) throws AlbianParserException;
 
 
-    public void addDataRouterAttribute(String name, IDataRoutersAttribute dra) {
-        _cached.put(name, dra);
-    }
-
-    public IDataRoutersAttribute getDataRouterAttribute(String name) {
-        return _cached.get(name);
-    }
+//    public void addDataRouterAttribute(String name, IDataRoutersAttribute dra) {
+//        _cached.put(name, dra);
+//    }
+//
+//    public IDataRoutersAttribute getDataRouterAttribute(String name) {
+//        return _cached.get(name);
+//    }
 
 }

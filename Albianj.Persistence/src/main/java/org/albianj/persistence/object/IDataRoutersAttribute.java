@@ -60,11 +60,11 @@ public interface IDataRoutersAttribute {
 
     public void setDataRouter(IAlbianObjectDataRouter hashMapping);
 
-    public String getInterface();
-
-    public void setInterface(String inter);
-
-    public String getType();
-
-    public void setType(String type);
+//    public String getInterface();
+//
+//    public void setInterface(String inter);
+//
+//    public String getType();
+//
+//    public void setType(String type);
 }

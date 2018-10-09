@@ -45,6 +45,7 @@ import org.albianj.persistence.object.IAlbianObjectAttribute;
 import org.albianj.persistence.object.IFilterCondition;
 import org.albianj.persistence.object.IOrderByCondition;
 import org.albianj.persistence.object.filter.IChainExpression;
+import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.persistence.service.IAlbianMappingParserService;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
@@ -80,8 +81,9 @@ public class AlbianPersistenceCache {
 
     public static <T extends IAlbianObject> void setObjects(Class<T> cls, int start, int step,
                                                             IChainExpression f, LinkedList<IOrderByCondition> orderbys, List<T> objs) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
         if (!aoa.getCache().getEnable())
             return;
         IAlbianThreadPoolService tps = AlbianServiceRouter.getSingletonService(IAlbianThreadPoolService.class,
@@ -99,8 +101,10 @@ public class AlbianPersistenceCache {
     }
 
     public static <T extends IAlbianObject> void setObjects(Class<T> cls, String key, List<T> newObj) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return;
         IAlbianThreadPoolService tps = AlbianServiceRouter.getSingletonService(IAlbianThreadPoolService.class,
@@ -117,8 +121,10 @@ public class AlbianPersistenceCache {
 
     public static <T extends IAlbianObject> void setObject(Class<T> cls, IChainExpression f,
                                                            LinkedList<IOrderByCondition> orderbys, IAlbianObject obj) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return;
         IAlbianThreadPoolService tps = AlbianServiceRouter.getSingletonService(IAlbianThreadPoolService.class,
@@ -135,8 +141,10 @@ public class AlbianPersistenceCache {
 
     public static <T extends IAlbianObject> void setPagesize(Class<T> cls, IChainExpression f,
                                                              LinkedList<IOrderByCondition> orderbys, long pagesize) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return;
         IAlbianThreadPoolService tps = AlbianServiceRouter.getSingletonService(IAlbianThreadPoolService.class,
@@ -152,8 +160,10 @@ public class AlbianPersistenceCache {
     }
 
     public static <T extends IAlbianObject> void setObject(Class<T> cls, String key, IAlbianObject obj) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return;
         IAlbianThreadPoolService tps = AlbianServiceRouter.getSingletonService(IAlbianThreadPoolService.class,
@@ -169,8 +179,10 @@ public class AlbianPersistenceCache {
 
     public static <T extends IAlbianObject> T findObject(Class<T> cls, IChainExpression f,
                                                          LinkedList<IOrderByCondition> orderbys) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return null;
         String key = buildKey(cls, 0, 0, f, orderbys);
@@ -191,8 +203,10 @@ public class AlbianPersistenceCache {
     }
 
     public static <T extends IAlbianObject> T findObject(Class<T> cls, String key) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return null;
         try {
@@ -212,8 +226,10 @@ public class AlbianPersistenceCache {
 
     public static <T extends IAlbianObject> List<T> findObjects(Class<T> cls, int start, int step,
                                                                 IChainExpression f, LinkedList<IOrderByCondition> orderbys) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return null;
         String key = buildKey(cls, start, step, f, orderbys);
@@ -233,8 +249,10 @@ public class AlbianPersistenceCache {
     }
 
     public static <T extends IAlbianObject> List<T> findObjects(Class<T> cls, String key) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return null;
         try {
@@ -254,8 +272,10 @@ public class AlbianPersistenceCache {
 
     public static <T extends IAlbianObject> long findPagesize(Class<T> cls, IChainExpression f,
                                                               LinkedList<IOrderByCondition> orderbys) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return -1;
         String key = buildKey(cls, -1, -1, f, orderbys);
@@ -276,8 +296,10 @@ public class AlbianPersistenceCache {
     }
 
     public static <T extends IAlbianObject> long findPagesize(Class<T> cls, String key) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return -1;
         try {
@@ -322,8 +344,10 @@ public class AlbianPersistenceCache {
     @Deprecated
     public static <T extends IAlbianObject> void setObjects(Class<T> cls, int start, int step,
                                                             LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys, List<T> objs) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return;
         IAlbianThreadPoolService tps = AlbianServiceRouter.getSingletonService(IAlbianThreadPoolService.class,
@@ -342,8 +366,10 @@ public class AlbianPersistenceCache {
     @Deprecated
     public static <T extends IAlbianObject> void setObject(Class<T> cls, LinkedList<IFilterCondition> wheres,
                                                            LinkedList<IOrderByCondition> orderbys, IAlbianObject obj) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return;
         IAlbianThreadPoolService tps = AlbianServiceRouter.getSingletonService(IAlbianThreadPoolService.class,
@@ -361,8 +387,10 @@ public class AlbianPersistenceCache {
     @Deprecated
     public static <T extends IAlbianObject> void setPagesize(Class<T> cls, LinkedList<IFilterCondition> wheres,
                                                              LinkedList<IOrderByCondition> orderbys, long pagesize) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return;
         IAlbianThreadPoolService tps = AlbianServiceRouter.getSingletonService(IAlbianThreadPoolService.class,
@@ -380,8 +408,10 @@ public class AlbianPersistenceCache {
     @Deprecated
     public static <T extends IAlbianObject> T findObject(Class<T> cls, LinkedList<IFilterCondition> wheres,
                                                          LinkedList<IOrderByCondition> orderbys) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return null;
         String key = buildKey(cls, 0, 0, wheres, orderbys);
@@ -404,8 +434,10 @@ public class AlbianPersistenceCache {
     @Deprecated
     public static <T extends IAlbianObject> List<T> findObjects(Class<T> cls, int start, int step,
                                                                 LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return null;
         String key = buildKey(cls, start, step, wheres, orderbys);
@@ -427,8 +459,10 @@ public class AlbianPersistenceCache {
     @Deprecated
     public static <T extends IAlbianObject> long findPagesize(Class<T> cls, LinkedList<IFilterCondition> wheres,
                                                               LinkedList<IOrderByCondition> orderbys) {
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute aoa = amps.getAlbianObjectAttribute(cls.getName());
+        IAlbianObjectAttribute aoa = AlbianEntityMetadata.getEntityMetadata(cls);
+
         if (!aoa.getCache().getEnable())
             return -1;
         String key = buildKey(cls, -1, -1, wheres, orderbys);

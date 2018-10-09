@@ -40,8 +40,10 @@ package org.albianj.persistence.impl.routing;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.persistence.impl.object.AlbianObjectAttribute;
 import org.albianj.persistence.impl.object.DataRouterAttribute;
 import org.albianj.persistence.object.*;
+import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.parser.AlbianParserException;
@@ -59,7 +61,7 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
     public static final String DEFAULT_ROUTING_NAME = "!@#$%Albianj_Default_DataRouter%$#@!";
 
     private static IDataRoutersAttribute getRoutingsAttribute(Element elt) throws AlbianParserException {
-        IDataRoutersAttribute routing = new DataRoutersAttribute();
+//        IDataRoutersAttribute routing = new DataRoutersAttribute();
         String inter = XmlParser.getAttributeValue(elt, "Interface");
         if (Validate.isNullOrEmptyOrAllSpace(inter)) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -67,7 +69,18 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
                     "The albianObject's interface is empty or null.");
             return null;
         }
-        routing.setInterface(inter);
+//        routing.setInterface(inter);
+
+        IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(inter);
+        if(null == objAttr){
+            objAttr = new AlbianObjectAttribute();
+            AlbianEntityMetadata.put(inter,objAttr);
+        }
+        IDataRoutersAttribute routing = objAttr.getDataRouters();
+        if(null == routing){
+            routing = new DataRoutersAttribute();
+            objAttr.setDataRouters(routing);
+        }
 
         String type = XmlParser.getAttributeValue(elt, "Type");
 
@@ -117,7 +130,7 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
         }
 
 
-        routing.setType(type);
+//        routing.setType(type);
         String hashMapping = XmlParser.getAttributeValue(elt, "Router");
         if (Validate.isNullOrEmptyOrAllSpace(hashMapping)) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -176,16 +189,31 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
 
         List<?> writers = elt.selectNodes("WriterRouters/WriterRouter");
         if (!Validate.isNullOrEmpty(writers)) {
-            Map<String, IDataRouterAttribute> map = parserRouting(writers);
-            if (null != map)
-                routing.setWriterRouters(map);
+            Map<String, IDataRouterAttribute> cfgWRouters = parserRouting(writers);
+            if (null != cfgWRouters) {
+                if (null == routing.getWriterRouters()) {
+                    routing.setWriterRouters(cfgWRouters);
+                } else {
+                    Map<String, IDataRouterAttribute> pkgWRouters = routing.getWriterRouters();
+                    pkgWRouters.putAll(cfgWRouters);
+                    routing.setWriterRouters(pkgWRouters);
+                }
+            }
+
         }
 
         List<?> readers = elt.selectNodes("ReaderRouters/ReaderRouter");
         if (!Validate.isNullOrEmpty(readers)) {
-            Map<String, IDataRouterAttribute> map = parserRouting(readers);
-            if (null != map)
-                routing.setReaderRouters(map);
+            Map<String, IDataRouterAttribute> cfgRRouters = parserRouting(readers);
+            if (null != cfgRRouters) {
+                if (null == routing.getReaderRouters()) {
+                    routing.setReaderRouters(cfgRRouters);
+                } else {
+                    Map<String, IDataRouterAttribute> pkgRRouters = routing.getReaderRouters();
+                    pkgRRouters.putAll(cfgRRouters);
+                    routing.setReaderRouters(pkgRRouters);
+                }
+            }
         }
         return routing;
     }
@@ -249,8 +277,8 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
             IDataRoutersAttribute routingsAttribute = getRoutingsAttribute((Element) node);
             if (null == routingsAttribute)
                 return null;
-            addDataRouterAttribute(routingsAttribute.getInterface(),
-                    routingsAttribute);
+//            addDataRouterAttribute(routingsAttribute.getInterface(),
+//                    routingsAttribute);
         }
         return null;
     }

@@ -47,6 +47,7 @@ import org.albianj.persistence.impl.toolkit.EnumMapping;
 import org.albianj.persistence.object.*;
 import org.albianj.persistence.object.filter.IChainExpression;
 import org.albianj.persistence.object.filter.IFilterExpression;
+import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
@@ -121,9 +122,10 @@ public class ChainExpressionParser {
                 }
 
                 String className = cls.getName();
-                IMemberAttribute member = albianObject.getMembers().get(fe.getFieldName().toLowerCase());
+//                IMemberAttribute member = albianObject.getMembers().get(fe.getFieldName().toLowerCase());
+                IAlbianEntityFieldAttribute fieldAttr = albianObject.getFields().get(AlbianEntityMetadata.makeFieldsKey(fe.getFieldName()));
 
-                if (null == member) {
+                if (null == fieldAttr) {
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                             sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
                             "PersistenceService is error.","albian-object:%s member:%s is not found.", className, fe.getFieldName());
@@ -135,26 +137,26 @@ public class ChainExpressionParser {
                 }
 
                 if (PersistenceDatabaseStyle.MySql == storage.getDatabaseStyle()) {
-                    sb.append(" `").append(member.getSqlFieldName()).append("`");
+                    sb.append(" `").append(fieldAttr.getSqlFieldName()).append("`");
                 } else {
-                    sb.append(" [").append(member.getSqlFieldName()).append("]");
+                    sb.append(" [").append(fieldAttr.getSqlFieldName()).append("]");
                 }
                 sb.append(EnumMapping.toLogicalOperation(fe.getLogicalOperation())).append("#")
-                        .append(Validate.isNullOrEmptyOrAllSpace(fe.getAliasName()) ? member.getSqlFieldName()
+                        .append(Validate.isNullOrEmptyOrAllSpace(fe.getAliasName()) ? fieldAttr.getSqlFieldName()
                                 : fe.getAliasName())
                         .append("# ");
 
                 ISqlParameter para = new SqlParameter();
-                para.setName(member.getSqlFieldName());
-                para.setSqlFieldName(member.getSqlFieldName());
+                para.setName(fieldAttr.getSqlFieldName());
+                para.setSqlFieldName(fieldAttr.getSqlFieldName());
                 if (null == fe.getFieldClass()) {
-                    para.setSqlType(member.getDatabaseType());
+                    para.setSqlType(fieldAttr.getDatabaseType());
                 } else {
                     para.setSqlType(Convert.toSqlType(fe.getFieldClass()));
                 }
                 para.setValue(fe.getValue());
                 paras.put(String.format("#%1$s#", Validate.isNullOrEmptyOrAllSpace(fe.getAliasName())
-                        ? member.getSqlFieldName() : fe.getAliasName()), para);
+                        ? fieldAttr.getSqlFieldName() : fe.getAliasName()), para);
             }
         }
     }

@@ -17,8 +17,9 @@ public class AlbianObjectCreator {
 
 
     public static IAlbianObject newInstance(String sessionId, String itf){
-            IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-            IAlbianObjectAttribute attr = amps.getAlbianObjectAttribute(itf);
+        IAlbianObjectAttribute attr  = AlbianEntityMetadata.getEntityMetadata(itf);
+//            IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//            IAlbianObjectAttribute attr = amps.getAlbianObjectAttribute(itf);
             if(null == attr){
                 AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         sessionId, AlbianLoggerLevel.Error,

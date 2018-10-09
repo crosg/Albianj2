@@ -37,6 +37,8 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.reflection;
 
+import org.albianj.text.StringHelper;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -59,6 +61,14 @@ public class AlbianReflect {
         beanInfo = getBeanInfo(cl, className);
         return beanInfo.getPropertyDescriptors();
     }
+
+    public static PropertyDescriptor getBeanPropertyDescriptor(Class<?>  clzz,String propertyName)
+            throws ClassNotFoundException, IntrospectionException {
+         String pName = StringHelper.lowercasingFirstLetter(propertyName);
+        PropertyDescriptor pd = new PropertyDescriptor(pName,clzz);
+        return pd;
+    }
+
 
     public static String getClassSimpleName(ClassLoader cl, String className)
             throws ClassNotFoundException {

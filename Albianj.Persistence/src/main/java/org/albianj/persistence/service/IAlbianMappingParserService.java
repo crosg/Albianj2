@@ -67,52 +67,52 @@ public interface IAlbianMappingParserService extends IAlbianParserService {
      */
     static String Name = "AlbianMappingService";
 
-    /**
-     * 增加数据实体的类型信息
-     *
-     * @param name 实体的接口信息
-     * @param aba  类型信息
-     */
-    public void addAlbianObjectAttribute(String name, IAlbianObjectAttribute aba);
+//    /**
+//     * 增加数据实体的类型信息
+//     *
+//     * @param name 实体的接口信息
+//     * @param aba  类型信息
+//     */
+//    public void addAlbianObjectAttribute(String name, IAlbianObjectAttribute aba);
+//
+//    /**
+//     * 获取数据实体的类型信息
+//     *
+//     * @param name 实体的接口信息
+//     * @return 类型信息
+//     */
+//    public IAlbianObjectAttribute getAlbianObjectAttribute(String name);
+//
+//    /**
+//     * 增加数据实体的类型和接口之间的关系
+//     *
+//     * @param type
+//     * @param inter
+//     */
+//    public void addAlbianObjectClassToInterface(String type, String inter);
+//
+//    /**
+//     * 根据实体类型获取实体的接口
+//     *
+//     * @param type 实体的具体类型
+//     * @return 实体的接口
+//     */
+//    public String getAlbianObjectInterface(String type);
 
-    /**
-     * 获取数据实体的类型信息
-     *
-     * @param name 实体的接口信息
-     * @return 类型信息
-     */
-    public IAlbianObjectAttribute getAlbianObjectAttribute(String name);
-
-    /**
-     * 增加数据实体的类型和接口之间的关系
-     *
-     * @param type
-     * @param inter
-     */
-    public void addAlbianObjectClassToInterface(String type, String inter);
-
-    /**
-     * 根据实体类型获取实体的接口
-     *
-     * @param type 实体的具体类型
-     * @return 实体的接口
-     */
-    public String getAlbianObjectInterface(String type);
-
-    /**
-     * 增加数据实体的基本信息，该基本信息根据数据实体的类型反射而来
-     *
-     * @param type 需要反射的实体类
-     * @param pds  反射出来的数据实体信息
-     */
-    public void addAlbianObjectPropertyDescriptor(String type, PropertyDescriptor[] pds);
-
-    /**
-     * 根据数据实体类型，获取数据实体反射出来的信息
-     *
-     * @param type 需要反射的实体类
-     * @return 反射出来的数据实体信息
-     */
-    public PropertyDescriptor[] getAlbianObjectPropertyDescriptor(String type);
+//    /**
+//     * 增加数据实体的基本信息，该基本信息根据数据实体的类型反射而来
+//     *
+//     * @param type 需要反射的实体类
+//     * @param pds  反射出来的数据实体信息
+//     */
+//    public void addAlbianObjectPropertyDescriptor(String type, PropertyDescriptor[] pds);
+//
+//    /**
+//     * 根据数据实体类型，获取数据实体反射出来的信息
+//     *
+//     * @param type 需要反射的实体类
+//     * @return 反射出来的数据实体信息
+//     */
+//    public PropertyDescriptor[] getAlbianObjectPropertyDescriptor(String type);
 
 }

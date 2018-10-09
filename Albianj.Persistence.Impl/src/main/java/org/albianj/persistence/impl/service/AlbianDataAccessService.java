@@ -1,27 +1,23 @@
 package org.albianj.persistence.impl.service;
 
-import org.albianj.persistence.context.IPersistenceCompensateNotify;
-import org.albianj.persistence.context.IPersistenceNotify;
-import org.albianj.persistence.context.IReaderJob;
-import org.albianj.persistence.context.IWriterJob;
+import org.albianj.persistence.context.*;
+import org.albianj.persistence.context.dactx.IDataAccessContext;
+import org.albianj.persistence.context.dactx.IQueryContext;
 import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.ISqlParameter;
 import org.albianj.persistence.db.PersistenceCommandType;
-import org.albianj.persistence.impl.context.IReaderJobAdapter;
-import org.albianj.persistence.impl.context.IWriterJobAdapter;
-import org.albianj.persistence.impl.context.ReaderJobAdapter;
-import org.albianj.persistence.impl.context.WriterJobAdapter;
+import org.albianj.persistence.impl.context.*;
+import org.albianj.persistence.impl.context.dactx.DataAccessContext;
+import org.albianj.persistence.impl.context.dactx.QueryContext;
 import org.albianj.persistence.impl.db.IPersistenceQueryScope;
 import org.albianj.persistence.impl.db.IPersistenceTransactionClusterScope;
 import org.albianj.persistence.impl.db.PersistenceQueryScope;
 import org.albianj.persistence.impl.db.PersistenceTransactionClusterScope;
 import org.albianj.persistence.impl.dbcached.AlbianPersistenceCache;
-import org.albianj.persistence.object.IAlbianObject;
-import org.albianj.persistence.object.IOrderByCondition;
-import org.albianj.persistence.object.IRunningStorageAttribute;
-import org.albianj.persistence.object.LogicalOperation;
+import org.albianj.persistence.object.*;
 import org.albianj.persistence.object.filter.FilterExpression;
 import org.albianj.persistence.object.filter.IChainExpression;
+import org.albianj.persistence.object.filter.IFilterExpression;
 import org.albianj.persistence.service.IAlbianDataAccessService;
 import org.albianj.persistence.service.LoadType;
 import org.albianj.service.FreeAlbianService;
@@ -359,7 +355,7 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
             throws AlbianDataServiceException {
         IReaderJobAdapter ad = new ReaderJobAdapter();
         List<T> list = null;
-        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact, routingName, start, step,
+        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact,null,null, routingName, start, step,
                 wheres, orderbys,idxName);
         IPersistenceQueryScope scope = new PersistenceQueryScope();
         list = scope.execute(cls, job);
@@ -372,7 +368,7 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
                                                                 LinkedList<IOrderByCondition> orderbys,String idxName)
             throws AlbianDataServiceException {
         IReaderJobAdapter ad = new ReaderJobAdapter();
-        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact, routingName,
+        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact,null,null, routingName,
                 wheres, orderbys,idxName);
         IPersistenceQueryScope scope = new PersistenceQueryScope();
         Object o = scope.execute(job);
@@ -577,6 +573,16 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
         }
 
         return count;
+    }
+
+     // save chain entity
+    public IDataAccessContext newDataAccessContext(){
+
+        return new DataAccessContext();
+    }
+
+    public IQueryContext newQueryContext(){
+        return new QueryContext();
     }
 
 }

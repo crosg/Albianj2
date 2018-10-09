@@ -37,29 +37,252 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.context;
 
+import org.albianj.argument.RefArg;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.db.AlbianDataServiceException;
+import org.albianj.persistence.db.ISqlParameter;
+import org.albianj.persistence.impl.db.SqlParameter;
+import org.albianj.persistence.impl.toolkit.Convert;
+import org.albianj.persistence.impl.toolkit.EnumMapping;
 import org.albianj.persistence.object.*;
+import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.persistence.service.IAlbianDataRouterParserService;
 import org.albianj.persistence.service.IAlbianMappingParserService;
+import org.albianj.persistence.service.IAlbianStorageParserService;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
 
+import java.util.LinkedList;
 import java.util.Map;
 
 public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJobAdapter {
-    protected IDataRouterAttribute parserReaderRouting(Class<?> cls, String sessionId, boolean isExact, String routingName,
+
+    protected IStorageAttribute makeReaderToStorageCtx(IAlbianObjectAttribute objAttr,
+                                     boolean isExact,
+                                     String storageAlias,
+                                     String tableAlias,
+                                     String drouterAlias,
+                                     Map<String, IFilterCondition> hashWheres,
+                                     Map<String, IOrderByCondition> hashOrderbys,
+                                     RefArg<String> dbName,
+                                     RefArg<String> tableName
+    ) {
+        IStorageAttribute stgAttr = null;
+        IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
+        if(Validate.isNullOrEmptyOrAllSpace(drouterAlias)) { // not exist fix-drouterAlias
+            if(Validate.isNullOrEmptyOrAllSpace(storageAlias)){ // use drouer callback
+                IDataRoutersAttribute drsAttr =  objAttr.getDataRouters();
+                IAlbianObjectDataRouter drouter =  drsAttr.getDataRouter();
+                if(isExact) {
+                    IDataRouterAttribute drAttr = drouter.mappingExactReaderRouting(drsAttr.getWriterRouters(), hashWheres, hashOrderbys);
+                    String storageName = drAttr.getStorageName();
+                     stgAttr = asps.getStorageAttribute(storageName);
+                    dbName.setValue(drouter.mappingExactReaderRoutingDatabase(stgAttr,hashWheres,hashOrderbys));
+                    tableName.setValue(drouter.mappingExactReaderTable(drAttr,hashWheres,hashOrderbys));
+                } else {
+                    IDataRouterAttribute drAttr = drouter.mappingReaderRouting(drsAttr.getReaderRouters(), hashWheres, hashOrderbys);
+                    String storageName = drAttr.getStorageName();
+                     stgAttr = asps.getStorageAttribute(storageName);
+                    dbName.setValue(drouter.mappingReaderRoutingDatabase(stgAttr,hashWheres,hashOrderbys));
+                    tableName.setValue(drouter.mappingReaderTable(drAttr,hashWheres,hashOrderbys));
+                }
+            } else { // fix storageAlias then use it and table is class simplename default
+                 stgAttr = asps.getStorageAttribute(storageAlias);
+                dbName.setValue(stgAttr.getDatabase());
+                tableName.setValue(Validate.isNullOrEmptyOrAllSpace(tableAlias) ? objAttr.getClass().getSimpleName() : tableAlias);
+            }
+        } else { // do fix drouter
+            IDataRoutersAttribute drsAttr =  objAttr.getDataRouters();
+            IAlbianObjectDataRouter drouter =  drsAttr.getDataRouter();
+            IDataRouterAttribute drAttr = drsAttr.getReaderRouters().get(drouterAlias);
+            String storageName = drAttr.getStorageName();
+             stgAttr = asps.getStorageAttribute(storageName);
+            dbName.setValue(drouter.mappingReaderRoutingDatabase(stgAttr,hashWheres,hashOrderbys));
+            tableName.setValue(drouter.mappingReaderTable(drAttr,hashWheres,hashOrderbys));
+        }
+        return stgAttr;
+    }
+
+
+    protected StringBuilder makeSltCmdCols(String sessionId, IAlbianObjectAttribute objAttr, int dbStyle) {
+        StringBuilder sbCols = new StringBuilder();
+        for (String key : objAttr.getFields().keySet()) {
+            IMemberAttribute member = objAttr.getFields().get(key);
+            if (null == member) {
+                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                        sessionId,AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianPersistence,
+                        AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                        "albian-object:%s member:%s is not found.", objAttr.getType(), key);
+            }
+            if (!member.getIsSave())
+                continue;
+            if (member.getSqlFieldName().equals(member.getName())) {
+                if (PersistenceDatabaseStyle.MySql == dbStyle) {
+                    sbCols.append("`").append(member.getSqlFieldName()).append("`").append(",");
+                } else {
+                    sbCols.append("[").append(member.getName()).append("]").append(",");
+                }
+            } else {
+                if (PersistenceDatabaseStyle.MySql == dbStyle) {
+                    sbCols.append("`").append(member.getSqlFieldName()).append("`")
+                            .append(" AS ")
+                            .append("`").append(member.getName()).append("`").append(",");
+                } else {
+                    sbCols.append("[").append(member.getSqlFieldName()).append("]")
+                            .append(" AS ")
+                            .append("[").append(member.getName()).append("]").append(",");
+                }
+            }
+        }
+        if (0 != sbCols.length())
+            sbCols.deleteCharAt(sbCols.length() - 1);
+        return sbCols;
+    }
+
+    protected StringBuilder makeSltCmdCount(int dbStyle) {
+        StringBuilder sbCols = new StringBuilder();
+        if (PersistenceDatabaseStyle.MySql == dbStyle) {
+            sbCols.append(" COUNT(1) ")
+                    .append(" AS ")
+                    .append(" `COUNT` ");
+        } else {
+            sbCols.append(" COUNT(1) ")
+                    .append(" AS ")
+                    .append(" [COUNT] ");
+        }
+        return sbCols;
+    }
+
+
+    protected StringBuilder makeSltCmdOdrs(String sessionId, IAlbianObjectAttribute objAttr,
+                                           LinkedList<IOrderByCondition> orderbys, int dbStyle ) {
+        StringBuilder sbOrderby = new StringBuilder();
+        if (null != orderbys) {
+            for (IOrderByCondition orderby : orderbys) {
+                IMemberAttribute member = objAttr.getFields().get(
+                        orderby.getFieldName().toLowerCase());
+                if (null == member) {
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                            sessionId,AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianPersistence,
+                            AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                            "albian-object:%s member:%s is not found.",
+                            objAttr.getType(), orderby.getFieldName());
+                }
+
+                if (PersistenceDatabaseStyle.MySql == dbStyle) {
+                    sbOrderby.append("`").append(member.getSqlFieldName()).append("`");
+                } else {
+                    sbOrderby.append("[").append(member.getSqlFieldName()).append("]");
+                }
+                sbOrderby
+                        .append(" ")
+                        .append(EnumMapping.toSortOperation(orderby
+                                .getSortStyle())).append(",");
+            }
+        }
+        if (0 != sbOrderby.length())
+            sbOrderby.deleteCharAt(sbOrderby.length() - 1);
+        return sbOrderby;
+    }
+
+    protected StringBuilder makeSltCmdTxt(int sbStyle, StringBuilder sbCols, String tableName,
+                                          StringBuilder sbWhere, StringBuilder sbOrderby,
+                                          int start, int step, String idxName) {
+        StringBuilder sbCmdTxt = new StringBuilder();
+        sbCmdTxt.append("SELECT ").append(sbCols).append(" FROM ");
+        if (PersistenceDatabaseStyle.MySql == sbStyle) {
+            sbCmdTxt.append("`").append(tableName).append("`");
+        } else {
+            sbCmdTxt.append("[").append(tableName).append("]");
+        }
+        if(PersistenceDatabaseStyle.MySql == sbStyle
+                && !Validate.isNullOrEmptyOrAllSpace(idxName)) { //按照木木的要求，增加强行执行索引行为，只为mysql使用
+            sbCmdTxt.append(" FORCE INDEX (").append(idxName).append(") ");
+        }
+        if(!Validate.isNullOrEmptyOrAllSpace(sbWhere.toString())) {
+            sbCmdTxt.append(" WHERE ").append(sbWhere);
+        }
+        if (0 != sbOrderby.length()) {
+            sbCmdTxt.append(" ORDER BY ").append(sbOrderby);
+        }
+        if (0 <= start && 0 < step) {
+            sbCmdTxt.append(" LIMIT ").append(start).append(", ")
+                    .append(step);
+        }
+        if (0 > start && 0 < step) {
+            sbCmdTxt.append(" LIMIT ").append(step);
+        }
+        return sbCmdTxt;
+    }
+
+    protected StringBuilder makeSltCmdWhrs(String sessionId, IAlbianObjectAttribute objAttr,
+                                  int dbStyle, String implType,
+                                  LinkedList<IFilterCondition> wheres,
+                                  Map<String, ISqlParameter> paras) {
+        StringBuilder sbWhrs = new StringBuilder();
+        if (null != wheres) {
+            for (IFilterCondition where : wheres) {
+                if (where.isAddition()) continue;
+                IMemberAttribute member = objAttr.getFields().get(
+                        where.getFieldName().toLowerCase());
+
+                if (null == member) {
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                            sessionId,AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianPersistence,
+                            AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                            "albian-object:%s member:%s is not found.", implType, where.getFieldName());
+                }
+
+                sbWhrs.append(" ")
+                        .append(EnumMapping.toRelationalOperators(where
+                                .getRelationalOperator()))
+                        .append(where.isBeginSub() ? "(" : " ");
+                if (PersistenceDatabaseStyle.MySql == dbStyle) {
+                    sbWhrs.append("`").append(member.getSqlFieldName()).append("`");
+                } else {
+                    sbWhrs.append("[").append(member.getSqlFieldName()).append("]");
+                }
+                sbWhrs.append(
+                        EnumMapping.toLogicalOperation(where
+                                .getLogicalOperation())).append("#")
+                        .append(Validate.isNullOrEmptyOrAllSpace(where.getAliasName()) ? member.getSqlFieldName() : where.getAliasName())
+                        //	.append(member.getSqlFieldName())
+                        .append("#")
+                        .append(where.isCloseSub() ? ")" : "");
+                ISqlParameter para = new SqlParameter();
+                para.setName(member.getSqlFieldName());
+                para.setSqlFieldName(member.getSqlFieldName());
+                if (null == where.getFieldClass()) {
+                    para.setSqlType(member.getDatabaseType());
+                } else {
+                    para.setSqlType(Convert.toSqlType(where.getFieldClass()));
+                }
+                para.setValue(where.getValue());
+                paras.put(String.format("#%1$s#", Validate.isNullOrEmptyOrAllSpace(where.getAliasName()) ? member.getSqlFieldName() : where.getAliasName()),
+                        para);
+            }
+        }
+        return sbWhrs;
+    }
+
+
+
+    /*
+
+    protected IDataRouterAttribute parserReaderRouting(Class<?> itf, String sessionId, boolean isExact, String routingName,
                                                        Map<String, IFilterCondition> hashWheres, Map<String, IOrderByCondition> hashOrderbys)
             throws AlbianDataServiceException {
+        IAlbianObjectAttribute albianObject = AlbianEntityMetadata.getEntityMetadataByType(cls);
         String className = cls.getName();
-        IAlbianDataRouterParserService adrps = AlbianServiceRouter.getSingletonService(IAlbianDataRouterParserService.class, IAlbianDataRouterParserService.Name);
-        IDataRoutersAttribute routings = adrps.getDataRouterAttribute(className);
-
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute albianObject = amps.getAlbianObjectAttribute(className);
+        IDataRoutersAttribute routings = albianObject.getDataRouters();
+//        IAlbianDataRouterParserService adrps = AlbianServiceRouter.getSingletonService(IAlbianDataRouterParserService.class, IAlbianDataRouterParserService.Name);
+//        IDataRoutersAttribute routings = adrps.getDataRouterAttribute(className);
+//
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute albianObject = amps.getAlbianObjectAttribute(className);
 
         if (null == albianObject) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
@@ -164,9 +387,14 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
     protected String parserRoutingStorage(Class<?> cls, String sessionId, boolean isExact, IDataRouterAttribute readerRouting,
                                           Map<String, IFilterCondition> hashWheres, Map<String, IOrderByCondition> hashOrderbys)
             throws AlbianDataServiceException {
+//        String className = cls.getName();
+        IAlbianObjectAttribute albianObject = AlbianEntityMetadata.getEntityMetadataByType(cls);
         String className = cls.getName();
-        IAlbianDataRouterParserService adrps = AlbianServiceRouter.getSingletonService(IAlbianDataRouterParserService.class, IAlbianDataRouterParserService.Name);
-        IDataRoutersAttribute routings = adrps.getDataRouterAttribute(className);
+        IDataRoutersAttribute routings = albianObject.getDataRouters();
+//
+//        IAlbianDataRouterParserService adrps = AlbianServiceRouter.getSingletonService(IAlbianDataRouterParserService.class, IAlbianDataRouterParserService.Name);
+//        IDataRoutersAttribute routings = adrps.getDataRouterAttribute(className);
+
 
         if (null == readerRouting) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
@@ -209,5 +437,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
             return name;
         }
     }
+
+    */
 
 }

@@ -144,4 +144,20 @@ public class StringHelper  extends StringUtils {
         return String.valueOf(cs);
 
     }
+
+    public static String uppercasingFirstLetter(String name) {
+        char[] cs=name.toCharArray();
+        if('a' <= cs[0] && 'z' >= cs[0])
+            cs[0]-= 32;
+        return String.valueOf(cs);
+
+    }
+
+
+    public static String lowercasingFirstLetter(String txt){
+        char[] cs=txt.toCharArray();
+        if('A' <= cs[0] && 'Z' >= cs[0])
+            cs[0]+= 32;
+        return String.valueOf(cs);
+    }
 }

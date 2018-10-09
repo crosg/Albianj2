@@ -60,20 +60,17 @@ public class SaveCommandAdapter implements IPersistenceUpdateCommand {
             this.modify = new ModifyCommandAdapter();
     }
 
-    public IPersistenceCommand builder(String sessionid, IAlbianObject object, IDataRoutersAttribute routings,
-                                       IAlbianObjectAttribute albianObject, Map<String, Object> mapValue,
-                                       IDataRouterAttribute routing, IStorageAttribute storage) throws AlbianDataServiceException {
+    public IPersistenceCommand buildPstCmd(String sessionId,int dbStyle,String tableName,IAlbianObject object,
+                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue) throws AlbianDataServiceException {
         if (object.getIsAlbianNew()) {
-            return create.builder(sessionid, object, routings, albianObject, mapValue,
-                    routing, storage);
+            return create.buildPstCmd(sessionId,dbStyle,tableName,object,objAttr,mapValue);
         } else {
-            return modify.builder(sessionid, object, routings, albianObject, mapValue,
-                    routing, storage);
+            return modify.buildPstCmd(sessionId,dbStyle,tableName,object,objAttr,mapValue);
         }
     }
 
-    public IPersistenceCommand builder(String sessionId, IAlbianObject object, IDataRoutersAttribute routings, IAlbianObjectAttribute albianObject,
-                                       Map<String, Object> mapValue, IDataRouterAttribute routing, IStorageAttribute storage, String[] members) throws AlbianDataServiceException {
+    public IPersistenceCommand buildPstCmd(String sessionId, IAlbianObject object, IDataRoutersAttribute routings, IAlbianObjectAttribute albianObject,
+                                           Map<String, Object> mapValue, IDataRouterAttribute routing, IStorageAttribute storage, String[] members) throws AlbianDataServiceException {
         throw new AlbianDataServiceException();
     }
 

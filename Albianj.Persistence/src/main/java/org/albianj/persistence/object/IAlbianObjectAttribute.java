@@ -56,6 +56,10 @@ public interface IAlbianObjectAttribute {
 
     public void setType(String type);
 
+    Class<?> getImplClzz();
+
+    void setImplClzz(Class<?> implClzz);
+
     public ICacheAttribute getCache();
 
     public void setCache(ICacheAttribute cache);
@@ -64,11 +68,19 @@ public interface IAlbianObjectAttribute {
 
     public void setDefaultRouting(IDataRouterAttribute defaultRouting);
 
-    public Map<String, IMemberAttribute> getMembers();
-
-    public void setMembers(Map<String, IMemberAttribute> members);
+//    public Map<String, IMemberAttribute> getMembers();
+//
+//    public void setMembers(Map<String, IMemberAttribute> members);
 
     public boolean getCompensating();
 
     public void setCompensating(boolean compensating);
+
+    IDataRoutersAttribute getDataRouters();
+
+    void setDataRouters(IDataRoutersAttribute dra);
+
+    Map<String,IAlbianEntityFieldAttribute> getFields();
+
+    void setFields(Map<String,IAlbianEntityFieldAttribute> fields);
 }

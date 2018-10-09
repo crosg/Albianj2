@@ -39,7 +39,8 @@ package org.albianj.persistence.impl.mapping;
 
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
-import org.albianj.persistence.object.IAlbianObjectAttribute;
+import org.albianj.persistence.impl.rant.AlbianEntityRantScaner;
+import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.persistence.service.IAlbianMappingParserService;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
@@ -58,8 +59,8 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
 
     private final static String tagName = "AlbianObjects/AlbianObject";
     private String file = "persistence.xml";
-    private HashMap<String, IAlbianObjectAttribute> _objAttrs = null;
-    private HashMap<String, String> _class2Inter = null;
+//    private HashMap<String, IAlbianObjectAttribute> _objAttrs = null;
+//    private HashMap<String, String> _class2Inter = null;
     private HashMap<String, PropertyDescriptor[]> _bpd = null;
 
     public void setConfigFileName(String fileName) {
@@ -67,8 +68,8 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
     }
 
     public void init() throws AlbianParserException {
-        _objAttrs = new HashMap<>();
-        _class2Inter = new HashMap<>();
+//        _objAttrs = new HashMap<>();
+//        _class2Inter = new HashMap<>();
         _bpd = new HashMap<>();
 
 
@@ -116,6 +117,49 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
             }
         }
 
+        // add rant scaner
+        List pkgNodes = XmlParser.analyze(doc,"AlbianObjects/Packages/Package");
+        if(!Validate.isNullOrEmpty(pkgNodes)){
+            for (Object node : pkgNodes) {
+                Element elt = XmlParser.toElement(node);
+
+                String enable = XmlParser.getAttributeValue(elt,"Enable");
+                String pkg = XmlParser.getAttributeValue(elt,"Path");
+
+                if(!Validate.isNullOrEmptyOrAllSpace(enable)){
+                    boolean b = Boolean.parseBoolean(enable);
+                    if(!b) {
+                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Warn,null,
+                                AlbianModuleType.AlbianPersistence,AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                                "Path -> %s in the Package enable is false,so not load it.",
+                                Validate.isNullOrEmptyOrAllSpace(pkg) ? "NoPath" : pkg);
+                        continue;// not load pkg
+                    }
+                }
+
+                if(Validate.isNullOrEmptyOrAllSpace(pkg)){
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
+                            AlbianModuleType.AlbianPersistence,AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                            "loading the persistence.xml is error. 'Path' attribute in  Package config-item is null or empty.");
+                } else {
+                    try {
+                        HashMap<String,Object> pkgMap =  AlbianEntityRantScaner.scanPackage(pkg);
+                        if(null != pkgMap){
+                            AlbianEntityMetadata.putAll(pkgMap);//merger the metedata
+                        }
+                    } catch (Exception e) {
+                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+                                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e,
+                                AlbianModuleType.AlbianPersistence,AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                                "loading the persistence.xml is error. Path -> %s in Package is fail.",pkg);
+                    }
+                }
+
+            }
+        }
+
         List objNodes = XmlParser.analyze(doc, tagName);
         if (Validate.isNullOrEmpty(objNodes)) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -135,32 +179,32 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
             @SuppressWarnings("rawtypes") List nodes)
             throws AlbianParserException;
 
-    protected abstract IAlbianObjectAttribute parserAlbianObject(Element node)
-            throws AlbianParserException;
+//    protected abstract IAlbianObjectAttribute parserAlbianObject(Element node)
+//            throws AlbianParserException;
 
-    public void addAlbianObjectAttribute(String name, IAlbianObjectAttribute aba) {
-        _objAttrs.put(name, aba);
-    }
+//    public void addAlbianObjectAttribute(String name, IAlbianObjectAttribute aba) {
+//        _objAttrs.put(name, aba);
+//    }
+//
+//    public IAlbianObjectAttribute getAlbianObjectAttribute(String name) {
+//        return _objAttrs.get(name);
+//    }
+//
+//    public void addAlbianObjectClassToInterface(String type, String inter) {
+//        _class2Inter.put(type, inter);
+//    }
+//
+//    public String getAlbianObjectInterface(String type) {
+//        return _class2Inter.get(type);
+//    }
 
-    public IAlbianObjectAttribute getAlbianObjectAttribute(String name) {
-        return _objAttrs.get(name);
-    }
-
-    public void addAlbianObjectClassToInterface(String type, String inter) {
-        _class2Inter.put(type, inter);
-    }
-
-    public String getAlbianObjectInterface(String type) {
-        return _class2Inter.get(type);
-    }
-
-    public void addAlbianObjectPropertyDescriptor(String type, PropertyDescriptor[] pds) {
-        _bpd.put(type, pds);
-    }
-
-    public PropertyDescriptor[] getAlbianObjectPropertyDescriptor(String type) {
-        return _bpd.get(type);
-    }
+//    public void addAlbianObjectPropertyDescriptor(String type, PropertyDescriptor[] pds) {
+//        _bpd.put(type, pds);
+//    }
+//
+//    public PropertyDescriptor[] getAlbianObjectPropertyDescriptor(String type) {
+//        return _bpd.get(type);
+//    }
 
 
 }

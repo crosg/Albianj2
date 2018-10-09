@@ -38,6 +38,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.persistence.impl.context;
 
 import org.albianj.persistence.context.IWriterJob;
+import org.albianj.persistence.context.dactx.IAlbianObjectWarp;
 import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.object.IAlbianObject;
 
@@ -53,8 +54,8 @@ public interface IWriterJobAdapter {
     public IWriterJob buildModification(String sessionId, IAlbianObject object)
             throws AlbianDataServiceException;
 
-    public IWriterJob buildModification(String sessionId, IAlbianObject object, String[] members)
-            throws AlbianDataServiceException;
+//    public IWriterJob buildModification(String sessionId, IAlbianObject object, String[] members)
+//            throws AlbianDataServiceException;
 
     public IWriterJob buildModification(String sessionId, List<? extends IAlbianObject> objects)
             throws AlbianDataServiceException;
@@ -69,6 +70,9 @@ public interface IWriterJobAdapter {
             throws AlbianDataServiceException;
 
     public IWriterJob buildSaving(String sessionId, List<? extends IAlbianObject> objects)
+            throws AlbianDataServiceException;
+
+    IWriterJob buildWriterJob(String sessionId, List<IAlbianObjectWarp> entities)
             throws AlbianDataServiceException;
 
 }

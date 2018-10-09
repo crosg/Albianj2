@@ -35,14 +35,6 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
 
     public Logger getLogger(String name) {
         return AlbianServiceRouter.getLogger().getLogger(name);
-//        Thread.currentThread().setContextClassLoader(AlbianClassLoader.getInstance());
-//        if (loggers.containsKey(name)) {
-//            return loggers.get(name);
-//        } else {
-//            Logger logger = LoggerFactory.getLogger(name);
-//            loggers.put(name, logger);
-//            return logger;
-//        }
     }
 
     @Override
@@ -95,7 +87,8 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
 
     @Override
     public void log(String loggerName, Object sessionId, AlbianLoggerLevel level, Throwable e, String format, Object... values) {
-        StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
+//        StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
+        StackTraceElement stack = e.getStackTrace()[1];
         String filename = stack.getFileName();
         String method = stack.getMethodName();
         int line = stack.getLineNumber();
@@ -106,7 +99,8 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
     public void logAndThrow(String loggerName,Object sessionId, AlbianLoggerLevel level,
                             Throwable e, AlbianModuleType module,String throwInfo,
                             String format, Object... values) throws AlbianRuntimeException {
-        StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
+//        StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
+        StackTraceElement stack = e.getStackTrace()[1];
         String filename = stack.getFileName();
         String method = stack.getMethodName();
         int line = stack.getLineNumber();

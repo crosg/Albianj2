@@ -61,4 +61,6 @@ public @interface AlbianObjectMemberAttribute {
     int DbType() default 0;
 
     boolean IsSave() default true;
+
+    boolean Ignore() default false;
 }

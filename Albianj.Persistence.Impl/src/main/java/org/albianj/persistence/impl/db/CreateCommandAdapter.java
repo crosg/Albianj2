@@ -53,82 +53,124 @@ import java.util.Map;
 
 public class CreateCommandAdapter implements IPersistenceUpdateCommand {
 
-    public static Map<String, ISqlParameter> makeCreateCommand(String sessionId,IAlbianObject object, IDataRoutersAttribute routings,
-                                                               IAlbianObjectAttribute albianObject, Map<String, Object> mapValue, IDataRouterAttribute routing,
-                                                               IStorageAttribute storage, StringBuilder sqlText) throws AlbianDataServiceException {
-        StringBuilder cols = new StringBuilder();
-        StringBuilder paras = new StringBuilder();
-
-        sqlText.append("INSERT INTO ");// .append(routing.getTableName());
-        String tableName = null;
-        if (null != routings && null != routings.getDataRouter()) {
-            tableName = routings.getDataRouter().mappingWriterTable(routing,
-                    object);
-        }
-        tableName = Validate.isNullOrEmptyOrAllSpace(tableName) ? routing
-                .getTableName() : tableName;
-        if (storage.getDatabaseStyle() == PersistenceDatabaseStyle.MySql) {
-            sqlText.append("`").append(tableName).append("`");
-        } else {
-            sqlText.append("[").append(tableName).append("]");
-        }
-
-        Map<String, IMemberAttribute> mapMemberAttributes = albianObject
-                .getMembers();
-        Map<String, ISqlParameter> sqlParas = new HashMap<String, ISqlParameter>();
-//        boolean isHavePk = false;
-        for (Map.Entry<String, IMemberAttribute> entry : mapMemberAttributes
-                .entrySet()) {
-            IMemberAttribute member = entry.getValue();
-
-            Object v = mapValue.get(member.getName());
-            if (!member.getIsSave() || null == v)
-                continue;
-
-//            if(member.getPrimaryKey()) {
-//                isHavePk = true;
-//            }
-
-            ISqlParameter para = new SqlParameter();
-            para.setName(member.getName());
-            para.setSqlFieldName(member.getSqlFieldName());
-            para.setSqlType(member.getDatabaseType());
-            para.setValue(v);
-            sqlParas.put(String.format("#%1$s#", member.getSqlFieldName()),
-                    para);
-            if (storage.getDatabaseStyle() == PersistenceDatabaseStyle.MySql) {
-                cols.append("`").append(member.getSqlFieldName()).append("`");
-            } else {
-                cols.append("[").append(member.getSqlFieldName()).append("]");
-            }
-            cols.append(",");
-            paras.append("#").append(member.getSqlFieldName()).append("# ,");
-        }
-
-        //经过讨论，还是要兼容老的自增主键
-        //以后再出新业务出现自增组件找DBA
-//        if(!isHavePk){
-//            AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianSqlLoggerName,
-//                    AlbianDataServiceException.class, "DataService is error.",
-//                    "the new albianj object can not be insert .there is not PrimaryKey in the object. job id:%s.", sessionId);
+//    public static Map<String, ISqlParameter> makeCreateCommand(String sessionId,IAlbianObject object, IDataRoutersAttribute routings,
+//                                                               IAlbianObjectAttribute albianObject, Map<String, Object> mapValue, IDataRouterAttribute routing,
+//                                                               IStorageAttribute storage, StringBuilder sqlText) throws AlbianDataServiceException {
+//        StringBuilder cols = new StringBuilder();
+//        StringBuilder paras = new StringBuilder();
+//
+//        sqlText.append("INSERT INTO ");// .append(routing.getTableName());
+//        String tableName = null;
+//        if (null != routings && null != routings.getDataRouter()) {
+//            tableName = routings.getDataRouter().mappingWriterTable(routing,
+//                    object);
 //        }
+//        tableName = Validate.isNullOrEmptyOrAllSpace(tableName) ? routing
+//                .getTableName() : tableName;
+//        if (storage.getDatabaseStyle() == PersistenceDatabaseStyle.MySql) {
+//            sqlText.append("`").append(tableName).append("`");
+//        } else {
+//            sqlText.append("[").append(tableName).append("]");
+//        }
+//
+//        Map<String,IAlbianEntityFieldAttribute> fieldsAttr = albianObject.getFields();
+//
+////        Map<String, IMemberAttribute> mapMemberAttributes = albianObject
+////                .getMembers();
+//        Map<String, ISqlParameter> sqlParas = new HashMap<String, ISqlParameter>();
+////        boolean isHavePk = false;
+//        for (Map.Entry<String, IAlbianEntityFieldAttribute> entry : fieldsAttr
+//                .entrySet()) {
+//            IMemberAttribute member = entry.getValue();
+//
+//            if(member.isAutoGenKey()){
+//                continue;
+//            }
+//            Object v = mapValue.get(member.getName());
+//            if (!member.getIsSave() || null == v)
+//                continue;
+//
+////            if(member.getPrimaryKey()) {
+////                isHavePk = true;
+////            }
+//
+//            ISqlParameter para = new SqlParameter();
+//            para.setName(member.getName());
+//            para.setSqlFieldName(member.getSqlFieldName());
+//            para.setSqlType(member.getDatabaseType());
+//            para.setValue(v);
+//            sqlParas.put(String.format("#%1$s#", member.getSqlFieldName()),
+//                    para);
+//            if (storage.getDatabaseStyle() == PersistenceDatabaseStyle.MySql) {
+//                cols.append("`").append(member.getSqlFieldName()).append("`");
+//            } else {
+//                cols.append("[").append(member.getSqlFieldName()).append("]");
+//            }
+//            cols.append(",");
+//            paras.append("#").append(member.getSqlFieldName()).append("# ,");
+//        }
+//
+//        //经过讨论，还是要兼容老的自增主键
+//        //以后再出新业务出现自增组件找DBA
+////        if(!isHavePk){
+////            AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianSqlLoggerName,
+////                    AlbianDataServiceException.class, "DataService is error.",
+////                    "the new albianj object can not be insert .there is not PrimaryKey in the object. job id:%s.", sessionId);
+////        }
+//
+//
+//        if (0 < cols.length()) {
+//            cols.deleteCharAt(cols.length() - 1);
+//        }
+//        if (0 < paras.length()) {
+//            paras.deleteCharAt(paras.length() - 1);
+//        }
+//        sqlText.append(" (").append(cols).append(") ").append("VALUES (")
+//                .append(paras).append(") ");
+//        return sqlParas;
+//    }
 
+//    public IPersistenceCommand buildPstCmd(String sessionId, IAlbianObject object, IDataRoutersAttribute routings,
+//                                            IAlbianObjectAttribute albianObject, Map<String, Object> mapValue,
+//                                            IDataRouterAttribute routing, IStorageAttribute storage) throws AlbianDataServiceException {
+//
+//        if (!object.getIsAlbianNew()) {
+//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+//                    sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
+//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
+//                    "the loaded albianj object can not be insert.please new the object from database first.");
+//        }
+//
+//        IPersistenceCommand cmd = new PersistenceCommand();
+//        StringBuilder sqlText = new StringBuilder();
+//
+//        Map<String, ISqlParameter> sqlParas = makeCreateCommand(sessionId,object, routings, albianObject, mapValue, routing,
+//                storage, sqlText);
+//        cmd.setCommandText(sqlText.toString());
+//        cmd.setCommandType(PersistenceCommandType.Text);
+//        cmd.setParameters(sqlParas);
+//
+//        if (albianObject.getCompensating()) {
+//            StringBuilder rollbackText = new StringBuilder();
+//            Map<String, ISqlParameter> rollbackParas = RemoveCommandAdapter.makeRomoveCommand(sessionId,
+//                    object, routings, albianObject, mapValue, routing,
+//                    storage, rollbackText);
+//            cmd.setRollbackCommandText(rollbackText.toString());
+//            cmd.setRollbackCommandType(PersistenceCommandType.Text);
+//            cmd.setRollbackParameters(rollbackParas);
+//        }
+//
+//        PersistenceNamedParameter.parseSql(cmd);
+//        return cmd;
+//    }
+//
+//    public IPersistenceCommand buildPstCmd(String sessionId, IAlbianObject object, IDataRoutersAttribute routings, IAlbianObjectAttribute albianObject,
+//                                           Map<String, Object> mapValue, IDataRouterAttribute routing, IStorageAttribute storage, String[] members) throws NoSuchMethodException {
+//        throw new NoSuchMethodException("no the service");
+//    }
 
-        if (0 < cols.length()) {
-            cols.deleteCharAt(cols.length() - 1);
-        }
-        if (0 < paras.length()) {
-            paras.deleteCharAt(paras.length() - 1);
-        }
-        sqlText.append(" (").append(cols).append(") ").append("VALUES (")
-                .append(paras).append(") ");
-        return sqlParas;
-    }
-
-    public IPersistenceCommand builder(String sessionId, IAlbianObject object, IDataRoutersAttribute routings,
-                                       IAlbianObjectAttribute albianObject, Map<String, Object> mapValue,
-                                       IDataRouterAttribute routing, IStorageAttribute storage) throws AlbianDataServiceException {
-
+    public IPersistenceCommand buildPstCmd(String sessionId,int dbStyle,String tableName,IAlbianObject object,
+                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue) throws AlbianDataServiceException{
         if (!object.getIsAlbianNew()) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
@@ -139,17 +181,18 @@ public class CreateCommandAdapter implements IPersistenceUpdateCommand {
         IPersistenceCommand cmd = new PersistenceCommand();
         StringBuilder sqlText = new StringBuilder();
 
-        Map<String, ISqlParameter> sqlParas = makeCreateCommand(sessionId,object, routings, albianObject, mapValue, routing,
-                storage, sqlText);
+        Map<String, ISqlParameter> sqlParas = makeCreateCommand(sessionId,dbStyle,tableName,
+                                                                 objAttr, mapValue,sqlText);
+
         cmd.setCommandText(sqlText.toString());
         cmd.setCommandType(PersistenceCommandType.Text);
         cmd.setParameters(sqlParas);
 
-        if (albianObject.getCompensating()) {
+        if (objAttr.getCompensating()) {
             StringBuilder rollbackText = new StringBuilder();
-            Map<String, ISqlParameter> rollbackParas = RemoveCommandAdapter.makeRomoveCommand(sessionId,
-                    object, routings, albianObject, mapValue, routing,
-                    storage, rollbackText);
+
+            Map<String, ISqlParameter> rollbackParas = RemoveCommandAdapter.makeRemoveCommand(sessionId,
+                    dbStyle, tableName, objAttr, mapValue, rollbackText);
             cmd.setRollbackCommandText(rollbackText.toString());
             cmd.setRollbackCommandType(PersistenceCommandType.Text);
             cmd.setRollbackParameters(rollbackParas);
@@ -159,9 +202,59 @@ public class CreateCommandAdapter implements IPersistenceUpdateCommand {
         return cmd;
     }
 
-    public IPersistenceCommand builder(String sessionId, IAlbianObject object, IDataRoutersAttribute routings, IAlbianObjectAttribute albianObject,
-                                       Map<String, Object> mapValue, IDataRouterAttribute routing, IStorageAttribute storage, String[] members) throws NoSuchMethodException {
-        throw new NoSuchMethodException("no the service");
+    public static Map<String, ISqlParameter> makeCreateCommand(String sessionId,int dbStyle,String tableName,
+                                                               IAlbianObjectAttribute objAttr, Map<String, Object> sqlParaVals,
+                                                               StringBuilder sqlText) throws AlbianDataServiceException {
+        StringBuilder cols = new StringBuilder();
+        StringBuilder paras = new StringBuilder();
+
+        sqlText.append("INSERT INTO ");
+
+        if (PersistenceDatabaseStyle.MySql == dbStyle) {
+            sqlText.append("`").append(tableName).append("`");
+        } else {
+            sqlText.append("[").append(tableName).append("]");
+        }
+
+        Map<String,IAlbianEntityFieldAttribute> fieldsAttr = objAttr.getFields();
+
+        Map<String, ISqlParameter> sqlParas = new HashMap<String, ISqlParameter>();
+        for (Map.Entry<String, IAlbianEntityFieldAttribute> entry : fieldsAttr
+                .entrySet()) {
+            IMemberAttribute member = entry.getValue();
+
+            if(member.isAutoGenKey()){
+                continue;
+            }
+            Object v = sqlParaVals.get(member.getName());
+            if (!member.getIsSave() || null == v)
+                continue;
+
+            ISqlParameter para = new SqlParameter();
+            para.setName(member.getName());
+            para.setSqlFieldName(member.getSqlFieldName());
+            para.setSqlType(member.getDatabaseType());
+            para.setValue(v);
+            sqlParas.put(String.format("#%1$s#", member.getSqlFieldName()),
+                    para);
+            if (PersistenceDatabaseStyle.MySql == dbStyle) {
+                cols.append("`").append(member.getSqlFieldName()).append("`");
+            } else {
+                cols.append("[").append(member.getSqlFieldName()).append("]");
+            }
+            cols.append(",");
+            paras.append("#").append(member.getSqlFieldName()).append("# ,");
+        }
+
+        if (0 < cols.length()) {
+            cols.deleteCharAt(cols.length() - 1);
+        }
+        if (0 < paras.length()) {
+            paras.deleteCharAt(paras.length() - 1);
+        }
+        sqlText.append(" (").append(cols).append(") ").append("VALUES (")
+                .append(paras).append(") ");
+        return sqlParas;
     }
 
 }

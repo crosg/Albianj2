@@ -13,6 +13,7 @@ import org.albianj.verify.Validate;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,9 @@ public class AlbianServiceRantParser {
                         //must flag with anno and extends IAlbianService
                         // extends interface is compatibling the last version
                         return cls.isAnnotationPresent(AlbianServiceRant.class)
-                                && IAlbianService.class.isAssignableFrom(cls);
+                                && IAlbianService.class.isAssignableFrom(cls)
+                                && !cls.isInterface()
+                                && !Modifier.isAbstract(cls.getModifiers());
                     }
                 },
 
@@ -100,6 +103,7 @@ public class AlbianServiceRantParser {
         Map<String,IAlbianServiceFieldAttribute> fieldsAttr = new HashMap<>();
         for(Field f : fields){
             if(f.isAnnotationPresent(AlbianServiceFieldRant.class)){
+                f.setAccessible(true);
                 IAlbianServiceFieldAttribute aspa = new AlbianServiceFieldAttribute();
                 AlbianServiceFieldRant frant = f.getAnnotation(AlbianServiceFieldRant.class);
                 aspa.setName(f.getName());

@@ -51,9 +51,6 @@ import java.util.HashMap;
 public abstract class FreeAlbianRestfulMActionsService extends FreeAlbianService
         implements IAlbianRestfulMActionsService {
 
-    // private HashMap<String, Method> methods = null;
-    // private HashMap<String,Method> verifyMethods = null;
-
     private HashMap<String, IAlbianRestfulActionMethodContext> methods = null;
 
     @Override
@@ -92,15 +89,15 @@ public abstract class FreeAlbianRestfulMActionsService extends FreeAlbianService
 
                 String name = null;
                 if (!Validate.isNullOrEmptyOrAllSpace(araa.ServiceName())) {
-                    name = m.getName();
+                    name = araa.ServiceName();
                     if (null == action) {
                         action = new AlbianRestfulActionMethodContext();
                         action.setVerfiy(m);
                         methods.put(name, action);
                     } else {
+                        action = methods.get(name);
                         action.setVerfiy(m);
                     }
-                    action = methods.get(name);
 
                 }
             }
@@ -110,7 +107,7 @@ public abstract class FreeAlbianRestfulMActionsService extends FreeAlbianService
 
                 String name = null;
                 if (!Validate.isNullOrEmptyOrAllSpace(araa.ServiceName())) {
-                    name = m.getName();
+                    name = araa.ServiceName();
                     if (null == action) {
                         action = new AlbianRestfulActionMethodContext();
                         if (TriggerPointStyle.before == araa.TriggerPoint()) {
@@ -122,6 +119,7 @@ public abstract class FreeAlbianRestfulMActionsService extends FreeAlbianService
                             methods.put(name, action);
                         }
                     } else {
+                        action = methods.get(name);
                         if (TriggerPointStyle.before == araa.TriggerPoint()) {
                             action.setBefore(m);
                         }
@@ -129,7 +127,6 @@ public abstract class FreeAlbianRestfulMActionsService extends FreeAlbianService
                             action.setAfter(m);
                         }
                     }
-                    action = methods.get(name);
                 }
             }
         }

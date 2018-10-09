@@ -44,10 +44,8 @@ import org.albianj.persistence.context.IReaderJob;
 import org.albianj.persistence.db.*;
 import org.albianj.persistence.impl.toolkit.ListConvert;
 import org.albianj.persistence.impl.toolkit.ResultConvert;
-import org.albianj.persistence.object.IAlbianObject;
-import org.albianj.persistence.object.IAlbianObjectAttribute;
-import org.albianj.persistence.object.IMemberAttribute;
-import org.albianj.persistence.object.IRunningStorageAttribute;
+import org.albianj.persistence.object.*;
+import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.persistence.service.IAlbianMappingParserService;
 import org.albianj.persistence.service.IAlbianStorageParserService;
 import org.albianj.runtime.AlbianModuleType;
@@ -241,11 +239,15 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
             throws AlbianDataServiceException {
         String inter = cli.getName();
 
-        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-        IAlbianObjectAttribute attr = amps.getAlbianObjectAttribute(inter);
-        String className = attr.getType();
-        PropertyDescriptor[] propertyDesc = amps.getAlbianObjectPropertyDescriptor(className);
-        Map<String, IMemberAttribute> members = attr.getMembers();
+        IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(inter);
+        String className = objAttr.getType();
+        Map<String,IAlbianEntityFieldAttribute> member = objAttr.getFields();
+
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute attr = amps.getAlbianObjectAttribute(inter);
+//        String className = attr.getType();
+//        PropertyDescriptor[] propertyDesc = amps.getAlbianObjectPropertyDescriptor(className);
+//        Map<String, IMemberAttribute> members = attr.getMembers();
         Class<?> cls = null;
         try {
             cls = AlbianClassLoader.getInstance().loadClass(className);
@@ -261,25 +263,28 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
                 try {
                     @SuppressWarnings("unchecked")
                     T obj = (T) cls.newInstance();
-                    for (PropertyDescriptor desc : propertyDesc) {
-                        String name = desc.getName();
-                        IMemberAttribute ma = members.get(name.toLowerCase());
-                        if (null == ma)
-                            continue;
-                        if (!ma.getIsSave()) {
-                            if (name.equals("isAlbianNew")) {
-                                desc.getWriteMethod().invoke(obj, false);
-                            }
+                    for (IAlbianEntityFieldAttribute fAttr : member.values()) {
+//                        String name = desc.getName();
+//                        IMemberAttribute ma = members.get(name.toLowerCase());
+//                        if (null == ma)
+//                            continue;
+                        if (!fAttr.getIsSave()) {
+//                            if (name.equals("isAlbianNew")) {
+//                                desc.getWriteMethod().invoke(obj, false);
+//                            }
                             continue;
                         }
 
-                        Object v = result.getObject(name);
+                        Object v = result.getObject(fAttr.getPropertyName());
                         if (null != v) {
-                            Object rc = ResultConvert.toBoxValue(desc.getPropertyType(), v);
-                            desc.getWriteMethod().invoke(obj, rc);
-                            obj.setOldAlbianObject(name, rc);
+                            Object rc = ResultConvert.toBoxValue(fAttr.getEntityField().getType(), v);
+                            fAttr.getEntityField().set(obj,rc);
+//                            desc.getWriteMethod().invoke(obj, rc);
+                            obj.setOldAlbianObject(fAttr.getPropertyName(),rc);
+//                            obj.setOldAlbianObject(name, rc);
                         }
                     }
+                    obj.setIsAlbianNew(false);
                     list.add(obj);
                 } catch (Exception e) {
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,

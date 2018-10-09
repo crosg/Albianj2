@@ -604,7 +604,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             throws AlbianDataServiceException {
         IReaderJobAdapter ad = new ReaderJobAdapter();
         List<T> list = null;
-        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact, routingName, start, step,
+        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact, null,null,routingName, start, step,
                 wheres, orderbys,idxName);
         IPersistenceQueryScope scope = new PersistenceQueryScope();
         list = scope.execute(cls, job);
@@ -617,7 +617,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
                                                                 LinkedList<IOrderByCondition> orderbys,String idxName)
             throws AlbianDataServiceException {
         IReaderJobAdapter ad = new ReaderJobAdapter();
-        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact, routingName,
+        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact,null,null, routingName,
                 wheres, orderbys,idxName);
         IPersistenceQueryScope scope = new PersistenceQueryScope();
         Object o = scope.execute(job);

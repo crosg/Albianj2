@@ -49,6 +49,8 @@ public class MemberAttribute implements IMemberAttribute {
     private boolean primaryKey = false;
     private int databaseType = Types.NVARCHAR;
     private boolean isSave = true;
+    private String varField = null;
+    private boolean autoGenKey = false;
 
     public String getName() {
         // TODO Auto-generated method stub
@@ -118,6 +120,26 @@ public class MemberAttribute implements IMemberAttribute {
     public void setIsSave(boolean isSave) {
         // TODO Auto-generated method stub
         this.isSave = isSave;
+    }
+
+    @Override
+    public String getVarField() {
+        return this.varField;
+    }
+
+    @Override
+    public void setVarField(String varField) {
+        this.varField = varField;
+    }
+
+    @Override
+    public boolean isAutoGenKey() {
+        return this.autoGenKey;
+    }
+
+    @Override
+    public void setAutoGenKey(boolean autoGenKey) {
+        this.autoGenKey = autoGenKey;
     }
 
 }
