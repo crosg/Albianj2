@@ -6,7 +6,7 @@
 
     <groupId>com.yuewen.nrzx.albianj</groupId>
     <artifactId>Albianj</artifactId>
-    <version>20180803-SNAPSHOT</version>
+    <version>2018101101</version>
     <modules>
         <module>Albianj.Comment</module>
         <module>Albianj.Commons</module>

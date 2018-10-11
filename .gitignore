@@ -20,3 +20,5 @@ Yuewen.*
 *.iml
 *.log
 .idea
+/.idea
+/logs
