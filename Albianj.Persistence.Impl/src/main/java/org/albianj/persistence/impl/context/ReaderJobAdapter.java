@@ -92,7 +92,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
             } else { // fix storageAlias then use it and table is class simplename default
                  stgAttr = asps.getStorageAttribute(storageAlias);
                 dbName.setValue(stgAttr.getDatabase());
-                tableName.setValue(Validate.isNullOrEmptyOrAllSpace(tableAlias) ? objAttr.getClass().getSimpleName() : tableAlias);
+                tableName.setValue(Validate.isNullOrEmptyOrAllSpace(tableAlias) ? objAttr.getImplClzz().getSimpleName() : tableAlias);
             }
         } else { // do fix drouter
             IDataRoutersAttribute drsAttr =  objAttr.getDataRouters();
@@ -110,7 +110,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
     protected StringBuilder makeSltCmdCols(String sessionId, IAlbianObjectAttribute objAttr, int dbStyle) {
         StringBuilder sbCols = new StringBuilder();
         for (String key : objAttr.getFields().keySet()) {
-            IMemberAttribute member = objAttr.getFields().get(key);
+            IAlbianEntityFieldAttribute member = objAttr.getFields().get(key);
             if (null == member) {
                 AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                         sessionId,AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianPersistence,
@@ -119,21 +119,21 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
             }
             if (!member.getIsSave())
                 continue;
-            if (member.getSqlFieldName().equals(member.getName())) {
+            if (member.getSqlFieldName().equals(member.getPropertyName())) {
                 if (PersistenceDatabaseStyle.MySql == dbStyle) {
                     sbCols.append("`").append(member.getSqlFieldName()).append("`").append(",");
                 } else {
-                    sbCols.append("[").append(member.getName()).append("]").append(",");
+                    sbCols.append("[").append(member.getSqlFieldName()).append("]").append(",");
                 }
             } else {
                 if (PersistenceDatabaseStyle.MySql == dbStyle) {
                     sbCols.append("`").append(member.getSqlFieldName()).append("`")
                             .append(" AS ")
-                            .append("`").append(member.getName()).append("`").append(",");
+                            .append("`").append(member.getPropertyName()).append("`").append(",");
                 } else {
                     sbCols.append("[").append(member.getSqlFieldName()).append("]")
                             .append(" AS ")
-                            .append("[").append(member.getName()).append("]").append(",");
+                            .append("[").append(member.getPropertyName()).append("]").append(",");
                 }
             }
         }

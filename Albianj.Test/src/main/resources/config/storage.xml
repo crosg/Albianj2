@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 所有数据库连接的配置 开发环境用户名和密码可以不用加密，online必须加密 -->
+<!-- 注意：如果不在routing.xml中对对象进行数据路由的话，默认都会存放入第一个storage节点的数据库中 -->
+<Storages>
+	<!--<Storage>-->
+		<!--<Name>spermbank</Name>-->
+		<!--<DatabaseStyle>MySql</DatabaseStyle>-->
+		<!--<Server>10.98.152.59</Server>-->
+		<!--<Port>3306</Port>-->
+		<!--<Database>dazui</Database>-->
+		<!--<User>root</User>-->
+		<!--<Password>123456</Password>-->
+		<!--<Pooling>true</Pooling>-->
+		<!--<MinPoolSize>1</MinPoolSize>-->
+		<!--<MaxPoolSize>2</MaxPoolSize>-->
+		<!--<Timeout>30</Timeout>-->
+		<!--<Charset>utf8</Charset>-->
+		<!--<Transactional>true</Transactional>-->
+		<!--<AliveTime>55</AliveTime>-->
+		<!--&lt;!&ndash;<PoolStyle>C3P0</PoolStyle>&ndash;&gt;-->
+	<!--</Storage>-->
+
+	<Storage>
+		<Name>SingleUserStorage</Name>
+		<DatabaseStyle>MySql</DatabaseStyle>
+		<Server>127.0.0.1</Server>
+		<Port>3306</Port>
+		<Database>userdb</Database>
+		<User>root</User>
+		<Password>123456</Password>
+		<Pooling>true</Pooling>
+		<MinPoolSize>10</MinPoolSize>
+		<MaxPoolSize>20</MaxPoolSize>
+		<Timeout>120</Timeout>
+		<Charset>utf8</Charset>
+		<Transactional>true</Transactional>
+		<AliveTime>300</AliveTime>
+		<PoolStyle>HIKARICP</PoolStyle>
+	</Storage>
+
+	<Storage>
+		<Name>MUserStorage1</Name>
+		<DatabaseStyle>MySql</DatabaseStyle>
+		<Server>127.0.0.1</Server>
+		<Port>3306</Port>
+		<Database>Muserdb_1</Database>
+		<User>root</User>
+		<Password>123456</Password>
+		<Pooling>true</Pooling>
+		<MinPoolSize>10</MinPoolSize>
+		<MaxPoolSize>20</MaxPoolSize>
+		<Timeout>120</Timeout>
+		<Charset>utf8</Charset>
+		<Transactional>true</Transactional>
+		<AliveTime>300</AliveTime>
+		<PoolStyle>HIKARICP</PoolStyle>
+	</Storage>
+
+	<Storage>
+		<Name>MUserStorage2</Name>
+		<DatabaseStyle>MySql</DatabaseStyle>
+		<Server>127.0.0.1</Server>
+		<Port>3306</Port>
+		<Database>Muserdb_2</Database>
+		<User>root</User>
+		<Password>123456</Password>
+		<Pooling>true</Pooling>
+		<MinPoolSize>10</MinPoolSize>
+		<MaxPoolSize>20</MaxPoolSize>
+		<Timeout>120</Timeout>
+		<Charset>utf8</Charset>
+		<Transactional>true</Transactional>
+		<AliveTime>300</AliveTime>
+		<PoolStyle>HIKARICP</PoolStyle>
+	</Storage>
+</Storages>

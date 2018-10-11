@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 数据路由配置文件，使用此配置的类必须实现IAlbianObjectRouter或者继承FreeAlbianObjectRouter -->
+<AlbianObjects>
+	
+	<!--<AlbianObject Interface="org.albian.mvc.example.IUser"-->
+		<!--Type="org.albian.mvc.example.User" Router="org.albianj.persistence.impl.object.AlbianObjectDataRouter">-->
+		<!--<WriterRouters Enable="true">-->
+			<!--<WriterRouter Name="w" StorageName="spermbank"-->
+				<!--TableName="User" Enable="true"></WriterRouter>-->
+		<!--</WriterRouters>-->
+		<!--<ReaderRouters Enable="true">-->
+			<!--<ReaderRouter Name="r" StorageName="spermbank"-->
+				<!--TableName="User" Enable="true"></ReaderRouter>-->
+		<!--</ReaderRouters>-->
+	<!--</AlbianObject>-->
+
+
+</AlbianObjects>

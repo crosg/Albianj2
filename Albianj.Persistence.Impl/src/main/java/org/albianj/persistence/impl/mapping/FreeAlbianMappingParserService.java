@@ -161,16 +161,16 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
         }
 
         List objNodes = XmlParser.analyze(doc, tagName);
-        if (Validate.isNullOrEmpty(objNodes)) {
-            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
-                    AlbianModuleType.AlbianPersistence,
-                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                    "parser the node tags:%s in the persisten.xml is error. the node of the tags is null or empty.",
-                    tagName);
+        if (!Validate.isNullOrEmpty(objNodes)) {
+            parserAlbianObjects(objNodes);
+//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+//                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
+//                    AlbianModuleType.AlbianPersistence,
+//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
+//                    "parser the node tags:%s in the persisten.xml is error. the node of the tags is null or empty.",
+//                    tagName);
         }
 
-        parserAlbianObjects(objNodes);
         return;
     }
 

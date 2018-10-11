@@ -62,20 +62,20 @@ public abstract class FreeAlbianObjectDataRouter implements
     public String mappingWriterRoutingStorage(IDataRouterAttribute routing,
                                               IAlbianObject obj) {
         // TODO Auto-generated method stub
-        return null;
+        return routing.getStorageName();
     }
 
     @Override
     public String mappingWriterRoutingDatabase(IStorageAttribute storage,
                                                IAlbianObject obj) {
-        return null;
+        return storage.getDatabase();
     }
 
     @Override
     public String mappingWriterTable(IDataRouterAttribute routing,
                                      IAlbianObject obj) {
         // TODO Auto-generated method stub
-        return null;
+        return routing.getTableName();
     }
 
     @Override
@@ -83,7 +83,7 @@ public abstract class FreeAlbianObjectDataRouter implements
                                               Map<String, IFilterCondition> wheres,
                                               Map<String, IOrderByCondition> orderbys) {
         // TODO Auto-generated method stub
-        return null;
+        return routing.getStorageName();
     }
 
     @Override
@@ -91,7 +91,7 @@ public abstract class FreeAlbianObjectDataRouter implements
                                                Map<String, IFilterCondition> wheres,
                                                Map<String, IOrderByCondition> orderbys) {
         // TODO Auto-generated method stub
-        return null;
+        return storage.getDatabase();
     }
 
     @Override
@@ -99,7 +99,7 @@ public abstract class FreeAlbianObjectDataRouter implements
                                      Map<String, IFilterCondition> wheres,
                                      Map<String, IOrderByCondition> orderbys) {
         // TODO Auto-generated method stub
-        return null;
+        return routing.getTableName();
     }
 
     public IDataRouterAttribute mappingExactReaderRouting(

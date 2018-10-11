@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 保存对象的映射配置表，使用这个配置的所有对象必须实现IAlbianObject或者直接继承FreeAlbianObject -->
+<AlbianObjects>
+	<!-- 使用rant进行标注的albian object必须要在这里配置所在的包，否则albianj不会加载 -->
+	<Packages>
+		<Package Path="Albian.Test.Model.Impl" Enable="true"></Package>
+	</Packages>
+
+</AlbianObjects>
+

@@ -18,10 +18,9 @@ public interface IDataAccessContext {
 
     IDataAccessContext add(int opt, IAlbianObject entiry);
 
-    IDataAccessContext add(String storageAliasName, int opt, IAlbianObject entiry);
+    IDataAccessContext add(int opt, IAlbianObject entiry,String storageAliasName);
 
-    IDataAccessContext add(String storageAliasName, String tableAliasName,
-                           int opt, IAlbianObject entiry);
+    IDataAccessContext add(int opt, IAlbianObject entiry,String storageAliasName, String tableAliasName);
 
     IDataAccessContext withQueryGenKey();
 
@@ -31,5 +30,5 @@ public interface IDataAccessContext {
 
     boolean commit(String sessionId);
 
-    void clear();
+    void reset();
 }

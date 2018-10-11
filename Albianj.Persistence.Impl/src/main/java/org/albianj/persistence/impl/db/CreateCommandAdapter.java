@@ -221,12 +221,12 @@ public class CreateCommandAdapter implements IPersistenceUpdateCommand {
         Map<String, ISqlParameter> sqlParas = new HashMap<String, ISqlParameter>();
         for (Map.Entry<String, IAlbianEntityFieldAttribute> entry : fieldsAttr
                 .entrySet()) {
-            IMemberAttribute member = entry.getValue();
+            IAlbianEntityFieldAttribute member = entry.getValue();
 
             if(member.isAutoGenKey()){
                 continue;
             }
-            Object v = sqlParaVals.get(member.getName());
+            Object v = sqlParaVals.get(member.getPropertyName());
             if (!member.getIsSave() || null == v)
                 continue;
 

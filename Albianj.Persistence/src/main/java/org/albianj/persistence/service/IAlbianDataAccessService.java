@@ -2,6 +2,8 @@ package org.albianj.persistence.service;
 
 import org.albianj.persistence.context.IPersistenceCompensateNotify;
 import org.albianj.persistence.context.IPersistenceNotify;
+import org.albianj.persistence.context.dactx.IDataAccessContext;
+import org.albianj.persistence.context.dactx.IQueryContext;
 import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.ISqlParameter;
 import org.albianj.persistence.db.PersistenceCommandType;
@@ -522,7 +524,9 @@ public interface IAlbianDataAccessService extends IAlbianService {
 
 
 
+     IDataAccessContext newDataAccessContext();
 
+     IQueryContext newQueryContext();
 
 
 

@@ -18,7 +18,6 @@ public abstract class FreeExAlbianObject extends FreeAlbianObject implements IEx
     Timestamp lastUpdate;
     String lastModifier;
 
-
     public BigInteger getId() {
         return id;
     }

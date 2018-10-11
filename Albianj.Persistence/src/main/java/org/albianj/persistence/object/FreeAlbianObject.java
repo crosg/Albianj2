@@ -55,6 +55,8 @@ import java.util.Map;
 
 public abstract class FreeAlbianObject implements IAlbianObject {
 
+
+
     @AlbianObjectDataFieldRant(IsSave = false,Ignore = true)
     private static final long serialVersionUID = 1608573290358087720L;
 
@@ -67,9 +69,10 @@ public abstract class FreeAlbianObject implements IAlbianObject {
     @AlbianObjectDataFieldRant(IsSave = false,Ignore = true)
     private transient boolean isAlbianNew = true;
 
-    public FreeAlbianObject(){
+    protected FreeAlbianObject(){
         chainEntity = new HashMap<>();
     }
+
 
     // public String getId()
     // {

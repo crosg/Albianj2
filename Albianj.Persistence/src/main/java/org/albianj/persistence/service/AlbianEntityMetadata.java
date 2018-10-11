@@ -29,23 +29,19 @@ public final  class AlbianEntityMetadata {
     }
 
     public static void put(String itf,IAlbianObjectAttribute attr){
-        if(Validate.isNullOrEmptyOrAllSpace(attr.getType())) {
-            type2itf.put(attr.getType(), itf);
-        }
+        type2itf.put(attr.getType(), itf);
         entityMetadata.put(itf,attr);
     }
 
     public static void put(Class<?> itf,IAlbianObjectAttribute attr){
-        if(Validate.isNullOrEmptyOrAllSpace(attr.getType())) {
-            type2itf.put(attr.getType(), itf.getName());
-        }
-        entityMetadata.put(itf.getName(),attr);
+       put(itf.getName(),attr);
     }
 
     public static void putAll(Map<String,Object> map){
         //can not use putAll
-        for(Map.Entry<String,Object> entry : map.entrySet()){
-            put(entry.getKey(),(IAlbianObjectAttribute) entry.getValue());
+        for(Object entry : map.values()){
+            IAlbianObjectAttribute objAttr = (IAlbianObjectAttribute) entry;
+            put(objAttr.getInterface(),objAttr);
         }
     }
 

@@ -4,7 +4,7 @@ package org.albianj.persistence.object.rants;
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Inherited
 @Documented
 public @interface AlbianObjectDataRoutersRant {

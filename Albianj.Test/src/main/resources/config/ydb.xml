@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Ydb>
+	<IncludeSet>
+		<Include Filename="/Users/xuhaifeng/share/tencent/src/cc/java/dev/albianj/Albianj.DFS.YDB.Client.Test/config/ydb.xml"></Include>
+	</IncludeSet>
+</Ydb>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 此配置文件提供所有的servie功能，所有的业务service必须使用此配置文件； 使用此配置文件的对象必须实现IAlbianService或者继承FreeAlbianService -->
+<Services>
+    <!-- Kernel ，这部分必须存在并且不要更改任何项，此部分是albianj的基础服务 -->
+    <Service Id="AlbianKernelService" Type="org.albianj.kernel.impl.AlbianKernelParserService"/>
+    <Service Id="AlbianStorageService" Type="org.albianj.persistence.impl.storage.AlbianStorageParserService"/>
+    <Service Id="AlbianDataRouterService" Type="org.albianj.persistence.impl.routing.AlbianDataRouterParserService"/>
+    <Service Id="AlbianMappingService" Type="org.albianj.persistence.impl.mapping.AlbianMappingParserService"/>
+    <Service Id="AlbianPersistenceService" Type="org.albianj.persistence.impl.service.AlbianPersistenceService"/>
+    <Service Id="AlbianThreadPoolService" Type="org.albianj.concurrent.impl.AlbianThreadPoolService"/>
+    <Service Id="AlbianSecurityService" Type="org.albianj.security.impl.AlbianSecurityService" />
+    <Service Id="AlbianDataAccessService" Type="org.albianj.persistence.impl.service.AlbianDataAccessService" />
+
+    <!-- 使用rant进行标注的service必须要在这里配置所在的包，否则albianj不会加载 -->
+    <Packages>
+        <Package Path="Albian.Test.Services.Impl" Enable="true"></Package>
+    </Packages>
+
+
+
+
+
+    <!--<Service Id="AlbianRemoteIdService" Type="org.albianj.unid.service.impl.AlbianRemoteUNIDService" />-->
+    <!-- 	<service Id="AlbianCachedService" Type="org.albianj.cached.impl.service.AlbianCachedService" />-->
+    <!-- 	<service Id="AlbianConfigurtionService" Type="org.albianj.configurtion.impl.AlbianConfigurtionService" />  -->
+    <!--  <service Id="TafcommService" Type="org.albianj.taf.service.impl.TAFcommService" /> -->
+
+    <!--<Service Id="AlbianYdbService" Type="org.albianj.dfs.ydb.client.impl.service.AlbianYDBService" />-->
+
+
+    <!--mvc service -->
+    <!--
+    <Service Id="AlbianMvcConfigurtionService" Type="org.albianj.mvc.config.impl.AlbianMVCConfigurtionService"/>
+    <Service Id="AlbianFileUploadService" Type="org.albianj.mvc.service.impl.AlbianFileUploadService">
+        <Properties>
+            <Property Type="Ref" Name="HttpConfigurtion" Value="AlbianMvcConfigurtionService.HttpConfigurtion"/>
+        </Properties>
+    </Service>
+    <Service Id="AlbianResourceService" Type="org.albianj.mvc.service.impl.AlbianResourceService">
+        <Properties>
+            <Property Type="Ref" Name="HttpConfigurtion" Value="AlbianMvcConfigurtionService.HttpConfigurtion"/>
+        </Properties>
+    </Service>
+    <Service Id="AlbianTemplateService" Type="org.albianj.mvc.service.impl.AlbianBeetlTemplateService">
+        <Properties>
+            <Property Type="Ref" Name="HttpConfigurtion" Value="AlbianMvcConfigurtionService.HttpConfigurtion"/>
+        </Properties>
+    </Service>
+
+    <Service Id="AlbianBrushingService" Type="org.albianj.mvc.service.impl.AlbianBrushingService">
+        <Properties>
+            <Property Type="Ref" Name="HttpConfigurtion" Value="AlbianMvcConfigurtionService.HttpConfigurtion"/>
+        </Properties>
+    </Service>
+
+  -->
+
+</Services>

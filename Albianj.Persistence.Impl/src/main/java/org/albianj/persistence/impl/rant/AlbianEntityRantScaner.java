@@ -63,9 +63,10 @@ public class AlbianEntityRantScaner {
                             objAttr = AlbianEntityMetadata.getEntityMetadata(sItf);
                         } else {
                             objAttr = new AlbianObjectAttribute();
-                            AlbianEntityMetadata.put(sItf,objAttr);
                             objAttr.setType( clzz.getName());
                             objAttr.setInterface(sItf);
+                            AlbianEntityMetadata.put(sItf,objAttr);
+
                         }
 
                         objAttr.setImplClzz(clzz);
@@ -158,7 +159,7 @@ public class AlbianEntityRantScaner {
                 if(!Validate.isNullOrEmptyOrAllSpace(odrr.TableOwner())) {
                     dra.setOwner(odrr.TableOwner());
                 }
-                if(!Validate.isNullOrEmptyOrAllSpace(odrr.TableOwner())) {
+                if(!Validate.isNullOrEmptyOrAllSpace(odrr.TableName())) {
                     dra.setTableName(odrr.TableName());
                 } else {
                     dra.setTableName(clzz.getSimpleName());
@@ -233,6 +234,7 @@ public class AlbianEntityRantScaner {
                 fAttr.setPropertyName(propertyName);
                 fAttr.setSqlFieldName(StringHelper.uppercasingFirstLetter(propertyName));
                 fAttr.setDatabaseType(Convert.toSqlType(f.getType()));
+                fAttr.setEntityField(f);
                 try {
                     PropertyDescriptor pd = AlbianReflect.getBeanPropertyDescriptor(clzz,propertyName);
                     if(null != pd) {

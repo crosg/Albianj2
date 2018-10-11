@@ -156,6 +156,8 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
                             "loading the service.xml is error. 'Path' attribute in  Package config-item is null or empty.");
                 } else {
                     try {
+                        //notice:all pkgmap key is service's type,not service's id
+                        //change it when merger
                         HashMap<String,Object> pkgMap =  AlbianServiceRantParser.scanPackage(pkg);
                         if(null != pkgMap){
                             pkgMetedataMap.putAll(pkgMap);//merger the metedata
@@ -195,6 +197,8 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
                  asaPkg = (IAlbianServiceAttribute) pkgMap.get(asa.getId());
                  pkgMap.remove(asa.getId());
              } else {
+                 // because reuse，so key must type
+                 // and change type to id when merger
                  if(pkgMap.containsKey(asa.getType())) {
                      asaPkg = (IAlbianServiceAttribute) pkgMap.get(asa.getType());
                      pkgMap.remove(asa.getType());
@@ -246,6 +250,12 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
              }
          }
 
+         // add in pkg but not in attr
+        // and change the key from type to id
+         for(Object val : pkgMap.values()) {
+             IAlbianServiceAttribute asa = (IAlbianServiceAttribute) val;
+             totalMap.put(asa.getId(),asa);
+         }
     }
 
     protected abstract void parserServices(Map<String, IAlbianServiceAttribute> map,

@@ -42,24 +42,23 @@ public class DataAccessContext implements IDataAccessContext {
     }
 
     @Override
-    public IDataAccessContext add(String storageAliasName, int opt, IAlbianObject entity) {
+    public IDataAccessContext add( int opt, IAlbianObject entity,String storageAlias) {
         IAlbianObjectWarp  warp = new AlbianObjectWarp();
         warp.setEntry(entity);
         warp.setPersistenceOpt(opt);
-        warp.setStorageAliasName(storageAliasName);
+        warp.setStorageAliasName(storageAlias);
         entitis.add(warp);
         return this;
 
     }
 
     @Override
-    public IDataAccessContext add(String storageAliasName, String tableAliasName,
-                                  int opt, IAlbianObject entity) {
+    public IDataAccessContext add(int opt, IAlbianObject entity,String storageAlias, String tableAlias) {
         IAlbianObjectWarp  warp = new AlbianObjectWarp();
         warp.setEntry(entity);
         warp.setPersistenceOpt(opt);
-        warp.setStorageAliasName(storageAliasName);
-        warp.setTableAliasName(tableAliasName);
+        warp.setStorageAliasName(storageAlias);
+        warp.setTableAliasName(tableAlias);
         entitis.add(warp);
         return this;
 
@@ -101,7 +100,7 @@ public class DataAccessContext implements IDataAccessContext {
         return 0;
     }
 
-    public void clear(){
+    public void reset(){
         isSetQueryIdentity = false;
         this.notifyCallback = null;
         this.notifyCallbackObject = null;

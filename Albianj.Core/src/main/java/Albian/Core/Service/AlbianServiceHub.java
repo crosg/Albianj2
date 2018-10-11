@@ -14,8 +14,8 @@ public final class AlbianServiceHub extends AlbianServiceRouter {
         return AlbianObjectCreator.newInstance(sessionId,itf);
     }
 
-    public static IAlbianObject newInstance(String sessionId, Class<? extends IAlbianObject> clazz){
-        return newInstance(sessionId, clazz.getName());
+    public static <T extends  IAlbianObject> T newInstance(String sessionId, Class<T> clazz){
+        return (T) newInstance(sessionId, clazz.getName());
     }
 
         public static  void log(@Comments("记录到的日志名称") String loggerName,

@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>
-            <artifactId>Albianj.Security</artifactId>
+            <artifactId>Albianj.Security.Impl</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
         </dependency>

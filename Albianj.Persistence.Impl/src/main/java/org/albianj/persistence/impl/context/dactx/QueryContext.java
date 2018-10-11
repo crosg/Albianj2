@@ -96,4 +96,17 @@ public class QueryContext  implements IQueryContext {
         list = scope.execute(itfClzz, job);
         return list;
     }
+
+    public void reset(){
+        start = -1;
+         pagesize = -1;
+        idxName = null;
+         storageAlias = null;
+         tableAlias = null;
+         drouterAlias = null;
+         itfClzz = null;
+        loadType = LoadType.quickly;
+         wheres = null;
+         orderbys = null;
+    }
 }
