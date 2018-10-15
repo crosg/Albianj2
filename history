@@ -35,3 +35,13 @@
         此条件和原来的albianj不兼容，需要注意
     增加service中的Field的rant，提供具有Rant的Field自动赋值功能
     更改albianj的启动，目前的启动由原来的load service一步变成load service和set field两步。
+2018-10-11
+    增加object的rant，重新构建objectAttribute，数据路由部分由原来的单独一个map存放，改为objAttr的一个属性
+    FreeAlbianObjectDataRouter更改数据库路由中，返回storage、database、tablename的null改为返回默认的配置信息
+    更改原来特性、拼接sql的时候获取值、从数据库返回数据集赋值给对象、这3个地方的赋值、获取值从原来的get/set改为直接从Field获取或者赋值
+    对于数据库的操作由原来的persistenceService改为DataAccess的newDataAccessCtx与newQueryCtx来操作
+    对于单数据库，支持直接由方法指定执行的数据库和表
+2018-10-16
+    使用query-ctx的时候，inStorage改成useStorage，inTable改成fromTable
+    insert、delete、modify的时候，sqlparas的获取统一使用field的propertyName，兼容上一版本的albianj风格
+    fixed bug：当设置数据路由的时候，会将itf2type的map的key设置为null

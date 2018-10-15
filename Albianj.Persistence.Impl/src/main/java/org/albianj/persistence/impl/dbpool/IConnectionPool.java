@@ -8,20 +8,20 @@ public interface IConnectionPool {
      * 获取一个数据库连接，如果等待超过超时时间，将返回null
      * @return 数据库连接对象
      */
-    public Connection getConnection();
+    public Connection getConn();
 
     /**
      * 获得当前线程的连接库连接
      * @return 数据库连接对象
      */
-    public Connection getCurrentConnecton();
+    public Connection getCurrConn();
 
     /**
      * 释放当前线程数据库连接
      * @param conn 数据库连接对象
      * @throws SQLException
      */
-    public void releaseConn(Connection conn) throws SQLException;
+    public void rlsConn(Connection conn) throws SQLException;
 
     /**
      * 销毁清空当前连接池

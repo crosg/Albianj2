@@ -68,7 +68,7 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
         long begin1 =System.currentTimeMillis();
         IDataBasePool dbp = asps.getDatabasePool(sessionId,rsa);
         Connection conn = dbp.getConnection(sessionId,rsa);
-//        Connection conn = asps.getConnection(sessionId, rsa);
+//        Connection conn = asps.getConn(sessionId, rsa);
         if(!Validate.isNullOrEmptyOrAllSpace(sessionId) && sessionId.endsWith("_SPX_LOG")){
             long end1 =System.currentTimeMillis();
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
@@ -201,7 +201,7 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
 //            } finally {
 //                try {
 //                    long begin1 = Calendar.getInstance().getTimeInMillis();
-//                    job.getConnection().close();
+//                    job.getConn().close();
 //                    long end1 = Calendar.getInstance().getTimeInMillis();
 //                    if(!Validate.isNullOrEmptyOrAllSpace(sessionId) && sessionId.endsWith("_SPX_LOG")){
 //                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,

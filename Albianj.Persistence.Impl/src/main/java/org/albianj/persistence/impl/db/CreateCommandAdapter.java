@@ -231,7 +231,7 @@ public class CreateCommandAdapter implements IPersistenceUpdateCommand {
                 continue;
 
             ISqlParameter para = new SqlParameter();
-            para.setName(member.getName());
+            para.setName(member.getPropertyName());
             para.setSqlFieldName(member.getSqlFieldName());
             para.setSqlType(member.getDatabaseType());
             para.setValue(v);

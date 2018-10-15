@@ -365,10 +365,10 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
         Map<String, ISqlParameter> sqlParas = new HashMap<String, ISqlParameter>();
         Map<String, ISqlParameter> rollbackParas = new HashMap<String, ISqlParameter>();
         for (Map.Entry<String, IAlbianEntityFieldAttribute> entry : fieldsAttr.entrySet()) {
-            IMemberAttribute member = entry.getValue();
+            IAlbianEntityFieldAttribute member = entry.getValue();
             if (!member.getIsSave())
                 continue;
-            String name = member.getName();
+            String name = member.getPropertyName();
             Object newValue = mapValue.get(name);
             Object oldValue = null;
 

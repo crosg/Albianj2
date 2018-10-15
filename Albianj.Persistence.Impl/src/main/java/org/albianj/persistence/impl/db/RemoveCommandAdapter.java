@@ -186,14 +186,15 @@ public class RemoveCommandAdapter implements IPersistenceUpdateCommand {
         Map<String, ISqlParameter> sqlParas = new HashMap<String, ISqlParameter>();
         for (Map.Entry<String, IAlbianEntityFieldAttribute> entry : mapMemberAttributes
                 .entrySet()) {
-            IMemberAttribute member = entry.getValue();
+            IAlbianEntityFieldAttribute member = entry.getValue();
             if (!member.getIsSave() || !member.getPrimaryKey())
                 continue;
+            String name = member.getPropertyName();
             ISqlParameter para = new SqlParameter();
-            para.setName(member.getName());
+            para.setName(name);
             para.setSqlFieldName(member.getSqlFieldName());
             para.setSqlType(member.getDatabaseType());
-            para.setValue(sqlParaVals.get(member.getName()));
+            para.setValue(sqlParaVals.get(name));
             sqlParas.put(String.format("#%1$s#", member.getSqlFieldName()),
                     para);
 

@@ -49,13 +49,13 @@ public class QueryContext  implements IQueryContext {
     }
 
     @Override
-    public IQueryContext inStorage(String storageAlias) {
+    public IQueryContext useStorage(String storageAlias) {
         this.storageAlias = storageAlias;
         return this;
     }
 
     @Override
-    public IQueryContext inTable(String tableAlias) {
+    public IQueryContext fromTable(String tableAlias) {
         this.tableAlias = tableAlias;
         return this;
     }

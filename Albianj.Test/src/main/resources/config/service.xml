@@ -16,7 +16,11 @@
         <Package Path="Albian.Test.Services.Impl" Enable="true"></Package>
     </Packages>
 
-
+    <Service Id="OrgUserService" Type="Albian.Test.Services.Impl.OrgUserService" >
+        <Properties>
+            <Property Type="Ref" Name="da" Value="AlbianDataAccessService"/>
+        </Properties>
+    </Service>
 
 
 

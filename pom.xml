@@ -33,6 +33,7 @@
         <module>Albianj.WordProcessor.Impl</module>
         <module>Albianj.Core</module>
         <module>Albianj.Test</module>
+        <module>Albianj.Test2</module>
     </modules>
     <packaging>pom</packaging>
 

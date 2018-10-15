@@ -1,29 +1,22 @@
 package Albian.Test.Model.Impl;
 
-import Albian.Test.Model.ISingleUser;
+import Albian.Test.Model.IOrgMultiUser;
 import org.albianj.persistence.object.FreeAlbianObject;
 import org.albianj.persistence.object.rants.AlbianObjectDataFieldRant;
-import org.albianj.persistence.object.rants.AlbianObjectRant;
 
-import java.math.BigInteger;
+public class OrgMultiUser extends FreeAlbianObject implements IOrgMultiUser {
 
-//如果使用特性模式，必须使用此标注，否则albianj不会对其进行解析
-@AlbianObjectRant(Interface = ISingleUser.class)
-public class SingleUser extends FreeAlbianObject implements ISingleUser {
-
-    @AlbianObjectDataFieldRant(IsPrimaryKey = true)
-    private BigInteger id;
+    private String id;
     private String userName;
-    @AlbianObjectDataFieldRant(FieldName = "Pwd")
     private String password;
 
     @Override
-    public BigInteger getId() {
+    public String getId() {
         return this.id;
     }
 
     @Override
-    public void setId(BigInteger id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -46,4 +39,5 @@ public class SingleUser extends FreeAlbianObject implements ISingleUser {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

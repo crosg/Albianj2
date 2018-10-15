@@ -177,7 +177,7 @@ public class ConnectionManager {
      */
     public Connection getConnection(String poolName) {
         IConnectionPool pool =  pools.get(poolName);
-        return pool.getConnection();
+        return pool.getConn();
     }
 
 
@@ -191,7 +191,7 @@ public class ConnectionManager {
         IConnectionPool pool = pools.get(poolName);
         if (pool != null) {
             try {
-                pool.releaseConn(conn);
+                pool.rlsConn(conn);
             } catch (SQLException e) {
                 log.error("回收"+poolName+"池中的连接失败。");
                 throw new SQLException(e);

@@ -108,7 +108,7 @@ public class ConnectionPool implements IConnectionPool {
 
 
     @Override
-    public synchronized Connection getConnection() {
+    public synchronized Connection getConn() {
         Connection conn = null;
         if (this.getActiveNum() < this.propertyBean.getMaxConnections()) {
             // 分支1：当前使用的连接没有达到最大连接数
@@ -127,7 +127,7 @@ public class ConnectionPool implements IConnectionPool {
                         this.activeConnections.add(conn);
                         currentConnection.set(conn);
                     }else{
-                        conn = getConnection();//同步方法是可重入锁
+                        conn = getConn();//同步方法是可重入锁
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -162,7 +162,7 @@ public class ConnectionPool implements IConnectionPool {
                 if(System.currentTimeMillis() - startTime > this.propertyBean.getTimeout())
                     return null;
             }
-            conn = this.getConnection();
+            conn = this.getConn();
 
         }
         return conn;
@@ -170,11 +170,11 @@ public class ConnectionPool implements IConnectionPool {
 
 
     @Override
-    public Connection getCurrentConnecton() {
+    public Connection getCurrConn() {
         Connection conn=currentConnection.get();
         try {
             if(! isValidConnection(conn)){
-                conn=this.getConnection();
+                conn=this.getConn();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -184,7 +184,7 @@ public class ConnectionPool implements IConnectionPool {
 
 
     @Override
-    public synchronized void releaseConn(Connection conn) throws SQLException {
+    public synchronized void rlsConn(Connection conn) throws SQLException {
 
         log.info(Thread.currentThread().getName()+"关闭连接：activeConnections.remove:"+conn);
         this.activeConnections.remove(conn);

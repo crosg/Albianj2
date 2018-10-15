@@ -25,7 +25,7 @@ import org.albianj.persistence.object.rants.AlbianObjectRant;
 public class MultiUser extends FreeAlbianObject implements IMultiUser {
     @AlbianObjectDataFieldRant(IsPrimaryKey = true)
     private String id;
-    private String UserName;
+    private String userName;
     @AlbianObjectDataFieldRant(FieldName = "Pwd")
     private String password;
 
@@ -41,12 +41,12 @@ public class MultiUser extends FreeAlbianObject implements IMultiUser {
 
     @Override
     public String getUserName() {
-        return this.UserName;
+        return this.userName;
     }
 
     @Override
     public void setUserName(String userName) {
-        this.UserName = userName;
+        this.userName = userName;
     }
 
     @Override

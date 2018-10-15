@@ -258,7 +258,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
 //                                rsa.getStorageAttribute().getName(), rsa.getDatabase());
 //                    }
 //                }
-//                t.getConnection().close();
+//                t.getConn().close();
 //            } catch (Exception exc) {
 //                isThrow = true;
 //                IRunningStorageAttribute rsa = t.getStorage();

@@ -6,5 +6,26 @@
 		<Package Path="Albian.Test.Model.Impl" Enable="true"></Package>
 	</Packages>
 
+	<AlbianObject Interface="Albian.Test.Model.IOrgSingleUser" Type="Albian.Test.Model.Impl.OrgSingleUser">
+		<Cache Enable="false" LifeTime="300" Name=""></Cache>
+		<!-- 删除了缓存服务。所以这部分配置一直为false，等待开启了缓存服务，再更加实际情况配置 -->
+		<Members> <!-- 所有对象的属性映射，如果使用默认，可以不需要配置 -->
+			<Member Name="Id" FieldName="Id" AllowNull="false"
+					DbType="Bigint" IsSave="true" PrimaryKey="true" />
+			<Member Name="password" FieldName="Pwd" />
+
+		</Members>
+	</AlbianObject>
+
+	<AlbianObject Interface="Albian.Test.Model.IOrgMultiUser" Type="Albian.Test.Model.Impl.OrgMultiUser">
+		<Cache Enable="false" LifeTime="300" Name=""></Cache>
+		<!-- 删除了缓存服务。所以这部分配置一直为false，等待开启了缓存服务，再更加实际情况配置 -->
+		<Members> <!-- 所有对象的属性映射，如果使用默认，可以不需要配置 -->
+			<Member Name="Id" FieldName="Id" AllowNull="false"
+					DbType="String" IsSave="true" PrimaryKey="true" />
+			<Member Name="password" FieldName="Pwd" />
+		</Members>
+	</AlbianObject>
+
 </AlbianObjects>
 

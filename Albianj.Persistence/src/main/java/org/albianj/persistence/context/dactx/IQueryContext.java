@@ -26,9 +26,9 @@ public interface IQueryContext {
 
     IQueryContext orderby(LinkedList<IOrderByCondition> orderbys);
 
-    IQueryContext inStorage(String storageAlias);
+    IQueryContext useStorage(String storageAlias);
 
-    IQueryContext inTable(String tableAlias);
+    IQueryContext fromTable(String tableAlias);
 
     IQueryContext byRouter(String drouterAlias);
 

@@ -204,6 +204,7 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
 
         try {
             Field f = clzz.getDeclaredField(name);
+            f.setAccessible(true);
             pa.setField(f);
         } catch (NoSuchFieldException exc) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,

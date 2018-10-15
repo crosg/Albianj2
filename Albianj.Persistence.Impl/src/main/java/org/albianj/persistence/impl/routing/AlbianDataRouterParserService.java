@@ -69,19 +69,6 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
                     "The albianObject's interface is empty or null.");
             return null;
         }
-//        routing.setInterface(inter);
-
-        IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(inter);
-        if(null == objAttr){
-            objAttr = new AlbianObjectAttribute();
-            AlbianEntityMetadata.put(inter,objAttr);
-        }
-        IDataRoutersAttribute routing = objAttr.getDataRouters();
-        if(null == routing){
-            routing = new DataRoutersAttribute();
-            objAttr.setDataRouters(routing);
-        }
-
         String type = XmlParser.getAttributeValue(elt, "Type");
 
         if (Validate.isNullOrEmptyOrAllSpace(type)) {
@@ -91,6 +78,23 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
 
             return null;
         }
+
+//        routing.setInterface(inter);
+
+        IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(inter);
+        if(null == objAttr){
+            objAttr = new AlbianObjectAttribute();
+            objAttr.setType(type);
+            objAttr.setInterface(inter);
+            AlbianEntityMetadata.put(inter,objAttr);
+        }
+        IDataRoutersAttribute routing = objAttr.getDataRouters();
+        if(null == routing){
+            routing = new DataRoutersAttribute();
+            objAttr.setDataRouters(routing);
+        }
+
+
 
         try {
             Class<?> cls = AlbianClassLoader.getInstance().loadClass(type);

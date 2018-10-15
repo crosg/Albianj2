@@ -2,17 +2,22 @@
 <!-- 数据路由配置文件，使用此配置的类必须实现IAlbianObjectRouter或者继承FreeAlbianObjectRouter -->
 <AlbianObjects>
 	
-	<!--<AlbianObject Interface="org.albian.mvc.example.IUser"-->
-		<!--Type="org.albian.mvc.example.User" Router="org.albianj.persistence.impl.object.AlbianObjectDataRouter">-->
-		<!--<WriterRouters Enable="true">-->
-			<!--<WriterRouter Name="w" StorageName="spermbank"-->
-				<!--TableName="User" Enable="true"></WriterRouter>-->
-		<!--</WriterRouters>-->
-		<!--<ReaderRouters Enable="true">-->
-			<!--<ReaderRouter Name="r" StorageName="spermbank"-->
-				<!--TableName="User" Enable="true"></ReaderRouter>-->
-		<!--</ReaderRouters>-->
-	<!--</AlbianObject>-->
+	<AlbianObject  Interface="Albian.Test.Model.IOrgMultiUser" Type="Albian.Test.Model.Impl.OrgMultiUser"
+				   Router="Albian.Test.DataRouters.OrgMultiUserDataRouter">
+		<WriterRouters Enable="true">
+			<WriterRouter Name="MUserWrite1" StorageName="MUserStorage1"
+						  TableName="MUser" Enable="true"></WriterRouter>
+			<WriterRouter Name="MUserWrite2" StorageName="MUserStorage2"
+						  TableName="MultiUser" Enable="true"></WriterRouter>
+		</WriterRouters>
+		<ReaderRouters Enable="true">
+			<ReaderRouter Name="MUserRead1" StorageName="MUserStorage1"
+						  TableName="MUser" Enable="true"></ReaderRouter>
+			<ReaderRouter Name="MUserRead2" StorageName="MUserStorage2"
+						  TableName="MultiUser" Enable="true"></ReaderRouter>
+		</ReaderRouters>
+	</AlbianObject>
 
 
 </AlbianObjects>
+
