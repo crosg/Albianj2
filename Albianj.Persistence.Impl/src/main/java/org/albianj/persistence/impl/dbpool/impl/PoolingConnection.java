@@ -1,5 +1,6 @@
-package org.albianj.persistence.impl.dbpool;
+package org.albianj.persistence.impl.dbpool.impl;
 
+import org.albianj.persistence.impl.dbpool.IPoolingConnection;
 import redis.clients.util.Pool;
 
 import java.sql.*;
@@ -7,11 +8,15 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public class PoolingConnection  implements  IPoolingConnection{
+public class PoolingConnection  implements IPoolingConnection {
     Connection _conn;
     String batchId;
+    //startup timestamp
     long startupTimeMs;
+    // from pool but not return to pool
+    // use to bc
     boolean isPooling;
+    long lastUsedTimeMs;
     // reuse times in lifecycle
     long reuseTimes = 0;
 

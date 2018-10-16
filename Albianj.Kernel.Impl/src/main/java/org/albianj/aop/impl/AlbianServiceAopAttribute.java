@@ -20,16 +20,6 @@ public class AlbianServiceAopAttribute implements IAlbianServiceAopAttribute {
     boolean isAll = false;
     String proxyName = "";
 
-//    @Override
-//    public String getProxyServiceId() {
-//        return null;
-//    }
-//
-//    @Override
-//    public void setProxyServiceId(String id) {
-//
-//    }
-
     @Override
     public String getProxyName() {
         return proxyName;

@@ -30,7 +30,6 @@ public class AlbianServiceAopProxy implements MethodInterceptor {
         try {
             Enhancer enhancer = new Enhancer();  //增强类
             //不同于JDK的动态代理。它不能在创建代理时传obj对 象，obj对象必须被CGLIB包来创建
-            // enhancer.setClassLoader(this.getClass().getClassLoader());
             enhancer.setClassLoader(AlbianClassLoader.getInstance());
 
             enhancer.setSuperclass(this._service.getClass()); //设置被代理类字节码（obj将被代理类设置成父类；作为产生的代理的父类传进来的）。CGLIB依据字节码生成被代理类的子类

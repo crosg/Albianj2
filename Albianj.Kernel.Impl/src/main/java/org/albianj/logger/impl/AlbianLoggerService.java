@@ -89,7 +89,6 @@ public class AlbianLoggerService extends FreeAlbianService implements
 
             super.loading();
             loggers = new ConcurrentHashMap<String, Logger>();
-            // logger = LoggerFactory.getLogger(ALBIAN_LOGGER);
         } catch (Exception exc) {
             throw new AlbianServiceException(exc.getMessage(), exc.getCause());
         }

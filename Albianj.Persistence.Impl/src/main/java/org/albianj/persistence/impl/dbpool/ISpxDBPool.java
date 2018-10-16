@@ -3,7 +3,7 @@ package org.albianj.persistence.impl.dbpool;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public interface IConnectionPool {
+public interface ISpxDBPool {
     /**
      * 获取一个数据库连接，如果等待超过超时时间，将返回null
      * @return 数据库连接对象
@@ -14,7 +14,7 @@ public interface IConnectionPool {
      * 获得当前线程的连接库连接
      * @return 数据库连接对象
      */
-    public Connection getCurrConn();
+//    public Connection getCurrConn();
 
     /**
      * 释放当前线程数据库连接
@@ -43,12 +43,16 @@ public interface IConnectionPool {
      * 获取线程池活动连接数
      * @return 线程池活动连接数
      */
-    public int getActiveNum();
+    public int getBusyCount();
 
     /**
      * 获取线程池空闲连接数
      * @return 线程池空闲连接数
      */
-    public int getFreeNum();
+    public int getFreeCount();
+
+    public IDBPoolConfig getConfig();
+
+    void setConfig(IDBPoolConfig config);
 
 }

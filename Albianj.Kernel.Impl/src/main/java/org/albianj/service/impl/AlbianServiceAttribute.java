@@ -55,7 +55,6 @@ public class AlbianServiceAttribute implements IAlbianServiceAttribute {
     private String itf;
     private Class<? extends IAlbianService> clzz = null;
     private boolean enable = true;
-//    private  boolean modifyIdWhenLoading = false;
 
     public String getId() {
         return this.id;
@@ -125,15 +124,5 @@ public class AlbianServiceAttribute implements IAlbianServiceAttribute {
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
-
-//    @Override
-//    public boolean getModifyIdWhenLoading() {
-//        return modifyIdWhenLoading;
-//    }
-
-//    @Override
-//    public void setModifyIdWhenLoading(boolean modifyIdWhenLoading) {
-//        this.modifyIdWhenLoading = modifyIdWhenLoading;
-//    }
 
 }

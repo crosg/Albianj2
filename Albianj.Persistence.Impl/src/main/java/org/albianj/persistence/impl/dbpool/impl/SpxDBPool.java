@@ -1,5 +1,10 @@
-package org.albianj.persistence.impl.dbpool;
+package org.albianj.persistence.impl.dbpool.impl;
 
+import org.albianj.logger.AlbianLoggerLevel;
+import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.persistence.impl.dbpool.IDBPoolConfig;
+import org.albianj.persistence.impl.dbpool.ISpxDBPool;
+import org.albianj.service.AlbianServiceRouter;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -11,56 +16,48 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class ConnectionPool implements IConnectionPool {
-    private static final Logger log = Logger.getLogger(ConnectionPool.class);
+public class SpxDBPool implements ISpxDBPool {
+    private static final Logger log = Logger.getLogger(SpxDBPool.class);
 
-    private DBPropertyBean propertyBean=null;
-
-    //连接池可用状态
+    private IDBPoolConfig cf = null;
     private Boolean isActive = true;
 
-    // 空闲连接池 。由于List读写频繁，使用LinkedList存储比较合适
     private LinkedList<Connection> freeConnections = new LinkedList<Connection>();
-    // 活动连接池。活动连接数 <= 允许最大连接数(maxConnections)
-    private LinkedList<Connection> activeConnections = new LinkedList<Connection>();
+    private LinkedList<Connection> busyConnections = new LinkedList<Connection>();
 
-    //当前线程获得的连接
-    private ThreadLocal<Connection> currentConnection= new ThreadLocal<Connection>();
-
-    //构造方法无法返回null，所以取消掉。在下面增加了CreateConnectionPool静态方法。
-    private ConnectionPool(){
+    private SpxDBPool(){
         super();
     }
 
-    public static ConnectionPool CreateConnectionPool(DBPropertyBean propertyBean) {
-        ConnectionPool connpool=new ConnectionPool();
-        connpool.propertyBean = propertyBean;
+    public static SpxDBPool createConnectionPool(DBPoolConfig prop) {
 
-        //加载驱动
+        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                "DBPOOL", AlbianLoggerLevel.Mark,
+        "create dbpool ->%s with argument: minConnections -> %d,maxConnections -> %d,"
+                + "waitTimeWhenGetMs -> %d, lifeTimeMs -> %d, freeTimeMs -> %d,"
+                +"maxRemedyConnectionCount - > %d,",
+                prop.getPoolName(),prop.getMinConnections(),prop.getMaxConnections(),
+                prop.getWaitTimeWhenGetMs(),prop.getLifeTimeMs(),prop.getFreeTimeMs(),
+                prop.getMaxRemedyConnectionCount());
 
-        //在多节点环境配置下，因为在这里无法判断驱动是否已经加载,可能会造成多次重复加载相同驱动。
-        //因此加载驱动的动作，挪到connectionManager管理类中去实现了。
-        /*try {
-            Class.forName(connpool.propertyBean.getDriverName());
-            log.info("加载JDBC驱动"+connpool.propertyBean.getDriverName()+"成功");
-        } catch (ClassNotFoundException e) {
-            log.info("未找到JDBC驱动" + connpool.propertyBean.getDriverName() + "，请引入相关包");
-            return null;
-        }*/
+        SpxDBPool pool = new SpxDBPool();
+        pool.cf = prop;
 
         //基本点2、始使化时根据配置中的初始连接数创建指定数量的连接
-        for (int i = 0; i < connpool.propertyBean.getInitConnections(); i++) {
+        for (int i = 0; i < pool.cf.getMinConnections(); i++) {
             try {
-                Connection conn = connpool.NewConnection();
-                connpool.freeConnections.add(conn);
-            } catch (SQLException | ClassNotFoundException e) {
-                log.error(connpool.propertyBean.getNodeName()+"节点连接池初始化失败");
+                Connection conn = pool.newConnection();
+                pool.freeConnections.add(conn);
+            } catch (SQLException e) {
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                        "DBPOOL", AlbianLoggerLevel.Mark,e,
+                "create dbpool -> %s is fail.",prop.getPoolName());
                 return null;
             }
         }
 
-        connpool.isActive = true;
-        return connpool;
+        pool.isActive = true;
+        return pool;
     }
 
 
@@ -70,12 +67,8 @@ public class ConnectionPool implements IConnectionPool {
      * @return Boolean
      */
     private Boolean isValidConnection(Connection conn) throws SQLException {
-        try {
-            if(conn==null || conn.isClosed()){
-                return false;
-            }
-        } catch (SQLException e) {
-            throw new SQLException(e);
+        if(conn == null || conn.isClosed()){
+            return false;
         }
         return true;
     }
@@ -86,23 +79,14 @@ public class ConnectionPool implements IConnectionPool {
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-    private Connection NewConnection() throws ClassNotFoundException,
-            SQLException {
+    private Connection newConnection() throws SQLException {
 
         Connection conn = null;
-        try {
-            if (this.propertyBean != null) {
-                //Class.forName(this.propertyBean.getDriverName());
-                conn = DriverManager.getConnection(this.propertyBean.getUrl(),
-                        this.propertyBean.getUsername(),
-                        this.propertyBean.getPassword());
-            }
-        } catch (SQLException e) {
-            throw new SQLException(e);
+        if (this.cf != null) {
+            conn = DriverManager.getConnection(this.cf.getUrl(),
+                    this.cf.getUsername(),
+                    this.cf.getPassword());
         }
-
-
-
         return conn;
     }
 
@@ -110,10 +94,10 @@ public class ConnectionPool implements IConnectionPool {
     @Override
     public synchronized Connection getConn() {
         Connection conn = null;
-        if (this.getActiveNum() < this.propertyBean.getMaxConnections()) {
+        if (this.getBusyCount() < this.cf.getMaxConnections()) {
             // 分支1：当前使用的连接没有达到最大连接数
             // 基本点3、在连接池没有达到最大连接数之前，如果有可用的空闲连接就直接使用空闲连接，如果没有，就创建新的连接。
-            if (this.getFreeNum() > 0) {
+            if (this.getFreeCount() > 0) {
                 // 分支1.1：如果空闲池中有连接，就从空闲池中直接获取
                 log.info("分支1.1：如果空闲池中有连接，就从空闲池中直接获取");
                 conn = this.freeConnections.pollFirst();
@@ -124,8 +108,8 @@ public class ConnectionPool implements IConnectionPool {
                 //基本点5、由于数据库连接闲置久了会超时关闭，因此需要连接池采用机制保证每次请求的连接都是有效可用的。
                 try {
                     if(this.isValidConnection(conn)){
-                        this.activeConnections.add(conn);
-                        currentConnection.set(conn);
+                        this.busyConnections.add(conn);
+//                        currentConnection.set(conn);
                     }else{
                         conn = getConn();//同步方法是可重入锁
                     }
@@ -136,9 +120,9 @@ public class ConnectionPool implements IConnectionPool {
                 // 分支1.2：如果空闲池中无可用连接，就创建新的连接
                 log.info("分支1.2：如果空闲池中无可用连接，就创建新的连接");
                 try {
-                    conn = this.NewConnection();
-                    this.activeConnections.add(conn);
-                } catch (ClassNotFoundException | SQLException e) {
+                    conn = this.newConnection();
+                    this.busyConnections.add(conn);
+                } catch ( SQLException e) {
                     e.printStackTrace();
                 }
             }
@@ -150,7 +134,7 @@ public class ConnectionPool implements IConnectionPool {
 
             //进入等待状态。等待被notify(),notifyALL()唤醒或者超时自动苏醒
             try{
-                this.wait(this.propertyBean.getConninterval());
+                this.wait(this.cf.getConninterval());
             }catch(InterruptedException e) {
                 log.error("线程等待被打断");
             }
@@ -158,8 +142,8 @@ public class ConnectionPool implements IConnectionPool {
             //若线程超时前被唤醒并成功获取连接，就不会走到return null。
             //若线程超时前没有获取连接，则返回null。
             //如果timeout设置为0，就无限重连。
-            if(this.propertyBean.getTimeout()!=0){
-                if(System.currentTimeMillis() - startTime > this.propertyBean.getTimeout())
+            if(this.cf.getWaitTimeWhenGetMs()!=0){
+                if(System.currentTimeMillis() - startTime > this.cf.getWaitTimeWhenGetMs())
                     return null;
             }
             conn = this.getConn();
@@ -169,35 +153,35 @@ public class ConnectionPool implements IConnectionPool {
     }
 
 
-    @Override
-    public Connection getCurrConn() {
-        Connection conn=currentConnection.get();
-        try {
-            if(! isValidConnection(conn)){
-                conn=this.getConn();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return conn;
-    }
+//    @Override
+//    public Connection getCurrConn() {
+//        Connection conn=currentConnection.get();
+//        try {
+//            if(! isValidConnection(conn)){
+//                conn=this.getConn();
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return conn;
+//    }
 
 
     @Override
     public synchronized void rlsConn(Connection conn) throws SQLException {
 
-        log.info(Thread.currentThread().getName()+"关闭连接：activeConnections.remove:"+conn);
-        this.activeConnections.remove(conn);
-        this.currentConnection.remove();
+        log.info(Thread.currentThread().getName()+"关闭连接：busyConnections.remove:"+conn);
+        this.busyConnections.remove(conn);
+//        this.currentConnection.remove();
         //活动连接池删除的连接，相应的加到空闲连接池中
         try {
             if(isValidConnection(conn)){
                 freeConnections.add(conn);
             }else{
-                freeConnections.add(this.NewConnection());
+                freeConnections.add(this.newConnection());
             }
 
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (  SQLException e) {
             e.printStackTrace();
         }
         //唤醒getConnection()中等待的线程
@@ -215,7 +199,7 @@ public class ConnectionPool implements IConnectionPool {
                 e.printStackTrace();
             }
         }
-        for (Connection conn : this.activeConnections) {
+        for (Connection conn : this.busyConnections) {
             try {
                 if (this.isValidConnection(conn)) {
                     conn.close();
@@ -226,7 +210,7 @@ public class ConnectionPool implements IConnectionPool {
         }
         this.isActive = false;
         this.freeConnections.clear();
-        this.activeConnections.clear();
+        this.busyConnections.clear();
     }
 
     @Override
@@ -238,7 +222,7 @@ public class ConnectionPool implements IConnectionPool {
     @Override
     public void checkPool() {
 
-        final String nodename=this.propertyBean.getNodeName();
+        final String nodename=this.cf.getPoolName();
 
         ScheduledExecutorService ses= Executors.newScheduledThreadPool(2);
 
@@ -246,8 +230,8 @@ public class ConnectionPool implements IConnectionPool {
         ses.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                System.out.println(nodename +"空闲连接数："+getFreeNum());
-                System.out.println(nodename +"活动连接数："+getActiveNum());
+                System.out.println(nodename +"空闲连接数："+ getFreeCount());
+                System.out.println(nodename +"活动连接数："+ getBusyCount());
 
             }
         }, 1, 1, TimeUnit.SECONDS);
@@ -257,39 +241,49 @@ public class ConnectionPool implements IConnectionPool {
     }
 
     @Override
-    public synchronized int getActiveNum() {
-        return this.activeConnections.size();
+    public synchronized int getBusyCount() {
+        return this.busyConnections.size();
     }
 
     @Override
-    public synchronized int getFreeNum() {
+    public synchronized int getFreeCount() {
         return this.freeConnections.size();
+    }
+
+    @Override
+    public IDBPoolConfig getConfig() {
+        return cf;
+    }
+
+    @Override
+    public void setConfig(IDBPoolConfig config) {
+        this.cf = config;
     }
 
     //基本点6、连接池内部要保证指定最小连接数量的空闲连接
     class checkFreepools extends TimerTask {
-        private ConnectionPool conpool = null;
+        private SpxDBPool conpool = null;
 
-        public checkFreepools(ConnectionPool cp) {
+        public checkFreepools(SpxDBPool cp) {
             this.conpool = cp;
         }
 
         @Override
         public void run() {
             if (this.conpool != null && this.conpool.isActive()) {
-                int poolstotalnum = conpool.getFreeNum()
-                        + conpool.getActiveNum();
-                int subnum = conpool.propertyBean.getMinConnections()
+                int poolstotalnum = conpool.getFreeCount()
+                        + conpool.getBusyCount();
+                int subnum = conpool.cf.getMinConnections()
                         - poolstotalnum;
 
                 if (subnum > 0) {
-                    System.out.println(conpool.propertyBean.getNodeName()
+                    System.out.println(conpool.cf.getPoolName()
                             + "扫描并维持空闲池中的最小连接数，需补充" + subnum + "个连接");
                     for (int i = 0; i < subnum; i++) {
                         try {
                             conpool.freeConnections
-                                    .add(conpool.NewConnection());
-                        } catch (ClassNotFoundException | SQLException e) {
+                                    .add(conpool.newConnection());
+                        } catch (SQLException e) {
                             e.printStackTrace();
                         }
                     }

@@ -1,5 +1,7 @@
-package org.albianj.persistence.impl.dbpool;
+package org.albianj.persistence.impl.dbpool.impl;
 
+import org.albianj.persistence.impl.dbpool.ISpxDBPool;
+import org.albianj.persistence.impl.dbpool.PropertiesManager;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -10,7 +12,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
-    private final Logger log = Logger.getLogger(ConnectionPool.class);
+    private final Logger log = Logger.getLogger(SpxDBPool.class);
 
     private static ConnectionManager dbm = null;
 
@@ -23,7 +25,7 @@ public class ConnectionManager {
      * 数据库连接池字典
      * 为每个节点创建一个连接池（可配置多个节点）
      */
-    private ConcurrentHashMap<String, IConnectionPool> pools = new ConcurrentHashMap<String, IConnectionPool>();
+    private ConcurrentHashMap<String, ISpxDBPool> pools = new ConcurrentHashMap<String, ISpxDBPool>();
 
 
 
@@ -39,8 +41,8 @@ public class ConnectionManager {
         String str_nodenames = PropertiesManager.getProperty("nodename");
         //基本点1、可配置并管理多个连接节点的连接池
         for (String str_nodename : str_nodenames.split(",")) {
-            DBPropertyBean dbProperty = new DBPropertyBean();
-            dbProperty.setNodeName(str_nodename);
+            DBPoolConfig dbProperty = new DBPoolConfig();
+            dbProperty.setPoolName(str_nodename);
 
             //验证url配置正确性
             String url = PropertiesManager.getProperty(str_nodename + ".url");
@@ -96,7 +98,7 @@ public class ConnectionManager {
                 log.error(str_nodename + "节点初始连接数设置错误，默认设为5");
                 initConn=5;
             }
-            dbProperty.setInitConnections(initConn);
+//            dbProperty.setInitConnections(initConn);
 
             //验证最大连接数配置正确性
             String str_maxconnections=PropertiesManager.getProperty(str_nodename + ".maxconnections");
@@ -129,7 +131,7 @@ public class ConnectionManager {
                 log.error(str_nodename + "节点连接超时时间设置错误，默认设为2000ms");
                 timeout = 2000;
             }
-            dbProperty.setTimeout(timeout);
+            dbProperty.setWaitTimeWhenGetMs(timeout);
 
             //创建驱动
             if(!drivers.contains(dbProperty.getDriverName())){
@@ -145,7 +147,7 @@ public class ConnectionManager {
 
             //创建连接池。这里采用同步方法实现的连接池类ConnectionPool。
             //(如果后面我们还有别的实现方式，只需要更改这里就行了。)
-            IConnectionPool cp = ConnectionPool.CreateConnectionPool(dbProperty);
+            ISpxDBPool cp = SpxDBPool.createConnectionPool(dbProperty);
             if (cp != null) {
                 pools.put(str_nodename, cp);
                 cp.checkPool();
@@ -172,11 +174,10 @@ public class ConnectionManager {
     /**
      * 从指定连接池中获取可用连接
      *
-     * @param poolName要获取连接的连接池名称
      * @return连接池中的一个可用连接或null
      */
     public Connection getConnection(String poolName) {
-        IConnectionPool pool =  pools.get(poolName);
+        ISpxDBPool pool =  pools.get(poolName);
         return pool.getConn();
     }
 
@@ -184,11 +185,9 @@ public class ConnectionManager {
     /**
      * 回收指定连接池的连接
      *
-     * @param poolName连接池名称
-     * @param conn要回收的连接
      */
     public void closeConnection(String poolName, Connection conn) throws SQLException {
-        IConnectionPool pool = pools.get(poolName);
+        ISpxDBPool pool = pools.get(poolName);
         if (pool != null) {
             try {
                 pool.rlsConn(conn);
@@ -205,8 +204,8 @@ public class ConnectionManager {
      * 关闭所有连接，撤销驱动器的注册
      */
     public void destroy() {
-        for (Map.Entry<String, IConnectionPool> poolEntry : pools.entrySet()) {
-            IConnectionPool pool = poolEntry.getValue();
+        for (Map.Entry<String, ISpxDBPool> poolEntry : pools.entrySet()) {
+            ISpxDBPool pool = poolEntry.getValue();
             pool.destroy();
         }
         log.info("已经关闭所有连接");

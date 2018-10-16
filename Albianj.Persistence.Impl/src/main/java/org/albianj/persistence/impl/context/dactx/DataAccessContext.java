@@ -95,8 +95,6 @@ public class DataAccessContext implements IDataAccessContext {
     }
 
     public long commitAndGetGenId(String sessionid){
-//        IWriterJobAdapter jobAdp = new WriterJobAdapter();
-//        jobAdp.buildWriterJob(sessionId,this.entitis);
         return 0;
     }
 

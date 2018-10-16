@@ -30,6 +30,6 @@
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.21" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.21" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
-    <orderEntry type="library" name="Maven: tx-thirdparty:pplogstatapi:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.yuewen.nrzx.ext:yuewen.pplogstate:0.0.2" level="project" />
   </component>
 </module>

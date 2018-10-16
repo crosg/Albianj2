@@ -5,7 +5,7 @@
     <parent>
         <artifactId>Albianj</artifactId>
         <groupId>com.yuewen.nrzx.albianj</groupId>
-        <version>2018101101</version>
+        <version>2018101602</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,11 +16,14 @@
             <artifactId>Albianj.Kernel</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>RELEASE</version>
+            <version>3.0.1</version>
+            <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
 

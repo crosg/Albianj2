@@ -5,7 +5,7 @@
     <parent>
         <artifactId>Albianj</artifactId>
         <groupId>com.yuewen.nrzx.albianj</groupId>
-        <version>2018101101</version>
+        <version>2018101602</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -37,6 +37,11 @@
             <artifactId>HikariCP-java7</artifactId>
             <version>2.4.12</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.yuewen.nrzx.albianj</groupId>
+            <artifactId>Albianj.Restful.Impl</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
