@@ -1,8 +1,8 @@
 package org.albianj.persistence.impl.dbpool.impl;
 
-import org.albianj.persistence.impl.dbpool.IDBPoolConfig;
+import org.albianj.persistence.impl.dbpool.ISpxDBPoolConfig;
 
-public class DBPoolConfig implements IDBPoolConfig {
+public class SpxDBPoolConfig implements ISpxDBPoolConfig {
 
     private String poolName;
     //数据连接驱动
@@ -34,11 +34,25 @@ public class DBPoolConfig implements IDBPoolConfig {
     //即180s，故程序设置150s，2'30
     private long freeTimeMs = 150 * 1000;
 
+    //max request time for one data operator
+    private long maxRequestTimeMs = 30 * 1000;
+
     //最大补救链接的数量
     //当内存池内的链接全部被使用，或者链接池发生泄漏的时候，
     //补救措施是直接生成一个新的链接，先供业务使用
     //该链接使用完毕后不会被放入链接池，直接close掉
     private int maxRemedyConnectionCount = 50;
+
+    public long getCleanupTimestampMs() {
+        return cleanupTimestampMs;
+    }
+
+    public void setCleanupTimestampMs(long cleanupTimestampMs) {
+        this.cleanupTimestampMs = cleanupTimestampMs;
+    }
+
+    //timestamp for startup cleanup connection;
+    private long cleanupTimestampMs = 30 * 1000;
 
     //下面是getter and setter
 
@@ -248,6 +262,14 @@ public class DBPoolConfig implements IDBPoolConfig {
     @Override
     public void setMaxRemedyConnectionCount(int maxRemedyConnectionCount) {
         this.maxRemedyConnectionCount = maxRemedyConnectionCount;
+    }
+
+    public void setMaxRequestTimeMs(long maxRequestTimeMs){
+        this.maxRequestTimeMs = maxRequestTimeMs;
+    }
+
+    public long getMaxRequestTimeMs(){
+        return this.maxRequestTimeMs;
     }
 
 

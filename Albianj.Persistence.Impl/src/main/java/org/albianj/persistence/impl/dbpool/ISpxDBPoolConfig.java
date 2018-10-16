@@ -1,6 +1,6 @@
 package org.albianj.persistence.impl.dbpool;
 
-public interface IDBPoolConfig {
+public interface ISpxDBPoolConfig {
     String getPoolName();
 
     void setPoolName(String poolName);
@@ -48,4 +48,12 @@ public interface IDBPoolConfig {
     int getMaxRemedyConnectionCount();
 
     void setMaxRemedyConnectionCount(int maxRemedyConnectionCount);
+
+    public long getCleanupTimestampMs() ;
+
+    public void setCleanupTimestampMs(long cleanupTimestampMs) ;
+
+    public void setMaxRequestTimeMs(long maxRequestTimeMs);
+
+    public long getMaxRequestTimeMs();
 }

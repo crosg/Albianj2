@@ -39,6 +39,19 @@ public abstract class FreeDataBasePool implements IDataBasePool {
         return ds;
     }
 
+    protected DataSource getDatasource( String key){
+        DataSource ds = _dataSource.get(key);
+        if (ds != null) {
+            return ds;
+        }
+
+        synchronized (_dataSource) {
+            ds = _dataSource.get(key);
+        }
+        return ds;
+    }
+
+
     protected abstract DataSource setupDataSource(final String key,final IRunningStorageAttribute rsa);
 
     //释放连接回连接池

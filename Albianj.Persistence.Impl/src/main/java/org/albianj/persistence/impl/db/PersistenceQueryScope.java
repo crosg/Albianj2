@@ -243,11 +243,6 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
         String className = objAttr.getType();
         Map<String,IAlbianEntityFieldAttribute> member = objAttr.getFields();
 
-//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-//        IAlbianObjectAttribute attr = amps.getAlbianObjectAttribute(inter);
-//        String className = attr.getType();
-//        PropertyDescriptor[] propertyDesc = amps.getAlbianObjectPropertyDescriptor(className);
-//        Map<String, IMemberAttribute> members = attr.getMembers();
         Class<?> cls = null;
         try {
             cls = AlbianClassLoader.getInstance().loadClass(className);
@@ -264,14 +259,7 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
                     @SuppressWarnings("unchecked")
                     T obj = (T) cls.newInstance();
                     for (IAlbianEntityFieldAttribute fAttr : member.values()) {
-//                        String name = desc.getName();
-//                        IMemberAttribute ma = members.get(name.toLowerCase());
-//                        if (null == ma)
-//                            continue;
                         if (!fAttr.getIsSave()) {
-//                            if (name.equals("isAlbianNew")) {
-//                                desc.getWriteMethod().invoke(obj, false);
-//                            }
                             continue;
                         }
 
@@ -279,9 +267,7 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
                         if (null != v) {
                             Object rc = ResultConvert.toBoxValue(fAttr.getEntityField().getType(), v);
                             fAttr.getEntityField().set(obj,rc);
-//                            desc.getWriteMethod().invoke(obj, rc);
                             obj.setOldAlbianObject(fAttr.getPropertyName(),rc);
-//                            obj.setOldAlbianObject(name, rc);
                         }
                     }
                     obj.setIsAlbianNew(false);

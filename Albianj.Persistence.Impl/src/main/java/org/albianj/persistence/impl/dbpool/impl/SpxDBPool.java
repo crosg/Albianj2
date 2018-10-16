@@ -2,75 +2,114 @@ package org.albianj.persistence.impl.dbpool.impl;
 
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
-import org.albianj.persistence.impl.dbpool.IDBPoolConfig;
+import org.albianj.persistence.impl.dbpool.ISpxDBPoolConfig;
+import org.albianj.persistence.impl.dbpool.IPoolingConnection;
 import org.albianj.persistence.impl.dbpool.ISpxDBPool;
 import org.albianj.service.AlbianServiceRouter;
-import org.apache.log4j.Logger;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.LinkedList;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class SpxDBPool implements ISpxDBPool {
-    private static final Logger log = Logger.getLogger(SpxDBPool.class);
-
-    private IDBPoolConfig cf = null;
+    private ISpxDBPoolConfig cf = null;
     private Boolean isActive = true;
+    private String name;
 
-    private LinkedList<Connection> freeConnections = new LinkedList<Connection>();
-    private LinkedList<Connection> busyConnections = new LinkedList<Connection>();
+    public String getPoolName() {
+        return name;
+    }
+
+    public void setPoolName(String name) {
+        this.name = name;
+    }
+
+    private LinkedList<IPoolingConnection> freeConnections = new LinkedList<>();
+    private LinkedList<IPoolingConnection> busyConnections = new LinkedList<>();
+    private Object remebyLocker = new Object();
+
+    private int CurrRemedyConnectionsCount = 0;
 
     private SpxDBPool(){
         super();
     }
 
-    public static SpxDBPool createConnectionPool(DBPoolConfig prop) {
+    private IPoolingConnection pollFreeConnection(){
+        synchronized(freeConnections) {
+            return freeConnections.pollFirst();
+        }
+    }
+
+    private void pushFreeConnection(IPoolingConnection pconn){
+        synchronized (freeConnections) {
+            freeConnections.addLast(pconn);
+        }
+    }
+
+    private  void removeFreeConnection(IPoolingConnection pconn){
+        synchronized(busyConnections){
+            freeConnections.remove(pconn);
+        }
+    }
+
+    private IPoolingConnection pollBusyConnection(){
+        synchronized (busyConnections) {
+            return busyConnections.pollFirst();
+        }
+    }
+
+    private  void pushBusyConnection(IPoolingConnection pconn){
+        synchronized(busyConnections){
+            busyConnections.addLast(pconn);
+        }
+    }
+
+    private  void removeBusyConnection(IPoolingConnection pconn){
+        synchronized(busyConnections){
+            busyConnections.remove(pconn);
+        }
+    }
+
+
+
+    public static SpxDBPool createConnectionPool(ISpxDBPoolConfig cf) {
 
         AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                 "DBPOOL", AlbianLoggerLevel.Mark,
         "create dbpool ->%s with argument: minConnections -> %d,maxConnections -> %d,"
                 + "waitTimeWhenGetMs -> %d, lifeTimeMs -> %d, freeTimeMs -> %d,"
-                +"maxRemedyConnectionCount - > %d,",
-                prop.getPoolName(),prop.getMinConnections(),prop.getMaxConnections(),
-                prop.getWaitTimeWhenGetMs(),prop.getLifeTimeMs(),prop.getFreeTimeMs(),
-                prop.getMaxRemedyConnectionCount());
+                +"maxRemedyConnectionCount - > %d,max request timeout -> %d,cleanup timestamp -> %d.s",
+                cf.getPoolName(),cf.getMinConnections(),cf.getMaxConnections(),
+                cf.getWaitTimeWhenGetMs(),cf.getLifeTimeMs(),cf.getFreeTimeMs(),
+                cf.getMaxRemedyConnectionCount(),cf.getMaxRequestTimeMs(),
+                cf.getCleanupTimestampMs());
 
         SpxDBPool pool = new SpxDBPool();
-        pool.cf = prop;
+        pool.cf = cf;
 
-        //基本点2、始使化时根据配置中的初始连接数创建指定数量的连接
         for (int i = 0; i < pool.cf.getMinConnections(); i++) {
             try {
-                Connection conn = pool.newConnection();
+                IPoolingConnection conn = pool.newConnection(true);
                 pool.freeConnections.add(conn);
             } catch (SQLException e) {
                 AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                        "DBPOOL", AlbianLoggerLevel.Mark,e,
-                "create dbpool -> %s is fail.",prop.getPoolName());
+                        "DBPOOL", AlbianLoggerLevel.Error,e,
+                "create dbpool -> %s is fail.",cf.getPoolName());
                 return null;
             }
         }
 
         pool.isActive = true;
+        pool.regeditCleanupTask();
         return pool;
-    }
-
-
-
-    /**
-     * 检测连接是否有效
-     * @return Boolean
-     */
-    private Boolean isValidConnection(Connection conn) throws SQLException {
-        if(conn == null || conn.isClosed()){
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -79,138 +118,173 @@ public class SpxDBPool implements ISpxDBPool {
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-    private Connection newConnection() throws SQLException {
+    private IPoolingConnection newConnection(boolean isPooling) throws SQLException {
 
         Connection conn = null;
+        IPoolingConnection pconn = null;
         if (this.cf != null) {
             conn = DriverManager.getConnection(this.cf.getUrl(),
                     this.cf.getUsername(),
                     this.cf.getPassword());
+            pconn = new PoolingConnection(conn,System.currentTimeMillis(),isPooling);
         }
-        return conn;
+        return pconn;
     }
 
-
-    @Override
-    public synchronized Connection getConn() {
-        Connection conn = null;
-        if (this.getBusyCount() < this.cf.getMaxConnections()) {
-            // 分支1：当前使用的连接没有达到最大连接数
-            // 基本点3、在连接池没有达到最大连接数之前，如果有可用的空闲连接就直接使用空闲连接，如果没有，就创建新的连接。
-            if (this.getFreeCount() > 0) {
-                // 分支1.1：如果空闲池中有连接，就从空闲池中直接获取
-                log.info("分支1.1：如果空闲池中有连接，就从空闲池中直接获取");
-                conn = this.freeConnections.pollFirst();
-
-                //连接闲置久了也会超时，因此空闲池中的有效连接会越来越少，需要另一个进程进行扫描监测，不断保持一定数量的可用连接。
-                //在下面定义了checkFreepools的TimerTask类，在checkPool()方法中进行调用。
-
-                //基本点5、由于数据库连接闲置久了会超时关闭，因此需要连接池采用机制保证每次请求的连接都是有效可用的。
-                try {
-                    if(this.isValidConnection(conn)){
-                        this.busyConnections.add(conn);
-//                        currentConnection.set(conn);
-                    }else{
-                        conn = getConn();//同步方法是可重入锁
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                // 分支1.2：如果空闲池中无可用连接，就创建新的连接
-                log.info("分支1.2：如果空闲池中无可用连接，就创建新的连接");
-                try {
-                    conn = this.newConnection();
-                    this.busyConnections.add(conn);
-                } catch ( SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            // 分支2：当前已到达最大连接数
-            // 基本点4、当连接池中的活动连接数达到最大连接数，新的请求进入等待状态，直到有连接被释放。
-            log.info("分支2：当前已到达最大连接数 ");
-            long startTime = System.currentTimeMillis();
-
-            //进入等待状态。等待被notify(),notifyALL()唤醒或者超时自动苏醒
-            try{
-                this.wait(this.cf.getConninterval());
-            }catch(InterruptedException e) {
-                log.error("线程等待被打断");
-            }
-
-            //若线程超时前被唤醒并成功获取连接，就不会走到return null。
-            //若线程超时前没有获取连接，则返回null。
-            //如果timeout设置为0，就无限重连。
-            if(this.cf.getWaitTimeWhenGetMs()!=0){
-                if(System.currentTimeMillis() - startTime > this.cf.getWaitTimeWhenGetMs())
-                    return null;
-            }
-            conn = this.getConn();
-
-        }
-        return conn;
-    }
-
-
-//    @Override
-//    public Connection getCurrConn() {
-//        Connection conn=currentConnection.get();
-//        try {
-//            if(! isValidConnection(conn)){
-//                conn=this.getConn();
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return conn;
+//    private void clsConnection(Connection conn){
+//        conn.close();
 //    }
 
 
+    private void usePoolingConnection(IPoolingConnection pconn){
+        pushBusyConnection(pconn);
+        pconn.setLastUsedTimeMs(System.currentTimeMillis());
+        pconn.addReuseTimes();
+    }
     @Override
-    public synchronized void rlsConn(Connection conn) throws SQLException {
+    public  Connection getConnection() throws SQLException {
+        IPoolingConnection pconn = null;
+        long now = System.currentTimeMillis();
+        pconn = pollFreeConnection();
+        if(null != pconn) { // have free connection
+            if(pconn.getLastUsedTimeMs() + this.cf.getFreeTimeMs() <= now || pconn.isValid()) {
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                        "DBPOOL", AlbianLoggerLevel.Error,
+                        "free time expired connection in pool -> %s which lastUsedTime -> %d, startup -> %d, reuse -> %d.close it and new one.",
+                        cf.getPoolName(),pconn.getLastUsedTimeMs(), pconn.getStartupTimeMs(),pconn.getReuseTimes());
+                pconn.close();
+                pconn = newConnection(true);
+            }
+            usePoolingConnection(pconn);
+            return pconn;
+        }
 
-        log.info(Thread.currentThread().getName()+"关闭连接：busyConnections.remove:"+conn);
-        this.busyConnections.remove(conn);
-//        this.currentConnection.remove();
-        //活动连接池删除的连接，相应的加到空闲连接池中
-        try {
-            if(isValidConnection(conn)){
-                freeConnections.add(conn);
-            }else{
-                freeConnections.add(this.newConnection());
+        // not have free connection
+        // new one and add to dbpool
+        if(this.getBusyCount() < this.cf.getMaxConnections()) { // maybe not threadsafe but soso
+            pconn = newConnection(true);
+            usePoolingConnection(pconn);
+            return pconn;
+        }
+
+        synchronized (remebyLocker) {
+            //all connection is busy
+            if (cf.getWaitTimeWhenGetMs() <= 0) { // not wait and do remedy
+                if (this.CurrRemedyConnectionsCount < cf.getMaxRemedyConnectionCount()) {
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                            "DBPOOL", AlbianLoggerLevel.Error,
+                            "all connection in pool-> %s is busy,the config is not waitting and do remedy:new a connection.",
+                            cf.getPoolName());
+                    pconn = newConnection(false);
+                    ++this.CurrRemedyConnectionsCount;
+                    if (this.CurrRemedyConnectionsCount >= cf.getMaxRemedyConnectionCount() / 2) {
+                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                                "DBPOOL", AlbianLoggerLevel.Mark,
+                                "the remedy connections count -> %d over the half by max connections -> %d.Critical overflow the dbppol.",
+                                cf.getPoolName(), this.CurrRemedyConnectionsCount, cf.getMaxRemedyConnectionCount());
+                    }
+                    return pconn;
+                }
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                        "DBPOOL", AlbianLoggerLevel.Mark,
+                        "can not get connection,the remedy connections count -> %d over max connections -> %d.Critical overflow the dbppol.",
+                        cf.getPoolName(), this.CurrRemedyConnectionsCount, cf.getMaxRemedyConnectionCount());
+                return null;
             }
 
-        } catch (  SQLException e) {
-            e.printStackTrace();
+            // wait
+            long beginWait = System.currentTimeMillis();
+            try {
+                this.wait(cf.getWaitTimeWhenGetMs());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            long endWait = System.currentTimeMillis();
+            if (beginWait + cf.getWaitTimeWhenGetMs() > endWait) {
+                //wakeup by notify
+                return this.getConnection();
+            }
+
+            // timeout and do remedy
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    "DBPOOL", AlbianLoggerLevel.Error,
+                    "all connection in pool-> %s is busy,the config is not waitting and do remedy:new a connection.",
+                    cf.getPoolName());
+            pconn = newConnection(false);
+
+            ++this.CurrRemedyConnectionsCount;
+
+            if (this.CurrRemedyConnectionsCount >= cf.getMaxRemedyConnectionCount() / 2) {
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                        "DBPOOL", AlbianLoggerLevel.Mark,
+                        "the remedy connections count -> %d over the half by max connections -> %d.Critical overflow the dbppol.",
+                        cf.getPoolName(), this.CurrRemedyConnectionsCount, cf.getMaxRemedyConnectionCount());
+            }
+            return pconn;
         }
-        //唤醒getConnection()中等待的线程
-        this.notifyAll();
+    }
+
+    @Override
+    public Connection getConnection(String username, String password) throws SQLException {
+        return  getConnection();
+    }
+
+
+    @Override
+    public synchronized void rtnConnection(Connection conn) throws SQLException {
+        IPoolingConnection pconn = (IPoolingConnection) conn;
+        if(!pconn.isPooling()) {
+            synchronized (remebyLocker) {
+                --this.CurrRemedyConnectionsCount;
+            }
+            pconn.close();
+        }
+        removeBusyConnection(pconn);
+        long now = System.currentTimeMillis();
+        if(pconn.getStartupTimeMs() + cf.getLifeTimeMs() >= now) {//over the max lifecycle,kill it
+            pconn.close();
+            return;
+        }
+        if(pconn.isValid()) {
+            pushFreeConnection(pconn);
+        } else {
+            pconn.close();
+        }
+        this.notifyAll(); // keep wakeup sleep thread
+    }
+
+    public int getCurrRemedyConnectionsCount() {
+        return CurrRemedyConnectionsCount;
     }
 
     @Override
     public synchronized void destroy() {
-        for (Connection conn : this.freeConnections) {
-            try {
-                if (this.isValidConnection(conn)) {
-                    conn.close();
+        synchronized (freeConnections) {
+            for (IPoolingConnection pconn : this.freeConnections) {
+                try {
+                    if (pconn.isValid()) {
+                        pconn.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+            this.freeConnections.clear();
         }
-        for (Connection conn : this.busyConnections) {
-            try {
-                if (this.isValidConnection(conn)) {
-                    conn.close();
+        synchronized (busyConnections) {
+            for (IPoolingConnection pconn : this.busyConnections) {
+                try {
+                    if (pconn.isValid()) {
+                        pconn.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+            this.busyConnections.clear();
         }
         this.isActive = false;
-        this.freeConnections.clear();
-        this.busyConnections.clear();
     }
 
     @Override
@@ -219,25 +293,11 @@ public class SpxDBPool implements ISpxDBPool {
     }
 
 
-    @Override
-    public void checkPool() {
+    private void regeditCleanupTask() {
 
-        final String nodename=this.cf.getPoolName();
-
-        ScheduledExecutorService ses= Executors.newScheduledThreadPool(2);
-
-        //功能一：开启一个定时器线程输出状态
-        ses.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println(nodename +"空闲连接数："+ getFreeCount());
-                System.out.println(nodename +"活动连接数："+ getBusyCount());
-
-            }
-        }, 1, 1, TimeUnit.SECONDS);
-
-        //功能二：开启一个定时器线程，监测并维持空闲池中的最小连接数
-        ses.scheduleAtFixedRate(new checkFreepools(this), 1, 5, TimeUnit.SECONDS);
+        ScheduledExecutorService ses= Executors.newScheduledThreadPool(1);
+        ses.scheduleAtFixedRate(new cleanupTask(this), this.cf.getCleanupTimestampMs(),
+                                this.cf.getCleanupTimestampMs(), TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -251,47 +311,112 @@ public class SpxDBPool implements ISpxDBPool {
     }
 
     @Override
-    public IDBPoolConfig getConfig() {
+    public ISpxDBPoolConfig getConfig() {
         return cf;
     }
 
     @Override
-    public void setConfig(IDBPoolConfig config) {
+    public void setConfig(ISpxDBPoolConfig config) {
         this.cf = config;
     }
 
-    //基本点6、连接池内部要保证指定最小连接数量的空闲连接
-    class checkFreepools extends TimerTask {
-        private SpxDBPool conpool = null;
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return null;
+    }
 
-        public checkFreepools(SpxDBPool cp) {
-            this.conpool = cp;
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public PrintWriter getLogWriter() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public void setLogWriter(PrintWriter out) throws SQLException {
+
+    }
+
+    @Override
+    public void setLoginTimeout(int seconds) throws SQLException {
+
+    }
+
+    @Override
+    public int getLoginTimeout() throws SQLException {
+        return 0;
+    }
+
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return null;
+    }
+
+    class cleanupTask extends TimerTask {
+        private SpxDBPool pool = null;
+
+        public cleanupTask(SpxDBPool pool) {
+            this.pool = pool;
         }
 
         @Override
         public void run() {
-            if (this.conpool != null && this.conpool.isActive()) {
-                int poolstotalnum = conpool.getFreeCount()
-                        + conpool.getBusyCount();
-                int subnum = conpool.cf.getMinConnections()
-                        - poolstotalnum;
 
-                if (subnum > 0) {
-                    System.out.println(conpool.cf.getPoolName()
-                            + "扫描并维持空闲池中的最小连接数，需补充" + subnum + "个连接");
-                    for (int i = 0; i < subnum; i++) {
-                        try {
-                            conpool.freeConnections
-                                    .add(conpool.newConnection());
-                        } catch (SQLException e) {
-                            e.printStackTrace();
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    "DBPOOL", AlbianLoggerLevel.Mark,
+                    "cleanup task is wakeup. pool -> %s,current state : busy -> %d,free -> %d,remedy -> %d..",
+                    pool.getPoolName(),pool.getBusyCount(),pool.getFreeCount(),pool.getCurrRemedyConnectionsCount());
+            long now = System.currentTimeMillis();
+            synchronized (busyConnections) {
+                for (IPoolingConnection pconn : busyConnections) {
+                    try {
+                        if (pconn.getLastUsedTimeMs() + cf.getMaxRequestTimeMs() < now ) { // exec timeout
+                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                                    "DBPOOL", AlbianLoggerLevel.Mark,
+                                    "connection in pool -> %s is request timeout,close it force.begin time -> %d,now -> %d,timeout ->%d..",
+                                    pool.getPoolName(),pconn.getLastUsedTimeMs(),now,cf.getMaxRequestTimeMs());
+                            removeBusyConnection(pconn);
+                            pconn.close();
                         }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            synchronized (freeConnections){
+                for (IPoolingConnection pconn : freeConnections) {
+                    try {
+                        if (pconn.getLastUsedTimeMs() + cf.getFreeTimeMs() < now ) { // free timeout
+                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                                    "DBPOOL", AlbianLoggerLevel.Mark,
+                                    "connection in pool -> %s is free timeout,close it force.",
+                                    pool.getPoolName(),pconn.getLastUsedTimeMs(),now,cf.getMaxRequestTimeMs());
+                            removeFreeConnection(pconn);
+                            pconn.close();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            int currConnsCount = freeConnections.size() + busyConnections.size();//maybe not thread safe but soso
+            if(currConnsCount < cf.getMinConnections()) {
+                int sub = cf.getMinConnections() - currConnsCount;
+                for (int i = 0; i < sub; i++) {
+                    try {
+                        IPoolingConnection pconn = pool.newConnection(true);
+                        pushFreeConnection(pconn);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
 
                 }
             }
-
         }
-
     }
 }

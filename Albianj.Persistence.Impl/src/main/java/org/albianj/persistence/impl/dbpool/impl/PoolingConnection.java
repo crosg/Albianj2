@@ -13,6 +13,39 @@ public class PoolingConnection  implements IPoolingConnection {
     String batchId;
     //startup timestamp
     long startupTimeMs;
+
+    public long getStartupTimeMs() {
+        return startupTimeMs;
+    }
+
+    public void setStartupTimeMs(long startupTimeMs) {
+        this.startupTimeMs = startupTimeMs;
+    }
+
+    public boolean isPooling() {
+        return isPooling;
+    }
+
+    public void setPooling(boolean pooling) {
+        isPooling = pooling;
+    }
+
+    public long getLastUsedTimeMs() {
+        return lastUsedTimeMs;
+    }
+
+    public void setLastUsedTimeMs(long lastUsedTimeMs) {
+        this.lastUsedTimeMs = lastUsedTimeMs;
+    }
+
+    public long getReuseTimes() {
+        return reuseTimes;
+    }
+
+    public void addReuseTimes() {
+        ++this.reuseTimes;
+    }
+
     // from pool but not return to pool
     // use to bc
     boolean isPooling;
@@ -20,11 +53,10 @@ public class PoolingConnection  implements IPoolingConnection {
     // reuse times in lifecycle
     long reuseTimes = 0;
 
-    public PoolingConnection(Connection conn,long startupTimeMs,boolean isPooling,String batchId){
+    public PoolingConnection(Connection conn,long startupTimeMs,boolean isPooling){
         _conn = conn;
         this.startupTimeMs = startupTimeMs;
         this.isPooling = isPooling;
-        this.batchId = batchId;
     }
 
     @Override
@@ -295,5 +327,13 @@ public class PoolingConnection  implements IPoolingConnection {
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         return _conn.isWrapperFor(iface);
+    }
+
+    public Boolean isValid() throws SQLException {
+       return !this.isClosed();
+    }
+
+    public void cleanup(){
+
     }
 }
