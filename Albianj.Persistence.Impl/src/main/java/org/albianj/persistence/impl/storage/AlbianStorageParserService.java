@@ -244,6 +244,10 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
                         dbp = new DBCPWapper();
                         break;
                     }
+                    case SpxDBCP :{
+                        dbp = new SpxWapper();
+                        break;
+                    }
                     default: {
                         dbp = new C3P0Wapper();
                         break;

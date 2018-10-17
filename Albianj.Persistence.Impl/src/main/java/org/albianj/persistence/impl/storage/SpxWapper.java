@@ -15,6 +15,7 @@ import org.albianj.security.IAlbianSecurityService;
 import org.albianj.service.AlbianServiceRouter;
 
 import javax.sql.DataSource;
+import java.security.Policy;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,13 +29,14 @@ public class SpxWapper extends FreeDataBasePool {
         IStorageAttribute sa = rsa.getStorageAttribute();
         String key = sa.getName() + rsa.getDatabase();
         DataSource ds = getDatasource(key, rsa);
+        ISpxDBPool pool = (ISpxDBPool) ds;
 
         AlbianServiceRouter.getLogger2()
                 .log(IAlbianLoggerService2.AlbianSqlLoggerName, sessionid, AlbianLoggerLevel.Info,
                         "Get the connection from storage:%s and database:%s by connection pool.", sa.getName(),
                         rsa.getDatabase());
         try {
-            Connection conn = ds.getConnection();
+            Connection conn = pool.getConnection(sessionid);
             if (null == conn)
                 return null;
             if (Connection.TRANSACTION_NONE != sa.getTransactionLevel()) {
@@ -97,7 +99,7 @@ public class SpxWapper extends FreeDataBasePool {
             cf.setMaxRemedyConnectionCount(80);
             cf.setMaxRequestTimeMs(60 * 1000);//最大单次执行sql时间为1分钟
             cf.setPoolName(key);
-            cf.setWaitTimeWhenGetMs(200);
+            cf.setWaitTimeWhenGetMs(2);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2()
                     .logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName, IAlbianLoggerService2.InnerThreadName,

@@ -23,7 +23,10 @@ public interface IPoolingConnection extends Connection {
 
     public Boolean isValid() throws SQLException;
 
-     void cleanup() throws SQLException;
+
+     void setSessionId(String sessionId);
+
+     String getSessionId();
 
 
     }

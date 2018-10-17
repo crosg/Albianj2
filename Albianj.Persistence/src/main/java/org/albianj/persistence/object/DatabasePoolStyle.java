@@ -7,4 +7,5 @@ public enum DatabasePoolStyle {
     DBCP ,
     C3P0,
     HIKARICP,
+    SpxDBCP,
 }

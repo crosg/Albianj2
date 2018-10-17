@@ -29,10 +29,6 @@ public interface ISpxDBPoolConfig {
 
     void setMinConnections(int minConnections);
 
-    int getConninterval();
-
-    void setConninterval(int conninterval);
-
     int getWaitTimeWhenGetMs();
 
     void setWaitTimeWhenGetMs(int waitTimeWhenGetMs);

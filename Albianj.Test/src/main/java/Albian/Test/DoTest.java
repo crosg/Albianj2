@@ -3,12 +3,58 @@ package Albian.Test;
 import Albian.Test.Services.IOrgUserService;
 import Albian.Test.Services.IUserService;
 import org.albianj.loader.AlbianBootService;
+import org.albianj.logger.AlbianLoggerLevel;
+import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.persistence.object.IRunningStorageAttribute;
+import org.albianj.persistence.object.IStorageAttribute;
+import org.albianj.persistence.object.RunningStorageAttribute;
+import org.albianj.persistence.service.IAlbianStorageParserService;
 import org.albianj.service.AlbianServiceRouter;
+import org.jaxen.function.StringLengthFunction;
+
+import java.sql.Connection;
 
 public class DoTest {
     public static void main(String[] argv){
         try {
             AlbianBootService.start("D:\\work\\github\\albianj2\\Albianj.Test\\src\\main\\resources\\config");
+
+            final IAlbianStorageParserService stgService = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class,IAlbianStorageParserService.Name);
+            for( int i = 0; i < 1200; i++){
+                new Thread(new Runnable(){
+                    @Override
+                    public void run() {
+                        IStorageAttribute stgAttr = stgService.getStorageAttribute("SpxDBCP");
+                        IRunningStorageAttribute runStgAttr = new RunningStorageAttribute(stgAttr,stgAttr.getDatabase());
+                        Connection conn = stgService.getConnection("sessionId:" + Thread.currentThread().getId(), runStgAttr);
+
+                        int sec = 1 * 1000;
+                        long  ts = System.currentTimeMillis() % sec;
+                        if(0 == ts){
+                            ts = 1 * 1000;
+                        }
+                        try {
+                            Thread.sleep(ts);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if(null == conn){
+                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                                    "DBPOOLMAIN", AlbianLoggerLevel.Info,
+                                    "get conn is null.");
+                        } else {
+                            stgService.returnConnection("ses", runStgAttr, conn);
+                        }
+
+                    }
+                }).start();
+                if(0 == (i % 300)){
+                    Thread.sleep(3000);
+                }
+            }
+            Thread.sleep(50000000);
+
+
 //            IUserService us = AlbianServiceRouter.getSingletonService(IUserService.class,IUserService.Name);
 //            us.addUser("uname","pwd");
 //            if(us.login("uname","pwd")) {

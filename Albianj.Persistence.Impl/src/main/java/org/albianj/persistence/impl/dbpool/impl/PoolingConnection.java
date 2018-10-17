@@ -10,9 +10,16 @@ import java.util.concurrent.Executor;
 
 public class PoolingConnection  implements IPoolingConnection {
     Connection _conn;
-    String batchId;
     //startup timestamp
     long startupTimeMs;
+    String sessionId;
+
+//     from pool but not return to pool
+    // use to bc
+    boolean isPooling;
+    long lastUsedTimeMs;
+    // reuse times in lifecycle
+    long reuseTimes = 0;
 
     public long getStartupTimeMs() {
         return startupTimeMs;
@@ -45,13 +52,6 @@ public class PoolingConnection  implements IPoolingConnection {
     public void addReuseTimes() {
         ++this.reuseTimes;
     }
-
-    // from pool but not return to pool
-    // use to bc
-    boolean isPooling;
-    long lastUsedTimeMs;
-    // reuse times in lifecycle
-    long reuseTimes = 0;
 
     public PoolingConnection(Connection conn,long startupTimeMs,boolean isPooling){
         _conn = conn;
@@ -333,7 +333,13 @@ public class PoolingConnection  implements IPoolingConnection {
        return !this.isClosed();
     }
 
-    public void cleanup(){
+    @Override
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
 
+    @Override
+    public String getSessionId() {
+        return this.sessionId;
     }
 }

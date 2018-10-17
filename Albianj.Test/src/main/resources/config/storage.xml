@@ -73,4 +73,23 @@
 		<AliveTime>300</AliveTime>
 		<PoolStyle>HIKARICP</PoolStyle>
 	</Storage>
+
+	<Storage>
+		<Name>SpxDBCP</Name>
+		<DatabaseStyle>MySql</DatabaseStyle>
+		<Server>127.0.0.1</Server>
+		<Port>3306</Port>
+		<Database>Muserdb_2</Database>
+		<User>root</User>
+		<Password>123456</Password>
+		<Pooling>true</Pooling>
+		<MinPoolSize>10</MinPoolSize>
+		<MaxPoolSize>20</MaxPoolSize>
+		<Timeout>120</Timeout>
+		<Charset>utf8</Charset>
+		<Transactional>true</Transactional>
+		<AliveTime>300</AliveTime>
+		<PoolStyle>SpxDBCP</PoolStyle>
+	</Storage>
+
 </Storages>

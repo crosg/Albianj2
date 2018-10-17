@@ -44,6 +44,9 @@ public interface ISpxDBPool extends DataSource {
     public String getPoolName() ;
 
     public void setPoolName(String name);
-    public int getCurrRemedyConnectionsCount() ;
+
+    Connection getConnection(String sessionId) throws SQLException;
+
+//    public int getCurrRemedyConnectionsCount() ;
 
 }
