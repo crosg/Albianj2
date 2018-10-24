@@ -53,275 +53,9 @@ import java.util.Map;
 
 public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
 
-//    public IPersistenceCommand buildPstCmd(String sessionId, IAlbianObject object, IDataRoutersAttribute routings, IAlbianObjectAttribute albianObject,
-//                                           Map<String, Object> mapValue, IDataRouterAttribute routing, IStorageAttribute storage) throws AlbianDataServiceException {
-
-//        if (object.getIsAlbianNew()) {
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                    sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "the new albianj object can not be update.please load the object from database first.");
-//        }
-//
-//        IPersistenceCommand cmd = new PersistenceCommand();
-//        StringBuilder text = new StringBuilder();
-//        StringBuilder cols = new StringBuilder();
-//        StringBuilder where = new StringBuilder();
-//
-//        StringBuilder rollbackText = null;
-//        StringBuilder rollbackCols = null;
-//        StringBuilder rollbackWhere = null;
-//        if (albianObject.getCompensating()) {
-//            rollbackText = new StringBuilder();
-//            rollbackCols = new StringBuilder();
-//            rollbackWhere = new StringBuilder();
-//        }
-//
-//
-//        text.append("UPDATE ");// .append(routing.getTableName());
-//        if (albianObject.getCompensating()) {
-//            rollbackText.append("UPDATE ");// .append(routing.getTableName());
-//        }
-//        String tableName = null;
-//        if (null != routings && null != routings.getDataRouter()) {
-//            tableName = routings.getDataRouter().mappingWriterTable(routing, object);
-//        }
-//        tableName = Validate.isNullOrEmptyOrAllSpace(tableName) ? routing.getTableName() : tableName;
-//        if (storage.getDatabaseStyle() == PersistenceDatabaseStyle.MySql) {
-//            text.append("`").append(tableName).append("`");
-//            if (albianObject.getCompensating()) {
-//                rollbackText.append("`").append(tableName).append("`");
-//            }
-//        } else {
-//            text.append("[").append(tableName).append("]");
-//            if (albianObject.getCompensating()) {
-//                rollbackText.append("[").append(tableName).append("]");
-//            }
-//        }
-//
-//        Map<String,IAlbianEntityFieldAttribute> fieldsAttr = albianObject.getFields();
-////        Map<String, IMemberAttribute> mapMemberAttributes = albianObject.getMembers();
-//        Map<String, ISqlParameter> sqlParas = new HashMap<String, ISqlParameter>();
-//        Map<String, ISqlParameter> rollbackParas = new HashMap<String, ISqlParameter>();
-//        for (Map.Entry<String, IAlbianEntityFieldAttribute> entry : fieldsAttr.entrySet()) {
-//            IMemberAttribute member = entry.getValue();
-//            if (!member.getIsSave())
-//                continue;
-//            String name = member.getName();
-//            Object newValue = mapValue.get(name);
-//            Object oldValue = null;
-//
-//            if (member.getPrimaryKey()) {
-//                where.append(" AND ");
-//                if (albianObject.getCompensating()) {
-//                    rollbackWhere.append(" AND ");
-//                }
-//                if (PersistenceDatabaseStyle.MySql == storage.getDatabaseStyle()) {
-//                    where.append("`").append(member.getSqlFieldName()).append("`");
-//                    if (albianObject.getCompensating()) {
-//                        rollbackWhere.append("`").append(member.getSqlFieldName()).append("`");
-//                    }
-//                } else {
-//                    where.append("[").append(member.getSqlFieldName()).append("]");
-//                    if (albianObject.getCompensating()) {
-//                        rollbackWhere.append("[").append(member.getSqlFieldName()).append("]");
-//                    }
-//                }
-//                where.append(" = ").append("#").append(member.getSqlFieldName()).append("# ");
-//                if (albianObject.getCompensating()) {
-//                    rollbackWhere.append(" = ").append("#").append(member.getSqlFieldName()).append("# ");
-//                }
-//            } else {
-//                // cols
-//                oldValue = object.getOldAlbianObject(name);
-//                if ((null == newValue && null == oldValue)) {
-//                    continue;
-//                }
-//                if (null != newValue && newValue.equals(oldValue)) {
-//                    continue;
-//                }
-//                if (null != oldValue && oldValue.equals(newValue)) {
-//                    continue;
-//                }
-//                if (storage.getDatabaseStyle() == PersistenceDatabaseStyle.MySql) {
-//                    cols.append("`").append(member.getSqlFieldName()).append("`");
-//                    if (albianObject.getCompensating()) {
-//                        rollbackCols.append("`").append(member.getSqlFieldName()).append("`");
-//                    }
-//                } else {
-//                    cols.append("[").append(member.getSqlFieldName()).append("]");
-//                    if (albianObject.getCompensating()) {
-//                        rollbackCols.append("[").append(member.getSqlFieldName()).append("]");
-//                    }
-//                }
-//                cols.append(" = ").append("#").append(member.getSqlFieldName()).append("# ,");
-//                if (albianObject.getCompensating()) {
-//                    rollbackCols.append(" = ").append("#").append(member.getSqlFieldName()).append("# ,");
-//                }
-//            }
-//            ISqlParameter para = new SqlParameter();
-//            para.setName(name);
-//            para.setSqlFieldName(member.getSqlFieldName());
-//            para.setSqlType(member.getDatabaseType());
-//            para.setValue(newValue);
-//            sqlParas.put(String.format("#%1$s#", member.getSqlFieldName()), para);
-//
-//            if (albianObject.getCompensating()) {
-//                ISqlParameter rollbackPara = new SqlParameter();
-//                rollbackPara.setName(name);
-//                rollbackPara.setSqlFieldName(member.getSqlFieldName());
-//                rollbackPara.setSqlType(member.getDatabaseType());
-//                rollbackPara.setValue(oldValue);
-//                rollbackParas.put(String.format("#%1$s#", member.getSqlFieldName()), rollbackPara);
-//            }
-//        }
-//
-//        if (0 == cols.length())
-//            return null;// no the upload operator
-//        if (0 < cols.length()) {
-//            cols.deleteCharAt(cols.length() - 1);
-//            if (albianObject.getCompensating()) {
-//                rollbackCols.deleteCharAt(cols.length() - 1);
-//            }
-//        }
-//
-//        if(0 == where.length()) {
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                    sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "the new albianj object can not be update .there is not PrimaryKey in the object.");
-//        }
-//
-//
-//        text.append(" SET ").append(cols).append(" WHERE 1=1 ").append(where);
-//        if (albianObject.getCompensating()) {
-//            rollbackText.append(" SET ").append(rollbackCols).append(" WHERE 1=1 ").append(rollbackWhere);
-//        }
-//
-//        cmd.setCommandText(text.toString());
-//        cmd.setCommandType(PersistenceCommandType.Text);
-//        cmd.setParameters(sqlParas);
-//
-//        if (albianObject.getCompensating()) {
-//            cmd.setRollbackCommandText(rollbackText.toString());
-//            cmd.setRollbackCommandType(PersistenceCommandType.Text);
-//            cmd.setRollbackParameters(rollbackParas);
-//        }
-//
-//        PersistenceNamedParameter.parseSql(cmd);
-//        return cmd;
-//    }
-
-//    public IPersistenceCommand buildPstCmd(String sessionId, IAlbianObject object, IDataRoutersAttribute routings, IAlbianObjectAttribute albianObject,
-//                                           Map<String, Object> mapValue, IDataRouterAttribute routing, IStorageAttribute storage, String[] members) throws NoSuchMethodException, AlbianDataServiceException {
-//
-//        if (object.getIsAlbianNew()) {
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                    sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "the new albianj object can not be update.please load the object from database first.");
-//
-////            AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianSqlLoggerName,
-////                    AlbianDataServiceException.class, "DataService is error.",
-////                    "the new albianj object can not be update.please load the object from database first..job id:%s.", sessionId);
-//        }
-//
-//        IPersistenceCommand cmd = new PersistenceCommand();
-//        StringBuilder text = new StringBuilder();
-//        StringBuilder cols = new StringBuilder();
-//        StringBuilder where = new StringBuilder();
-//        text.append("UPDATE ");// .append(routing.getTableName());
-//        String tableName = null;
-//        if (null != routings && null != routings.getDataRouter()) {
-//            tableName = routings.getDataRouter().mappingWriterTable(routing, object);
-//        }
-//        tableName = Validate.isNullOrEmptyOrAllSpace(tableName) ? routing.getTableName() : tableName;
-//        if (storage.getDatabaseStyle() == PersistenceDatabaseStyle.MySql) {
-//            text.append("`").append(tableName).append("`");
-//        } else {
-//            text.append("[").append(tableName).append("]");
-//        }
-//
-////        Map<String, IMemberAttribute> mapMemberAttributes = albianObject.getMembers();
-//        Map<String,IAlbianEntityFieldAttribute> fieldsAttr = albianObject.getFields();
-//        Map<String, ISqlParameter> sqlParas = new HashMap<String, ISqlParameter>();
-//        for (String m : members) {
-//            IMemberAttribute member = fieldsAttr.get(m.toLowerCase());
-//            if (!member.getIsSave())
-//                continue;
-//            String name = member.getName();
-//            Object newValue = mapValue.get(name);
-//            if (storage.getDatabaseStyle() == PersistenceDatabaseStyle.MySql) {
-//                cols.append("`").append(member.getSqlFieldName()).append("`");
-//            } else {
-//                cols.append("[").append(member.getSqlFieldName()).append("]");
-//            }
-//            cols.append(" = ").append("#").append(member.getSqlFieldName()).append("# ,");
-//
-//            ISqlParameter para = new SqlParameter();
-//            para.setName(name);
-//            para.setSqlFieldName(member.getSqlFieldName());
-//            para.setSqlType(member.getDatabaseType());
-//            para.setValue(newValue);
-//            sqlParas.put(String.format("#%1$s#", member.getSqlFieldName()), para);
-//        }
-//
-//        for (Map.Entry<String, IAlbianEntityFieldAttribute> entry : fieldsAttr.entrySet()) {
-//            IMemberAttribute member = entry.getValue();
-//            if (!member.getIsSave())
-//                continue;
-//            String name = member.getName();
-//            Object newValue = mapValue.get(name);
-//
-//            if (member.getPrimaryKey()) {
-//                where.append(" AND ");
-//                if (storage.getDatabaseStyle() == PersistenceDatabaseStyle.MySql) {
-//                    where.append("`").append(member.getSqlFieldName()).append("`");
-//                } else {
-//                    where.append("[").append(member.getSqlFieldName()).append("]");
-//                }
-//                where.append(" = ").append("#").append(member.getSqlFieldName()).append("# ");
-//            }
-//            ISqlParameter para = new SqlParameter();
-//            para.setName(name);
-//            para.setSqlFieldName(member.getSqlFieldName());
-//            para.setSqlType(member.getDatabaseType());
-//            para.setValue(newValue);
-//            sqlParas.put(String.format("#%1$s#", member.getSqlFieldName()), para);
-//        }
-//
-//        if (0 == cols.length())
-//            return null;// no the upload operator
-//        if (0 < cols.length()) {
-//            cols.deleteCharAt(cols.length() - 1);
-//        }
-//
-//        if(0 == where.length()) {
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                    sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "the new albianj object can not be delete .there is not PK in the object.");
-//
-//
-////            AlbianServiceRouter.getLogger().errorAndThrow(IAlbianLoggerService.AlbianSqlLoggerName,
-////                    AlbianDataServiceException.class, "DataService is error.",
-////                    "the new albianj object can not be delete .there is not PK in the object. job id:%s.", sessionId);
-//        }
-//
-//        // if(0 == where.length()){
-//        // throw new Exception("no the primary key for the update command");
-//        // }
-//        text.append(" SET ").append(cols).append(" WHERE 1=1 ").append(where);
-//        cmd.setCommandText(text.toString());
-//        cmd.setCommandType(PersistenceCommandType.Text);
-//        cmd.setParameters(sqlParas);
-//        PersistenceNamedParameter.parseSql(cmd);
-//        return cmd;
-//    }
-
 
     public IPersistenceCommand buildPstCmd(String sessionId,int dbStyle,String tableName,IAlbianObject object,
-                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue)
+                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue,boolean rbkOnError)
             throws AlbianDataServiceException {
         if (object.getIsAlbianNew()) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
@@ -338,7 +72,7 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
         StringBuilder rollbackText = null;
         StringBuilder rollbackCols = null;
         StringBuilder rollbackWhere = null;
-        if (objAttr.getCompensating()) {
+        if (rbkOnError) {
             rollbackText = new StringBuilder();
             rollbackCols = new StringBuilder();
             rollbackWhere = new StringBuilder();
@@ -346,17 +80,17 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
 
 
         text.append("UPDATE ");// .append(routing.getTableName());
-        if (objAttr.getCompensating()) {
+        if (rbkOnError) {
             rollbackText.append("UPDATE ");// .append(routing.getTableName());
         }
         if (PersistenceDatabaseStyle.MySql == dbStyle) {
             text.append("`").append(tableName).append("`");
-            if (objAttr.getCompensating()) {
+            if (rbkOnError) {
                 rollbackText.append("`").append(tableName).append("`");
             }
         } else {
             text.append("[").append(tableName).append("]");
-            if (objAttr.getCompensating()) {
+            if (rbkOnError) {
                 rollbackText.append("[").append(tableName).append("]");
             }
         }
@@ -374,22 +108,22 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
 
             if (member.getPrimaryKey()) {
                 where.append(" AND ");
-                if (objAttr.getCompensating()) {
+                if (rbkOnError) {
                     rollbackWhere.append(" AND ");
                 }
                 if (PersistenceDatabaseStyle.MySql == dbStyle) {
                     where.append("`").append(member.getSqlFieldName()).append("`");
-                    if (objAttr.getCompensating()) {
+                    if (rbkOnError) {
                         rollbackWhere.append("`").append(member.getSqlFieldName()).append("`");
                     }
                 } else {
                     where.append("[").append(member.getSqlFieldName()).append("]");
-                    if (objAttr.getCompensating()) {
+                    if (rbkOnError) {
                         rollbackWhere.append("[").append(member.getSqlFieldName()).append("]");
                     }
                 }
                 where.append(" = ").append("#").append(member.getSqlFieldName()).append("# ");
-                if (objAttr.getCompensating()) {
+                if (rbkOnError) {
                     rollbackWhere.append(" = ").append("#").append(member.getSqlFieldName()).append("# ");
                 }
             } else {
@@ -406,17 +140,17 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
                 }
                 if ( PersistenceDatabaseStyle.MySql == dbStyle) {
                     cols.append("`").append(member.getSqlFieldName()).append("`");
-                    if (objAttr.getCompensating()) {
+                    if (rbkOnError) {
                         rollbackCols.append("`").append(member.getSqlFieldName()).append("`");
                     }
                 } else {
                     cols.append("[").append(member.getSqlFieldName()).append("]");
-                    if (objAttr.getCompensating()) {
+                    if (rbkOnError) {
                         rollbackCols.append("[").append(member.getSqlFieldName()).append("]");
                     }
                 }
                 cols.append(" = ").append("#").append(member.getSqlFieldName()).append("# ,");
-                if (objAttr.getCompensating()) {
+                if (rbkOnError) {
                     rollbackCols.append(" = ").append("#").append(member.getSqlFieldName()).append("# ,");
                 }
             }
@@ -427,7 +161,7 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
             para.setValue(newValue);
             sqlParas.put(String.format("#%1$s#", member.getSqlFieldName()), para);
 
-            if (objAttr.getCompensating()) {
+            if (rbkOnError) {
                 ISqlParameter rollbackPara = new SqlParameter();
                 rollbackPara.setName(name);
                 rollbackPara.setSqlFieldName(member.getSqlFieldName());
@@ -441,7 +175,7 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
             return null;// no the upload operator
         if (0 < cols.length()) {
             cols.deleteCharAt(cols.length() - 1);
-            if (objAttr.getCompensating()) {
+            if (rbkOnError) {
                 rollbackCols.deleteCharAt(cols.length() - 1);
             }
         }
@@ -455,7 +189,7 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
 
 
         text.append(" SET ").append(cols).append(" WHERE 1=1 ").append(where);
-        if (objAttr.getCompensating()) {
+        if (rbkOnError) {
             rollbackText.append(" SET ").append(rollbackCols).append(" WHERE 1=1 ").append(rollbackWhere);
         }
 
@@ -463,7 +197,7 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
         cmd.setCommandType(PersistenceCommandType.Text);
         cmd.setParameters(sqlParas);
 
-        if (objAttr.getCompensating()) {
+        if (rbkOnError) {
             cmd.setRollbackCommandText(rollbackText.toString());
             cmd.setRollbackCommandType(PersistenceCommandType.Text);
             cmd.setRollbackParameters(rollbackParas);

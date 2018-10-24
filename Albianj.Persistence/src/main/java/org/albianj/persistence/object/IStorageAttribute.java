@@ -104,5 +104,29 @@ public interface IStorageAttribute {
     DatabasePoolStyle getDatabasePoolStyle();
     void setDatabasePoolStyle(DatabasePoolStyle dps);
 
+    public int getWaitTimeWhenGetMs();
+
+    public void setWaitTimeWhenGetMs(int waitTimeWhenGetMs) ;
+
+    public int getLifeCycleTime() ;
+
+    public void setLifeCycleTime(int lifeCycleTime) ;
+
+    public int getWaitInFreePoolMs() ;
+
+    public void setWaitInFreePoolMs(int waitInFreePoolMs);
+
+    public int getMaxRemedyConnectionCount() ;
+
+    public void setMaxRemedyConnectionCount(int maxRemedyConnectionCount);
+
+    public int getCleanupTimestampMs() ;
+
+    public void setCleanupTimestampMs(int cleanupTimestampMs) ;
+
+    public int getMaxRequestTimeMs() ;
+
+    public void setMaxRequestTimeMs(int maxRequestTimeMs) ;
+
 
 }

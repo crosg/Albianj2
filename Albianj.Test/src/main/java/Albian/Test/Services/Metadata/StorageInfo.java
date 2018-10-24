@@ -7,5 +7,5 @@ public class StorageInfo {
     /*
      user数据库在storage.xml中配置的名字
      */
-    public final static String SingleUserStorageName = "SingleUserStorage";
+    public final static String SingleUserStorageName = "SpxDBCP";
 }

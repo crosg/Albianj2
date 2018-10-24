@@ -343,7 +343,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
             IWriterTask t = task.getValue();
             if (!t.getIsCommited()) continue;
             if (!t.getCompensating()) continue;
-            ;
+
             List<Statement> statements = t.getRollbackStatements();
             List<IPersistenceCommand> cmds = t.getRollbackCommands();
             if (Validate.isNullOrEmpty(statements)) continue;

@@ -75,14 +75,6 @@ public abstract class FreeWriterJobAdapter implements IWriterJobAdapter {
         return job;
     }
 
-//    public IWriterJob buildModification(String sessionId, IAlbianObject object, String[] members) throws AlbianDataServiceException {
-//        IWriterJob job = new WriterJob(sessionId);
-//        IPersistenceUpdateCommand mca = new ModifyCommandAdapter();
-//        buildWriterJob(object, job, mca, members);
-//        return job;
-//    }
-
-
     public IWriterJob buildModification(String sessionId, List<? extends IAlbianObject> objects) throws AlbianDataServiceException {
         IWriterJob job = new WriterJob(sessionId);
         IPersistenceUpdateCommand mca = new ModifyCommandAdapter();
@@ -137,29 +129,10 @@ public abstract class FreeWriterJobAdapter implements IWriterJobAdapter {
         return job;
     }
 
-//    protected abstract void buildWriterJob(IAlbianObject object,
-//                                           IWriterJob writerJob, IPersistenceUpdateCommand update) throws AlbianDataServiceException;
-//
-//    protected abstract void buildWriterJob(IAlbianObject object,
-//                                           IWriterJob writerJob, IPersistenceUpdateCommand update, String[] members) throws AlbianDataServiceException;
-
-//    protected abstract Map<String, Object> buildSqlParameter(String jobId,
-//                                                             IAlbianObject object, IAlbianObjectAttribute albianObject,
-//                                                             PropertyDescriptor[] propertyDesc) throws AlbianDataServiceException;
-
-//    protected abstract List<IDataRouterAttribute> parserRoutings(String jobId,
-//                                                                 IAlbianObject object, IDataRoutersAttribute routings,
-//                                                                 IAlbianObjectAttribute albianObject);
-//
-//    protected abstract String parserRoutingStorage(String jobId, IAlbianObject obj,
-//                                                   IDataRouterAttribute routing, IAlbianObjectDataRouter hashMapping,
-//                                                   IAlbianObjectAttribute albianObject) throws AlbianDataServiceException;
-
-
-
-    public IWriterJob buildWriterJob(String sessionId, List<IAlbianObjectWarp> entities)
+    public IWriterJob buildWriterJob(String sessionId, List<IAlbianObjectWarp> entities,boolean rollbackOnError)
             throws AlbianDataServiceException{
         IWriterJob job = new WriterJob(sessionId);
+        job.setRollbackOnError(rollbackOnError);
         IPersistenceUpdateCommand crtCmd = new CreateCommandAdapter();
         IPersistenceUpdateCommand mdfCmd = new ModifyCommandAdapter();
         IPersistenceUpdateCommand dltCmd = new RemoveCommandAdapter();

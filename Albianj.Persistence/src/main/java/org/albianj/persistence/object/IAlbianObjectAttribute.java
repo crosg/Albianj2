@@ -60,9 +60,9 @@ public interface IAlbianObjectAttribute {
 
     void setImplClzz(Class<?> implClzz);
 
-    public ICacheAttribute getCache();
-
-    public void setCache(ICacheAttribute cache);
+//    public ICacheAttribute getCache();
+//
+//    public void setCache(ICacheAttribute cache);
 
     public IDataRouterAttribute getDefaultRouting();
 
@@ -72,9 +72,9 @@ public interface IAlbianObjectAttribute {
 //
 //    public void setMembers(Map<String, IMemberAttribute> members);
 
-    public boolean getCompensating();
-
-    public void setCompensating(boolean compensating);
+//    public boolean getCompensating();
+//
+//    public void setCompensating(boolean compensating);
 
     IDataRoutersAttribute getDataRouters();
 

@@ -129,22 +129,22 @@ public class SpxDBPoolConfig implements ISpxDBPoolConfig {
     }
 
     @Override
-    public long getLifeTimeMs() {
+    public long getLifeCycleTime() {
         return lifeTimeMs;
     }
 
     @Override
-    public void setLifeTimeMs(long lifeTimeMs) {
+    public void setLifeCycleTime(long lifeTimeMs) {
         this.lifeTimeMs = lifeTimeMs;
     }
 
     @Override
-    public long getFreeTimeMs() {
+    public long getWaitInFreePoolMs() {
         return freeTimeMs;
     }
 
     @Override
-    public void setFreeTimeMs(long freeTimeMs) {
+    public void setWaitInFreePoolMs(long freeTimeMs) {
         this.freeTimeMs = freeTimeMs;
     }
 

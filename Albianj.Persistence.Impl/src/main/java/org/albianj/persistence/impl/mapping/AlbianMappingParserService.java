@@ -77,16 +77,16 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
     private static final String cacheTagName = "Cache";
     private static final String memberTagName = "Members/Member";
 
-    private static ICacheAttribute parserAlbianObjectCache(Node node) {
-        String enable = XmlParser.getAttributeValue(node, "Enable");
-        String lifeTime = XmlParser.getAttributeValue(node, "LifeTime");
-        String name = XmlParser.getAttributeValue(node, "Name");
-        ICacheAttribute cache = new CacheAttribute();
-        cache.setEnable(Validate.isNullOrEmptyOrAllSpace(enable) ? true : new Boolean(enable));
-        cache.setLifeTime(Validate.isNullOrEmptyOrAllSpace(lifeTime) ? 300 : new Integer(lifeTime));
-        cache.setName(Validate.isNullOrEmptyOrAllSpace(name) ? "Default" : name);
-        return cache;
-    }
+//    private static ICacheAttribute parserAlbianObjectCache(Node node) {
+//        String enable = XmlParser.getAttributeValue(node, "Enable");
+//        String lifeTime = XmlParser.getAttributeValue(node, "LifeTime");
+//        String name = XmlParser.getAttributeValue(node, "Name");
+//        ICacheAttribute cache = new CacheAttribute();
+//        cache.setEnable(Validate.isNullOrEmptyOrAllSpace(enable) ? true : new Boolean(enable));
+//        cache.setLifeTime(Validate.isNullOrEmptyOrAllSpace(lifeTime) ? 300 : new Integer(lifeTime));
+//        cache.setName(Validate.isNullOrEmptyOrAllSpace(name) ? "Default" : name);
+//        return cache;
+//    }
 
 
     @Override
@@ -188,15 +188,15 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
 
 //        addAlbianObjectClassToInterface(type, inter);
 //        Map<String, IMemberAttribute> map = reflexAlbianObjectMembers(type);
-        Node cachedNode = node.selectSingleNode(cacheTagName);
-        ICacheAttribute cached;
-        if (null == cachedNode) {
-            cached = new CacheAttribute();
-            cached.setEnable(false);
-            cached.setLifeTime(300);
-        } else {
-            cached = parserAlbianObjectCache(cachedNode);
-        }
+//        Node cachedNode = node.selectSingleNode(cacheTagName);
+//        ICacheAttribute cached;
+//        if (null == cachedNode) {
+//            cached = new CacheAttribute();
+//            cached.setEnable(false);
+//            cached.setLifeTime(300);
+//        } else {
+//            cached = parserAlbianObjectCache(cachedNode);
+//        }
 
         IDataRouterAttribute defaultRouting = new DataRouterAttribute();
         defaultRouting.setName(AlbianDataRouterParserService.DEFAULT_ROUTING_NAME);
@@ -217,13 +217,13 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
         }
 
 //        IAlbianObjectAttribute albianObjectAttribute = new AlbianObjectAttribute();
-        Node tnode = node.selectSingleNode("Transaction");
-        if (null != tnode) {
-            String sCompensating = XmlParser.getAttributeValue(node, "Compensating");
-            if (!Validate.isNullOrEmptyOrAllSpace(sCompensating)) {
-                pkgEntityAttr.setCompensating(new Boolean(sCompensating));
-            }
-        }
+//        Node tnode = node.selectSingleNode("Transaction");
+//        if (null != tnode) {
+//            String sCompensating = XmlParser.getAttributeValue(node, "Compensating");
+//            if (!Validate.isNullOrEmptyOrAllSpace(sCompensating)) {
+//                pkgEntityAttr.setCompensating(new Boolean(sCompensating));
+//            }
+//        }
 
         Map<String,IAlbianEntityFieldAttribute> entityFieldAttr = null;
         if(Validate.isNullOrEmpty(pkgEntityAttr.getFields())) {
@@ -239,7 +239,7 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
             parserEntityFields(type,nodes,entityFieldAttr);
         }
 
-        pkgEntityAttr.setCache(cached);
+//        pkgEntityAttr.setCache(cached);
 //        pkgEntityAttr.setMembers(map);
         pkgEntityAttr.setDefaultRouting(defaultRouting);
         return;

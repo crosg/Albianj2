@@ -68,7 +68,6 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
         long begin1 =System.currentTimeMillis();
         IDataBasePool dbp = asps.getDatabasePool(sessionId,rsa);
         Connection conn = dbp.getConnection(sessionId,rsa);
-//        Connection conn = asps.getConn(sessionId, rsa);
         if(!Validate.isNullOrEmptyOrAllSpace(sessionId) && sessionId.endsWith("_SPX_LOG")){
             long end1 =System.currentTimeMillis();
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
@@ -165,57 +164,6 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
         IDataBasePool dbp = job.getDatabasePool();
         dbp.returnConnection(sessionId,rsa.getStorageAttribute().getName(),rsa.getDatabase(),
                 job.getConnection(),job.getStatement(),job.getResult());
-//        try {
-//            long begin1 = Calendar.getInstance().getTimeInMillis();
-//            job.getResult().close();
-//            job.setResult(null);
-//            long end1 = Calendar.getInstance().getTimeInMillis();
-//            if(!Validate.isNullOrEmptyOrAllSpace(sessionId) && sessionId.endsWith("_SPX_LOG")){
-//                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                        job.getId(), AlbianLoggerLevel.Mark,
-//                        "SpxLog close data result with connection use times:%d.",
-//                        end1 - begin1);
-//            }
-//        } catch (SQLException e) {
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                    job.getId(), AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "unload job is fail.");
-//        } finally {
-//            try {
-//                long begin1 = Calendar.getInstance().getTimeInMillis();
-//                ((PreparedStatement) job.getStatement()).clearParameters();
-//                job.getStatement().close();
-//                job.setStatement(null);
-//                long end1 = Calendar.getInstance().getTimeInMillis();
-//                if(!Validate.isNullOrEmptyOrAllSpace(sessionId) && sessionId.endsWith("_SPX_LOG")){
-//                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                            job.getId(), AlbianLoggerLevel.Mark,
-//                            "SpxLog close sql statement with connection use times:%d.",
-//                            end1 - begin1);
-//                }
-//            } catch (SQLException e) {
-//                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                        job.getId(), AlbianLoggerLevel.Error,e,
-//                        "close the statement when unload exec job is fail");
-//            } finally {
-//                try {
-//                    long begin1 = Calendar.getInstance().getTimeInMillis();
-//                    job.getConn().close();
-//                    long end1 = Calendar.getInstance().getTimeInMillis();
-//                    if(!Validate.isNullOrEmptyOrAllSpace(sessionId) && sessionId.endsWith("_SPX_LOG")){
-//                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                                job.getId(), AlbianLoggerLevel.Mark,
-//                                "SpxLog close connection use times:%d.",
-//                                end1 - begin1);
-//                    }
-//                } catch (SQLException e) {
-//                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                            job.getId(), AlbianLoggerLevel.Error,e,
-//                            "close the connection when unload exec job is fail");
-//                }
-//            }
-//        }
     }
 
     protected ResultSet executing(String sessionId, PersistenceCommandType cmdType, Statement statement)

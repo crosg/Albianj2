@@ -15,7 +15,6 @@ import org.albianj.security.IAlbianSecurityService;
 import org.albianj.service.AlbianServiceRouter;
 
 import javax.sql.DataSource;
-import java.security.Policy;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -93,13 +92,13 @@ public class SpxWapper extends FreeDataBasePool {
             cf.setMaxConnections(stgAttr.getMaxSize());
             cf.setMinConnections(stgAttr.getMinSize());
 
-            cf.setCleanupTimestampMs(30 * 1000);
-            cf.setFreeTimeMs(60 * 1000);
-            cf.setLifeTimeMs(3600 * 1000);
-            cf.setMaxRemedyConnectionCount(80);
-            cf.setMaxRequestTimeMs(60 * 1000);//最大单次执行sql时间为1分钟
+            cf.setCleanupTimestampMs(stgAttr.getCleanupTimestampMs());
+            cf.setWaitInFreePoolMs(stgAttr.getWaitInFreePoolMs());
+            cf.setLifeCycleTime(stgAttr.getLifeCycleTime());
+            cf.setMaxRemedyConnectionCount(stgAttr.getMaxRemedyConnectionCount());
+            cf.setMaxRequestTimeMs(stgAttr.getMaxRequestTimeMs());//最大单次执行sql时间为1分钟
             cf.setPoolName(key);
-            cf.setWaitTimeWhenGetMs(2);
+            cf.setWaitTimeWhenGetMs(stgAttr.getWaitTimeWhenGetMs());
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2()
                     .logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName, IAlbianLoggerService2.InnerThreadName,

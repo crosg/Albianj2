@@ -61,11 +61,11 @@ public class SaveCommandAdapter implements IPersistenceUpdateCommand {
     }
 
     public IPersistenceCommand buildPstCmd(String sessionId,int dbStyle,String tableName,IAlbianObject object,
-                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue) throws AlbianDataServiceException {
+                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue,boolean rbkOnErr) throws AlbianDataServiceException {
         if (object.getIsAlbianNew()) {
-            return create.buildPstCmd(sessionId,dbStyle,tableName,object,objAttr,mapValue);
+            return create.buildPstCmd(sessionId,dbStyle,tableName,object,objAttr,mapValue,rbkOnErr);
         } else {
-            return modify.buildPstCmd(sessionId,dbStyle,tableName,object,objAttr,mapValue);
+            return modify.buildPstCmd(sessionId,dbStyle,tableName,object,objAttr,mapValue,rbkOnErr);
         }
     }
 

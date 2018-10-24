@@ -144,4 +144,7 @@ public interface IWriterJob extends IPersistenceJob {
      * @param needManualRollback
      */
     public void setNeedManualRollbackIfException(boolean needManualRollback);
+
+    boolean isRollbackOnError();
+    void setRollbackOnError(boolean rollbackOnError);
 }

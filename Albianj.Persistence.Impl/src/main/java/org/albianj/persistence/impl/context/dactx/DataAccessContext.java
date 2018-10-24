@@ -26,6 +26,7 @@ public class DataAccessContext implements IDataAccessContext {
     private Object notifyCallbackObject;
     private IPersistenceCompensateNotify compensateCallback;
     private Object compensateCallbackObject;
+    private boolean rbkOnErr = false;
 
     public DataAccessContext(){
         entitis = new ArrayList<>();
@@ -80,26 +81,32 @@ public class DataAccessContext implements IDataAccessContext {
     }
 
 
-    public IDataAccessContext setFailCompensator(IPersistenceCompensateNotify compensateCallback, Object compensateCallbackObject){
+    public IDataAccessContext setMakeupFor(IPersistenceCompensateNotify compensateCallback, Object compensateCallbackObject){
         this.compensateCallback = compensateCallback;
         this.compensateCallbackObject = compensateCallbackObject;
         return this;
     }
 
+    public IDataAccessContext setRollBackOnError(){
+        this.rbkOnErr = true;
+        return this;
+    }
     @Override
     public boolean commit(String sessionId) {
         IWriterJobAdapter jobAdp = new WriterJobAdapter();
-        IWriterJob job = jobAdp.buildWriterJob(sessionId,this.entitis);
+        IWriterJob job = jobAdp.buildWriterJob(sessionId,this.entitis,this.rbkOnErr);
         IPersistenceTransactionClusterScope tcs = new PersistenceTransactionClusterScope();
         return tcs.execute(job);
     }
 
-    public long commitAndGetGenId(String sessionid){
+
+    public long commitAndGenId(String sessionid){
         return 0;
     }
 
     public void reset(){
         isSetQueryIdentity = false;
+        this.rbkOnErr = false;
         this.notifyCallback = null;
         this.notifyCallbackObject = null;
         this.notifyCallback = null;

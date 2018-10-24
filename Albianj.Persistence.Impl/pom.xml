@@ -5,7 +5,7 @@
     <parent>
         <artifactId>Albianj</artifactId>
         <groupId>com.yuewen.nrzx.albianj</groupId>
-        <version>2018101602</version>
+        <version>2018102401</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -34,12 +34,6 @@
             <groupId>com.yuewen.nrzx.albianj</groupId>
             <artifactId>Albianj.Persistence</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.yuewen.nrzx.albianj</groupId>
-            <artifactId>Albianj.Cached.Impl</artifactId>
-            <version>${project.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>

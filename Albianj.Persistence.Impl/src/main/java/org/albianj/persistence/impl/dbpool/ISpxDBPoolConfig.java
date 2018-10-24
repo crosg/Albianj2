@@ -33,13 +33,13 @@ public interface ISpxDBPoolConfig {
 
     void setWaitTimeWhenGetMs(int waitTimeWhenGetMs);
 
-    long getLifeTimeMs();
+    long getLifeCycleTime();
 
-    void setLifeTimeMs(long lifeTimeMs);
+    void setLifeCycleTime(long lifeTimeMs);
 
-    long getFreeTimeMs();
+    long getWaitInFreePoolMs();
 
-    void setFreeTimeMs(long freeTimeMs);
+    void setWaitInFreePoolMs(long freeTimeMs);
 
     int getMaxRemedyConnectionCount();
 

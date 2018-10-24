@@ -1,7 +1,6 @@
 package org.albianj.persistence.impl.dbpool.impl;
 
 import org.albianj.persistence.impl.dbpool.IPoolingConnection;
-import redis.clients.util.Pool;
 
 import java.sql.*;
 import java.util.Map;

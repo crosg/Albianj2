@@ -40,6 +40,7 @@ package org.albianj.persistence.impl.object;
 import org.albianj.persistence.object.DatabasePoolStyle;
 import org.albianj.persistence.object.IStorageAttribute;
 import org.albianj.persistence.object.PersistenceDatabaseStyle;
+import org.albianj.xml.XmlParser;
 
 public class StorageAttribute implements IStorageAttribute {
 
@@ -60,6 +61,61 @@ public class StorageAttribute implements IStorageAttribute {
     private String options = null;
     private int idelTime = 180;
     private DatabasePoolStyle dbps = DatabasePoolStyle.DBCP;
+
+    public int getWaitTimeWhenGetMs() {
+        return waitTimeWhenGetMs;
+    }
+
+    public void setWaitTimeWhenGetMs(int waitTimeWhenGetMs) {
+        this.waitTimeWhenGetMs = waitTimeWhenGetMs;
+    }
+
+    public int getLifeCycleTime() {
+        return lifeCycleTime;
+    }
+
+    public void setLifeCycleTime(int lifeCycleTime) {
+        this.lifeCycleTime = lifeCycleTime;
+    }
+
+    public int getWaitInFreePoolMs() {
+        return waitInFreePoolMs;
+    }
+
+    public void setWaitInFreePoolMs(int waitInFreePoolMs) {
+        this.waitInFreePoolMs = waitInFreePoolMs;
+    }
+
+    public int getMaxRemedyConnectionCount() {
+        return maxRemedyConnectionCount;
+    }
+
+    public void setMaxRemedyConnectionCount(int maxRemedyConnectionCount) {
+        this.maxRemedyConnectionCount = maxRemedyConnectionCount;
+    }
+
+    public int getCleanupTimestampMs() {
+        return cleanupTimestampMs;
+    }
+
+    public void setCleanupTimestampMs(int cleanupTimestampMs) {
+        this.cleanupTimestampMs = cleanupTimestampMs;
+    }
+
+    public int getMaxRequestTimeMs() {
+        return maxRequestTimeMs;
+    }
+
+    public void setMaxRequestTimeMs(int maxRequestTimeMs) {
+        this.maxRequestTimeMs = maxRequestTimeMs;
+    }
+
+    private int waitTimeWhenGetMs = 2;
+    private int lifeCycleTime = 3600000;
+    private int  waitInFreePoolMs = 120000;
+    private int maxRemedyConnectionCount = 50;
+    private int  cleanupTimestampMs = 30000;
+    private int maxRequestTimeMs = 60000;
 
     public String getName() {
         // TODO Auto-generated method stub

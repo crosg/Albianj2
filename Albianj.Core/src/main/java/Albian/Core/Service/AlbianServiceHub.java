@@ -1,11 +1,9 @@
 package Albian.Core.Service;
 
-import org.albianj.comment.Comments;
-import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.except.AlbianRuntimeException;
+import org.albianj.logger.RuntimeLogType;
 import org.albianj.persistence.object.IAlbianObject;
 import org.albianj.persistence.service.AlbianObjectCreator;
-import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
 
 public final class AlbianServiceHub extends AlbianServiceRouter {
@@ -18,32 +16,43 @@ public final class AlbianServiceHub extends AlbianServiceRouter {
         return (T) newInstance(sessionId, clazz.getName());
     }
 
-        public static  void log(@Comments("记录到的日志名称") String loggerName,
-             @Comments("当前的访问id") Object sessionId,
-             @Comments("日志的等级") AlbianLoggerLevel level,
-             @Comments("日志的message") String format,
-             @Comments("格式化参数") Object... values){
+    public static void throwException(String sessionId,Throwable throwable){
+        throwException(sessionId,throwable,true);
+    }
 
+    public static void throwException(String sessionId,Throwable throwable,boolean throwsOut){
+        if(AlbianRuntimeException.class.isAssignableFrom(throwable.getClass())){
+            //warp once over,and not again
+            StackTraceElement[] stacks = Thread.currentThread().getStackTrace();
+            addLog(sessionId,RuntimeLogType.Warn,stacks[1].getClassName() + ":" + stacks[1].getLineNumber(),throwable.getMessage());
+            if(throwsOut){
+                throw  ((AlbianRuntimeException) throwable);
+            }
+            return;
         }
-
-        public static  void log(@Comments("记录到的日志名称") String loggerName,
-             @Comments("当前的访问id") Object sessionId,
-             @Comments("日志的等级") AlbianLoggerLevel level,
-             @Comments("记录的异常") Throwable e,
-             @Comments("日志的message") String format,
-             @Comments("格式化参数") Object... values){
-
+        AlbianRuntimeException thw = new AlbianRuntimeException(throwable);
+        addLog(sessionId,RuntimeLogType.Warn,null,throwable.getMessage());
+        if(throwsOut){
+            throw  thw;
         }
+    }
 
-        @Comments("记录日志并且重新抛出异常，抛出的异常都为RuntimeException或其子类")
-        public static void logAndThrow(@Comments("记录到的日志名称") String loggerName,
-                     @Comments("当前的访问id") Object sessionId,
-                     @Comments("日志的等级") AlbianLoggerLevel level,
-                   @Comments("重新抛出异常的信息") String throwInfo,
-                     @Comments("记录的异常") Throwable e,
-                     @Comments("日志的message") String format,
-                     @Comments("格式化参数") Object... values){
+    public static void throwException(String sessionId, String msg){
+        StackTraceElement[] stacks = Thread.currentThread().getStackTrace();
+        AlbianRuntimeException thw = new AlbianRuntimeException(stacks[1].getClassName(),stacks[1].getMethodName(),stacks[1].getLineNumber(),msg);
+        addLog(sessionId,RuntimeLogType.Warn,stacks[1].getClassName() + ":" + stacks[1].getLineNumber(),thw.getMessage());
+        throw thw;
+    }
 
-        }
+    public static void addLog(String sessionId, RuntimeLogType logType, String typeName, String fmt, Object[]... args){
+
+    }
+
+    public static void addLog(String sessionId, RuntimeLogType logType, String typeName, Throwable t, String fmt, Object[]... args){
+
+    }
+
+
+
 
 }

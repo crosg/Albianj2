@@ -54,147 +54,6 @@ import org.albianj.verify.Validate;
 import java.util.*;
 
 public class WriterJobAdapter extends FreeWriterJobAdapter {
-//    protected void buildWriterJob(IAlbianObject object, IWriterJob writerJob,
-//                                  IPersistenceUpdateCommand update) throws AlbianDataServiceException {
-//        Class<?> cls = object.getClass();
-//        String className = cls.getName();
-//        IAlbianObjectAttribute albianObject = AlbianEntityMetadata.getEntityMetadataByType(cls);
-//        IDataRoutersAttribute routings = albianObject.getDataRouters();
-//
-//        if (null == albianObject) {
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                    writerJob.getId(), AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "albian-object:%s attribute is not found.", className);
-//        }
-//
-//        Map<String,IAlbianEntityFieldAttribute> fieldsAttr = albianObject.getFields();
-////        PropertyDescriptor[] propertyDesc = amps.getAlbianObjectPropertyDescriptor(className);
-//        if (Validate.isNullOrEmpty(fieldsAttr)) {
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                    writerJob.getId(), AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "albian-object:%s PropertyDescriptor is not found.", className);
-//        }
-//        Map<String, Object> sqlParaVals = buildSqlParameter(writerJob.getId(), object, albianObject,
-//                fieldsAttr);
-//        List<IDataRouterAttribute> useRoutings = parserRoutings(writerJob.getId(), object,
-//                routings, albianObject);
-//        IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
-//
-//        for (IDataRouterAttribute routing : useRoutings) {
-//            IAlbianObjectDataRouter aodr = null == routings ? null : routings.getDataRouter();
-//            String storageName = parserRoutingStorage(writerJob.getId(), object, routing,
-//                    aodr, albianObject);
-//            IStorageAttribute storage = asps.getStorageAttribute(storageName);
-//            String database = parserRoutingDatabase(writerJob.getId(), object, storage,
-//                    aodr, albianObject);
-//            IPersistenceCommand cmd = update.buildPstCmd(writerJob.getId(), object, routings, albianObject,
-//                    sqlParaVals, routing, storage);
-//            String key = storageName + database;
-//            if (null == cmd)
-//                continue;// no the upload operator
-//            if (Validate.isNull(writerJob.getWriterTasks())) {
-//                Map<String, IWriterTask> tasks = new LinkedHashMap<String, IWriterTask>();
-//                IWriterTask task = new WriterTask();
-//                List<IPersistenceCommand> cmds = new Vector<IPersistenceCommand>();
-//                cmds.add(cmd);
-//                task.setCommands(cmds);
-//                task.setStorage(new RunningStorageAttribute(storage, database));
-//                tasks.put(key, task);
-//                writerJob.setWriterTasks(tasks);
-//            } else {
-//                if (writerJob.getWriterTasks().containsKey(key)) {
-//                    writerJob.getWriterTasks().get(key).getCommands()
-//                            .add(cmd);
-//                } else {
-//                    IWriterTask task = new WriterTask();
-//                    List<IPersistenceCommand> cmds = new Vector<IPersistenceCommand>();
-//                    cmds.add(cmd);
-//                    task.setCommands(cmds);
-//                    task.setStorage(new RunningStorageAttribute(storage, database));
-//                    writerJob.getWriterTasks().put(key, task);
-//                }
-//            }
-//        }
-//    }
-//
-//    protected void buildWriterJob(IAlbianObject object, IWriterJob writerJob,
-//                                  IPersistenceUpdateCommand update, String[] members) throws AlbianDataServiceException {
-//        Class<?> cls = object.getClass();
-//        String className = cls.getName();
-//        IAlbianObjectAttribute albianObject = AlbianEntityMetadata.getEntityMetadataByType(cls);
-////        String className = cls.getName();
-//        IDataRoutersAttribute routings = albianObject.getDataRouters();
-//
-//        if (null == albianObject) {
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                    writerJob.getId(), AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "albian-object:%s attribute is not found.", className);
-//        }
-//
-//        Map<String,IAlbianEntityFieldAttribute> fieldsAttr = albianObject.getFields();
-////        PropertyDescriptor[] propertyDesc = amps.getAlbianObjectPropertyDescriptor(className);
-//        if (Validate.isNullOrEmpty(fieldsAttr)) {
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                    writerJob.getId(), AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "albian-object:%s PropertyDescriptor is not found.", className);
-//        }
-//
-//        Map<String, Object> mapValue = buildSqlParameter(writerJob.getId(), object, albianObject,
-//                fieldsAttr);
-//        List<IDataRouterAttribute> useRoutings = parserRoutings(writerJob.getId(), object,
-//                routings, albianObject);
-//        IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
-//
-//        for (IDataRouterAttribute routing : useRoutings) {
-//            IAlbianObjectDataRouter aodr = null == routings ? null : routings.getDataRouter();
-//            String storageName = parserRoutingStorage(writerJob.getId(), object, routing,
-//                    aodr, albianObject);
-//            IStorageAttribute storage = asps.getStorageAttribute(storageName);
-//            String database = parserRoutingDatabase(writerJob.getId(), object, storage,
-//                    aodr, albianObject);
-//            String key = storageName + database;
-//            IPersistenceCommand cmd = null;
-//            try {
-//                cmd = update.buildPstCmd(writerJob.getId(), object, routings, albianObject,
-//                        mapValue, routing, storage, members);
-//            } catch (NoSuchMethodException e) {
-//                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                        writerJob.getId(), AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
-//                        AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                        "this class:%s is not impl the 'buildPstCmd' method.", className);
-//            }
-//
-//            if (null == cmd)
-//                continue;// no the upload operator
-//            if (Validate.isNull(writerJob.getWriterTasks())) {
-//                Map<String, IWriterTask> tasks = new LinkedHashMap<String, IWriterTask>();
-//                IWriterTask task = new WriterTask();
-//                List<IPersistenceCommand> cmds = new Vector<IPersistenceCommand>();
-//                cmds.add(cmd);
-//                task.setCommands(cmds);
-//                task.setStorage(new RunningStorageAttribute(storage, database));
-//                tasks.put(key, task);
-//                writerJob.setWriterTasks(tasks);
-//            } else {
-//                if (writerJob.getWriterTasks().containsKey(key)) {
-//                    writerJob.getWriterTasks().get(key).getCommands()
-//                            .add(cmd);
-//                } else {
-//                    IWriterTask task = new WriterTask();
-//                    List<IPersistenceCommand> cmds = new Vector<IPersistenceCommand>();
-//                    cmds.add(cmd);
-//                    task.setCommands(cmds);
-//                    task.setStorage(new RunningStorageAttribute(storage, database));
-//                    writerJob.getWriterTasks().put(key, task);
-//                }
-//            }
-//        }
-//    }
-
     protected Map<String, Object> buildSqlParameter(String sessioId, IAlbianObject object,
                                                     IAlbianObjectAttribute albianObject,
                                                     Map<String,IAlbianEntityFieldAttribute> fieldsAttr) throws AlbianDataServiceException {
@@ -210,8 +69,6 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
                         mapValue.put(name, null);
                     } else {
                         String value = oValue.toString();
-//                    IMemberAttribute member = albianObject.getMembers()
-//                            .get(name.toLowerCase());
                         if ((-1 == fAttr.getLength()) || (fAttr.getLength() >= value.length())) {
                             mapValue.put(name, value);
                         } else {
@@ -232,37 +89,6 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
 
         }
 
-//        for (PropertyDescriptor p : propertyDesc) {
-//            try {
-//                name = p.getName();
-//                if ("string".equalsIgnoreCase(p.getPropertyType()
-//                        .getSimpleName())) {
-//                    Object oValue = p.getReadMethod().invoke(object);
-//                    if (null == oValue) {
-//                        mapValue.put(name, null);
-//                    } else {
-//                        String value = oValue.toString();
-//                        IMemberAttribute member = albianObject.getMembers()
-//                                .get(name.toLowerCase());
-//                        if ((-1 == member.getLength()) || (member.getLength() >= value.length())) {
-//                            mapValue.put(name, value);
-//                        } else {
-//                            mapValue.put(p.getName(),
-//                                    value.substring(0, member.getLength()));
-//                        }
-//                    }
-//                } else {
-//                    mapValue.put(name, p.getReadMethod().invoke(object));
-//                }
-//
-//            } catch (Exception e) {
-//                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                        sessioId, AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
-//                        AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                        "invoke bean read method is error.the property is:%s.job id:%s.",
-//                        albianObject.getType(), name);
-//            }
-//        }
         return mapValue;
     }
 
@@ -429,7 +255,7 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
                     : tableAlias;
             IStorageAttribute stgAttr = asps.getStorageAttribute(storageAlias);
             IPersistenceCommand pstCmd = cmd.buildPstCmd(job.getId(),stgAttr.getDatabaseStyle(),
-                                        tableName, entity, objAttr, sqlParaVals);
+                                        tableName, entity, objAttr, sqlParaVals,job.isRollbackOnError());
             addWrtTsk(job,stgAttr,stgAttr.getDatabase(),pstCmd);
         } else {
             IDataRoutersAttribute drtsAttr = objAttr.getDataRouters();
@@ -446,7 +272,7 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
                 String tableName = drouter.mappingWriterTable(drtAttr, entity);
 
                 IPersistenceCommand pstCmd = cmd.buildPstCmd(job.getId(),stgAttr.getDatabaseStyle(),
-                        tableName, entity, objAttr, sqlParaVals);
+                        tableName, entity, objAttr, sqlParaVals,job.isRollbackOnError());
                 if (null == cmd)
                     continue;// no the upload operator
 
@@ -480,84 +306,5 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
             }
         }
     }
-
-//    protected void buildWriterJob(IAlbianObject object, IWriterJob writerJob,
-//                                  IPersistenceUpdateCommand update, String[] members) throws AlbianDataServiceException {
-//        Class<?> cls = object.getClass();
-//        String className = cls.getName();
-//        IAlbianObjectAttribute albianObject = AlbianEntityMetadata.getEntityMetadataByType(cls);
-////        String className = cls.getName();
-//        IDataRoutersAttribute routings = albianObject.getDataRouters();
-//
-//        if (null == albianObject) {
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                    writerJob.getId(), AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "albian-object:%s attribute is not found.", className);
-//        }
-//
-//        Map<String,IAlbianEntityFieldAttribute> fieldsAttr = albianObject.getFields();
-////        PropertyDescriptor[] propertyDesc = amps.getAlbianObjectPropertyDescriptor(className);
-//        if (Validate.isNullOrEmpty(fieldsAttr)) {
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                    writerJob.getId(), AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "albian-object:%s PropertyDescriptor is not found.", className);
-//        }
-//
-//        Map<String, Object> mapValue = buildSqlParameter(writerJob.getId(), object, albianObject,
-//                fieldsAttr);
-//        List<IDataRouterAttribute> useRoutings = parserRoutings(writerJob.getId(), object,
-//                routings, albianObject);
-//        IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
-//
-//        for (IDataRouterAttribute routing : useRoutings) {
-//            IAlbianObjectDataRouter aodr = null == routings ? null : routings.getDataRouter();
-//            String storageName = parserRoutingStorage(writerJob.getId(), object, routing,
-//                    aodr, albianObject);
-//            IStorageAttribute storage = asps.getStorageAttribute(storageName);
-//            String database = parserRoutingDatabase(writerJob.getId(), object, storage,
-//                    aodr, albianObject);
-//            String key = storageName + database;
-//            IPersistenceCommand cmd = null;
-//            try {
-//                cmd = update.buildPstCmd(writerJob.getId(), object, routings, albianObject,
-//                        mapValue, routing, storage, members);
-//            } catch (NoSuchMethodException e) {
-//                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-//                        writerJob.getId(), AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
-//                        AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                        "this class:%s is not impl the 'buildPstCmd' method.", className);
-//            }
-//
-//            if (null == cmd)
-//                continue;// no the upload operator
-//            if (Validate.isNull(writerJob.getWriterTasks())) {
-//                Map<String, IWriterTask> tasks = new LinkedHashMap<String, IWriterTask>();
-//                IWriterTask task = new WriterTask();
-//                List<IPersistenceCommand> cmds = new Vector<IPersistenceCommand>();
-//                cmds.add(cmd);
-//                task.setCommands(cmds);
-//                task.setStorage(new RunningStorageAttribute(storage, database));
-//                tasks.put(key, task);
-//                writerJob.setWriterTasks(tasks);
-//            } else {
-//                if (writerJob.getWriterTasks().containsKey(key)) {
-//                    writerJob.getWriterTasks().get(key).getCommands()
-//                            .add(cmd);
-//                } else {
-//                    IWriterTask task = new WriterTask();
-//                    List<IPersistenceCommand> cmds = new Vector<IPersistenceCommand>();
-//                    cmds.add(cmd);
-//                    task.setCommands(cmds);
-//                    task.setStorage(new RunningStorageAttribute(storage, database));
-//                    writerJob.getWriterTasks().put(key, task);
-//                }
-//            }
-//        }
-//    }
-
-
-
 
 }

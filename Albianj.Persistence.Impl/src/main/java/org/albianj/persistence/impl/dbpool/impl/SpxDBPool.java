@@ -14,10 +14,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.LinkedList;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class SpxDBPool implements ISpxDBPool {
@@ -41,7 +37,7 @@ public class SpxDBPool implements ISpxDBPool {
                         + "waitTimeWhenGetMs -> %d, lifeTimeMs -> %d, freeTimeMs -> %d,"
                         +"maxRemedyConnectionCount - > %d,max request timeout -> %d,cleanup timestamp -> %d.s",
                 cf.getPoolName(),cf.getMinConnections(),cf.getMaxConnections(),
-                cf.getWaitTimeWhenGetMs(),cf.getLifeTimeMs(),cf.getFreeTimeMs(),
+                cf.getWaitTimeWhenGetMs(),cf.getLifeCycleTime(),cf.getWaitInFreePoolMs(),
                 cf.getMaxRemedyConnectionCount(),cf.getMaxRequestTimeMs(),
                 cf.getCleanupTimestampMs());
 
@@ -97,13 +93,13 @@ public class SpxDBPool implements ISpxDBPool {
     }
 
     @Override
-    public synchronized int getFreeCount() {
+    public int getFreeCount() {
         synchronized(freeConnections) {
             return this.freeConnections.size();
         }
     }
 
-    public synchronized int getRemedyCount(){
+    public int getRemedyCount(){
         synchronized(remebyConnections) {
             return remebyConnections.size();
         }
@@ -152,12 +148,10 @@ public class SpxDBPool implements ISpxDBPool {
     }
 
     private IPoolingConnection newConnection(boolean isPooling) throws SQLException {
-
-        Connection conn = null;
         IPoolingConnection pconn = null;
         long now = System.currentTimeMillis();
         if (this.cf != null) {
-            conn = DriverManager.getConnection(this.cf.getUrl(),
+            Connection conn = DriverManager.getConnection(this.cf.getUrl(),
                     this.cf.getUsername(),
                     this.cf.getPassword());
             pconn = new PoolingConnection(conn,System.currentTimeMillis(),isPooling);
@@ -194,12 +188,12 @@ public class SpxDBPool implements ISpxDBPool {
         long now = System.currentTimeMillis();
         pconn = pollFreeConnection();
         if(null != pconn) { // have free connection
-            if(pconn.getLastUsedTimeMs() + this.cf.getFreeTimeMs() <= now || !pconn.isValid()) {
+            if(pconn.getLastUsedTimeMs() + this.cf.getWaitInFreePoolMs() <= now || !pconn.isValid()) {
                 AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         sessionId, AlbianLoggerLevel.Warn,
                         "DBPOOL -> %s.free time expired connection which lastUsedTime -> %d, startup -> %d, reuse -> %d,timout -> %d,valid -> %s.close it and new pooling one.",
                         cf.getPoolName(),pconn.getLastUsedTimeMs(), pconn.getStartupTimeMs(),pconn.getReuseTimes(),
-                        (now - pconn.getLastUsedTimeMs() - cf.getFreeTimeMs()),pconn.isValid() ? "true" : "false");
+                        (now - pconn.getLastUsedTimeMs() - cf.getWaitInFreePoolMs()),pconn.isValid() ? "true" : "false");
                 pconn.close();
                 pconn = newConnection(true);
             }
@@ -262,7 +256,7 @@ public class SpxDBPool implements ISpxDBPool {
             return this.getConnection(sessionId);
         }
 
-        // timeout and do remedy
+        // wait timeout and do remedy
         if (this.getRemedyCount() < cf.getMaxRemedyConnectionCount()) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error,
@@ -311,11 +305,11 @@ public class SpxDBPool implements ISpxDBPool {
         //back pooling connection
         removeBusyConnection(pconn);
         long now = System.currentTimeMillis();
-        if(pconn.getStartupTimeMs() + cf.getLifeTimeMs() < now) {//over the max lifecycle,kill it
+        if(pconn.getStartupTimeMs() + cf.getLifeCycleTime() < now) {//over the max lifecycle,kill it
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Info,
                     "DBPOOL -> %s.close pooling connection which over the maxlife.startup -> %d,now -> %d,max life -> %d.reuse -> %d.",
-                    cf.getPoolName(),pconn.getStartupTimeMs(),now,cf.getLifeTimeMs(),pconn.getReuseTimes());
+                    cf.getPoolName(),pconn.getStartupTimeMs(),now,cf.getLifeCycleTime(),pconn.getReuseTimes());
             pconn.close();
             return;
         }
@@ -323,14 +317,14 @@ public class SpxDBPool implements ISpxDBPool {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Info,
                     "DBPOOL -> %s.back pooling connection.startup -> %d,now -> %d,max life -> %d.reuse -> %d.",
-                    cf.getPoolName(),pconn.getStartupTimeMs(),now,cf.getLifeTimeMs(),pconn.getReuseTimes());
+                    cf.getPoolName(),pconn.getStartupTimeMs(),now,cf.getLifeCycleTime(),pconn.getReuseTimes());
             pconn.setSessionId(null); // cleanup last sessionid
             pushFreeConnection(pconn);
         } else {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Info,
                     "DBPOOL -> %s.close pooling connection which valid is false.startup -> %d,now -> %d,max life -> %d.reuse -> %d.",
-                    cf.getPoolName(),pconn.getStartupTimeMs(),now,cf.getLifeTimeMs(),pconn.getReuseTimes());
+                    cf.getPoolName(),pconn.getStartupTimeMs(),now,cf.getLifeCycleTime(),pconn.getReuseTimes());
             pconn.close();
         }
         this.notifyAll(); // keep wakeup sleep thread
@@ -402,6 +396,12 @@ public class SpxDBPool implements ISpxDBPool {
         public void run() {
             while (true) {
                 try {
+                    Thread.sleep(cf.getCleanupTimestampMs());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                try {
                     AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                             "DBPOOL", AlbianLoggerLevel.Mark,
                             "cleanup task is wakeup. pool -> %s,current state : busy -> %d,free -> %d,remedy -> %d..",
@@ -427,11 +427,11 @@ public class SpxDBPool implements ISpxDBPool {
                     synchronized (freeConnections) {
                         for (IPoolingConnection pconn : freeConnections) {
                             try {
-                                if (pconn.getLastUsedTimeMs() + cf.getFreeTimeMs() < now) { // free timeout
+                                if (pconn.getLastUsedTimeMs() + cf.getWaitInFreePoolMs() < now) { // free timeout
                                     AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                                             pconn.getSessionId(), AlbianLoggerLevel.Mark,
                                             "DBPOOL -> %s Cleanup Task.free connection is timeout,close it force.last used time -> %d,now -> %d,timeout -> %d.",
-                                            pool.getPoolName(), pconn.getLastUsedTimeMs(), now, cf.getFreeTimeMs());
+                                            pool.getPoolName(), pconn.getLastUsedTimeMs(), now, cf.getWaitInFreePoolMs());
                                     removeFreeConnection(pconn);
                                     pconn.close();
                                 }
@@ -473,12 +473,6 @@ public class SpxDBPool implements ISpxDBPool {
                     }
                 } catch (Throwable t) {
 
-                } finally {
-                    try {
-                        Thread.sleep(cf.getCleanupTimestampMs());
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         }

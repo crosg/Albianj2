@@ -43,12 +43,12 @@ import java.util.Map;
 
 public class AlbianObjectAttribute implements IAlbianObjectAttribute {
 
-    private ICacheAttribute cache = null;
+//    private ICacheAttribute cache = null;
     private IDataRouterAttribute defaultRouting = null;
 //    private Map<String, IMemberAttribute> members = null;
     private String type = null;
     private String inter = null;
-    private boolean compensating = true;
+//    private boolean compensating = true;
     private IDataRoutersAttribute dra = null;
     private Map<String, IAlbianEntityFieldAttribute> fields = null;
     private Class<?> implClzz = null;
@@ -79,15 +79,15 @@ public class AlbianObjectAttribute implements IAlbianObjectAttribute {
         this.implClzz = implClzz;
     }
 
-    public ICacheAttribute getCache() {
-        // TODO Auto-generated method stub
-        return this.cache;
-    }
-
-    public void setCache(ICacheAttribute cache) {
-        // TODO Auto-generated method stub
-        this.cache = cache;
-    }
+//    public ICacheAttribute getCache() {
+//        // TODO Auto-generated method stub
+//        return this.cache;
+//    }
+//
+//    public void setCache(ICacheAttribute cache) {
+//        // TODO Auto-generated method stub
+//        this.cache = cache;
+//    }
 
     public IDataRouterAttribute getDefaultRouting() {
         return this.defaultRouting;
@@ -107,13 +107,13 @@ public class AlbianObjectAttribute implements IAlbianObjectAttribute {
 //        this.members = members;
 //    }
 
-    public boolean getCompensating() {
-        return this.compensating;
-    }
-
-    public void setCompensating(boolean compensating) {
-        this.compensating = compensating;
-    }
+//    public boolean getCompensating() {
+//        return this.compensating;
+//    }
+//
+//    public void setCompensating(boolean compensating) {
+//        this.compensating = compensating;
+//    }
 
 
     public IDataRoutersAttribute getDataRouters(){

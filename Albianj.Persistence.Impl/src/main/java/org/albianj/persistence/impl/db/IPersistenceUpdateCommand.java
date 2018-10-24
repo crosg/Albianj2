@@ -44,17 +44,9 @@ import org.albianj.persistence.object.*;
 import java.util.Map;
 
 public interface IPersistenceUpdateCommand {
-//    public IPersistenceCommand buildPstCmd(String sessionId, IAlbianObject object, IDataRoutersAttribute routings,
-//                                           IAlbianObjectAttribute albianObject, Map<String, Object> mapValue,
-//                                           IDataRouterAttribute routing, IStorageAttribute storage) throws AlbianDataServiceException;
-//
-//    public IPersistenceCommand buildPstCmd(String sessionId, IAlbianObject object, IDataRoutersAttribute routings, IAlbianObjectAttribute albianObject,
-//                                           Map<String, Object> mapValue, IDataRouterAttribute routing, IStorageAttribute storage, String[] members)
-//            throws NoSuchMethodException, AlbianDataServiceException;
-
 
     public IPersistenceCommand buildPstCmd(String sessionId,int dbStyle,String tableName,IAlbianObject object,
-                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue) throws AlbianDataServiceException;
+                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue,boolean rbkOnError) throws AlbianDataServiceException;
 
 
 }

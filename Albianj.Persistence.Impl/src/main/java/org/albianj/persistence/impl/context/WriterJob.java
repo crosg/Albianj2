@@ -53,6 +53,7 @@ public class WriterJob implements IWriterJob {
     private Object notifyCallbackobject = null;
     private String id = null;
     private boolean needManualRollback = false;
+    private boolean rollbackOnError = false;
 
     public WriterJob(String sessionId) {
         // TODO Auto-generated constructor stub
@@ -145,5 +146,15 @@ public class WriterJob implements IWriterJob {
     public void setNeedManualRollbackIfException(boolean needManualRollback) {
         // TODO Auto-generated method stub
         this.needManualRollback = needManualRollback;
+    }
+
+    @Override
+    public boolean isRollbackOnError() {
+        return this.rollbackOnError;
+    }
+
+    @Override
+    public void setRollbackOnError(boolean rollbackOnError) {
+        this.rollbackOnError = rollbackOnError;
     }
 }

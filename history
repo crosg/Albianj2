@@ -45,3 +45,10 @@
     使用query-ctx的时候，inStorage改成useStorage，inTable改成fromTable
     insert、delete、modify的时候，sqlparas的获取统一使用field的propertyName，兼容上一版本的albianj风格
     fixed bug：当设置数据路由的时候，会将itf2type的map的key设置为null
+2018-10-19
+    增加自主研发的SpxDBCP取代数据库链接池
+2018-10-24
+    分布式事物回滚的默认值由true（默认回滚）改为false，默认不回滚，增加提交的时候给以回滚的选择
+    去掉ORM层的cached
+    更改数据库链接池默认值的bug
+    AlbianCore增加ThrowException的方法，throwe的时候增加addlog功能

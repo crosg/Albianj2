@@ -26,7 +26,9 @@ public interface IDataAccessContext {
 
     IDataAccessContext setFinishNotify(IPersistenceNotify notifyCallback, Object notifyCallbackObject);
 
-    IDataAccessContext setFailCompensator(IPersistenceCompensateNotify compensateCallback, Object compensateCallbackObject);
+    IDataAccessContext setMakeupFor(IPersistenceCompensateNotify compensateCallback, Object compensateCallbackObject);
+
+     IDataAccessContext setRollBackOnError();
 
     boolean commit(String sessionId);
 

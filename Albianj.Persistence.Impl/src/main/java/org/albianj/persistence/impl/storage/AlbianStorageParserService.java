@@ -188,6 +188,31 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
         storage.setDatabasePoolStyle(
             Validate.isNullOrEmptyOrAllSpace(sDatabasePoolStyle) ? DBCP : valueOf(sDatabasePoolStyle));
 
+        String sWaitTimeWhenGetMs = XmlParser.getSingleChildNodeValue(node, "WaitTimeWhenGetMs");
+        String sLifeCycleTime = XmlParser.getSingleChildNodeValue(node, "LifeCycleTime");
+        String sWaitInFreePoolMs = XmlParser.getSingleChildNodeValue(node, "WaitInFreePoolMs");
+        String sMaxRemedyConnectionCount = XmlParser.getSingleChildNodeValue(node, "MaxRemedyConnectionCount");
+        String sCleanupTimestampMs = XmlParser.getSingleChildNodeValue(node, "CleanupTimestampMs");
+        String sMaxRequestTimeMs = XmlParser.getSingleChildNodeValue(node, "MaxRequestTimeMs");
+
+         if(!Validate.isNullOrEmptyOrAllSpace(sWaitTimeWhenGetMs)) {
+             storage.setWaitTimeWhenGetMs(new Integer(sWaitTimeWhenGetMs));
+         }
+        if(!Validate.isNullOrEmptyOrAllSpace(sLifeCycleTime)) {
+            storage.setLifeCycleTime( new Integer(sLifeCycleTime));
+        }
+        if(!Validate.isNullOrEmptyOrAllSpace(sWaitInFreePoolMs)) {
+            storage.setWaitInFreePoolMs(new Integer(sWaitInFreePoolMs));
+        }
+        if(!Validate.isNullOrEmptyOrAllSpace(sMaxRemedyConnectionCount)) {
+            storage.setMaxRemedyConnectionCount( new Integer(sMaxRemedyConnectionCount));
+        }
+        if(!Validate.isNullOrEmptyOrAllSpace(sCleanupTimestampMs)) {
+            storage.setCleanupTimestampMs(new Integer(sCleanupTimestampMs));
+        }
+        if(!Validate.isNullOrEmptyOrAllSpace(sMaxRequestTimeMs)) {
+            storage.setMaxRequestTimeMs( new Integer(sMaxRequestTimeMs));
+        }
         storage.setOptions(options);
 
         if (storage.getTransactional()) {
