@@ -52,3 +52,10 @@
     去掉ORM层的cached
     更改数据库链接池默认值的bug
     AlbianCore增加ThrowException的方法，throwe的时候增加addlog功能
+2018-10-31
+    增加获取time函数，
+    修改获取网络ip从eth0换成eth1，
+    增加新的增加了stack的exception，
+    增加addlog函数，
+    增加queryctx中的loadcount，
+    增加throwexception
