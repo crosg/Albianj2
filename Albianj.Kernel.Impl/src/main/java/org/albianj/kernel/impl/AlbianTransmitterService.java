@@ -39,6 +39,7 @@ package org.albianj.kernel.impl;
 
 import ognl.Ognl;
 import org.albianj.aop.impl.AlbianServiceAopProxy;
+import org.albianj.except.AlbianRuntimeException;
 import org.albianj.kernel.*;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
@@ -47,7 +48,6 @@ import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.reflection.AlbianReflect;
 import org.albianj.reflection.AlbianTypeConvert;
 import org.albianj.runtime.AlbianModuleType;
-import org.albianj.runtime.AlbianRuntimeException;
 import org.albianj.service.*;
 import org.albianj.service.impl.AlbianServiceParser;
 import org.albianj.service.impl.FreeAlbianServiceParser;

@@ -5,6 +5,8 @@ import Albian.Test.Model.IMultiUser;
 import Albian.Test.Model.ISingleUser;
 import Albian.Test.Services.IUserService;
 import Albian.Test.Services.Metadata.StorageInfo;
+import org.albianj.logger.AlbianLoggerLevel;
+import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.persistence.context.dactx.AlbianDataAccessOpt;
 import org.albianj.persistence.context.dactx.IDataAccessContext;
 import org.albianj.persistence.context.dactx.IQueryContext;
@@ -32,6 +34,7 @@ public class UserService extends FreeAlbianService implements IUserService {
 
     @Override
     public boolean login(String uname,String pwd) {
+
         // where条件推荐使用表达式这种写法
         IChainExpression wheres = new FilterExpression("UserName", LogicalOperation.Equal, uname);
         //查询sql推荐使用query ctx，不推荐原来的具体方法，通过重载区分
@@ -48,6 +51,13 @@ public class UserService extends FreeAlbianService implements IUserService {
 
     @Override
     public boolean addUser(String uname, String pwd) {
+        AlbianServiceHub.addLog("Sessionid", IAlbianLoggerService.AlbianRunningLoggerName,
+                AlbianLoggerLevel.Info,"i am %s","log");
+
+        NullPointerException exc = new NullPointerException();
+        AlbianServiceHub.addLog("Sessionid", IAlbianLoggerService.AlbianRunningLoggerName,
+                AlbianLoggerLevel.Info,exc,"i am %s","log");
+
         //创建对象请使用此方法
         ISingleUser user = AlbianServiceHub.newInstance("SessionId",ISingleUser.class);
         user.setId(BigInteger.valueOf(System.currentTimeMillis()));

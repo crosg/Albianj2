@@ -43,6 +43,7 @@ public interface IAlbianLoggerService2 extends IAlbianService {
              @Comments("格式化参数") Object... values);
 
     @Comments("记录日志并且重新抛出异常，抛出的异常都为RuntimeException或其子类")
+    @Deprecated
     void logAndThrow(@Comments("当前日志记录处的文件名") String filename,
                      @Comments("当前日志记录处的方法名") String methodName,
                      @Comments("当前日志记录处的行数") int lineNumber,
@@ -68,6 +69,7 @@ public interface IAlbianLoggerService2 extends IAlbianService {
              @Comments("日志的message") String format,
              @Comments("格式化参数") Object... values);
 
+    @Deprecated
     @Comments("记录日志并且重新抛出异常，抛出的异常都为RuntimeException或其子类")
     void logAndThrow(@Comments("记录到的日志名称") String loggerName,
                      @Comments("当前的访问id") Object sessionId,
@@ -77,4 +79,6 @@ public interface IAlbianLoggerService2 extends IAlbianService {
                      @Comments("重新抛出异常的信息") String throwInfo,
                      @Comments("日志的message") String format,
                      @Comments("格式化参数") Object... values);
+
+    public void log3(String loggerName, AlbianLoggerLevel level,String ctx);
 }

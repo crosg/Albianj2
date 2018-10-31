@@ -37,5 +37,6 @@ public interface IQueryContext {
 
     <T extends IAlbianObject> List<T> loadObjects(String sessionId,Class<T> itfClzz,LoadType loadType,IChainExpression where) throws AlbianDataServiceException;
 
+    long loadCounts(String sessionId,Class<? extends IAlbianObject> itfClzz,LoadType loadType,IChainExpression where)throws AlbianDataServiceException;
     void reset();
 }

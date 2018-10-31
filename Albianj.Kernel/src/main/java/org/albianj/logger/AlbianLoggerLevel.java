@@ -4,13 +4,13 @@ package org.albianj.logger;
  * Created by xuhaifeng on 17/2/9.
  */
 public enum AlbianLoggerLevel {
-    Debug("*",0),
-    Info("$",1) ,
-    Warn("@",2),
-    Error("!",3),
-    Mark("|",4);
+    Debug("DEBUG",0),
+    Info("INFO",1) ,
+    Warn("WARN",2),
+    Error("ERROR",3),
+    Mark("MARK",4);
 
-    private String tag = "*";
+    private String tag = "D";
     private int level = 0;
     AlbianLoggerLevel(String tag,int level) {
         this.level = level;

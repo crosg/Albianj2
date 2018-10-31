@@ -139,4 +139,13 @@ public class AlbianDateTime {
     public static long getCurrentMillis(){
         return System.currentTimeMillis();
     }
+
+    public static String fmtCurrentLongDatetime(){
+        return getDateTimeString(new Date(),CHINESE_FORMAT);
+    }
+
+    public static String fmtCurrentDate(){
+        return getDateTimeString(new Date(),CHINESE_SIMPLE_FORMAT);
+    }
+
 }

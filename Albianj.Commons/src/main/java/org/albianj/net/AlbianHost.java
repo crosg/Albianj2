@@ -119,10 +119,18 @@ public class AlbianHost {
     }
 
     public static String getMacAddr() {
+      return getMacAddrByName("eth1");
+    }
+
+    public static String getLocalIP() {
+      return getLocalIPByName("eth1");
+    }
+
+    public static String getMacAddrByName(String ntkName) {
         String MacAddr = "";
         String str = "";
         try {
-            NetworkInterface NIC = NetworkInterface.getByName("eth0");
+            NetworkInterface NIC = NetworkInterface.getByName(ntkName);
             byte[] buf = NIC.getHardwareAddress();
             for (int i = 0; i < buf.length; i++) {
                 str = str + byteHEX(buf[i]);
@@ -135,13 +143,13 @@ public class AlbianHost {
         return MacAddr;
     }
 
-    public static String getLocalIP() {
+    public static String getLocalIPByName(String ntkName) {
         String ip = "";
         try {
             Enumeration<?> e1 = (Enumeration<?>) NetworkInterface.getNetworkInterfaces();
             while (e1.hasMoreElements()) {
                 NetworkInterface ni = (NetworkInterface) e1.nextElement();
-                if (!ni.getName().equals("eth0")) {
+                if (!ni.getName().equals(ntkName)) {
                     continue;
                 } else {
                     Enumeration<?> e2 = ni.getInetAddresses();
@@ -160,6 +168,7 @@ public class AlbianHost {
         }
         return ip;
     }
+
 
 
 

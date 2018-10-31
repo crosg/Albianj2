@@ -1,12 +1,12 @@
 package org.albianj.logger.impl;
 
+import org.albianj.except.AlbianRuntimeException;
 import org.albianj.io.Path;
 import org.albianj.kernel.KernelSetting;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.runtime.AlbianModuleType;
-import org.albianj.runtime.AlbianRuntimeException;
 import org.albianj.service.AlbianServiceException;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.FreeAlbianService;
@@ -15,6 +15,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.management.relation.RoleUnresolvedList;
 import java.net.URL;
 import java.util.Formatter;
 import java.util.concurrent.ConcurrentHashMap;
@@ -57,6 +58,7 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
     }
 
     @Override
+    @Deprecated
     public void logAndThrow(String filename, String methodName, int lineNumber,
                             String loggerName,Object sessionId,
                             AlbianLoggerLevel level, Throwable e,
@@ -70,9 +72,9 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
             throw (AlbianRuntimeException) e;
         }
         if(Validate.isNullOrEmptyOrAllSpace(throwInfo)) {
-            throw new AlbianRuntimeException(module,filename,lineNumber,methodName,msg,e);
+            throw new AlbianRuntimeException(e);
         } else {
-            throw new AlbianRuntimeException(module,filename,lineNumber,methodName,msg,throwInfo);
+            throw new AlbianRuntimeException(msg);
         }
     }
 
@@ -87,7 +89,6 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
 
     @Override
     public void log(String loggerName, Object sessionId, AlbianLoggerLevel level, Throwable e, String format, Object... values) {
-//        StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
         StackTraceElement stack = e.getStackTrace()[1];
         String filename = stack.getFileName();
         String method = stack.getMethodName();
@@ -95,6 +96,7 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
         log(filename,method,line,loggerName,sessionId,level,e,format,values);
     }
 
+    @Deprecated
     @Override
     public void logAndThrow(String loggerName,Object sessionId, AlbianLoggerLevel level,
                             Throwable e, AlbianModuleType module,String throwInfo,
@@ -121,7 +123,7 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
         .append("Method:").append(methodName).append(",");
         if(null != e){
             if(e instanceof AlbianRuntimeException) {
-                sb.append("Exception:").append(((AlbianRuntimeException) e).toInnerString()).append(",");
+                sb.append("Exception:").append(e.toString()).append(",");
             } else {
                 sb.append("Exception:").append(e.getMessage()).append(",");
             }
@@ -176,5 +178,47 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
         }
         return null;
     }
+
+    public void log3(String loggerName, AlbianLoggerLevel level,String ctx){
+        Logger logger = getLogger(loggerName);
+        flush3(logger, level,ctx);
+    }
+
+    private void  flush3(Logger logger, AlbianLoggerLevel level,String ctx){
+        switch (level){
+            case Debug:
+                if(logger.isDebugEnabled()){
+                    logger.debug(ctx);
+                    return ;
+                }
+            case Info:
+                if(logger.isInfoEnabled()){
+                    logger.info(ctx);
+                    return ;
+                }
+            case Warn:
+                if(logger.isWarnEnabled()){
+                    logger.warn(ctx);
+                    return ;
+                }
+            case Error:
+                if(logger.isErrorEnabled()){
+                    logger.error(ctx);
+                    return ;
+                }
+            case Mark:
+                if(logger.isTraceEnabled()){
+                    logger.trace(ctx);
+                    return ;
+                }
+            default:
+                if(logger.isInfoEnabled()){
+                    logger.info(ctx);
+                    return ;
+                }
+        }
+        return;
+    }
+
 
 }

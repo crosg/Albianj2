@@ -97,6 +97,26 @@ public class QueryContext  implements IQueryContext {
         return list;
     }
 
+    public long loadCounts(String sessionId,Class<? extends IAlbianObject> itfClzz,LoadType loadType,IChainExpression wheres)throws AlbianDataServiceException{
+        this.itfClzz = itfClzz;
+        this.loadType = loadType;
+        this.wheres = wheres;
+
+        if(!Validate.isNullOrEmptyOrAllSpace(this.drouterAlias) && (!Validate.isNullOrEmptyOrAllSpace(storageAlias) || !Validate.isNullOrEmptyOrAllSpace(tableAlias))){
+            throw new AlbianDataServiceException("drouterAlias is not coexist with storageAlias or tableAlias.");
+        }
+        if(Validate.isNullOrEmptyOrAllSpace(storageAlias) && !Validate.isNullOrEmptyOrAllSpace(tableAlias)){
+            throw new AlbianDataServiceException("tableAlias exist but storageAlias is not exist.");
+        }
+
+        IReaderJobAdapter ad = new ReaderJobAdapter();
+        IReaderJob job = ad.buildReaderJob(sessionId, itfClzz, loadType == LoadType.exact,this.storageAlias,this.tableAlias, this.drouterAlias,
+                wheres, orderbys,idxName);
+        IPersistenceQueryScope scope = new PersistenceQueryScope();
+        Object count =  scope.execute(job);
+        return null == count ? 0 :(long) count;
+    }
+
     public void reset(){
         start = -1;
          pagesize = -1;
