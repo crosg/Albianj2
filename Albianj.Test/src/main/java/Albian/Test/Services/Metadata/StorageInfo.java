@@ -8,4 +8,5 @@ public class StorageInfo {
      user数据库在storage.xml中配置的名字
      */
     public final static String SingleUserStorageName = "SpxDBCP";
+    public final static String UTF8Mb64TestStorageName = "UTF8M64";
 }

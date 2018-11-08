@@ -6,6 +6,9 @@ import org.albianj.mvc.config.BrushingConfigurtion;
 import org.albianj.mvc.config.RequestCounter;
 import org.albianj.mvc.lang.ServerHelper;
 import org.albianj.mvc.service.IAlbianBrushingService;
+import org.albianj.service.AlbianServiceFieldRant;
+import org.albianj.service.AlbianServiceFieldType;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.FreeAlbianService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,11 +17,13 @@ import java.io.IOException;
 /**
  * Created by xuhaifeng on 17/1/19.
  */
+@AlbianServiceRant(Id = IAlbianBrushingService.Name,Interface = IAlbianBrushingService.class)
 public class AlbianBrushingService extends FreeAlbianService implements IAlbianBrushingService {
     public String getServiceName(){
         return Name;
     }
 
+    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref,Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
     private AlbianHttpConfigurtion c;
     public void setHttpConfigurtion(AlbianHttpConfigurtion c) {
         this.c = c;

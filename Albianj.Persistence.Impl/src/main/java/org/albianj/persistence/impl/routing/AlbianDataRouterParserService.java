@@ -44,7 +44,9 @@ import org.albianj.persistence.impl.object.AlbianObjectAttribute;
 import org.albianj.persistence.impl.object.DataRouterAttribute;
 import org.albianj.persistence.object.*;
 import org.albianj.persistence.service.AlbianEntityMetadata;
+import org.albianj.persistence.service.IAlbianDataRouterParserService;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.parser.AlbianParserException;
 import org.albianj.verify.Validate;
@@ -56,6 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@AlbianServiceRant(Id = IAlbianDataRouterParserService.Name,Interface = IAlbianDataRouterParserService.class)
 public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserService {
 
     public static final String DEFAULT_ROUTING_NAME = "!@#$%Albianj_Default_DataRouter%$#@!";

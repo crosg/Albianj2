@@ -219,10 +219,14 @@ public class AlbianServiceRouter extends ServiceContainer {
     }
 
     public static void throwException(String sessionId,String logName,Throwable throwable){
-        throwException(sessionId,logName,throwable,true);
+        throwException(sessionId,logName,"throw",throwable,true);
     }
 
-    public static void throwException(String sessionId,String logName,Throwable throwable,boolean throwsOut){
+    public static void throwException(String sessionId,String logName,String brief,Throwable throwable){
+        throwException(sessionId,logName,brief,throwable,true);
+    }
+
+    public static void throwException(String sessionId,String logName,String brief,Throwable throwable,boolean throwsOut){
         if(AlbianRuntimeException.class.isAssignableFrom(throwable.getClass())){
             //warp once over,and not again
             addLog(sessionId,logName, AlbianLoggerLevel.Warn,throwable,"throw exception -> %s",throwable.getClass().getName());
@@ -233,11 +237,20 @@ public class AlbianServiceRouter extends ServiceContainer {
         }
         AlbianRuntimeException thw = new AlbianRuntimeException(throwable);
         addLog(sessionId,logName,AlbianLoggerLevel.Warn,throwable,
-                "warp excetion -> %s with msg ->%s to new AlbianRuntimeException.",
-                throwable.getClass().getName(),throwable.getMessage());
+                "brief-> %s warp excetion -> %s with msg ->%s to new AlbianRuntimeException.",
+                brief,throwable.getClass().getName(),throwable.getMessage());
         if(throwsOut){
             throw  thw;
         }
+    }
+
+    public static void throwException(String sessionId,String logName, String brief,String msg){
+        StackTraceElement[] stacks = Thread.currentThread().getStackTrace();
+        AlbianRuntimeException thw = new AlbianRuntimeException(stacks[2].getClassName(),stacks[2].getMethodName(),stacks[2].getLineNumber(),msg);
+        addLog(sessionId,logName,AlbianLoggerLevel.Warn,
+                "brief-> %s new excetion with msg ->%s to AlbianRuntimeException.",
+                brief,msg);
+        throw thw;
     }
 
     public static void throwException(String sessionId,String logName, String msg){

@@ -8,6 +8,7 @@ import org.albianj.persistence.impl.db.IManualTransactionScope;
 import org.albianj.persistence.impl.db.ManualCommandAdapter;
 import org.albianj.persistence.impl.db.ManualTransactionScope;
 import org.albianj.persistence.service.IAlbianManualPersistenceService;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.FreeAlbianService;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Vector;
 /**
  * Created by xuhaifeng on 17/8/17.
  */
+@AlbianServiceRant(Id = IAlbianManualPersistenceService.Name,Interface = IAlbianManualPersistenceService.class)
 public class AlbianManualPersistenceService extends FreeAlbianService implements IAlbianManualPersistenceService {
 
     public String getServiceName(){

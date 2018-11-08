@@ -45,6 +45,7 @@ import org.albianj.reflection.AlbianReflect;
 import org.albianj.runtime.IStackTrace;
 import org.albianj.runtime.RuningTrace;
 import org.albianj.service.AlbianServiceException;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.FreeAlbianService;
 import org.albianj.verify.Validate;
@@ -59,6 +60,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Seapeak
  */
+@AlbianServiceRant(Id = IAlbianLoggerService.Name,Interface = IAlbianLoggerService.class)
 public class AlbianLoggerService extends FreeAlbianService implements
         IAlbianLoggerService {
 

@@ -45,7 +45,9 @@ import org.albianj.persistence.object.IRunningStorageAttribute;
 import org.albianj.persistence.object.IStorageAttribute;
 import org.albianj.persistence.object.PersistenceDatabaseStyle;
 import org.albianj.persistence.service.IAlbianConnectionMonitorService;
+import org.albianj.persistence.service.IAlbianStorageParserService;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.parser.AlbianParserException;
 import org.albianj.verify.Validate;
@@ -60,6 +62,7 @@ import java.util.concurrent.ConcurrentMap;
 import static org.albianj.persistence.object.DatabasePoolStyle.DBCP;
 import static org.albianj.persistence.object.DatabasePoolStyle.valueOf;
 
+@AlbianServiceRant(Id = IAlbianStorageParserService.Name,Interface = IAlbianStorageParserService.class)
 public class AlbianStorageParserService extends FreeAlbianStorageParserService {
 
     public final static String DEFAULT_STORAGE_NAME = "!@#$%Albianj_Default_Storage%$#@!";

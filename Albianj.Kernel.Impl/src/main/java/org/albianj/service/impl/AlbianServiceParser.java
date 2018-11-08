@@ -44,6 +44,7 @@ import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.*;
+import org.albianj.service.parser.IAlbianParserService;
 import org.albianj.verify.Validate;
 import org.albianj.xml.XmlParser;
 import org.apache.xpath.operations.Bool;
@@ -55,6 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@AlbianServiceRant(Id = "AlbianServiceParser",Interface = IAlbianParserService.class)
 public class AlbianServiceParser extends FreeAlbianServiceParser {
 
     public String getServiceName(){

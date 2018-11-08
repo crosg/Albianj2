@@ -42,6 +42,7 @@ import org.albianj.kernel.KernelSetting;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.FreeAlbianService;
 import org.albianj.service.parser.AlbianParserException;
@@ -50,6 +51,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+@AlbianServiceRant(Id = IAlbianThreadPoolService.Name,Interface = IAlbianThreadPoolService.class)
 public class AlbianThreadPoolService extends FreeAlbianService implements
         IAlbianThreadPoolService {
 

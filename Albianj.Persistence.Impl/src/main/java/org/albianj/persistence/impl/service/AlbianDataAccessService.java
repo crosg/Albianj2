@@ -18,6 +18,7 @@ import org.albianj.persistence.object.filter.FilterExpression;
 import org.albianj.persistence.object.filter.IChainExpression;
 import org.albianj.persistence.service.IAlbianDataAccessService;
 import org.albianj.persistence.service.LoadType;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.FreeAlbianService;
 import org.albianj.verify.Validate;
 
@@ -30,6 +31,7 @@ import java.util.Map;
 /**
  * Created by xuhaifeng on 16/12/22.
  */
+@AlbianServiceRant(Id = IAlbianDataAccessService.Name,Interface = IAlbianDataAccessService.class)
 public class AlbianDataAccessService extends FreeAlbianService implements IAlbianDataAccessService {
 
     public String getServiceName(){

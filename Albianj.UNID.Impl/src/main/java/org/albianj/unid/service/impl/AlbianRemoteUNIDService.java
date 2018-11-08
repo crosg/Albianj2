@@ -43,6 +43,7 @@ import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.net.IMsgHeader;
 import org.albianj.net.MemoryToIOStream;
 import org.albianj.net.MsgHeader;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.parser.AlbianParserException;
 import org.albianj.unid.service.AlbianRemoteUNIDAttributeException;
@@ -66,6 +67,7 @@ import java.util.List;
 /**
  * @author Seapeak
  */
+@AlbianServiceRant(Id = IAlbianRemoteUNIDService.Name,Interface = IAlbianRemoteUNIDService.class)
 public class AlbianRemoteUNIDService extends FreeAlbianRemoteUNIDParser
         implements IAlbianRemoteUNIDService {
     private static int _idx = 0;

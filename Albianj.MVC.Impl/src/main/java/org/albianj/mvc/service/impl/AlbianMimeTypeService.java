@@ -4,6 +4,7 @@ import org.albianj.io.Path;
 import org.albianj.kernel.KernelSetting;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.mvc.service.IAlbianMimeTypeService;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.parser.AlbianParserException;
 import org.albianj.service.parser.FreeAlbianParserService;
 import org.albianj.verify.Validate;
@@ -17,6 +18,7 @@ import java.util.Properties;
 /**
  * Created by xuhaifeng on 16/12/13.
  */
+@AlbianServiceRant(Id = IAlbianMimeTypeService.Name,Interface = IAlbianMimeTypeService.class)
 public class AlbianMimeTypeService extends FreeAlbianParserService implements IAlbianMimeTypeService {
 
     public String getServiceName(){

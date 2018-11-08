@@ -44,6 +44,7 @@ import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.net.AlbianHost;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.FreeAlbianService;
 import org.albianj.text.StringHelper;
@@ -62,6 +63,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+@AlbianServiceRant(Id = IAlbianLogicIdService.Name,Interface = IAlbianLogicIdService.class)
 public class AlbianLogicIdService extends FreeAlbianService implements IAlbianLogicIdService {
     static AtomicInteger serial = new AtomicInteger(0);
     static AtomicLong id = new AtomicLong(0);

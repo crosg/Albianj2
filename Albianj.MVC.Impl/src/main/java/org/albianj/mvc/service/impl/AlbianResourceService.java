@@ -22,6 +22,9 @@ import org.albianj.mvc.HttpContext;
 import org.albianj.mvc.config.AlbianHttpConfigurtion;
 import org.albianj.mvc.lang.HttpHelper;
 import org.albianj.mvc.service.IAlbianResourceService;
+import org.albianj.service.AlbianServiceFieldRant;
+import org.albianj.service.AlbianServiceFieldType;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.FreeAlbianService;
 import org.apache.commons.io.IOUtils;
 
@@ -40,6 +43,7 @@ import java.io.OutputStream;
  * This service is useful for application servers which do not allow Click to
  * automatically deploy resources to the web root directory.
  */
+@AlbianServiceRant(Id = IAlbianResourceService.Name,Interface = IAlbianResourceService.class)
 public class AlbianResourceService extends FreeAlbianService implements IAlbianResourceService {
 
     public String getServiceName(){
@@ -49,7 +53,7 @@ public class AlbianResourceService extends FreeAlbianService implements IAlbianR
 
     /** The click resources cache. */
 //    protected Map<String, byte[]> resourceCache = new ConcurrentHashMap<String, byte[]>();
-
+    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref,Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
     private  AlbianHttpConfigurtion c;
 
     public void setHttpConfigurtion(AlbianHttpConfigurtion c){

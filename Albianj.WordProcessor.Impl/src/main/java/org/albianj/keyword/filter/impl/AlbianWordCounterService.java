@@ -1,6 +1,7 @@
 package org.albianj.keyword.filter.impl;
 
 import org.albianj.keyword.filter.IAlbianWordCounterService;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.FreeAlbianService;
 
 import java.util.regex.Pattern;
@@ -8,6 +9,7 @@ import java.util.regex.Pattern;
 /**
  * Created by xuhaifeng on 17/2/16.
  */
+@AlbianServiceRant(Id = IAlbianWordCounterService.Name,Interface = IAlbianWordCounterService.class)
 public class AlbianWordCounterService extends FreeAlbianService implements IAlbianWordCounterService{
 
     public String getServiceName(){

@@ -39,7 +39,7 @@ package org.albianj.restful.impl.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.yuewen.pplogstat.IYuewenPPLogStatService;
+import com.yuewen.pplogstat.impl.IYuewenPPLogStatService;
 import org.albianj.datetime.AlbianDateTime;
 import org.albianj.kernel.KernelSetting;
 import org.albianj.logger.AlbianLoggerLevel;

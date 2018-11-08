@@ -1,6 +1,7 @@
 package org.albianj.keyword.filter.impl;
 
 import org.albianj.keyword.filter.IAlbianKeywordFilterService;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.verify.Validate;
 
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 /**
  * @Description: 敏感词过滤
  */
+@AlbianServiceRant(Id = IAlbianKeywordFilterService.Name,Interface = IAlbianKeywordFilterService.class)
 public class AlbianKeywordFilterService extends FreeAlbianKeywordFilterService  {
 
     public String getServiceName(){

@@ -7,8 +7,7 @@ import org.albianj.mvc.config.AlbianHttpConfigurtion;
 import org.albianj.mvc.config.FileUploadConfigurtion;
 import org.albianj.mvc.service.IAlbianFileUploadService;
 import org.albianj.mvc.service.UploadFile;
-import org.albianj.service.AlbianServiceRouter;
-import org.albianj.service.FreeAlbianService;
+import org.albianj.service.*;
 import org.albianj.verify.Validate;
 import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -21,13 +20,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-
+@AlbianServiceRant(Id = IAlbianFileUploadService.Name,Interface = IAlbianFileUploadService.class)
 public class AlbianFileUploadService extends FreeAlbianService implements IAlbianFileUploadService {
     public String getServiceName(){
         return Name;
     }
 
     private ServletFileUpload upload = null;
+
+    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref,Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
     private AlbianHttpConfigurtion c = null;
 
     public void setHttpConfigurtion(AlbianHttpConfigurtion c) {

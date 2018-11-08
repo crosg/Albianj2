@@ -59,3 +59,9 @@
     增加addlog函数，
     增加queryctx中的loadcount，
     增加throwexception
+2018-11-07
+    fixbug：yuewen的apilog监控没有在impl的命名空间，现在易到这个命名空间，导致的问题是实用restful的配置文件需要更改
+            service.xml中的YuewenPPLog的service的配置项更改为： com.yuewen.pplogstat.impl.YuewenPPLogStatService
+deploy:2018110702
+2018-11-08
+    去掉service.xml中的内置albianj服务配置，以后的service.xml中只需要配置业务service即可。

@@ -57,6 +57,7 @@ import org.albianj.persistence.object.IOrderByCondition;
 import org.albianj.persistence.object.filter.IChainExpression;
 import org.albianj.persistence.service.IAlbianPersistenceService;
 import org.albianj.persistence.service.LoadType;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.FreeAlbianService;
 import org.albianj.verify.Validate;
 
@@ -64,6 +65,7 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
+@AlbianServiceRant(Id = IAlbianPersistenceService.Name,Interface = IAlbianPersistenceService.class)
 public class AlbianPersistenceService extends FreeAlbianService implements IAlbianPersistenceService {
 
     public String getServiceName(){

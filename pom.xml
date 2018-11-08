@@ -6,7 +6,7 @@
 
     <groupId>com.yuewen.nrzx.albianj</groupId>
     <artifactId>Albianj</artifactId>
-    <version>2018103001</version>
+    <version>2018110801</version>
     <modules>
         <module>Albianj.Comment</module>
         <module>Albianj.Commons</module>
@@ -34,6 +34,8 @@
         <module>Albianj.Core</module>
         <module>Albianj.Test</module>
         <module>Albianj.Test2</module>
+        <module>Albianj.Monitor</module>
+        <module>Albianj.Monitor.Impl</module>
     </modules>
     <packaging>pom</packaging>
 

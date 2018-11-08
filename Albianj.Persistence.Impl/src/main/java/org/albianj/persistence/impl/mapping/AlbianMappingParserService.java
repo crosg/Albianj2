@@ -50,9 +50,11 @@ import org.albianj.persistence.impl.storage.AlbianStorageParserService;
 import org.albianj.persistence.impl.toolkit.Convert;
 import org.albianj.persistence.object.*;
 import org.albianj.persistence.service.AlbianEntityMetadata;
+import org.albianj.persistence.service.IAlbianMappingParserService;
 import org.albianj.persistence.service.MappingAttributeException;
 import org.albianj.reflection.AlbianReflect;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.parser.AlbianParserException;
 import org.albianj.text.StringHelper;
@@ -67,6 +69,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@AlbianServiceRant(Id = IAlbianMappingParserService.Name,Interface = IAlbianMappingParserService.class)
 public class AlbianMappingParserService extends FreeAlbianMappingParserService {
 
     public String getServiceName(){

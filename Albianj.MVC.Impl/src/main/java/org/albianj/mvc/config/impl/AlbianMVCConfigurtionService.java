@@ -13,6 +13,7 @@ import org.albianj.mvc.service.IAlbianMVCConfigurtionService;
 import org.albianj.mvc.service.impl.AlbianFileUploadService;
 import org.albianj.mvc.service.impl.AlbianFormatService;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.IAlbianServiceAttribute;
 import org.albianj.service.parser.AlbianParserException;
@@ -31,6 +32,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
+@AlbianServiceRant(Id = IAlbianMVCConfigurtionService.Name,Interface = IAlbianMVCConfigurtionService.class)
 public class AlbianMVCConfigurtionService extends FreeAlbianParserService implements IAlbianMVCConfigurtionService {
 
     public String getServiceName(){

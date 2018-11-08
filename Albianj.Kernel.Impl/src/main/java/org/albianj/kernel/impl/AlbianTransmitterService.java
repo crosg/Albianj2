@@ -146,66 +146,24 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
     }
 
     public void doStart() throws Exception {
-        //the logger is essential module so must init first
-        Class<?> cls = AlbianClassLoader.getInstance().loadClass("org.albianj.logger.impl.AlbianLoggerService");
-        if (null == cls) {
-            state = AlbianState.Unloaded;
-            System.err.println("no the logger plugin and exit.");
-            return;
-        }
-        IAlbianLoggerService log = (IAlbianLoggerService) cls.newInstance();
-        if (null == log) {
-            state = AlbianState.Unloaded;
-            System.err.println("can not new the logger instance and exit.");
-            System.exit(1);
-        }
-        try {
-            log.beforeLoad();
-            log.loading();
-            log.afterLoading();
-        } catch (Exception e) {
-            state = AlbianState.Unloaded;
-            System.err.println("loading logger is fail and exit.");
-            return;
-        }
-        ServiceContainer.addService(IAlbianLoggerService.Name, log);
 
-        try {
-            Class<?> logger2Clazz = AlbianClassLoader.getInstance().loadClass("org.albianj.logger.impl.AlbianLoggerService2");
-            if (null != logger2Clazz) {
-                IAlbianLoggerService2 logV2 = (IAlbianLoggerService2) logger2Clazz.newInstance();
-                if (null != logV2) {
-                    try {
-                        logV2.beforeLoad();
-                        logV2.loading();
-                        logV2.afterLoading();
-                    } catch (Exception e) {
-                        state = AlbianState.Unloaded;
-                        System.err.println("loading logger v2 is fail but still running.");
-                    }
-                }
-                ServiceContainer.addService(IAlbianLoggerService2.Name, logV2);
-            }
-        }catch (Throwable t){
-            state = AlbianState.Unloaded;
-            System.err.println("loading logger v2 is fail and exit.");
-            return;
-        }
+        // do load builtin service
+        AlbianBuiltinServiceLoader bltSevLoader = new AlbianBuiltinServiceLoader();
+        bltSevLoader.loadServices();
+        Map<String,IAlbianServiceAttribute> bltSrvAttrs = bltSevLoader.getBltSrvAttrs();
 
-
-
-
-        Map<String, IAlbianServiceAttribute> totalMap = (Map<String, IAlbianServiceAttribute>)
+        //do load bussiness service
+        Map<String, IAlbianServiceAttribute> bnsSrvAttrs = (Map<String, IAlbianServiceAttribute>)
                 ServiceAttributeMap
                         .get(FreeAlbianServiceParser.ALBIANJSERVICEKEY);
 
-        @SuppressWarnings("unchecked")
-        Map<String, IAlbianServiceAttribute> map = (Map<String, IAlbianServiceAttribute>)
-                ServiceAttributeMap
-                        .get(FreeAlbianServiceParser.ALBIANJSERVICEKEY);
+//        @SuppressWarnings("unchecked")
+//        Map<String, IAlbianServiceAttribute> map = (Map<String, IAlbianServiceAttribute>)
+//                ServiceAttributeMap
+//                        .get(FreeAlbianServiceParser.ALBIANJSERVICEKEY);
 
         Map<String,IAlbianServiceAttribute> mapAttr = new HashMap<>();
-        mapAttr.putAll(map); // copy it for field setter
+        mapAttr.putAll(bnsSrvAttrs); // copy it for field setter
 
         Map<String, IAlbianServiceAttribute> failMap = new LinkedHashMap<String, IAlbianServiceAttribute>();
         int lastFailSize = 0;
@@ -217,69 +175,12 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
             String sType = null;
             String id = null;
             String sInterface = null;
-            for (Map.Entry<String, IAlbianServiceAttribute> entry : map
+            for (Map.Entry<String, IAlbianServiceAttribute> entry : mapAttr
                     .entrySet())
                 try {
                     IAlbianServiceAttribute serviceAttr = entry.getValue();
-                    sType = serviceAttr.getType();
-                    id = serviceAttr.getId();
-
-                    sInterface = serviceAttr.getInterface();
-                    Class<?> cla = AlbianClassLoader.getInstance().loadClass(serviceAttr.getType());
-                    if (null == cla) {
-
-                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                IAlbianLoggerService2.InnerThreadName,
-                                AlbianLoggerLevel.Info, null , AlbianModuleType.AlbianKernel,
-                                "Transmitter is error.", "load class:%s for servcice:%s is fail.",
-                                sType,id);
-                    }
-
-                    Class<?> itf = null;
-                    if (!Validate.isNullOrEmptyOrAllSpace(serviceAttr.getInterface())) {
-                        itf = AlbianClassLoader.getInstance().loadClass(serviceAttr.getInterface());
-                        if (!itf.isAssignableFrom(cla)) {
-                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                    IAlbianLoggerService2.InnerThreadName,
-                                    AlbianLoggerLevel.Warn,"init service:%s with class:%s is not implement from interface:%s.",
-                                    id,sType,sInterface);
-                        }
-
-                        if (!IAlbianService.class.isAssignableFrom(itf)) {
-                            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                    IAlbianLoggerService2.InnerThreadName,
-                                    AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianKernel,
-                                    "Transmitter is fail.", "init service :%s with class:%s and interface:%s must implements from IAlbianService  .",
-                                    id,sType,sInterface);
-                        }
-                    }
-
-                    if (!IAlbianService.class.isAssignableFrom(cla)) {
-                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                IAlbianLoggerService2.InnerThreadName,
-                                AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianKernel,
-                                "Transmitter is fail.", "init service :%s class:%s  must implements from interface:%s  .",
-                                id,sType,sInterface);
-                    }
-
-
-                    IAlbianService service = (IAlbianService) cla.newInstance();
-
-                    service.beforeLoad();
-                    service.loading();
-                    service.afterLoading();
-                    if (Validate.isNullOrEmpty(serviceAttr.getAopAttributes())) {
-                        ServiceContainer.addService(id, service);
-                    } else {
-                        AlbianServiceAopProxy proxy = new AlbianServiceAopProxy();
-                        IAlbianService serviceProxy = (IAlbianService) proxy.newInstance(service, serviceAttr.getAopAttributes());
-                        serviceProxy.setRealService(service);
-                        serviceProxy.beforeLoad();
-                        serviceProxy.loading();
-                        serviceProxy.afterLoading();
-                        ServiceContainer.addService(id, serviceProxy);
-                    }
-
+                    IAlbianService service =  AlbianServiceLoader.makeupService(serviceAttr);
+                    ServiceContainer.addService(serviceAttr.getId(),service);
                 } catch (Exception exc) {
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
                             IAlbianLoggerService2.InnerThreadName,
@@ -317,14 +218,18 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
                 state = AlbianState.Unloaded;
                 throw e;
             } else {
-                map.clear();
-                map.putAll(failMap);
+                mapAttr.clear();
+                mapAttr.putAll(failMap);
                 failMap.clear();
             }
         }
 
+        // merger kernel service and bussines service
+        // then update the all service attribute
+        bltSrvAttrs.putAll(bnsSrvAttrs);
+        ServiceAttributeMap.insert(FreeAlbianServiceParser.ALBIANJSERVICEKEY,bltSrvAttrs);
         //set field in service
-        if(!setServiceFields(totalMap)) {
+        if(!setServiceFields(bltSrvAttrs)) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName,
                     AlbianLoggerLevel.Error,

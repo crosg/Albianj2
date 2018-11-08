@@ -41,6 +41,7 @@ import org.albianj.kernel.KernelSetting;
 import org.albianj.security.IAlbianSecurityService;
 import org.albianj.security.MACStyle;
 import org.albianj.security.StyleMapping;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.FreeAlbianService;
 import org.albianj.text.StringHelper;
 import org.albianj.verify.Validate;
@@ -52,6 +53,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.NoSuchAlgorithmException;
 
+@AlbianServiceRant(Id = IAlbianSecurityService.Name,Interface = IAlbianSecurityService.class)
 public class AlbianSecurityService extends FreeAlbianService implements IAlbianSecurityService {
 
     public String getServiceName(){
