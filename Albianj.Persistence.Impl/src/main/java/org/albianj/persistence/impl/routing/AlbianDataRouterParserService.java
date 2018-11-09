@@ -64,7 +64,6 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
     public static final String DEFAULT_ROUTING_NAME = "!@#$%Albianj_Default_DataRouter%$#@!";
 
     private static IDataRoutersAttribute getRoutingsAttribute(Element elt) throws AlbianParserException {
-//        IDataRoutersAttribute routing = new DataRoutersAttribute();
         String inter = XmlParser.getAttributeValue(elt, "Interface");
         if (Validate.isNullOrEmptyOrAllSpace(inter)) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -82,8 +81,6 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
             return null;
         }
 
-//        routing.setInterface(inter);
-
         IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(inter);
         if(null == objAttr){
             objAttr = new AlbianObjectAttribute();
@@ -96,8 +93,6 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
             routing = new DataRoutersAttribute();
             objAttr.setDataRouters(routing);
         }
-
-
 
         try {
             Class<?> cls = AlbianClassLoader.getInstance().loadClass(type);
@@ -136,8 +131,6 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
                     "the type:%s is not found", type);
         }
 
-
-//        routing.setType(type);
         String hashMapping = XmlParser.getAttributeValue(elt, "Router");
         if (Validate.isNullOrEmptyOrAllSpace(hashMapping)) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -284,8 +277,6 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
             IDataRoutersAttribute routingsAttribute = getRoutingsAttribute((Element) node);
             if (null == routingsAttribute)
                 return null;
-//            addDataRouterAttribute(routingsAttribute.getInterface(),
-//                    routingsAttribute);
         }
         return null;
     }

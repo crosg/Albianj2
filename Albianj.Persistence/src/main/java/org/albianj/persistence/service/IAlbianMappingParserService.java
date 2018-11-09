@@ -37,10 +37,8 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.service;
 
-import org.albianj.persistence.object.IAlbianObjectAttribute;
+import org.albianj.service.AlbianBuiltinServiceNamePair;
 import org.albianj.service.parser.IAlbianParserService;
-
-import java.beans.PropertyDescriptor;
 
 /**
  * albianj的数据实体解析类，即albianj的数据实体底层service。
@@ -65,7 +63,7 @@ public interface IAlbianMappingParserService extends IAlbianParserService {
     /**
      * 此service在service.xml中的id
      */
-    static String Name = "AlbianMappingService";
+    static String Name =  AlbianBuiltinServiceNamePair.AlbianMappingServiceName;
 
 //    /**
 //     * 增加数据实体的类型信息

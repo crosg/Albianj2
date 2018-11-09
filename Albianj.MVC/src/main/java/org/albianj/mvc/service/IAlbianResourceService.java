@@ -19,6 +19,7 @@
 package org.albianj.mvc.service;
 
 import org.albianj.mvc.HttpContext;
+import org.albianj.service.AlbianBuiltinServiceNamePair;
 import org.albianj.service.IAlbianService;
 
 import java.io.IOException;
@@ -45,7 +46,7 @@ import java.io.IOException;
  */
 public interface IAlbianResourceService extends IAlbianService {
 
-    String Name = "AlbianResourceService";
+    String Name =  AlbianBuiltinServiceNamePair.AlbianResourceServiceName;
 
 
     /**

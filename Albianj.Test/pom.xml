@@ -5,7 +5,7 @@
     <parent>
         <artifactId>Albianj</artifactId>
         <groupId>com.yuewen.nrzx.albianj</groupId>
-        <version>2018110801</version>
+        <version>2018110901</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -18,14 +18,29 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.yuewen.nrzx.albianj</groupId>
+            <artifactId>Albianj.Security</artifactId>
+            <version>${project.version}</version>
+
+        </dependency>
+        <dependency>
         <groupId>com.yuewen.nrzx.albianj</groupId>
         <artifactId>Albianj.Security.Impl</artifactId>
         <version>${project.version}</version>
+            <scope>runtime</scope>
+
+        </dependency>
+        <dependency>
+            <groupId>com.yuewen.nrzx.albianj</groupId>
+            <artifactId>Albianj.Persistence</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>
             <artifactId>Albianj.Persistence.Impl</artifactId>
             <version>${project.version}</version>
+            <scope>runtime</scope>
+
         </dependency>
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>
@@ -42,6 +57,25 @@
             <groupId>com.yuewen.nrzx.albianj</groupId>
             <artifactId>Albianj.Restful.Impl</artifactId>
             <version>${project.version}</version>
+            <scope>runtime</scope>
+
+        </dependency>
+        <dependency>
+            <groupId>com.yuewen.nrzx.albianj</groupId>
+            <artifactId>Albianj.Restful</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yuewen.nrzx.albianj</groupId>
+            <artifactId>Yuewen.PPLogStat.Impl</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.yuewen.nrzx.albianj</groupId>
+            <artifactId>Yuewen.PPLogStat</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 

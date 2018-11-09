@@ -2,6 +2,7 @@ package org.albianj.mvc.service;
 
 import org.albianj.mvc.config.AlbianHttpConfigurtion;
 import org.albianj.mvc.config.RequestCounter;
+import org.albianj.service.AlbianBuiltinServiceNamePair;
 import org.albianj.service.IAlbianService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface IAlbianBrushingService extends IAlbianService {
 
-    String Name = "AlbianBrushingService";
+    String Name =  AlbianBuiltinServiceNamePair.AlbianBrushingServiceName;
 
     void setHttpConfigurtion(AlbianHttpConfigurtion c);
 

@@ -123,25 +123,25 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
     public void start() throws Exception {
         makeEnvironment();
         startDateTime = new Date();
-        Class<?> cls = AlbianClassLoader.getInstance().loadClass("org.albianj.kernel.impl.AlbianLogicIdService");
-        if (null == cls) {
-            state = AlbianState.Unloaded;
-            System.err.println("no the logic id plugin and exit.");
-            return;
-        }
-        IAlbianLogicIdService lid = (IAlbianLogicIdService) cls.newInstance();
-        if (null == lid) {
-            state = AlbianState.Unloaded;
-            System.err.println("can not new the logger instance and exit.");
-            return;
-        }
-        ServiceContainer.addService(IAlbianLogicIdService.Name, lid);
-        serialId = lid.generate32UUID();
-        state = AlbianState.Initing;
-        IAlbianParserService parser = new AlbianServiceParser();
-        parser.init();
-
-        System.out.println("startup albianj with normal.");
+//        Class<?> cls = AlbianClassLoader.getInstance().loadClass("org.albianj.kernel.impl.AlbianLogicIdService");
+//        if (null == cls) {
+//            state = AlbianState.Unloaded;
+//            System.err.println("no the logic id plugin and exit.");
+//            return;
+//        }
+//        IAlbianLogicIdService lid = (IAlbianLogicIdService) cls.newInstance();
+//        if (null == lid) {
+//            state = AlbianState.Unloaded;
+//            System.err.println("can not new the logger instance and exit.");
+//            return;
+//        }
+//        ServiceContainer.addService(IAlbianLogicIdService.Name, lid);
+//        serialId = lid.generate32UUID();
+//        state = AlbianState.Initing;
+//        IAlbianParserService parser = new AlbianServiceParser();
+//        parser.init();
+//
+//        System.out.println("startup albianj with normal.");
         doStart();
     }
 
@@ -157,13 +157,14 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
                 ServiceAttributeMap
                         .get(FreeAlbianServiceParser.ALBIANJSERVICEKEY);
 
-//        @SuppressWarnings("unchecked")
-//        Map<String, IAlbianServiceAttribute> map = (Map<String, IAlbianServiceAttribute>)
-//                ServiceAttributeMap
-//                        .get(FreeAlbianServiceParser.ALBIANJSERVICEKEY);
-
         Map<String,IAlbianServiceAttribute> mapAttr = new HashMap<>();
         mapAttr.putAll(bnsSrvAttrs); // copy it for field setter
+
+        for(String bltServKey : bltSrvAttrs.keySet()){ // remove builtin service in service.xml
+            if(mapAttr.containsKey(bltServKey)){
+                mapAttr.remove(bltServKey);
+            }
+        }
 
         Map<String, IAlbianServiceAttribute> failMap = new LinkedHashMap<String, IAlbianServiceAttribute>();
         int lastFailSize = 0;

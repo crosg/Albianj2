@@ -40,11 +40,10 @@ package org.albianj.persistence.service;
 import org.albianj.persistence.db.IDataBasePool;
 import org.albianj.persistence.object.IRunningStorageAttribute;
 import org.albianj.persistence.object.IStorageAttribute;
+import org.albianj.service.AlbianBuiltinServiceNamePair;
 import org.albianj.service.parser.IAlbianParserService;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 /**
  * albianj的数据存储解析类，即albianj的数据存储底层service。
@@ -69,7 +68,7 @@ public interface IAlbianStorageParserService extends IAlbianParserService {
     /**
      * 此service在service.xml中的id
      */
-    static String Name = "AlbianStorageService";
+    static String Name =  AlbianBuiltinServiceNamePair.AlbianStorageServiceName;
 
     /**
      * 增加storage的元信息

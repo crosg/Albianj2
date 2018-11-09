@@ -47,20 +47,18 @@ import org.albianj.service.*;
 import org.albianj.service.parser.IAlbianParserService;
 import org.albianj.verify.Validate;
 import org.albianj.xml.XmlParser;
-import org.apache.xpath.operations.Bool;
 import org.dom4j.Element;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@AlbianServiceRant(Id = "AlbianServiceParser",Interface = IAlbianParserService.class)
+@AlbianServiceRant(Id = AlbianBuiltinServiceNamePair.AlbianServiceParserName,Interface = IAlbianParserService.class)
 public class AlbianServiceParser extends FreeAlbianServiceParser {
 
     public String getServiceName(){
-        return "AlbianServiceParser";
+        return  AlbianBuiltinServiceNamePair.AlbianServiceParserName;
     }
 
 

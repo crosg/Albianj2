@@ -11,6 +11,7 @@ import org.albianj.persistence.object.IAlbianObject;
 import org.albianj.persistence.object.IOrderByCondition;
 import org.albianj.persistence.object.IRunningStorageAttribute;
 import org.albianj.persistence.object.filter.IChainExpression;
+import org.albianj.service.AlbianBuiltinServiceNamePair;
 import org.albianj.service.IAlbianService;
 
 import java.math.BigInteger;
@@ -28,7 +29,7 @@ public interface IAlbianDataAccessService extends IAlbianService {
     /**
      * 此service在service.xml中的id
      */
-    String Name = "AlbianDataAccessService";
+    String Name =  AlbianBuiltinServiceNamePair.AlbianDataAccessServiceName;
 
     /**
      * 从存储中删除指定的对象

@@ -37,11 +37,12 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.security;
 
+import org.albianj.service.AlbianBuiltinServiceNamePair;
 import org.albianj.service.IAlbianService;
 
 public interface IAlbianSecurityService extends IAlbianService {
 
-    final String Name = "AlbianSecurityService";
+    final String Name =  AlbianBuiltinServiceNamePair.AlbianSecurityServiceName;
 
     public String decryptDES(String message) throws RuntimeException;
 

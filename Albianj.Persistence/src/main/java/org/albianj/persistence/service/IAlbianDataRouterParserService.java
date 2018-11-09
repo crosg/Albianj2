@@ -37,7 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.service;
 
-import org.albianj.persistence.object.IDataRoutersAttribute;
+import org.albianj.service.AlbianBuiltinServiceNamePair;
 import org.albianj.service.parser.IAlbianParserService;
 
 /**
@@ -63,7 +63,7 @@ public interface IAlbianDataRouterParserService extends IAlbianParserService {
     /**
      * 此service在service.xml中的id
      */
-    static String Name = "AlbianDataRouterService";
+    static String Name =  AlbianBuiltinServiceNamePair.AlbianDataRouterServiceName;
 
     /**
      * 增加一条路由信息

@@ -65,3 +65,6 @@
 deploy:2018110702
 2018-11-08
     去掉service.xml中的内置albianj服务配置，以后的service.xml中只需要配置业务service即可。
+2018-11-09
+    更改了service.xml配置了内置service后会出现加载2次导致元数据出错的问题，更改了pplog的实现类问题，
+    更改了内置service的Name全部归AlbianBuiltinServiceNamePair来管理

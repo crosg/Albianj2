@@ -89,20 +89,12 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                 "request=%s|IP=%s|time=%s|paras=%s", req
                         .getRequestURI().toString(), req.getRemoteAddr(),
                 queryTime, req.getQueryString());
-//        AlbianServiceRouter.getLogger().info(IAlbianRestfulLogger.Name,
-//                "request=%s|IP=%s|time=%s|paras=%s|sesseionid=%s", req
-//                        .getRequestURI().toString(), req.getRemoteAddr(),
-//                queryTime, req.getQueryString(), sessionId);
 
         String serviceName = ctx.getCurrentServiceName();
         String sp = ctx.getCurrentSP();
         if (Validate.isNullOrEmpty(sp)) sp = "";
         String action = ctx.getCurrentActionName();
         if (null == serviceName) {
-//            AlbianServiceRouter.getLogger()
-//                    .error(IAlbianRestfulLogger.Name,
-//                            "sesseionid=%s,query paras is not pass.then send errno=412.",
-//                            sessionId);
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId, AlbianLoggerLevel.Error,
                     "query paras is not pass.then send errno=412.");
@@ -114,10 +106,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
 
         if (serviceName.startsWith("Albian")
                 || serviceName.startsWith("albian")) {
-//            AlbianServiceRouter.getLogger()
-//                    .error(IAlbianRestfulLogger.Name,
-//                            "sesseionid=%s,albianj kernel service can not be called by client.called service name:%s.",
-//                            sessionId, serviceName);
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId, AlbianLoggerLevel.Error,
                     "albianj kernel service can not be called by client.called service name:%s.",
@@ -135,23 +123,12 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                 req.getRemoteAddr(), queryTime, serviceName,
                 req.getQueryString());
 
-
-//        AlbianServiceRouter.getLogger()
-//                .info(IAlbianRestfulLogger.Name,
-//                        "SP=%s|request=%s|IP=%s|time=%s|service=%s|paras=%s|sesseionid=%s",
-//                        sp, req.getRequestURI().toString(),
-//                        req.getRemoteAddr(), queryTime, serviceName,
-//                        req.getQueryString(), sessionId);
-
         resp.setCharacterEncoding("UTF-8");
         resp.setContentType("application/" + format + "; charset=UTF-8");
 
         IAlbianRestfulMActionsService service = AlbianServiceRouter.getSingletonService(
                 IAlbianRestfulMActionsService.class, serviceName, false);
         if (null == service) {
-//            AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
-//                    "service:%s is not exist.sessionid:%s.", serviceName,
-//                    sessionId);
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId, AlbianLoggerLevel.Error,
                     "service:%s is not exist.", serviceName);
@@ -166,10 +143,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                     sessionId, AlbianLoggerLevel.Error,
                     "verify service:%s is not passing.",
                     serviceName);
-
-//            AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
-//                    "verify service:%s is not passing.sessionid:%s.",
-//                    serviceName, sessionId);
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 412, "验证未通过",
                     sessionId);
@@ -182,9 +155,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,sessionId,AlbianLoggerLevel.Error,
                     "verify service:%s is not passing,the method is not get.",
                     serviceName);
-//            AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
-//                    "verify service:%s is not passing,the method is not get.sessionid:%s.",
-//                    serviceName, sessionId);
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 412, "验证未通过",
                     sessionId);
@@ -192,7 +162,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
         }
 
         Object[] args = new Object[]{ctx};
-
         Method mv = service.getActionVerify(action);
         boolean isPass = true;
         if (null != mv) {
@@ -202,8 +171,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                 AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,sessionId,
                         AlbianLoggerLevel.Error,e,
                         "exec action:%s verify is error.", serviceName);
-//                AlbianServiceRouter.getLogger().info(IAlbianRestfulLogger.Name,
-//                        "sesseionid=%s exec action:%s verify is error.", sessionId, serviceName);
             }
         }
 
@@ -211,9 +178,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,sessionId,
                     AlbianLoggerLevel.Error,
                     "exec action:%s in the service:%s verify is not pass.",action, serviceName);
-
-//            AlbianServiceRouter.getLogger().info(IAlbianRestfulLogger.Name,
-//                    "sesseionid=%s exec action:%s verify is not pass.", sessionId, serviceName);
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 412, "验证未通过",
                     sessionId);
@@ -228,9 +192,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                 AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,sessionId,
                         AlbianLoggerLevel.Error,e,
                         "exec action:%s before-method in the service:%s verify is not pass.",action, serviceName);
-
-//                AlbianServiceRouter.getLogger().info(IAlbianRestfulLogger.Name,
-//                        "sesseionid=%s exec action:%s before function is error.", sessionId, serviceName);
             }
         }
 
@@ -241,12 +202,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,sessionId,
                     AlbianLoggerLevel.Error,
                     "not found action:%s in the service:%s.",action, serviceName);
-
-//                    "exec action:%s before-method in the service:%s verify is not pass.",action, serviceName);
-
-//            AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
-//                    "service:%s is not exist.sessionid:%s.", serviceName,
-//                    sessionId);
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 404, "服务没有找到",
                     sessionId);
@@ -262,17 +217,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                     sp, req.getRequestURI().toString(),
                     req.getRemoteAddr(), queryTime,
                     serviceName, req.getQueryString(), action);
-
-//                    "not found action:%s in the service:%s.",action, serviceName);
-
-//            AlbianServiceRouter.getLogger()
-//                    .error(IAlbianRestfulLogger.Name,
-//                            "SP=%s|request=%s|IP=%s|time=%s|service=%s|paras=%s|sesseionid=%s|invoke action:%s is fail，error info:%s.",
-//                            sp, req.getRequestURI().toString(),
-//                            req.getRemoteAddr(), queryTime,
-//                            serviceName, req.getQueryString(), sessionId, action, e.getMessage());
-
-
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 501, "服务内部错误",
                     sessionId);
@@ -291,10 +235,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
         AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name, sessionId,
                 AlbianLoggerLevel.Error,
                 "timespan=%d.",e1 - begin);
-
-//        AlbianServiceRouter.getLogger().info(IAlbianRestfulLogger.Name,
-//                "sesseionid=%s|timespan=%d", sessionId, e1 - begin);
-
         IYuewenPPLogStatService pplog = AlbianServiceRouter.getSingletonService(IYuewenPPLogStatService.class, IYuewenPPLogStatService.Name);
         if (null != pplog) {
             pplog.log(KernelSetting.getAppName(),
@@ -311,8 +251,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                 AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,sessionId,
                         AlbianLoggerLevel.Error,e,
                         "exec action:%s after function is error.", serviceName);
-//                AlbianServiceRouter.getLogger().info(IAlbianRestfulLogger.Name,
-//                        "sesseionid=%s exec action:%s after function is error.", sessionId, serviceName);
             }
         }
 
@@ -331,12 +269,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                         sessionId, AlbianLoggerLevel.Error,e,
                         "service:%s print body to http stream is fail.",
                         serviceName);
-
-//                AlbianServiceRouter.getLogger()
-//                        .error(IAlbianRestfulLogger.Name,
-//                                e,
-//                                "service:%s print body to http stream is fail.sessionid:%s.",
-//                                serviceName, sessionId);
             } finally {
                 out.close();
                 long end = Calendar.getInstance().getTimeInMillis();
@@ -346,14 +278,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                         sp, req.getRequestURI().toString(), "get stream,so do not logger context ",
                         req.getRemoteAddr(), queryTime, end - begin,
                         serviceName, req.getQueryString());
-
-
-//                AlbianServiceRouter.getLogger()
-//                        .info(IAlbianRestfulLogger.Name,
-//                                "SP=%s|request=%s|response=%s|IP=%s|time=%s|timespan=%dms|service=%s|paras=%s|sesseionid=%s",
-//                                sp, req.getRequestURI().toString(), "get stream,so do not logger context ",
-//                                req.getRemoteAddr(), queryTime, end - begin,
-//                                serviceName, req.getQueryString(), sessionId);
             }
         } else {
             String body = null;
@@ -404,12 +328,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                         sessionId, AlbianLoggerLevel.Error,e,
                         "service:%s print body to http stream is fail.",
                         serviceName);
-
-//                AlbianServiceRouter.getLogger()
-//                        .error(IAlbianRestfulLogger.Name,
-//                                e,
-//                                "service:%s print body to http stream is fail.sessionid:%s.",
-//                                serviceName, sessionId);
             } finally {
                 out.close();
                 long end = Calendar.getInstance().getTimeInMillis();
@@ -419,13 +337,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                         sp, req.getRequestURI().toString(), body,
                         req.getRemoteAddr(), queryTime, end - begin,
                         serviceName, req.getQueryString());
-
-//                AlbianServiceRouter.getLogger()
-//                        .info(IAlbianRestfulLogger.Name,
-//                                "SP=%s|request=%s|response=%s|IP=%s|time=%s|timespan=%dms|service=%s|paras=%s|sesseionid=%s",
-//                                sp, req.getRequestURI().toString(), body,
-//                                req.getRemoteAddr(), queryTime, end - begin,
-//                                serviceName, req.getQueryString(), sessionId);
             }
         }
     }
@@ -447,12 +358,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                         .getRequestURI().toString(), req.getRemoteAddr(),
                 queryTime, req.getQueryString());
 
-
-//        AlbianServiceRouter.getLogger().info(IAlbianRestfulLogger.Name,
-//                "request=%s|IP=%s|time=%s|paras=%s|sesseionid=%s", req
-//                        .getRequestURI().toString(), req.getRemoteAddr(),
-//                queryTime, req.getQueryString(), sessionId);
-
         String serviceName = ctx.getCurrentServiceName();
         String sp = ctx.getCurrentSP();
         if (Validate.isNullOrEmpty(sp)) sp = "";
@@ -461,13 +366,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId, AlbianLoggerLevel.Error,
                     "query paras is not pass.then send errno=412.");
-
-
-//            AlbianServiceRouter.getLogger()
-//                    .error(IAlbianRestfulLogger.Name,
-//                            "sesseionid=%s,query paras is not pass.then send errno=412.",
-//                            sessionId);
-
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 412, "验证未通过",
                     sessionId);
@@ -480,11 +378,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                     sessionId, AlbianLoggerLevel.Error,
                     "albianj kernel service can not be called by client.called service name:%s.",
                     serviceName);
-
-//            AlbianServiceRouter.getLogger()
-//                    .error(IAlbianRestfulLogger.Name,
-//                            "sesseionid=%s,albianj kernel service can not be called by client.called service name:%s.",
-//                            sessionId, serviceName);
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 412, "验证未通过",
                     sessionId);
@@ -498,13 +391,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                 req.getRemoteAddr(), queryTime, serviceName,
                 req.getQueryString());
 
-//        AlbianServiceRouter.getLogger()
-//                .info(IAlbianRestfulLogger.Name,
-//                        "SP=%s|request=%s|IP=%s|time=%s|service=%s|paras=%s|sesseionid=%s",
-//                        sp, req.getRequestURI().toString(),
-//                        req.getRemoteAddr(), queryTime, serviceName,
-//                        req.getQueryString(), sessionId);
-
         resp.setCharacterEncoding("UTF-8");
         resp.setContentType("application/" + format + "; charset=UTF-8");
 
@@ -514,11 +400,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId, AlbianLoggerLevel.Error,
                     "service:%s is not exist.", serviceName);
-
-
-//            AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
-//                    "service:%s is not exist.sessionid:%s.", serviceName,
-//                    sessionId);
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 404, "服务没有找到",
                     sessionId);
@@ -530,11 +411,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                     sessionId, AlbianLoggerLevel.Error,
                     "verify service:%s is not passing.",
                     serviceName);
-
-
-//            AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
-//                    "verify service:%s is not passing.sessionid:%s.",
-//                    serviceName, sessionId);
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 412, "验证未通过",
                     sessionId);
@@ -547,9 +423,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                     AlbianLoggerLevel.Error,
                     "verify service:%s is not passing,the method is not get.",
                     serviceName);
-//            AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
-//                    "verify service:%s is not passing,the method is not get.sessionid:%s.",
-//                    serviceName, sessionId);
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 412, "验证未通过",
                     sessionId);
@@ -563,11 +436,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId, AlbianLoggerLevel.Error,
                     "action:%s in the service:%s is not exist.",action, serviceName);
-
-
-//            AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
-//                    "service:%s is not exist.sessionid:%s.", serviceName,
-//                    sessionId);
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 404, "服务没有找到",
                     sessionId);
@@ -592,16 +460,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                         queryTime, getRemoteHost(req), serviceName, AlbianHost.getLocalIP(), serviceName, ctx.getCurrentActionName(), ctx.getResult().getReturnCode(),
                         false, e1 - begin, false);
             }
-
-
-
-//            AlbianServiceRouter.getLogger()
-//                    .error(IAlbianRestfulLogger.Name,
-//                            "SP=%s|request=%s|IP=%s|time=%s|service=%s|paras=%s|sesseionid=%s|invoke action:%s is fail，error info:%s.",
-//                            sp, req.getRequestURI().toString(),
-//                            req.getRemoteAddr(), queryTime,
-//                            serviceName, req.getQueryString(), sessionId, action, e.getMessage());
-
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 501, "服务内部错误",
                     sessionId);
@@ -614,22 +472,15 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                 sessionId, AlbianLoggerLevel.Info,
                 "timespan=%d", e1 - begin);
 
-//        long e1 = Calendar.getInstance().getTimeInMillis();
         IYuewenPPLogStatService pplog = AlbianServiceRouter.getSingletonService(IYuewenPPLogStatService.class, IYuewenPPLogStatService.Name);
         if (null != pplog) {
             pplog.log(KernelSetting.getAppName(),
                     queryTime, getRemoteHost(req), serviceName, AlbianHost.getLocalIP(), serviceName, ctx.getCurrentActionName(), ctx.getResult().getReturnCode(),
                     false, e1 - begin, false);
         }
-
-
-//        AlbianServiceRouter.getLogger().info(IAlbianRestfulLogger.Name,
-//                "sesseionid=%s|timespan=%d", sessionId, e1 - begin);
-
         resp.setStatus(HttpServletResponse.SC_OK);
 
         if(AlbianRestfulResultStyle.Stream == ctx.getResultStyle()) {
-//            PrintWriter out = resp.getWriter();
             OutputStream out = resp.getOutputStream();
             try {
                 if (null != ctx.getResult()) {
@@ -642,12 +493,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                         sessionId, AlbianLoggerLevel.Error,e,
                         "service:%s print body to http stream is fail.",
                         serviceName);
-
-//                AlbianServiceRouter.getLogger()
-//                        .error(IAlbianRestfulLogger.Name,
-//                                e,
-//                                "service:%s print body to http stream is fail.sessionid:%s.",
-//                                serviceName, sessionId);
             } finally {
                 out.close();
                 long end = Calendar.getInstance().getTimeInMillis();
@@ -657,13 +502,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                         sp, req.getRequestURI().toString(), "get stream,so do not logger context ",
                         req.getRemoteAddr(), queryTime, end - begin,
                         serviceName, req.getQueryString());
-
-//                AlbianServiceRouter.getLogger()
-//                        .info(IAlbianRestfulLogger.Name,
-//                                "SP=%s|request=%s|response=%s|IP=%s|time=%s|timespan=%dms|service=%s|paras=%s|sesseionid=%s",
-//                                sp, req.getRequestURI().toString(), "get stream,so do not logger context ",
-//                                req.getRemoteAddr(), queryTime, end - begin,
-//                                serviceName, req.getQueryString(), sessionId);
             }
         } else {
             String body = null;
@@ -714,12 +552,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                         sessionId, AlbianLoggerLevel.Error,e,
                         "service:%s print body to http stream is fail.",
                         serviceName);
-
-//                AlbianServiceRouter.getLogger()
-//                        .error(IAlbianRestfulLogger.Name,
-//                                e,
-//                                "service:%s print body to http stream is fail.sessionid:%s.",
-//                                serviceName, sessionId);
             } finally {
                 out.close();
                 long end = Calendar.getInstance().getTimeInMillis();
@@ -729,14 +561,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                         sp, req.getRequestURI().toString(), body,
                         req.getRemoteAddr(), queryTime, end - begin,
                         serviceName, req.getQueryString());
-
-
-//                AlbianServiceRouter.getLogger()
-//                        .info(IAlbianRestfulLogger.Name,
-//                                "SP=%s|request=%s|response=%s|IP=%s|time=%s|timespan=%dms|service=%s|paras=%s|sesseionid=%s",
-//                                sp, req.getRequestURI().toString(), body,
-//                                req.getRemoteAddr(), queryTime, end - begin,
-//                                serviceName, req.getQueryString(), sessionId);
             }
         }
     }
@@ -771,11 +595,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
                 req.getSession().getId(),AlbianLoggerLevel.Error,
                 "client use %s,request=%s|IP=%s",
                 mode, req.getRequestURI().toString(), req.getRemoteAddr());
-
-//        AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
-//                "client use %s,request=%s|IP=%s|time=%s", mode, req
-//                        .getRequestURI().toString(), req.getRemoteAddr(),
-//                AlbianDateTime.getDateTimeString());
         sendErrorResponse(resp, "application/json; charset=UTF-8", 501,
                 "服务器不支持此功能", req.getSession().getId());
     }
@@ -796,11 +615,6 @@ public class AlbianRestfulMActionsSafelyHttpServlet extends HttpServlet {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId,AlbianLoggerLevel.Error,e,
                     "print body to http stream is fail.");
-
-
-//            AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name, e,
-//                    "print body to http stream is fail.sessionid:%s.",
-//                    sessionId);
         } finally {
             out.close();
         }

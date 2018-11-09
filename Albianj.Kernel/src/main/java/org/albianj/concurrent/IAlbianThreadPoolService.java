@@ -37,10 +37,11 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.concurrent;
 
+import org.albianj.service.AlbianBuiltinServiceNamePair;
 import org.albianj.service.IAlbianService;
 
 public interface IAlbianThreadPoolService extends IAlbianService {
-    public static final String Name = "AlbianThreadPoolService";
+   String Name = AlbianBuiltinServiceNamePair.AlbianThreadPoolServiceName;
 
     public void execute(Runnable event);
 }
