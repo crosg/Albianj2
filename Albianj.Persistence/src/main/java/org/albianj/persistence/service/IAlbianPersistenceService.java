@@ -93,7 +93,7 @@ public interface IAlbianPersistenceService extends IAlbianService {
     /**
      * 此service在service.xml中的id
      */
-    final static String Name =  AlbianBuiltinServiceNamePair.AlbianPersistenceServiceName;
+    final static String Name = AlbianBuiltinServiceNamePair.AlbianPersistenceServiceName;
 
     /**
      * 从存储中删除指定的对象
@@ -573,95 +573,92 @@ public interface IAlbianPersistenceService extends IAlbianService {
     String makeDetailLogSessionId(String sessionId);
 
 
-
-
-
-    public <T extends IAlbianObject> T loadObject(String sessionId, Class<T> cls, LoadType loadType, IChainExpression wheres,String idxName)
-            throws AlbianDataServiceException ;
-
-    public <T extends IAlbianObject> T loadObject(String sessionId, Class<T> cls,
-                                                  LoadType loadType, String rountingName, IChainExpression wheres,String idxName)
+    public <T extends IAlbianObject> T loadObject(String sessionId, Class<T> cls, LoadType loadType, IChainExpression wheres, String idxName)
             throws AlbianDataServiceException;
 
-    public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, IChainExpression wheres,String idxName)
-            throws AlbianDataServiceException ;
+    public <T extends IAlbianObject> T loadObject(String sessionId, Class<T> cls,
+                                                  LoadType loadType, String rountingName, IChainExpression wheres, String idxName)
+            throws AlbianDataServiceException;
+
+    public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, IChainExpression wheres, String idxName)
+            throws AlbianDataServiceException;
 
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType,
-                                                         IChainExpression wheres, LinkedList<IOrderByCondition> orderbys,String idxName)
-            throws AlbianDataServiceException ;
+                                                         IChainExpression wheres, LinkedList<IOrderByCondition> orderbys, String idxName)
+            throws AlbianDataServiceException;
 
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, String rountingName,
-                                                         IChainExpression wheres, LinkedList<IOrderByCondition> orderbys,String idxName)
-            throws AlbianDataServiceException ;
+                                                         IChainExpression wheres, LinkedList<IOrderByCondition> orderbys, String idxName)
+            throws AlbianDataServiceException;
 
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType,
-                                                         int start, int step, IChainExpression wheres,String idxName)
-            throws AlbianDataServiceException ;
+                                                         int start, int step, IChainExpression wheres, String idxName)
+            throws AlbianDataServiceException;
 
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType,
-                                                         int start, int step, IChainExpression wheres, LinkedList<IOrderByCondition> orderbys,String idxName)
-            throws AlbianDataServiceException ;
+                                                         int start, int step, IChainExpression wheres, LinkedList<IOrderByCondition> orderbys, String idxName)
+            throws AlbianDataServiceException;
 
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, String rountingName,
-                                                         int start, int step, IChainExpression wheres, LinkedList<IOrderByCondition> orderbys,String idxName)
-            throws AlbianDataServiceException ;
+                                                         int start, int step, IChainExpression wheres, LinkedList<IOrderByCondition> orderbys, String idxName)
+            throws AlbianDataServiceException;
 
     public <T extends IAlbianObject> long loadObjectsCount(String sessionId, Class<T> cls,
-                                                           LoadType loadType, IChainExpression wheres,String idxName)
-            throws AlbianDataServiceException ;
+                                                           LoadType loadType, IChainExpression wheres, String idxName)
+            throws AlbianDataServiceException;
 
     public <T extends IAlbianObject> long loadObjectsCount(String sessionId, Class<T> cls,
-                                                           LoadType loadType, String rountingName, IChainExpression wheres,String idxName)
-            throws AlbianDataServiceException ;
+                                                           LoadType loadType, String rountingName, IChainExpression wheres, String idxName)
+            throws AlbianDataServiceException;
 
     @Deprecated
-    public <T extends IAlbianObject> T loadObject(String sessionId, Class<T> cls, LoadType loadType, LinkedList<IFilterCondition> wheres,String idxName)
-            throws AlbianDataServiceException ;
+    public <T extends IAlbianObject> T loadObject(String sessionId, Class<T> cls, LoadType loadType, LinkedList<IFilterCondition> wheres, String idxName)
+            throws AlbianDataServiceException;
 
     @Deprecated
     public <T extends IAlbianObject> T loadObject(String sessionId, Class<T> cls,
-                                                  LoadType loadType, String rountingName, LinkedList<IFilterCondition> wheres,String idxName)
-            throws AlbianDataServiceException ;
+                                                  LoadType loadType, String rountingName, LinkedList<IFilterCondition> wheres, String idxName)
+            throws AlbianDataServiceException;
 
     @Deprecated
-    public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, LinkedList<IFilterCondition> wheres,String idxName)
-            throws AlbianDataServiceException ;
+    public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, LinkedList<IFilterCondition> wheres, String idxName)
+            throws AlbianDataServiceException;
 
     @Deprecated
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType,
-                                                         LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys,String idxName)
-            throws AlbianDataServiceException ;
+                                                         LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys, String idxName)
+            throws AlbianDataServiceException;
 
     @Deprecated
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, String rountingName,
-                                                         LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys,String idxName)
-            throws AlbianDataServiceException ;
+                                                         LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys, String idxName)
+            throws AlbianDataServiceException;
 
 
     @Deprecated
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType,
-                                                         int start, int step, LinkedList<IFilterCondition> wheres,String idxName)
-            throws AlbianDataServiceException ;
+                                                         int start, int step, LinkedList<IFilterCondition> wheres, String idxName)
+            throws AlbianDataServiceException;
 
     @Deprecated
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType,
-                                                         int start, int step, LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys,String idxName)
-            throws AlbianDataServiceException ;
+                                                         int start, int step, LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys, String idxName)
+            throws AlbianDataServiceException;
 
     @Deprecated
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, String rountingName,
-                                                         int start, int step, LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys,String idxName)
-            throws AlbianDataServiceException ;
+                                                         int start, int step, LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys, String idxName)
+            throws AlbianDataServiceException;
 
     @Deprecated
     public <T extends IAlbianObject> long loadObjectsCount(String sessionId, Class<T> cls,
-                                                           LoadType loadType, LinkedList<IFilterCondition> wheres,String idxName)
-            throws AlbianDataServiceException ;
+                                                           LoadType loadType, LinkedList<IFilterCondition> wheres, String idxName)
+            throws AlbianDataServiceException;
 
     @Deprecated
     public <T extends IAlbianObject> long loadObjectsCount(String sessionId, Class<T> cls,
-                                                           LoadType loadType, String rountingName, LinkedList<IFilterCondition> wheres,String idxName)
-            throws AlbianDataServiceException ;
+                                                           LoadType loadType, String rountingName, LinkedList<IFilterCondition> wheres, String idxName)
+            throws AlbianDataServiceException;
 
 
 }

@@ -39,7 +39,6 @@ package org.albianj.service;
 
 import org.albianj.aop.IAlbianServiceAopAttribute;
 
-import java.util.List;
 import java.util.Map;
 
 public interface IAlbianServiceAttribute {
@@ -55,13 +54,13 @@ public interface IAlbianServiceAttribute {
 
     public void setInterface(String itf);
 
-    Map<String,IAlbianServiceFieldAttribute> getServiceFields();
+    Map<String, IAlbianServiceFieldAttribute> getServiceFields();
 
-    void setServiceFields(Map<String,IAlbianServiceFieldAttribute> ps);
+    void setServiceFields(Map<String, IAlbianServiceFieldAttribute> ps);
 
-    Map<String,IAlbianServiceAopAttribute> getAopAttributes();
+    Map<String, IAlbianServiceAopAttribute> getAopAttributes();
 
-    void setAopAttributes(Map<String,IAlbianServiceAopAttribute> aopAttributes);
+    void setAopAttributes(Map<String, IAlbianServiceAopAttribute> aopAttributes);
 
     Class<? extends IAlbianService> getServiceClass();
 

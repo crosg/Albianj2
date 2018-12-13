@@ -45,11 +45,11 @@ public interface ISpxDBPoolConfig {
 
     void setMaxRemedyConnectionCount(int maxRemedyConnectionCount);
 
-    public long getCleanupTimestampMs() ;
+    public long getCleanupTimestampMs();
 
-    public void setCleanupTimestampMs(long cleanupTimestampMs) ;
-
-    public void setMaxRequestTimeMs(long maxRequestTimeMs);
+    public void setCleanupTimestampMs(long cleanupTimestampMs);
 
     public long getMaxRequestTimeMs();
+
+    public void setMaxRequestTimeMs(long maxRequestTimeMs);
 }

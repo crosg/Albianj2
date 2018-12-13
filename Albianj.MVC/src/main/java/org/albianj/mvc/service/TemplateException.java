@@ -32,13 +32,19 @@ public class TemplateException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    /** The template column number where this exception occurred. */
+    /**
+     * The template column number where this exception occurred.
+     */
     private int columnNumber;
 
-    /** The template the line number where this exception occurred. */
+    /**
+     * The template the line number where this exception occurred.
+     */
     private int lineNumber;
 
-    /** The Template name where this exception occurred. */
+    /**
+     * The Template name where this exception occurred.
+     */
     private String templateName;
 
     // Constructors -----------------------------------------------------------
@@ -56,13 +62,13 @@ public class TemplateException extends Exception {
      * Create a template service exception with the given cause, template name,
      * line number and column number.
      *
-     * @param cause the underlying cause of the template service error
+     * @param cause        the underlying cause of the template service error
      * @param templateName the name of the template which cause the error
-     * @param lineNumber the template error line number
+     * @param lineNumber   the template error line number
      * @param columnNumber the template error column number
      */
     public TemplateException(Exception cause, String templateName,
-            int lineNumber, int columnNumber) {
+                             int lineNumber, int columnNumber) {
 
         super(cause);
 
@@ -157,9 +163,8 @@ public class TemplateException extends Exception {
     }
 
     /**
-     * @see Object#toString()
-     *
      * @return the string representation of this error
+     * @see Object#toString()
      */
     @Override
     public String toString() {

@@ -39,14 +39,15 @@ package org.albianj.persistence.impl.db;
 
 import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.IPersistenceCommand;
-import org.albianj.persistence.object.*;
+import org.albianj.persistence.object.IAlbianObject;
+import org.albianj.persistence.object.IAlbianObjectAttribute;
 
 import java.util.Map;
 
 public interface IPersistenceUpdateCommand {
 
-    public IPersistenceCommand buildPstCmd(String sessionId,int dbStyle,String tableName,IAlbianObject object,
-                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue,boolean rbkOnError) throws AlbianDataServiceException;
+    public IPersistenceCommand buildPstCmd(String sessionId, int dbStyle, String tableName, IAlbianObject object,
+                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue, boolean rbkOnError) throws AlbianDataServiceException;
 
 
 }

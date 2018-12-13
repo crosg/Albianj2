@@ -43,10 +43,12 @@ import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.IPersistenceCommand;
 import org.albianj.persistence.db.ISqlParameter;
 import org.albianj.persistence.db.PersistenceCommandType;
-import org.albianj.persistence.object.*;
+import org.albianj.persistence.object.IAlbianEntityFieldAttribute;
+import org.albianj.persistence.object.IAlbianObject;
+import org.albianj.persistence.object.IAlbianObjectAttribute;
+import org.albianj.persistence.object.PersistenceDatabaseStyle;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
-import org.albianj.verify.Validate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,12 +56,12 @@ import java.util.Map;
 public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
 
 
-    public IPersistenceCommand buildPstCmd(String sessionId,int dbStyle,String tableName,IAlbianObject object,
-                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue,boolean rbkOnError)
+    public IPersistenceCommand buildPstCmd(String sessionId, int dbStyle, String tableName, IAlbianObject object,
+                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue, boolean rbkOnError)
             throws AlbianDataServiceException {
         if (object.getIsAlbianNew()) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
+                    sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "the new albianj object can not be update.please load the object from database first.");
         }
@@ -95,7 +97,7 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
             }
         }
 
-        Map<String,IAlbianEntityFieldAttribute> fieldsAttr = objAttr.getFields();
+        Map<String, IAlbianEntityFieldAttribute> fieldsAttr = objAttr.getFields();
         Map<String, ISqlParameter> sqlParas = new HashMap<String, ISqlParameter>();
         Map<String, ISqlParameter> rollbackParas = new HashMap<String, ISqlParameter>();
         for (Map.Entry<String, IAlbianEntityFieldAttribute> entry : fieldsAttr.entrySet()) {
@@ -138,7 +140,7 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
                 if (null != oldValue && oldValue.equals(newValue)) {
                     continue;
                 }
-                if ( PersistenceDatabaseStyle.MySql == dbStyle) {
+                if (PersistenceDatabaseStyle.MySql == dbStyle) {
                     cols.append("`").append(member.getSqlFieldName()).append("`");
                     if (rbkOnError) {
                         rollbackCols.append("`").append(member.getSqlFieldName()).append("`");
@@ -180,9 +182,9 @@ public class ModifyCommandAdapter implements IPersistenceUpdateCommand {
             }
         }
 
-        if(0 == where.length()) {
+        if (0 == where.length()) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
+                    sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "the new albianj object can not be update .there is not PrimaryKey in the object.");
         }

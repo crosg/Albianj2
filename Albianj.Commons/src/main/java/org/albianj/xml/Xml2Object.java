@@ -27,35 +27,35 @@ import java.util.Map;
  * 每个xml的子节点都是一个子类。
  * xml的配置节或者属性首字母默认为大小，若需要自定义，请使用XmlElementAttribute进行修饰
  * javabean 必须要实现签名接口： IAlbianXml2ObjectSigning，
- *      若该bean为list子类，必须实现签名接口 IAlbianXmlListNode<T>
- *
- *
+ * 若该bean为list子类，必须实现签名接口 IAlbianXmlListNode<T>
+ * <p>
+ * <p>
  * Created by xuhaifeng on 17/2/2.
  */
 public class Xml2Object {
 
-    private static Map<String,BeanMetadata> beanMetadatas = new HashMap<>();
+    private static Map<String, BeanMetadata> beanMetadatas = new HashMap<>();
 
-    private static void  parseBeanMetadatas(@Comments("实体javabean类") Class<?> cls) throws IntrospectionException {
-        if(null == cls) return;
+    private static void parseBeanMetadatas(@Comments("实体javabean类") Class<?> cls) throws IntrospectionException {
+        if (null == cls) return;
 
-        if(cls.isAnnotationPresent(XmlElementGenericAttribute.class)){
+        if (cls.isAnnotationPresent(XmlElementGenericAttribute.class)) {
             XmlElementGenericAttribute xega = cls.getAnnotation(XmlElementGenericAttribute.class);
             Class<?> c = xega.Clazz();
             parseBeanMetadatas(c);
         }
 
         String rootName = null;
-        if(cls.isAnnotationPresent(XmlElementAttribute.class)) {
+        if (cls.isAnnotationPresent(XmlElementAttribute.class)) {
             XmlElementAttribute xea = cls.getAnnotation(XmlElementAttribute.class);
             rootName = xea.Name();
         }
-        if(Validate.isNullOrEmptyOrAllSpace(rootName)) {
+        if (Validate.isNullOrEmptyOrAllSpace(rootName)) {
             rootName = cls.getSimpleName();
             rootName = StringHelper.captureName(rootName);
         }
 
-        if(beanMetadatas.containsKey(rootName)) return;
+        if (beanMetadatas.containsKey(rootName)) return;
 
         BeanMetadata bmd = new BeanMetadata();
         bmd.setName(rootName);
@@ -63,11 +63,11 @@ public class Xml2Object {
 
         BeanInfo info = Introspector.getBeanInfo(cls, Object.class);
         PropertyDescriptor[] pds = info.getPropertyDescriptors();
-        Map<String,PropertyMetadata> propertyMetadatas = new HashMap();
-        for(PropertyDescriptor pd : pds){
+        Map<String, PropertyMetadata> propertyMetadatas = new HashMap();
+        for (PropertyDescriptor pd : pds) {
             PropertyMetadata pm = new PropertyMetadata();
-            Class<?> type =  pd.getPropertyType();
-            if(IAlbianXml2ObjectSigning.class.isAssignableFrom(type)){
+            Class<?> type = pd.getPropertyType();
+            if (IAlbianXml2ObjectSigning.class.isAssignableFrom(type)) {
 //                System.out.println(type.getSimpleName());
                 parseBeanMetadatas(type);
             }
@@ -89,31 +89,31 @@ public class Xml2Object {
                 pname = xeap.Name();
 
             }
-            if(Validate.isNullOrEmptyOrAllSpace(pname)){
+            if (Validate.isNullOrEmptyOrAllSpace(pname)) {
                 pname = pd.getName();
                 pname = StringHelper.captureName(pname);
             }
             pm.setName(pname);
             pm.setGetter(mr);
             pm.setSetter(mw);
-            propertyMetadatas.put(pname,pm);
+            propertyMetadatas.put(pname, pm);
         }
-        if(!Validate.isNullOrEmpty(propertyMetadatas)){
+        if (!Validate.isNullOrEmpty(propertyMetadatas)) {
             bmd.setPropertyMetadatas(propertyMetadatas);
         }
-        beanMetadatas.put(rootName,bmd);
+        beanMetadatas.put(rootName, bmd);
     }
 
     public static Object convert(@Comments("xml content") String content,
                                  @Comments("xml structure with javabean class") Class<?> cls)
             throws DocumentException, IllegalAccessException, InvocationTargetException, InstantiationException, IntrospectionException {
-        if(null == cls) return null;
+        if (null == cls) return null;
         parseBeanMetadatas(cls);
         //将xml格式的字符串转换成Document对象
         Document doc = DocumentHelper.parseText(content);
         //获取根节点
         Element root = doc.getRootElement();
-        return nodeToBean(root,beanMetadatas);
+        return nodeToBean(root, beanMetadatas);
     }
 
     public static Object convertfile(@Comments("xml file dull path") String xmlfile,
@@ -122,62 +122,62 @@ public class Xml2Object {
             InstantiationException, DocumentException, IllegalAccessException {
         File f = new File(xmlfile);
         String content = FileUtils.readFileToString(f);
-        return convert(content,cls);
+        return convert(content, cls);
     }
 
     public static Object nodeToBean(@Comments("xml root element") Element root,
-                                    @Comments("javabeans metadata") Map<String,BeanMetadata> beanMetadatas)
+                                    @Comments("javabeans metadata") Map<String, BeanMetadata> beanMetadatas)
             throws IllegalAccessException, InstantiationException, InvocationTargetException {
         //获取根节点下的所有元素
         List children = root.elements();
-        List<DefaultAttribute> attrs= root.attributes();
+        List<DefaultAttribute> attrs = root.attributes();
 
         BeanMetadata bmd = beanMetadatas.get(root.getName());
-        Class clazz= bmd.getRealClass();
+        Class clazz = bmd.getRealClass();
         Object obj = clazz.newInstance();
 
-        if(children != null && children.size() > 0) {
-            for(int i = 0; i < children.size(); i++) {
-                Element child = (Element)children.get(i);
-                if(!child.isTextOnly()){
-                    Object ochild = nodeToBean(child,beanMetadatas);
-                    if(IAlbianXmlListNode.class.isAssignableFrom(obj.getClass())){
+        if (children != null && children.size() > 0) {
+            for (int i = 0; i < children.size(); i++) {
+                Element child = (Element) children.get(i);
+                if (!child.isTextOnly()) {
+                    Object ochild = nodeToBean(child, beanMetadatas);
+                    if (IAlbianXmlListNode.class.isAssignableFrom(obj.getClass())) {
                         IAlbianXmlListNode axn = (IAlbianXmlListNode) obj;
                         axn.addNode(ochild);
-                    } else if(IAlbianXmlPairNode.class.isAssignableFrom(obj.getClass())){
+                    } else if (IAlbianXmlPairNode.class.isAssignableFrom(obj.getClass())) {
                         IAlbianXmlPairNode axpn = (IAlbianXmlPairNode) obj;
                         IAlbianXmlPairObject oc = (IAlbianXmlPairObject) ochild;
-                        axpn.addNode(oc.getKey(),oc);
+                        axpn.addNode(oc.getKey(), oc);
                     } else {
                         String propertyName = child.getName();
                         PropertyMetadata pm = bmd.getPropertyMetadatas().get(propertyName);
-                        if(null == pm) continue;
+                        if (null == pm) continue;
                         Method m = pm.getSetter();
                         Class<?> type = pm.getType();
-                        Object value = convertValType(ochild,type);
+                        Object value = convertValType(ochild, type);
                         m.invoke(obj, value);
                     }
 
-                }else{
-                  String propertyName = child.getName();
+                } else {
+                    String propertyName = child.getName();
                     PropertyMetadata pm = bmd.getPropertyMetadatas().get(propertyName);
-                    if(null == pm) continue;
+                    if (null == pm) continue;
                     Method m = pm.getSetter();
                     Class<?> type = pm.getType();
-                    Object value = convertValType(child.getTextTrim(),type);
+                    Object value = convertValType(child.getTextTrim(), type);
                     m.invoke(obj, value);
                 }
 
             }
         }
 
-        for( DefaultAttribute att : attrs ) {
+        for (DefaultAttribute att : attrs) {
             String propertyName = att.getName();
             PropertyMetadata pm = bmd.getPropertyMetadatas().get(propertyName);
-            if(null == pm) continue;
+            if (null == pm) continue;
             Method m = pm.getSetter();
             Class<?> type = pm.getType();
-            Object value = convertValType(att.getText(),type);
+            Object value = convertValType(att.getText(), type);
             m.invoke(obj, value);
         }
 
@@ -193,17 +193,17 @@ public class Xml2Object {
     private static Object convertValType(@Comments("value of property") Object value,
                                          @Comments("type of value") Class type) {
         Object retVal = null;
-        if(Long.class.isAssignableFrom(type)
+        if (Long.class.isAssignableFrom(type)
                 || long.class.isAssignableFrom(type)) {
             retVal = Long.parseLong(value.toString());
-        } else if(Integer.class.isAssignableFrom(type)
-                || int.class.isAssignableFrom(type)){
+        } else if (Integer.class.isAssignableFrom(type)
+                || int.class.isAssignableFrom(type)) {
             retVal = Integer.parseInt(value.toString());
-        } else if(float.class.isAssignableFrom(type)
-                || Float.class.isAssignableFrom(type)){
+        } else if (float.class.isAssignableFrom(type)
+                || Float.class.isAssignableFrom(type)) {
             retVal = Float.parseFloat(value.toString());
-        } else if(double.class.isAssignableFrom(type)
-                || Double.class.isAssignableFrom(type)){
+        } else if (double.class.isAssignableFrom(type)
+                || Double.class.isAssignableFrom(type)) {
             retVal = Double.parseDouble(value.toString());
         } else {
             retVal = value;
@@ -211,37 +211,4 @@ public class Xml2Object {
         }
         return retVal;
     }
-
-//    public static String getXML(){
-//        StringBuffer sb=new StringBuffer();
-//        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-//        sb.append("<Note name=\"xian\">");
-//        sb.append("<To>George</To>");
-//        sb.append("<Student>");
-//        sb.append("<name>xian</name>");
-//        sb.append("<ClassRooms>");
-//        sb.append("<ClassRoom>");
-//        sb.append("<name>Ap111111</name>");
-//        sb.append("</ClassRoom>");
-//        sb.append("<ClassRoom>");
-//        sb.append("<name>2222</name>");
-//        sb.append("</ClassRoom>");
-//        sb.append("</ClassRooms>");
-//        sb.append("<age>13</age>");
-//        sb.append("</Student>");
-//        sb.append("<from>John</from>");
-//        sb.append("<heading>Reminder</heading>");
-//        sb.append("<Body>Don't forget the meeting!</Body>");
-//        sb.append("</Note>");
-//        return sb.toString();
-//    }
-//
-////    public static void main(String[] args) throws Exception {
-//        Note note=(Note) convert(getXML(), Note.class);
-//        System.out.println(note.getName()+"--"+note.getTo()+"--"/*+note.getStudent().getAge()+note.getStudent().getClassRoom().getName()*/);
-//    }
-//
-
-
-
 }

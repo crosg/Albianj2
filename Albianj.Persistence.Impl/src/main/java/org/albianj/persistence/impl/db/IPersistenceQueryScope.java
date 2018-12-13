@@ -49,7 +49,7 @@ public interface IPersistenceQueryScope {
     public <T extends IAlbianObject> List<T> execute(Class<T> cls,
                                                      IReaderJob job) throws AlbianDataServiceException;
 
-    public <T extends IAlbianObject> List<T> execute(String sessionId,Class<T> cls,
+    public <T extends IAlbianObject> List<T> execute(String sessionId, Class<T> cls,
                                                      PersistenceCommandType cmdType, Statement statement) throws AlbianDataServiceException;
 
     public Object execute(

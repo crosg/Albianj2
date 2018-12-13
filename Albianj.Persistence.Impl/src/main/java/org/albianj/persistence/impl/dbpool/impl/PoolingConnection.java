@@ -7,18 +7,24 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public class PoolingConnection  implements IPoolingConnection {
+public class PoolingConnection implements IPoolingConnection {
     Connection _conn;
     //startup timestamp
     long startupTimeMs;
     String sessionId;
 
-//     from pool but not return to pool
+    //     from pool but not return to pool
     // use to bc
     boolean isPooling;
     long lastUsedTimeMs;
     // reuse times in lifecycle
     long reuseTimes = 0;
+
+    public PoolingConnection(Connection conn, long startupTimeMs, boolean isPooling) {
+        _conn = conn;
+        this.startupTimeMs = startupTimeMs;
+        this.isPooling = isPooling;
+    }
 
     public long getStartupTimeMs() {
         return startupTimeMs;
@@ -52,12 +58,6 @@ public class PoolingConnection  implements IPoolingConnection {
         ++this.reuseTimes;
     }
 
-    public PoolingConnection(Connection conn,long startupTimeMs,boolean isPooling){
-        _conn = conn;
-        this.startupTimeMs = startupTimeMs;
-        this.isPooling = isPooling;
-    }
-
     @Override
     public Statement createStatement() throws SQLException {
         return _conn.createStatement();
@@ -79,13 +79,13 @@ public class PoolingConnection  implements IPoolingConnection {
     }
 
     @Override
-    public void setAutoCommit(boolean autoCommit) throws SQLException {
-        _conn.setAutoCommit(autoCommit);
+    public boolean getAutoCommit() throws SQLException {
+        return _conn.getAutoCommit();
     }
 
     @Override
-    public boolean getAutoCommit() throws SQLException {
-        return _conn.getAutoCommit();
+    public void setAutoCommit(boolean autoCommit) throws SQLException {
+        _conn.setAutoCommit(autoCommit);
     }
 
     @Override
@@ -114,18 +114,13 @@ public class PoolingConnection  implements IPoolingConnection {
     }
 
     @Override
-    public void setReadOnly(boolean readOnly) throws SQLException {
-        _conn.setReadOnly(readOnly);
-    }
-
-    @Override
     public boolean isReadOnly() throws SQLException {
         return _conn.isReadOnly();
     }
 
     @Override
-    public void setCatalog(String catalog) throws SQLException {
-        _conn.setCatalog(catalog);
+    public void setReadOnly(boolean readOnly) throws SQLException {
+        _conn.setReadOnly(readOnly);
     }
 
     @Override
@@ -134,13 +129,18 @@ public class PoolingConnection  implements IPoolingConnection {
     }
 
     @Override
-    public void setTransactionIsolation(int level) throws SQLException {
-        _conn.setTransactionIsolation(level);
+    public void setCatalog(String catalog) throws SQLException {
+        _conn.setCatalog(catalog);
     }
 
     @Override
     public int getTransactionIsolation() throws SQLException {
         return _conn.getTransactionIsolation();
+    }
+
+    @Override
+    public void setTransactionIsolation(int level) throws SQLException {
+        _conn.setTransactionIsolation(level);
     }
 
     @Override
@@ -155,17 +155,17 @@ public class PoolingConnection  implements IPoolingConnection {
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        return _conn.createStatement(resultSetType,resultSetConcurrency);
+        return _conn.createStatement(resultSetType, resultSetConcurrency);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        return _conn.prepareStatement(sql,resultSetType,resultSetConcurrency);
+        return _conn.prepareStatement(sql, resultSetType, resultSetConcurrency);
     }
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        return _conn.prepareCall(sql,resultSetType,resultSetConcurrency);
+        return _conn.prepareCall(sql, resultSetType, resultSetConcurrency);
     }
 
     @Override
@@ -179,13 +179,13 @@ public class PoolingConnection  implements IPoolingConnection {
     }
 
     @Override
-    public void setHoldability(int holdability) throws SQLException {
-        _conn.setHoldability(holdability);
+    public int getHoldability() throws SQLException {
+        return _conn.getHoldability();
     }
 
     @Override
-    public int getHoldability() throws SQLException {
-        return _conn.getHoldability();
+    public void setHoldability(int holdability) throws SQLException {
+        _conn.setHoldability(holdability);
     }
 
     @Override
@@ -210,32 +210,32 @@ public class PoolingConnection  implements IPoolingConnection {
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return _conn.createStatement(resultSetType,resultSetConcurrency,resultSetHoldability);
+        return _conn.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return _conn.prepareStatement(sql,resultSetType,resultSetConcurrency,resultSetHoldability);
+        return _conn.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return _conn.prepareCall(sql,resultSetType,resultSetConcurrency,resultSetHoldability);
+        return _conn.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
-        return _conn.prepareStatement(sql,autoGeneratedKeys);
+        return _conn.prepareStatement(sql, autoGeneratedKeys);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
-        return _conn.prepareStatement(sql,columnIndexes);
+        return _conn.prepareStatement(sql, columnIndexes);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
-        return _conn.prepareStatement(sql,columnNames);
+        return _conn.prepareStatement(sql, columnNames);
     }
 
     @Override
@@ -265,12 +265,7 @@ public class PoolingConnection  implements IPoolingConnection {
 
     @Override
     public void setClientInfo(String name, String value) throws SQLClientInfoException {
-        _conn.setClientInfo(name,value);
-    }
-
-    @Override
-    public void setClientInfo(Properties properties) throws SQLClientInfoException {
-        _conn.setClientInfo(properties);
+        _conn.setClientInfo(name, value);
     }
 
     @Override
@@ -284,23 +279,28 @@ public class PoolingConnection  implements IPoolingConnection {
     }
 
     @Override
+    public void setClientInfo(Properties properties) throws SQLClientInfoException {
+        _conn.setClientInfo(properties);
+    }
+
+    @Override
     public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
-        return _conn.createArrayOf(typeName,elements);
+        return _conn.createArrayOf(typeName, elements);
     }
 
     @Override
     public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
-        return _conn.createStruct(typeName,attributes);
-    }
-
-    @Override
-    public void setSchema(String schema) throws SQLException {
-        _conn.setSchema(schema);
+        return _conn.createStruct(typeName, attributes);
     }
 
     @Override
     public String getSchema() throws SQLException {
         return _conn.getSchema();
+    }
+
+    @Override
+    public void setSchema(String schema) throws SQLException {
+        _conn.setSchema(schema);
     }
 
     @Override
@@ -310,7 +310,7 @@ public class PoolingConnection  implements IPoolingConnection {
 
     @Override
     public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
-        _conn.setNetworkTimeout(executor,milliseconds);
+        _conn.setNetworkTimeout(executor, milliseconds);
     }
 
     @Override
@@ -329,16 +329,16 @@ public class PoolingConnection  implements IPoolingConnection {
     }
 
     public Boolean isValid() throws SQLException {
-       return !this.isClosed();
-    }
-
-    @Override
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
+        return !this.isClosed();
     }
 
     @Override
     public String getSessionId() {
         return this.sessionId;
+    }
+
+    @Override
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 }

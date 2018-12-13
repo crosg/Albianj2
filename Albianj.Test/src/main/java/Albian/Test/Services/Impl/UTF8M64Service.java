@@ -1,6 +1,5 @@
 package Albian.Test.Services.Impl;
 
-import Albian.Test.Model.ISingleUser;
 import Albian.Test.Model.IUTF8M64;
 import Albian.Test.Model.Impl.UTF8M64;
 import Albian.Test.Services.IUTF8M64Service;
@@ -21,7 +20,7 @@ import org.albianj.service.FreeAlbianService;
 @AlbianServiceRant(Id = "UTF8M64Service")
 public class UTF8M64Service extends FreeAlbianService implements IUTF8M64Service {
 
-    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref,Value = "AlbianDataAccessService")
+    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianDataAccessService")
     private IAlbianDataAccessService da;
 
     @Override
@@ -30,7 +29,7 @@ public class UTF8M64Service extends FreeAlbianService implements IUTF8M64Service
         IDataAccessContext dctx = da.newDataAccessContext();
         utf8m64.setId(id);
         utf8m64.setV(v);
-        return dctx.add(AlbianDataAccessOpt.Save, utf8m64, StorageInfo.UTF8Mb64TestStorageName,"tb_test_emoji_1").commit("Sessionid");
+        return dctx.add(AlbianDataAccessOpt.Save, utf8m64, StorageInfo.UTF8Mb64TestStorageName, "tb_test_emoji_1").commit("Sessionid");
     }
 
     @Override
@@ -39,7 +38,7 @@ public class UTF8M64Service extends FreeAlbianService implements IUTF8M64Service
         //查询sql推荐使用query ctx，不推荐原来的具体方法，通过重载区分
         IQueryContext qctx = da.newQueryContext();
         IUTF8M64 utf8m64 = qctx.useStorage(StorageInfo.UTF8Mb64TestStorageName).fromTable("tb_test_emoji_1") //指定到storage
-                .loadObject("sessionId", IUTF8M64.class, LoadType.quickly,wheres);
-      return utf8m64.getV();
+                .loadObject("sessionId", IUTF8M64.class, LoadType.quickly, wheres);
+        return utf8m64.getV();
     }
 }

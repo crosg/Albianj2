@@ -15,7 +15,7 @@ public class ManualCommandAdapter implements IManualCommandAdapter {
     public IManualContext createManualCommands(IManualContext mctx) {
         List<IManualCommand> cmds = mctx.getCommands();
         List<IInternalManualCommand> imcs = new LinkedList<>();
-        for(IManualCommand cmd : cmds){
+        for (IManualCommand cmd : cmds) {
             IInternalManualCommand imc = PersistenceNamedParameter.parseSql(cmd);
             imc.setCmdType(cmd.getCmdType());
             imc.setCommandParameters(cmd.getCommandParameters());

@@ -111,11 +111,11 @@ public class ReaderJob implements IReaderJob {
         return this.id;
     }
 
-    public void setDatabasePool(IDataBasePool pool){
-        this.pool = pool;
+    public IDataBasePool getDatabasePool() {
+        return this.pool;
     }
 
-    public IDataBasePool getDatabasePool(){
-        return this.pool;
+    public void setDatabasePool(IDataBasePool pool) {
+        this.pool = pool;
     }
 }

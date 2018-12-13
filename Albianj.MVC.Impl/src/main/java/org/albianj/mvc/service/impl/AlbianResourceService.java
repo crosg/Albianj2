@@ -43,53 +43,53 @@ import java.io.OutputStream;
  * This service is useful for application servers which do not allow Click to
  * automatically deploy resources to the web root directory.
  */
-@AlbianServiceRant(Id = IAlbianResourceService.Name,Interface = IAlbianResourceService.class)
+@AlbianServiceRant(Id = IAlbianResourceService.Name, Interface = IAlbianResourceService.class)
 public class AlbianResourceService extends FreeAlbianService implements IAlbianResourceService {
 
-    public String getServiceName(){
+    /**
+     * The click resources cache.
+     */
+//    protected Map<String, byte[]> resourceCache = new ConcurrentHashMap<String, byte[]>();
+    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
+    private AlbianHttpConfigurtion c;
+
+    public String getServiceName() {
         return Name;
     }
 
-
-    /** The click resources cache. */
-//    protected Map<String, byte[]> resourceCache = new ConcurrentHashMap<String, byte[]>();
-    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref,Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
-    private  AlbianHttpConfigurtion c;
-
-    public void setHttpConfigurtion(AlbianHttpConfigurtion c){
+    public void setHttpConfigurtion(AlbianHttpConfigurtion c) {
         this.c = c;
     }
 
     /**
-     *
      * @return true if the request is for a static click resource
      */
     public boolean isResourceRequest(HttpContext ctx) {
         String resourcePath = HttpHelper.getResourcePath(ctx.getCurrentRequest());
 
         // If not a click page and not JSP and not a directory
-        return !HttpHelper.isTemplate(resourcePath,c.getSuffix())
-            && !resourcePath.endsWith("/");
+        return !HttpHelper.isTemplate(resourcePath, c.getSuffix())
+                && !resourcePath.endsWith("/");
     }
 
     /**
      */
     public void renderResource(HttpContext ctx)
-        throws IOException {
+            throws IOException {
 
         String resourcePath = HttpHelper.getResourcePath(ctx.getCurrentRequest());
 
         byte[] resourceData = loadResourceData(ctx, resourcePath);
-               // resourceCache.get(resourcePath);
+        // resourceCache.get(resourcePath);
 
 //        if (resourceData == null) {
 //            // Lazily load resource
 //            resourceData = loadResourceData(ctx, resourcePath);
 //
-            if (resourceData == null) {
-                ctx.getCurrentResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
-            }
+        if (resourceData == null) {
+            ctx.getCurrentResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
 //        }
 
         String mimeType = HttpHelper.getMimeType(resourcePath);
@@ -179,7 +179,7 @@ public class AlbianResourceService extends FreeAlbianService implements IAlbianR
      * Store the resource under the given resource path.
      *
      * @param resourcePath the path to store the resource under
-     * @param data the resource byte array
+     * @param data         the resource byte array
      */
     private void storeResourceData(String resourcePath, byte[] data) {
         // Only cache in production modes
@@ -209,7 +209,7 @@ public class AlbianResourceService extends FreeAlbianService implements IAlbianR
             storeResourceData(resourcePath, resourceData);
         } else {
             resourceData = getClasspathResourceData("META-INF/resources"
-                + resourcePath);
+                    + resourcePath);
 
             if (resourceData != null) {
                 storeResourceData(resourcePath, resourceData);
@@ -223,12 +223,12 @@ public class AlbianResourceService extends FreeAlbianService implements IAlbianR
      * Load the resource for the given resourcePath from the servlet context.
      *
      * @param servletContext the application servlet context
-     * @param resourcePath the path of the resource to load
+     * @param resourcePath   the path of the resource to load
      * @return the byte array for the given resource path
      * @throws IOException if the resource could not be loaded
      */
     private byte[] getServletResourceData(ServletContext servletContext,
-        String resourcePath) throws IOException {
+                                          String resourcePath) throws IOException {
 
         InputStream inputStream = null;
         try {
@@ -241,7 +241,7 @@ public class AlbianResourceService extends FreeAlbianService implements IAlbianR
             }
 
         } finally {
-            if(null != inputStream) {
+            if (null != inputStream) {
                 inputStream.close();
             }
 //            ClickUtils.close(inputStream);
@@ -273,7 +273,7 @@ public class AlbianResourceService extends FreeAlbianService implements IAlbianR
             }
 
         } finally {
-            if(null != inputStream) {
+            if (null != inputStream) {
                 inputStream.close();
             }
 //            ClickUtils.close(inputStream);
@@ -283,12 +283,12 @@ public class AlbianResourceService extends FreeAlbianService implements IAlbianR
     /**
      * Render the given resourceData byte array to the response.
      *
-     * @param response the response object
+     * @param response     the response object
      * @param resourceData the resource byte array
      * @throws IOException if the resource data could not be rendered
      */
     private void renderResource(HttpServletResponse response,
-        byte[] resourceData) throws IOException {
+                                byte[] resourceData) throws IOException {
 
         OutputStream outputStream = null;
         try {
@@ -299,7 +299,7 @@ public class AlbianResourceService extends FreeAlbianService implements IAlbianR
             outputStream.flush();
 
         } finally {
-            if(null != outputStream){
+            if (null != outputStream) {
                 outputStream.flush();
                 outputStream.close();
             }

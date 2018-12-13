@@ -90,7 +90,6 @@ public interface IAlbianRestfulActionContext {
     void setBodyFilterHandler(IAlbianRestfulBodyFilterDelegate handler);
 
 
-
     IAlbianRestfulResultParserV1 getParserV1();
 
 

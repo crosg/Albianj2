@@ -9,35 +9,37 @@ public class PagingInfo {
     private int pagesize = 10;
     private int currentPageNumber = 0;
 
-    public PagingInfo(){
+    public PagingInfo() {
 
     }
 
-    public PagingInfo(long recordsCount,int pagesize,int currentPageNumber){
+    public PagingInfo(long recordsCount, int pagesize, int currentPageNumber) {
         this.recordsCount = recordsCount;
         this.pagesize = pagesize;
         this.currentPageNumber = currentPageNumber;
     }
 
-
-    public void setRecordsCount(long total){
-        this.recordsCount = total;
-    }
-    public long getRecordsCount(){
+    public long getRecordsCount() {
         return this.recordsCount;
     }
 
-    public void setPagesize(int pagesize){
-        this.pagesize = pagesize;
-    }
-    public int getPagesize(){
-        return this.pagesize;
-    }
-    public void setCurrentPageNumber(int cpn){
-        this.currentPageNumber = cpn;
+    public void setRecordsCount(long total) {
+        this.recordsCount = total;
     }
 
-    public int getCurrentPageNumber(){
+    public int getPagesize() {
+        return this.pagesize;
+    }
+
+    public void setPagesize(int pagesize) {
+        this.pagesize = pagesize;
+    }
+
+    public int getCurrentPageNumber() {
         return this.currentPageNumber;
+    }
+
+    public void setCurrentPageNumber(int cpn) {
+        this.currentPageNumber = cpn;
     }
 }

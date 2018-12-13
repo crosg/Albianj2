@@ -58,7 +58,7 @@ import java.util.Map;
 public class ChainExpressionParser {
 
     public static void toFilterConditionMap(IChainExpression f, Map<String, IFilterCondition> map) {
-        if(null == f) return;
+        if (null == f) return;
         List<IChainExpression> ces = f.getChainExpression();
         if (null == ces || 0 == ces.size())
             return;
@@ -74,7 +74,7 @@ public class ChainExpressionParser {
     }
 
     public static void toFilterConditionArray(IChainExpression f, List<IFilterCondition> list) {
-        if(null == f) return;
+        if (null == f) return;
         List<IChainExpression> ces = f.getChainExpression();
         if (null == ces || 0 == ces.size())
             return;
@@ -91,7 +91,7 @@ public class ChainExpressionParser {
     public static void toConditionText(String sessionId, Class<?> cls, IAlbianObjectAttribute albianObject,
                                        IStorageAttribute storage, IChainExpression f, StringBuilder sb, Map<String, ISqlParameter> paras)
             throws AlbianDataServiceException {
-        if(null == f) return;
+        if (null == f) return;
         List<IChainExpression> ces = f.getChainExpression();
         if (null == ces || 0 == ces.size())
             return;
@@ -116,7 +116,7 @@ public class ChainExpressionParser {
                 if (fe.isAddition())
                     continue;
 
-                if(fe.isIdentical()){
+                if (fe.isIdentical()) {
                     sb.append(" 1 = 1 ");
                     continue;
                 }
@@ -126,8 +126,8 @@ public class ChainExpressionParser {
 
                 if (null == fieldAttr) {
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                            sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-                            "PersistenceService is error.","albian-object:%s member:%s is not found.", className, fe.getFieldName());
+                            sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
+                            "PersistenceService is error.", "albian-object:%s member:%s is not found.", className, fe.getFieldName());
                 }
 
                 String slo = EnumMapping.toRelationalOperators(fe.getRelationalOperator());

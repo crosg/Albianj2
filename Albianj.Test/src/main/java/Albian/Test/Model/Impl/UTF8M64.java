@@ -8,8 +8,8 @@ import org.albianj.persistence.object.rants.AlbianObjectRant;
 @AlbianObjectRant(Interface = IUTF8M64.class)
 public class UTF8M64 extends FreeAlbianObject implements IUTF8M64 {
 
-    @AlbianObjectDataFieldRant(IsPrimaryKey = true,FieldName = "id")
-    private  int id = 0;
+    @AlbianObjectDataFieldRant(IsPrimaryKey = true, FieldName = "id")
+    private int id = 0;
 
     @AlbianObjectDataFieldRant(FieldName = "v")
     private String v;

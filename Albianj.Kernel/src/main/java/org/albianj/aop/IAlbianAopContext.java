@@ -5,5 +5,6 @@ package org.albianj.aop;
  */
 public interface IAlbianAopContext {
     Object getData();
+
     void setData(Object data);
 }

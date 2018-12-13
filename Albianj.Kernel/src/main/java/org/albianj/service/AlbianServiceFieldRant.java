@@ -1,7 +1,6 @@
 package org.albianj.service;
 
 import java.lang.annotation.*;
-import java.util.zip.Deflater;
 
 /**
  * service field setter rant
@@ -26,7 +25,7 @@ public @interface AlbianServiceFieldRant {
      * default is Empty
      * when type is ref,this value is the service id
      */
-    String Value() default "" ;
+    String Value() default "";
 
     boolean AllowNull() default false;
 }

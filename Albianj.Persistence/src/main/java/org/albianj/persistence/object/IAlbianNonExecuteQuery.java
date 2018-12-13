@@ -8,11 +8,14 @@ import org.albianj.persistence.object.filter.IChainExpression;
 public interface IAlbianNonExecuteQuery {
 
     Class<? extends IAlbianObject> getAlbianObjectClass();
-    void setAlbianObjectClass(Class<? extends  IAlbianObject> albianObjectClass);
+
+    void setAlbianObjectClass(Class<? extends IAlbianObject> albianObjectClass);
 
     String getInnerCommandText();
-    void  setInnerCommandText(String innerCommandText);
+
+    void setInnerCommandText(String innerCommandText);
 
     IChainExpression getCommandFilter();
+
     void setCommandFilter(IChainExpression commandFilter);
 }

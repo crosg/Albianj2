@@ -1,17 +1,9 @@
 package org.albianj.persistence.impl.db;
 
-import org.albianj.persistence.db.AlbianDataServiceException;
-import org.albianj.persistence.db.ISqlParameter;
-import org.albianj.persistence.object.IAlbianObjectAttribute;
-import org.albianj.persistence.object.IMemberAttribute;
-
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by xuhaifeng on 16/12/28.
  */
-public class InnerCommandAdapter  {
+public class InnerCommandAdapter {
 
 //    public static Map<String, ISqlParameter> makeCreateCommand(String sessionId,
 //                                                               IAlbianObjectAttribute albianObject,

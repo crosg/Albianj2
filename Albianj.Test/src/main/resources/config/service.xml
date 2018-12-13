@@ -8,20 +8,19 @@
     <Service Id="AlbianMappingService" Type="org.albianj.persistence.impl.mapping.AlbianMappingParserService"/>
     <Service Id="AlbianPersistenceService" Type="org.albianj.persistence.impl.service.AlbianPersistenceService"/>
     <Service Id="AlbianThreadPoolService" Type="org.albianj.concurrent.impl.AlbianThreadPoolService"/>
-    <Service Id="AlbianSecurityService" Type="org.albianj.security.impl.AlbianSecurityService" />
-    <Service Id="AlbianDataAccessService" Type="org.albianj.persistence.impl.service.AlbianDataAccessService" />
+    <Service Id="AlbianSecurityService" Type="org.albianj.security.impl.AlbianSecurityService"/>
+    <Service Id="AlbianDataAccessService" Type="org.albianj.persistence.impl.service.AlbianDataAccessService"/>
 
     <!-- 使用rant进行标注的service必须要在这里配置所在的包，否则albianj不会加载 -->
     <Packages>
         <Package Path="Albian.Test.Services.Impl" Enable="true"></Package>
     </Packages>
 
-    <Service Id="OrgUserService" Type="Albian.Test.Services.Impl.OrgUserService" >
+    <Service Id="OrgUserService" Type="Albian.Test.Services.Impl.OrgUserService">
         <Properties>
             <Property Type="Ref" Name="da" Value="AlbianDataAccessService"/>
         </Properties>
     </Service>
-
 
 
     <!--<Service Id="AlbianRemoteIdService" Type="org.albianj.unid.service.impl.AlbianRemoteUNIDService" />-->

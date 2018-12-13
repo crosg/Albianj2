@@ -17,19 +17,19 @@ import java.util.Map;
  */
 public class MasterViewTag extends GeneralVarTagBinding {
 
-    public static String getName(){
-        return "MasterView";
-    }
-
     private HttpContext currentContext = null;
     private String mvName = null;
 
-    public void setCurrentContext(HttpContext ctx){
-        this.currentContext = ctx;
+    public static String getName() {
+        return "MasterView";
     }
 
-    public HttpContext getCurrentContext(){
+    public HttpContext getCurrentContext() {
         return this.currentContext;
+    }
+
+    public void setCurrentContext(HttpContext ctx) {
+        this.currentContext = ctx;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MasterViewTag extends GeneralVarTagBinding {
         MView view = null;
         try {
             view = (MView) pc.getRealClass().newInstance();
-        } catch (InstantiationException  | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
@@ -62,8 +62,8 @@ public class MasterViewTag extends GeneralVarTagBinding {
         view.load(currentContext);
         view.kAfterAction(pc);
         view.kBeforeRender();
-        IAlbianTemplateService ats = AlbianServiceRouter.getSingletonService(IAlbianTemplateService.class,IAlbianTemplateService.Name);
-        StringBuffer masterViewContext = ats.renderTemplate(view.getModel(),view.getFunctions(),sb.toString());
+        IAlbianTemplateService ats = AlbianServiceRouter.getSingletonService(IAlbianTemplateService.class, IAlbianTemplateService.Name);
+        StringBuffer masterViewContext = ats.renderTemplate(view.getModel(), view.getFunctions(), sb.toString());
         currentContext.setMasterView(view);
         currentContext.setMasterViewHtml(masterViewContext);
 

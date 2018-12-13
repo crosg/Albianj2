@@ -56,10 +56,10 @@ import java.util.*;
 public class WriterJobAdapter extends FreeWriterJobAdapter {
     protected Map<String, Object> buildSqlParameter(String sessioId, IAlbianObject object,
                                                     IAlbianObjectAttribute albianObject,
-                                                    Map<String,IAlbianEntityFieldAttribute> fieldsAttr) throws AlbianDataServiceException {
+                                                    Map<String, IAlbianEntityFieldAttribute> fieldsAttr) throws AlbianDataServiceException {
         Map<String, Object> mapValue = new HashMap<String, Object>();
         String name = "";
-        for(IAlbianEntityFieldAttribute fAttr : fieldsAttr.values()) {
+        for (IAlbianEntityFieldAttribute fAttr : fieldsAttr.values()) {
             name = fAttr.getPropertyName();
             try {
                 if ("string".equalsIgnoreCase(fAttr.getEntityField().getType()
@@ -79,9 +79,9 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
                 } else {
                     mapValue.put(name, fAttr.getEntityField().get(object));
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                        sessioId, AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
+                        sessioId, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "invoke bean read method is error.the property is:%s.job id:%s.",
                         albianObject.getType(), name);
@@ -171,26 +171,26 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
                                           IAlbianObjectAttribute albianObject) throws AlbianDataServiceException {
         if (null == routing) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    jobId,AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianPersistence,
+                    jobId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "the writer data router of object:%s is null.",
                     albianObject.getType());
         }
         if (null == hashMapping) {
             String name = routing.getStorageName();
-                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                                    jobId,AlbianLoggerLevel.Warn,
-                                    "albian-object:%s writer-data-router arithmetic is not found and use default storage:%s.",
-                                    albianObject.getType(), name);
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    jobId, AlbianLoggerLevel.Warn,
+                    "albian-object:%s writer-data-router arithmetic is not found and use default storage:%s.",
+                    albianObject.getType(), name);
             return name;
         } else {
             String name = hashMapping.mappingWriterRoutingStorage(routing, obj);
             if (Validate.isNullOrEmpty(name)) {
                 String dname = routing.getStorageName();
-                                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                                        jobId,AlbianLoggerLevel.Warn,
-                                "albian-object:%s writer-data-router is not found by arithmetic and use default storage:%s.",
-                                albianObject.getType(), dname);
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                        jobId, AlbianLoggerLevel.Warn,
+                        "albian-object:%s writer-data-router is not found by arithmetic and use default storage:%s.",
+                        albianObject.getType(), dname);
                 return dname;
             } else {
                 return name;
@@ -202,27 +202,27 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
                                            IStorageAttribute storage, IAlbianObjectDataRouter hashMapping,
                                            IAlbianObjectAttribute albianObject) throws AlbianDataServiceException {
         if (null == storage) {
-                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                            jobId,AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianPersistence,
-                            AlbianModuleType.AlbianPersistence.getThrowInfo(),
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    jobId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
+                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "the writer data router of object:%s is null.",
                     albianObject.getType());
         }
         if (null == hashMapping) {
             String name = storage.getDatabase();
-                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                                    jobId,AlbianLoggerLevel.Warn,
-                            "albian-object:%s writer-data-router arithmetic is not found and use default database:%s.",
-                            albianObject.getType(), name);
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    jobId, AlbianLoggerLevel.Warn,
+                    "albian-object:%s writer-data-router arithmetic is not found and use default database:%s.",
+                    albianObject.getType(), name);
             return name;
         } else {
             String name = hashMapping.mappingWriterRoutingDatabase(storage, obj);
             if (Validate.isNullOrEmpty(name)) {
                 String dname = storage.getDatabase();
-                                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                                        jobId,AlbianLoggerLevel.Warn,
-                                "albian-object:%s writer-data-router is not found by arithmetic and use default database:%s.",
-                                albianObject.getType(), dname);
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                        jobId, AlbianLoggerLevel.Warn,
+                        "albian-object:%s writer-data-router is not found by arithmetic and use default database:%s.",
+                        albianObject.getType(), dname);
                 return dname;
             } else {
                 return name;
@@ -231,32 +231,32 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
     }
 
 
-    protected void buildWriterJob(IWriterJob job,IAlbianObject entity,
-                                           String storageAlias,String tableAlias,
-                                           IPersistenceUpdateCommand cmd){
+    protected void buildWriterJob(IWriterJob job, IAlbianObject entity,
+                                  String storageAlias, String tableAlias,
+                                  IPersistenceUpdateCommand cmd) {
         Class<?> cls = entity.getClass();
         String className = cls.getName();
         IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadataByType(cls);
 
-        Map<String,IAlbianEntityFieldAttribute> fieldsAttr = objAttr.getFields();
+        Map<String, IAlbianEntityFieldAttribute> fieldsAttr = objAttr.getFields();
         if (Validate.isNullOrEmpty(fieldsAttr)) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    job.getId(), AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
+                    job.getId(), AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "albian-object:%s PropertyDescriptor is not found.", className);
         }
         Map<String, Object> sqlParaVals = buildSqlParameter(job.getId(), entity,
-                                                            objAttr,fieldsAttr);
+                objAttr, fieldsAttr);
 
         IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
-        if(!Validate.isNullOrEmptyOrAllSpace(storageAlias)) {
+        if (!Validate.isNullOrEmptyOrAllSpace(storageAlias)) {
             String tableName = Validate.isNullOrEmptyOrAllSpace(tableAlias)
                     ? objAttr.getImplClzz().getSimpleName()
                     : tableAlias;
             IStorageAttribute stgAttr = asps.getStorageAttribute(storageAlias);
-            IPersistenceCommand pstCmd = cmd.buildPstCmd(job.getId(),stgAttr.getDatabaseStyle(),
-                                        tableName, entity, objAttr, sqlParaVals,job.isRollbackOnError());
-            addWrtTsk(job,stgAttr,stgAttr.getDatabase(),pstCmd);
+            IPersistenceCommand pstCmd = cmd.buildPstCmd(job.getId(), stgAttr.getDatabaseStyle(),
+                    tableName, entity, objAttr, sqlParaVals, job.isRollbackOnError());
+            addWrtTsk(job, stgAttr, stgAttr.getDatabase(), pstCmd);
         } else {
             IDataRoutersAttribute drtsAttr = objAttr.getDataRouters();
             List<IDataRouterAttribute> sltDrtAttr = parserRoutings(job.getId(), entity,
@@ -271,8 +271,8 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
 
                 String tableName = drouter.mappingWriterTable(drtAttr, entity);
 
-                IPersistenceCommand pstCmd = cmd.buildPstCmd(job.getId(),stgAttr.getDatabaseStyle(),
-                        tableName, entity, objAttr, sqlParaVals,job.isRollbackOnError());
+                IPersistenceCommand pstCmd = cmd.buildPstCmd(job.getId(), stgAttr.getDatabaseStyle(),
+                        tableName, entity, objAttr, sqlParaVals, job.isRollbackOnError());
                 if (null == cmd)
                     continue;// no the upload operator
 

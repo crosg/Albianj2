@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Monitors>
-    <Monitor Name="DataBasePoolMonitor" FlushTimestampS="300" FileRotation="daily" KeepRecord ="true" Path="">
+    <Monitor Name="DataBasePoolMonitor" FlushTimestampS="300" FileRotation="daily" KeepRecord="true" Path="">
     </Monitor>
 </Monitors>

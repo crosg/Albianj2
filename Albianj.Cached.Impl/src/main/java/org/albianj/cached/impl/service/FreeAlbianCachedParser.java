@@ -40,8 +40,6 @@ package org.albianj.cached.impl.service;
 import org.albianj.cached.attribute.IAlbianCachedAttribute;
 import org.albianj.cached.service.AlbianCachedAttributeException;
 import org.albianj.cached.service.IAlbianCachedService;
-import org.albianj.io.Path;
-import org.albianj.kernel.KernelSetting;
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.parser.FreeAlbianParserService;
@@ -94,7 +92,7 @@ public abstract class FreeAlbianCachedParser extends FreeAlbianParserService {
 //                            "loading the cached.xml is error. the file is null.");
 //        }
 //        @SuppressWarnings("rawtypes")
-//        List nodes = XmlParser.analyze(doc, tagName);
+//        List nodes = XmlParser.selectNodes(doc, tagName);
 //        if (Validate.isNullOrEmpty(nodes)) {
 //            AlbianServiceRouter.getLogger()
 //                    .errorAndThrow(
@@ -108,10 +106,10 @@ public abstract class FreeAlbianCachedParser extends FreeAlbianParserService {
         return;
     }
 
-    private void parserFile(String filename){
+    private void parserFile(String filename) {
         Document doc = null;
         try {
-            String fname = confirmConfigFile(filename);
+            String fname = findConfigFile(filename);
             doc = XmlParser.load(fname);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger()
@@ -131,7 +129,7 @@ public abstract class FreeAlbianCachedParser extends FreeAlbianParserService {
         }
 
         @SuppressWarnings("rawtypes")
-        List nodes = XmlParser.analyze(doc, "CacheServers/IncludeSet/Include");
+        List nodes = XmlParser.selectNodes(doc, "CacheServers/IncludeSet/Include");
         if (!Validate.isNullOrEmpty(nodes)) {
             for (Object node : nodes) {
                 Element elt = XmlParser.toElement(node);
@@ -142,7 +140,7 @@ public abstract class FreeAlbianCachedParser extends FreeAlbianParserService {
         }
 
         @SuppressWarnings("rawtypes")
-        List objNodes = XmlParser.analyze(doc, tagName);
+        List objNodes = XmlParser.selectNodes(doc, tagName);
         if (Validate.isNullOrEmpty(objNodes)) {
             AlbianServiceRouter.getLogger()
                     .errorAndThrow(

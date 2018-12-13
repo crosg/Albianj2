@@ -38,7 +38,6 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.persistence.impl.context;
 
 import org.albianj.argument.RefArg;
-import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.context.IReaderJob;
@@ -47,21 +46,13 @@ import org.albianj.persistence.db.IPersistenceCommand;
 import org.albianj.persistence.db.ISqlParameter;
 import org.albianj.persistence.db.PersistenceCommandType;
 import org.albianj.persistence.impl.db.PersistenceCommand;
-import org.albianj.persistence.impl.db.SqlParameter;
-import org.albianj.persistence.impl.toolkit.Convert;
-import org.albianj.persistence.impl.toolkit.EnumMapping;
 import org.albianj.persistence.impl.toolkit.ListConvert;
 import org.albianj.persistence.object.*;
 import org.albianj.persistence.object.filter.IChainExpression;
 import org.albianj.persistence.service.AlbianEntityMetadata;
-import org.albianj.persistence.service.IAlbianDataRouterParserService;
-import org.albianj.persistence.service.IAlbianMappingParserService;
-import org.albianj.persistence.service.IAlbianStorageParserService;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
-import org.albianj.verify.Validate;
 
-import javax.swing.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -70,10 +61,10 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
 
     protected abstract StringBuilder makeSltCmdTxt(int sbStyle, StringBuilder sbCols, String tableName,
                                                    StringBuilder sbWhere, StringBuilder sbOrderby,
-                                                   int start, int step, String idxName) ;
+                                                   int start, int step, String idxName);
 
     protected abstract StringBuilder makeSltCmdOdrs(String sessionId, IAlbianObjectAttribute objAttr,
-                                                    LinkedList<IOrderByCondition> orderbys,int dbStyle );
+                                                    LinkedList<IOrderByCondition> orderbys, int dbStyle);
 
     protected abstract StringBuilder makeSltCmdCols(String sessionId, IAlbianObjectAttribute objAttr, int dbStyle);
 
@@ -91,19 +82,19 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
     protected abstract StringBuilder makeSltCmdWhrs(String sessionId, IAlbianObjectAttribute objAttr,
                                                     int dbStyle, String implType,
                                                     LinkedList<IFilterCondition> wheres,
-                                                    Map<String, ISqlParameter> paras) ;
+                                                    Map<String, ISqlParameter> paras);
 
     protected abstract StringBuilder makeSltCmdCount(int dbStyle);
 
     @Deprecated
     public IReaderJob buildReaderJob(String sessionId, Class<?> itf, boolean isExact, String drouterAlias,
                                      int start, int step, LinkedList<IFilterCondition> wheres,
-                                     LinkedList<IOrderByCondition> orderbys,String idxName) throws AlbianDataServiceException {
+                                     LinkedList<IOrderByCondition> orderbys, String idxName) throws AlbianDataServiceException {
         IReaderJob job = new ReaderJob(sessionId);
         IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(itf);
         if (null == objAttr) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    sessionId,AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianPersistence,
+                    sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "albian-object:%s attribute is not found.maybe not exist mapping.", itf.getName());
         }
@@ -121,16 +112,16 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
         IStorageAttribute stgAttr = makeReaderToStorageCtx(objAttr, isExact, null, null, drouterAlias,
                 hashWheres, hashOrderbys, dbName, tableName);
 
-        StringBuilder sbCols = makeSltCmdCols(sessionId, objAttr,stgAttr.getDatabaseStyle());
+        StringBuilder sbCols = makeSltCmdCols(sessionId, objAttr, stgAttr.getDatabaseStyle());
 
         Map<String, ISqlParameter> paras = new HashMap<>();
-        StringBuilder sbWhrs = makeSltCmdWhrs( sessionId,  objAttr, stgAttr.getDatabaseStyle(),
+        StringBuilder sbWhrs = makeSltCmdWhrs(sessionId, objAttr, stgAttr.getDatabaseStyle(),
                 objAttr.getType(), wheres, paras);
 
-        StringBuilder sbOdrs = makeSltCmdOdrs(sessionId, objAttr,orderbys, stgAttr.getDatabaseStyle());
+        StringBuilder sbOdrs = makeSltCmdOdrs(sessionId, objAttr, orderbys, stgAttr.getDatabaseStyle());
 
         StringBuilder sbCmdTxt = makeSltCmdTxt(stgAttr.getDatabaseStyle(), sbCols, tableName.getValue(),
-                sbWhrs, sbOdrs, start, step,idxName);
+                sbWhrs, sbOdrs, start, step, idxName);
 
         IPersistenceCommand cmd = new PersistenceCommand();
         cmd.setCommandText(sbCmdTxt.toString());
@@ -150,7 +141,7 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
         IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(itf);
         if (null == objAttr) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    sessionId,AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianPersistence,
+                    sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "albian-object:%s attribute is not found.maybe not exist mapping.", itf.getName());
         }
@@ -171,13 +162,13 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
         StringBuilder sbCols = makeSltCmdCount(stgAttr.getDatabaseStyle());
 
         Map<String, ISqlParameter> paras = new HashMap<>();
-        StringBuilder sbWhrs = makeSltCmdWhrs( sessionId,  objAttr, stgAttr.getDatabaseStyle(),
+        StringBuilder sbWhrs = makeSltCmdWhrs(sessionId, objAttr, stgAttr.getDatabaseStyle(),
                 objAttr.getType(), wheres, paras);
 
-        StringBuilder sbOdrs = makeSltCmdOdrs(sessionId, objAttr,orderbys, stgAttr.getDatabaseStyle());
+        StringBuilder sbOdrs = makeSltCmdOdrs(sessionId, objAttr, orderbys, stgAttr.getDatabaseStyle());
 
         StringBuilder sbCmdTxt = makeSltCmdTxt(stgAttr.getDatabaseStyle(), sbCols, tableName.getValue(),
-                sbWhrs, sbOdrs, -1, -1,idxName);
+                sbWhrs, sbOdrs, -1, -1, idxName);
 
         IPersistenceCommand cmd = new PersistenceCommand();
         cmd.setCommandText(sbCmdTxt.toString());
@@ -189,15 +180,15 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
     }
 
     public IReaderJob buildReaderJob(String sessionId, Class<?> itf, boolean isExact,
-                                     String storageAlias,String tableAlias, String drouterAlias,
+                                     String storageAlias, String tableAlias, String drouterAlias,
                                      int start, int step, IChainExpression f,
-                                     LinkedList<IOrderByCondition> orderbys,String idxName) throws AlbianDataServiceException {
+                                     LinkedList<IOrderByCondition> orderbys, String idxName) throws AlbianDataServiceException {
 
         IReaderJob job = new ReaderJob(sessionId);
         IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(itf);
         if (null == objAttr) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    sessionId,AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianPersistence,
+                    sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "albian-object:%s attribute is not found.maybe not exist mapping.", itf.getName());
         }
@@ -217,14 +208,14 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
 
         Map<String, ISqlParameter> paras = new HashMap<>();
 
-        StringBuilder sbCols = makeSltCmdCols(sessionId, objAttr,stgAttr.getDatabaseStyle());
+        StringBuilder sbCols = makeSltCmdCols(sessionId, objAttr, stgAttr.getDatabaseStyle());
 
         StringBuilder sbWhere = new StringBuilder();
         ChainExpressionParser.toConditionText(sessionId, implClzz, objAttr, stgAttr, f, sbWhere, paras);
-        StringBuilder sbOdrs = makeSltCmdOdrs(sessionId, objAttr,orderbys, stgAttr.getDatabaseStyle());
+        StringBuilder sbOdrs = makeSltCmdOdrs(sessionId, objAttr, orderbys, stgAttr.getDatabaseStyle());
 
         StringBuilder sbCmdTxt = makeSltCmdTxt(stgAttr.getDatabaseStyle(), sbCols, tableName.getValue(),
-                sbWhere, sbOdrs, start, step,idxName);
+                sbWhere, sbOdrs, start, step, idxName);
 
         IPersistenceCommand cmd = new PersistenceCommand();
         cmd.setCommandText(sbCmdTxt.toString());
@@ -236,15 +227,14 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
     }
 
 
-
-    public IReaderJob buildReaderJob(String sessionId, Class<?> itf, boolean isExact, String storageAlias,String tableAlias,String drouterAlias,
+    public IReaderJob buildReaderJob(String sessionId, Class<?> itf, boolean isExact, String storageAlias, String tableAlias, String drouterAlias,
                                      IChainExpression f,
-                                     LinkedList<IOrderByCondition> orderbys,String idxName) throws AlbianDataServiceException {
+                                     LinkedList<IOrderByCondition> orderbys, String idxName) throws AlbianDataServiceException {
         IReaderJob job = new ReaderJob(sessionId);
         IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(itf);
         if (null == objAttr) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    sessionId,AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianPersistence,
+                    sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "albian-object:%s attribute is not found.maybe not exist mapping.", itf.getName());
         }
@@ -268,10 +258,10 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
 
         StringBuilder sbWhere = new StringBuilder();
         ChainExpressionParser.toConditionText(sessionId, implClzz, objAttr, stgAttr, f, sbWhere, paras);
-        StringBuilder sbOdrs = makeSltCmdOdrs(sessionId, objAttr,orderbys, stgAttr.getDatabaseStyle());
+        StringBuilder sbOdrs = makeSltCmdOdrs(sessionId, objAttr, orderbys, stgAttr.getDatabaseStyle());
 
         StringBuilder sbCmdTxt = makeSltCmdTxt(stgAttr.getDatabaseStyle(), sbCols, tableName.getValue(),
-                sbWhere, sbOdrs, -1, -1,idxName);
+                sbWhere, sbOdrs, -1, -1, idxName);
 
         IPersistenceCommand cmd = new PersistenceCommand();
         cmd.setCommandText(sbCmdTxt.toString());
@@ -283,7 +273,7 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
     }
 
     public IReaderJob buildReaderJob(String sessionId, Class<?> cls, IRunningStorageAttribute storage,
-                                     PersistenceCommandType cmdType,String text,Map<String, ISqlParameter> paras) throws AlbianDataServiceException {
+                                     PersistenceCommandType cmdType, String text, Map<String, ISqlParameter> paras) throws AlbianDataServiceException {
         IReaderJob job = new ReaderJob(sessionId);
         IPersistenceCommand cmd = new PersistenceCommand();
         cmd.setCommandText(text);

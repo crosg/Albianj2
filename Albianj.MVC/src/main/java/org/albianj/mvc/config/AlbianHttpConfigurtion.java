@@ -5,179 +5,175 @@ import org.albianj.verify.Validate;
 import java.util.Map;
 
 public class AlbianHttpConfigurtion {
-	
-	private String ContextPath = "/";
-	private Map<String,ViewConfigurtion> pages = null;
-	private Map<String,ViewConfigurtion> templates = null;
-	private FileUploadConfigurtion fileUploadConfigurtion = null;
-	private String rootPath;
-	private String suffix = ".shtm";
-	private Class<?> formatServiceClass;
-	private ViewConfigurtion notFoundViewConfigurtion;
-	private ViewConfigurtion errorViewConfigurtion;
-	private String charset = "UTF-8";
-	private HttpMode mode = HttpMode.production;
-	private Map<String,ViewConfigurtion> masterView;
-	private String welcomePage = "index.shtm";
-	private Map<String,Object> items = null;
-	private Map<String,CustomTagConfigurtion> customTags;
-	private BrushingConfigurtion brushing;
 
-	/**
-	 * @return the pages
-	 */
-	public Map< String, ViewConfigurtion> getPages( ) {
-		return pages;
-	}
+    private String ContextPath = "/";
+    private Map<String, ViewConfigurtion> pages = null;
+    private Map<String, ViewConfigurtion> templates = null;
+    private FileUploadConfigurtion fileUploadConfigurtion = null;
+    private String rootPath;
+    private String suffix = ".shtm";
+    private Class<?> formatServiceClass;
+    private ViewConfigurtion notFoundViewConfigurtion;
+    private ViewConfigurtion errorViewConfigurtion;
+    private String charset = "UTF-8";
+    private HttpMode mode = HttpMode.production;
+    private Map<String, ViewConfigurtion> masterView;
+    private String welcomePage = "index.shtm";
+    private Map<String, Object> items = null;
+    private Map<String, CustomTagConfigurtion> customTags;
+    private BrushingConfigurtion brushing;
 
-
-	
-	/**
-	 * @param pages the pages to set
-	 */
-	public void setPages( Map< String, ViewConfigurtion> pages ) {
-		this.pages = pages;
-	}
+    /**
+     * @return the pages
+     */
+    public Map<String, ViewConfigurtion> getPages() {
+        return pages;
+    }
 
 
-	/**
-	 * @return the contextPath
-	 */
-	public String getContextPath( ) {
-		return ContextPath;
-	}
-
-	
-	/**
-	 * @param contextPath the contextPath to set
-	 */
-	public void setContextPath( String contextPath ) {
-		ContextPath = contextPath;
-	}
+    /**
+     * @param pages the pages to set
+     */
+    public void setPages(Map<String, ViewConfigurtion> pages) {
+        this.pages = pages;
+    }
 
 
-
-	public Map<String,ViewConfigurtion> getTemplates( ) {
-		return templates;
-	}
-
-
-
-	public void setTemplates( Map<String,ViewConfigurtion> templates ) {
-		this.templates = templates;
-	}
+    /**
+     * @return the contextPath
+     */
+    public String getContextPath() {
+        return ContextPath;
+    }
 
 
+    /**
+     * @param contextPath the contextPath to set
+     */
+    public void setContextPath(String contextPath) {
+        ContextPath = contextPath;
+    }
 
-	public FileUploadConfigurtion getFileUploadConfigurtion( ) {
-		return fileUploadConfigurtion;
-	}
+
+    public Map<String, ViewConfigurtion> getTemplates() {
+        return templates;
+    }
 
 
+    public void setTemplates(Map<String, ViewConfigurtion> templates) {
+        this.templates = templates;
+    }
 
-	public void setFileUploadConfigurtion( FileUploadConfigurtion fileUploadConfigurtion ) {
-		this.fileUploadConfigurtion = fileUploadConfigurtion;
-	}
 
-	public String getRootPath(){
-		return this.rootPath;
-	}
+    public FileUploadConfigurtion getFileUploadConfigurtion() {
+        return fileUploadConfigurtion;
+    }
 
-	public void setRootPath(String rootPath){
-		this.rootPath = rootPath;
-	}
 
-	public String getSuffix(){
-		return this.suffix;
-	}
+    public void setFileUploadConfigurtion(FileUploadConfigurtion fileUploadConfigurtion) {
+        this.fileUploadConfigurtion = fileUploadConfigurtion;
+    }
 
-	public void setSuffix(String suffix){
-		this.suffix = suffix;
-	}
+    public String getRootPath() {
+        return this.rootPath;
+    }
 
-	public void setFormatServiceClass(Class<?> formatServiceClass){
-		this.formatServiceClass = formatServiceClass;
-	}
+    public void setRootPath(String rootPath) {
+        this.rootPath = rootPath;
+    }
 
-	public Class<?> getFormatServiceClass(){
-		return this.formatServiceClass;
-	}
+    public String getSuffix() {
+        return this.suffix;
+    }
 
-	public void setNotFoundViewConfigurtion(ViewConfigurtion notFoundViewConfigurtion){
-		this.notFoundViewConfigurtion = notFoundViewConfigurtion;
-	}
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
 
-	public ViewConfigurtion getNotFoundViewConfigurtion(){
-		return this.notFoundViewConfigurtion;
-	}
+    public Class<?> getFormatServiceClass() {
+        return this.formatServiceClass;
+    }
 
-	public void setErrorViewConfigurtion(ViewConfigurtion errorViewConfigurtion){
-		this.errorViewConfigurtion = errorViewConfigurtion;
-	}
+    public void setFormatServiceClass(Class<?> formatServiceClass) {
+        this.formatServiceClass = formatServiceClass;
+    }
 
-	public ViewConfigurtion getErrorViewConfigurtion(){
-		return this.errorViewConfigurtion;
-	}
+    public ViewConfigurtion getNotFoundViewConfigurtion() {
+        return this.notFoundViewConfigurtion;
+    }
 
-	public void setCharset(String charset){
-		this.charset = charset;
-	}
+    public void setNotFoundViewConfigurtion(ViewConfigurtion notFoundViewConfigurtion) {
+        this.notFoundViewConfigurtion = notFoundViewConfigurtion;
+    }
 
-	public String getCharset(){
-		return this.charset;
-	}
+    public ViewConfigurtion getErrorViewConfigurtion() {
+        return this.errorViewConfigurtion;
+    }
 
-	public void setMode(HttpMode mode){
-		this.mode = mode;
-	}
+    public void setErrorViewConfigurtion(ViewConfigurtion errorViewConfigurtion) {
+        this.errorViewConfigurtion = errorViewConfigurtion;
+    }
 
-	public HttpMode getMode(){
-		return this.mode;
-	}
+    public String getCharset() {
+        return this.charset;
+    }
 
-	public Map<String,ViewConfigurtion> getMasterViews(){
-		return this.masterView;
-	}
+    public void setCharset(String charset) {
+        this.charset = charset;
+    }
 
-	public void setMasterViews(Map<String,ViewConfigurtion> pc){
-		this.masterView = pc;
-	}
+    public HttpMode getMode() {
+        return this.mode;
+    }
 
-	public String getWelcomePage(){
-		return this.welcomePage;
-	}
+    public void setMode(HttpMode mode) {
+        this.mode = mode;
+    }
 
-	public void setWelcomePage(String welcomePage){
-		this.welcomePage = welcomePage;
-	}
+    public Map<String, ViewConfigurtion> getMasterViews() {
+        return this.masterView;
+    }
 
-	public void setItems(Map<String,Object> items){
-		this.items = items;
-	}
+    public void setMasterViews(Map<String, ViewConfigurtion> pc) {
+        this.masterView = pc;
+    }
 
-	public Map<String, Object> getItems(){
-		return this.items;
-	}
+    public String getWelcomePage() {
+        return this.welcomePage;
+    }
 
-	public Object getItem(String key){
-		if(null == key) return null;
-		if(Validate.isNullOrEmpty(items)) return null;
-		return items.get(key);
-	}
+    public void setWelcomePage(String welcomePage) {
+        this.welcomePage = welcomePage;
+    }
 
-	public Map<String,CustomTagConfigurtion> getCustomTags(){
-		return this.customTags;
-	}
-	public void setCustomTags(Map<String,CustomTagConfigurtion> customTags){
-		this.customTags = customTags;
-	}
+    public Map<String, Object> getItems() {
+        return this.items;
+    }
 
-	public BrushingConfigurtion getBrushing(){
-		return this.brushing;
-	}
+    public void setItems(Map<String, Object> items) {
+        this.items = items;
+    }
 
-	public void setBrushing(BrushingConfigurtion brushing){
-		this.brushing = brushing;
-	}
+    public Object getItem(String key) {
+        if (null == key) return null;
+        if (Validate.isNullOrEmpty(items)) return null;
+        return items.get(key);
+    }
+
+    public Map<String, CustomTagConfigurtion> getCustomTags() {
+        return this.customTags;
+    }
+
+    public void setCustomTags(Map<String, CustomTagConfigurtion> customTags) {
+        this.customTags = customTags;
+    }
+
+    public BrushingConfigurtion getBrushing() {
+        return this.brushing;
+    }
+
+    public void setBrushing(BrushingConfigurtion brushing) {
+        this.brushing = brushing;
+    }
 
 }

@@ -53,18 +53,17 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.NoSuchAlgorithmException;
 
-@AlbianServiceRant(Id = IAlbianSecurityService.Name,Interface = IAlbianSecurityService.class)
+@AlbianServiceRant(Id = IAlbianSecurityService.Name, Interface = IAlbianSecurityService.class)
 public class AlbianSecurityService extends FreeAlbianService implements IAlbianSecurityService {
-
-    public String getServiceName(){
-        return Name;
-    }
-
 
     //donot try in my system,we not use this key
     private String DEFAULT_SHA_KEY = "oskey:sdfgrgeyt*&43543dfgsdfgs6454";
     private String DEFAULT_MD5_KEY = "oskey:!t#==-;'sdfd3432dfgdgs43242#!";
     private String DEFAULT_DES_KEY = "oskey:$fdge5rt7903=dfgdgr;.,'ergfegn$";
+
+    public String getServiceName() {
+        return Name;
+    }
 
     @Override
     public void init() throws org.albianj.service.parser.AlbianParserException {
@@ -103,7 +102,7 @@ public class AlbianSecurityService extends FreeAlbianService implements IAlbianS
 
             byte[] retByte = cipher.doFinal(bytesrc);
             return new String(retByte);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -123,7 +122,7 @@ public class AlbianSecurityService extends FreeAlbianService implements IAlbianS
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
 
             return encryptBASE64(cipher.doFinal(message.getBytes("UTF-8")));
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -172,7 +171,7 @@ public class AlbianSecurityService extends FreeAlbianService implements IAlbianS
             Mac mac = Mac.getInstance(secretKey.getAlgorithm());
             mac.init(secretKey);
             return encryptBASE64(mac.doFinal(data));
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -185,7 +184,7 @@ public class AlbianSecurityService extends FreeAlbianService implements IAlbianS
             Mac mac = Mac.getInstance(secretKey.getAlgorithm());
             mac.init(secretKey);
             return encryptBASE64(mac.doFinal(decryptBASE64(data)));
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

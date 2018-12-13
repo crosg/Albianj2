@@ -8,27 +8,27 @@ public class UploadFile {
     private String clientFileName;
     private byte[] data;
 
-    public String getFieldName(){
+    public String getFieldName() {
         return this.fieldName;
     }
 
-    public void setFieldName(String fieldName){
+    public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
-    public String getClientFileName(){
+    public String getClientFileName() {
         return this.clientFileName;
     }
 
-    public void setClientFileName(String clientFileName){
+    public void setClientFileName(String clientFileName) {
         this.clientFileName = clientFileName;
     }
 
-    public byte[] getData(){
+    public byte[] getData() {
         return this.data;
     }
 
-    public void setData(byte[] data){
+    public void setData(byte[] data) {
         this.data = data;
     }
 

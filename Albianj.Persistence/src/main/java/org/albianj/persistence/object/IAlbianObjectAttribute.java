@@ -80,7 +80,7 @@ public interface IAlbianObjectAttribute {
 
     void setDataRouters(IDataRoutersAttribute dra);
 
-    Map<String,IAlbianEntityFieldAttribute> getFields();
+    Map<String, IAlbianEntityFieldAttribute> getFields();
 
-    void setFields(Map<String,IAlbianEntityFieldAttribute> fields);
+    void setFields(Map<String, IAlbianEntityFieldAttribute> fields);
 }

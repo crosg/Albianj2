@@ -307,12 +307,12 @@ public class FilterExpression implements IFilterExpression {
         return this._chains;
     }
 
-    public void setIdentical(boolean identical){
-        this._isIdentical = identical;
+    public boolean isIdentical() {
+        return this._isIdentical;
     }
 
-    public boolean isIdentical(){
-        return this._isIdentical;
+    public void setIdentical(boolean identical) {
+        this._isIdentical = identical;
     }
 
 }

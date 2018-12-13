@@ -41,7 +41,6 @@ import org.albianj.datetime.AlbianDateTime;
 import org.albianj.kernel.IAlbianLogicIdService;
 import org.albianj.kernel.KernelSetting;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.net.AlbianHost;
 import org.albianj.service.AlbianServiceRant;
@@ -63,14 +62,14 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-@AlbianServiceRant(Id = IAlbianLogicIdService.Name,Interface = IAlbianLogicIdService.class)
+@AlbianServiceRant(Id = IAlbianLogicIdService.Name, Interface = IAlbianLogicIdService.class)
 public class AlbianLogicIdService extends FreeAlbianService implements IAlbianLogicIdService {
     static AtomicInteger serial = new AtomicInteger(0);
     static AtomicLong id = new AtomicLong(0);
     static AtomicLong jobid = new AtomicLong(0);
     static int seed = 0;
 
-    public String getServiceName(){
+    public String getServiceName() {
         return Name;
     }
 
@@ -129,7 +128,7 @@ public class AlbianLogicIdService extends FreeAlbianService implements IAlbianLo
         if (4 != strs.length) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,
-                    "Id:%s is error-format.",id);
+                    "Id:%s is error-format.", id);
 
             return null;
         }
@@ -149,7 +148,7 @@ public class AlbianLogicIdService extends FreeAlbianService implements IAlbianLo
         if (4 != strs.length) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,
-                    "Id:%s is error-format.",id);
+                    "Id:%s is error-format.", id);
             return null;
         }
 
@@ -160,7 +159,7 @@ public class AlbianLogicIdService extends FreeAlbianService implements IAlbianLo
         } catch (ParseException e) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,
-                    "Id:%s is error-format.",id);
+                    "Id:%s is error-format.", id);
             return null;
         }
         return d;
@@ -178,7 +177,7 @@ public class AlbianLogicIdService extends FreeAlbianService implements IAlbianLo
         if (4 != strs.length) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,
-                    "Id:%s is error-format.",id);
+                    "Id:%s is error-format.", id);
 //            AlbianServiceRouter.getLogger().error(IAlbianLoggerService.AlbianRunningLoggerName, "id:%1$s is fail.", id);
             return null;
         }
@@ -190,7 +189,7 @@ public class AlbianLogicIdService extends FreeAlbianService implements IAlbianLo
         } catch (ParseException e) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,
-                    "Id:%s is error-format.",id);
+                    "Id:%s is error-format.", id);
 
             return null;
         }
@@ -232,14 +231,14 @@ public class AlbianLogicIdService extends FreeAlbianService implements IAlbianLo
         }
     }
 
-    public BigInteger makeSimpleId(){
+    public BigInteger makeSimpleId() {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         long second = ts.getTime() / 1000;
         BigInteger bi = BigInteger.valueOf(second);
         bi = bi.multiply(new BigInteger("10000"));
         int s = 0;
         synchronized (this) {
-            if(seed >= 10000){
+            if (seed >= 10000) {
                 seed = 0;
             }
             s = seed++;
@@ -248,7 +247,6 @@ public class AlbianLogicIdService extends FreeAlbianService implements IAlbianLo
         bi = bi.add(BigInteger.valueOf(s));
         return bi;
     }
-
 
 
 }

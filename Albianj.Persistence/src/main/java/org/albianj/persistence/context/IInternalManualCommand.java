@@ -29,18 +29,19 @@ public interface IInternalManualCommand {
     public void setParameterMapper(Map<Integer, String> parameterMapper);
 
     /*
-    *   经过正则表达式过滤后的可执行sql
+     *   经过正则表达式过滤后的可执行sql
      */
     String getSqlText();
 
     /**
      * 经过正则表达式过滤后的可执行sql
+     *
      * @param sql
      */
     void setSqlText(String sql);
 
-    Map<String,ISqlParameter> getCommandParameters();
+    Map<String, ISqlParameter> getCommandParameters();
 
-    void setCommandParameters(Map<String,ISqlParameter> paras);
+    void setCommandParameters(Map<String, ISqlParameter> paras);
 
 }

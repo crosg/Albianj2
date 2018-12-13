@@ -12,7 +12,7 @@ public interface IView {
     @NotHttpActionAttribute()
     public boolean isMasterView();
 
-        @NotHttpActionAttribute()
+    @NotHttpActionAttribute()
     void kinit(HttpContext ctx);
 
     @NotHttpActionAttribute()

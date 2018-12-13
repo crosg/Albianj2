@@ -13,7 +13,7 @@ public class OrgMultiUserDataRouter extends FreeAlbianObjectDataRouter {
     public List<IDataRouterAttribute> mappingWriterRouting(
             Map<String, IDataRouterAttribute> routings, IAlbianObject obj) {
         // TODO Auto-generated method stub
-        IOrgMultiUser u  = (IOrgMultiUser) obj;
+        IOrgMultiUser u = (IOrgMultiUser) obj;
         String id = u.getId();
         String drBasename = "MUserWrite";
         String[] ids = id.split("_");
@@ -41,7 +41,7 @@ public class OrgMultiUserDataRouter extends FreeAlbianObjectDataRouter {
     public String mappingWriterTable(IDataRouterAttribute routing,
                                      IAlbianObject obj) {
         // TODO Auto-generated method stub
-        IOrgMultiUser u  = (IOrgMultiUser) obj;
+        IOrgMultiUser u = (IOrgMultiUser) obj;
         String id = u.getId();
         String[] ids = id.split("_");
         String tablename = routing.getTableName() + "_" + ids[3]; //使用表标识
@@ -70,7 +70,7 @@ public class OrgMultiUserDataRouter extends FreeAlbianObjectDataRouter {
         IFilterCondition fc = wheres.get("Id");
         String id = (String) fc.getValue();
         String[] ids = id.split("_");
-        String tablename = routing.getTableName() +"_" + ids[3]; //使用表标识定位到那个路由
+        String tablename = routing.getTableName() + "_" + ids[3]; //使用表标识定位到那个路由
         return tablename;
     }
 

@@ -43,13 +43,12 @@ import org.albianj.service.IAlbianServiceAttribute;
 import org.albianj.service.IAlbianServiceFieldAttribute;
 import org.albianj.verify.Validate;
 
-import java.util.List;
 import java.util.Map;
 
 public class AlbianServiceAttribute implements IAlbianServiceAttribute {
 
-    Map<String,IAlbianServiceFieldAttribute> ps;
-    Map<String,IAlbianServiceAopAttribute> aopAttributes = null;
+    Map<String, IAlbianServiceFieldAttribute> ps;
+    Map<String, IAlbianServiceAopAttribute> aopAttributes = null;
     private String id = "";
     private String type = "";
     private String itf;
@@ -88,20 +87,20 @@ public class AlbianServiceAttribute implements IAlbianServiceAttribute {
     }
 
     @Override
-    public Map<String,IAlbianServiceFieldAttribute> getServiceFields() {
+    public Map<String, IAlbianServiceFieldAttribute> getServiceFields() {
         return this.ps;
     }
 
     @Override
-    public void setServiceFields(Map<String,IAlbianServiceFieldAttribute> ps) {
+    public void setServiceFields(Map<String, IAlbianServiceFieldAttribute> ps) {
         this.ps = ps;
     }
 
-    public Map<String,IAlbianServiceAopAttribute> getAopAttributes() {
+    public Map<String, IAlbianServiceAopAttribute> getAopAttributes() {
         return this.aopAttributes;
     }
 
-    public void setAopAttributes(Map<String,IAlbianServiceAopAttribute> aopAttributes) {
+    public void setAopAttributes(Map<String, IAlbianServiceAopAttribute> aopAttributes) {
         this.aopAttributes = aopAttributes;
     }
 

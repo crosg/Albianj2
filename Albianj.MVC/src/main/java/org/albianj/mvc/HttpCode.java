@@ -8,7 +8,7 @@ public class HttpCode {
     /**
      * 200:请求成功
      */
-    public static final int  Success = 200;
+    public static final int Success = 200;
 
     /**
      * 202:接受和处理、但处理未完成

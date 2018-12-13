@@ -38,7 +38,6 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.io;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -140,38 +139,38 @@ public final class Path {
         return getClassLoader(cla).getResource(resource);
     }
 
-    public static void traversalAllFolder( List< String > files,boolean isDepth ,String path, String currSubFolder,
-                                           IFileMark fileMark, String mark ) {
-        File file = new File( path );
-        if(StringUtils.isBlank(currSubFolder)) {
+    public static void traversalAllFolder(List<String> files, boolean isDepth, String path, String currSubFolder,
+                                          IFileMark fileMark, String mark) {
+        File file = new File(path);
+        if (StringUtils.isBlank(currSubFolder)) {
             currSubFolder = "/";
         }
-        if ( file.exists( ) ) {
-            File[ ] fs = file.listFiles( );
-            if ( fs.length == 0 ) {
+        if (file.exists()) {
+            File[] fs = file.listFiles();
+            if (fs.length == 0) {
                 int idx = currSubFolder.lastIndexOf("/");
-                if(idx >= 0) {
+                if (idx >= 0) {
                     currSubFolder = currSubFolder.substring(0, idx);
                 }
                 return;
             } else {
-                for ( File f : fs ) {
-                    if ( f.isDirectory( ) ) {
-                        if(isDepth) {
-                            currSubFolder =  Path.join(currSubFolder,f.getName());
-                            traversalAllFolder(files,isDepth, f.getAbsolutePath(), currSubFolder,
+                for (File f : fs) {
+                    if (f.isDirectory()) {
+                        if (isDepth) {
+                            currSubFolder = Path.join(currSubFolder, f.getName());
+                            traversalAllFolder(files, isDepth, f.getAbsolutePath(), currSubFolder,
                                     fileMark, mark);
                         }
                     } else {
-                        if ( fileMark.isMark( f, mark ) ) {
-                            String filename = StringUtils.isBlank( currSubFolder )
-                                    ? f.getName( ) : currSubFolder + f.getName( );
-                            files.add( filename );
+                        if (fileMark.isMark(f, mark)) {
+                            String filename = StringUtils.isBlank(currSubFolder)
+                                    ? f.getName() : currSubFolder + f.getName();
+                            files.add(filename);
                         }
                     }
                 }
                 int idx = currSubFolder.lastIndexOf("/");
-                if(idx >= 0) {
+                if (idx >= 0) {
                     currSubFolder = currSubFolder.substring(0, idx);
                 }
 
@@ -179,29 +178,29 @@ public final class Path {
         }
     }
 
-    public static void traversalAllFolder2( List< String > files,boolean isDepth ,String path,String rootpath, String currSubFolder,
-                                           IFileMark fileMark, String mark ) {
-        File file = new File( path );
-        if(StringUtils.isBlank(rootpath)) {
+    public static void traversalAllFolder2(List<String> files, boolean isDepth, String path, String rootpath, String currSubFolder,
+                                           IFileMark fileMark, String mark) {
+        File file = new File(path);
+        if (StringUtils.isBlank(rootpath)) {
             rootpath = "/";
         }
-        if ( file.exists( ) ) {
-            File[ ] fs = file.listFiles( );
-            if ( fs.length == 0 ) {
+        if (file.exists()) {
+            File[] fs = file.listFiles();
+            if (fs.length == 0) {
                 return;
             } else {
-                for ( File f : fs ) {
-                    if ( f.isDirectory( ) ) {
-                        if(isDepth) {
-                            currSubFolder =  Path.join(rootpath,f.getName());
-                            traversalAllFolder2(files,isDepth, f.getAbsolutePath(),rootpath, currSubFolder,
+                for (File f : fs) {
+                    if (f.isDirectory()) {
+                        if (isDepth) {
+                            currSubFolder = Path.join(rootpath, f.getName());
+                            traversalAllFolder2(files, isDepth, f.getAbsolutePath(), rootpath, currSubFolder,
                                     fileMark, mark);
                         }
                     } else {
-                        if ( fileMark.isMark( f, mark ) ) {
-                            String filename = StringUtils.isBlank( currSubFolder )
-                                    ? f.getName( ) : Path.joinWithFilename(f.getName(),rootpath,currSubFolder);
-                            files.add( filename );
+                        if (fileMark.isMark(f, mark)) {
+                            String filename = StringUtils.isBlank(currSubFolder)
+                                    ? f.getName() : Path.joinWithFilename(f.getName(), rootpath, currSubFolder);
+                            files.add(filename);
                         }
                     }
                 }
@@ -215,9 +214,8 @@ public final class Path {
     }
 
 
-
-    public static String join( String... paths ) {
-        if ( null == paths || 0 == paths.length ) return null;
+    public static String join(String... paths) {
+        if (null == paths || 0 == paths.length) return null;
 //        StringBuilder sb = new StringBuilder( );
         String ps = File.separator;
 //        for ( String p : paths ) {
@@ -228,22 +226,22 @@ public final class Path {
         StringBuilder sb = null;
         boolean isLastAdd = false;
 
-        for ( String p : paths ) {
-            if(null == sb){
+        for (String p : paths) {
+            if (null == sb) {
                 sb = new StringBuilder();
                 sb.append(p);
                 isLast = p.endsWith(ps);
             } else {
                 if (isLast && p.startsWith(File.separator)) {
                     sb.append(p.substring(1));
-                } else if(!isLast && !p.startsWith(File.separator)) {
+                } else if (!isLast && !p.startsWith(File.separator)) {
                     sb.append(File.separator).append(p);
                 } else {
                     sb.append(p);
                 }
             }
         }
-        return sb.toString( );
+        return sb.toString();
 //        boolean isBeginWith = false;
 //        StringBuffer sb = new StringBuffer();
 //            for(String s : paths){
@@ -251,17 +249,16 @@ public final class Path {
 //            }
 
 
-
     }
 
-    public static String joinWithFilename( String filename, String... paths ) {
-        if ( null == paths || 0 == paths.length ) return filename;
-        return join( paths ) + filename;
+    public static String joinWithFilename(String filename, String... paths) {
+        if (null == paths || 0 == paths.length) return filename;
+        return join(paths) + filename;
     }
 
-    public static boolean isExist( String path ) {
-        File f = new File( path );
-        return f.exists( );
+    public static boolean isExist(String path) {
+        File f = new File(path);
+        return f.exists();
     }
 
 
@@ -279,7 +276,7 @@ public final class Path {
      * Return a resource bundle using the specified base name and locale.
      *
      * @param baseName the base name of the resource bundle, a fully qualified class name
-     * @param locale the locale for which a resource bundle is desired
+     * @param locale   the locale for which a resource bundle is desired
      * @return a resource bundle for the given base name and locale
      */
     public static ResourceBundle getBundle(String baseName, Locale locale) {
@@ -287,29 +284,24 @@ public final class Path {
         return ResourceBundle.getBundle(baseName, locale, classLoader);
     }
 
-    public static  StringBuffer readLineFile(String filename){
+    public static StringBuffer readLineFile(String filename) {
         InputStreamReader inputReader = null;
         BufferedReader bufferReader = null;
         OutputStream outputStream = null;
         StringBuffer buffer = new StringBuffer();
 
-        try
-        {
+        try {
             InputStream inputStream = new FileInputStream(filename);
             inputReader = new InputStreamReader(inputStream);
             bufferReader = new BufferedReader(inputReader);
             // 读取一行
             String line = null;
-            while ((line = bufferReader.readLine()) != null)
-            {
+            while ((line = bufferReader.readLine()) != null) {
                 buffer.append(line);
             }
 
-        }
-        catch (IOException e)
-        {
-        }
-        finally {
+        } catch (IOException e) {
+        } finally {
             if (null != outputStream) {
                 try {
                     outputStream.close();
@@ -332,48 +324,48 @@ public final class Path {
         return buffer;
     }
 
-    public static String relativeToAbsolute(String currentPath,String relativePath){
+    public static String relativeToAbsolute(String currentPath, String relativePath) {
         //begin with /
-        if(relativePath.startsWith(File.separator)){
+        if (relativePath.startsWith(File.separator)) {
             return relativePath;
         }
 
         String path = currentPath;
         File f = new File(currentPath);
-        if(f.isFile()) {
+        if (f.isFile()) {
             path = FilenameUtils.getPath(currentPath);
         }
 
 
         //begin with . means current path
-        if(!relativePath.startsWith("..")){
-            if(relativePath.startsWith(".")){
-                return joinWithFilename(relativePath.substring(1),currentPath);
+        if (!relativePath.startsWith("..")) {
+            if (relativePath.startsWith(".")) {
+                return joinWithFilename(relativePath.substring(1), currentPath);
             } else {
-                return joinWithFilename(relativePath,currentPath);
+                return joinWithFilename(relativePath, currentPath);
             }
         }
 
         //begin with .. means back path
-        int count = StringUtils.countMatches(relativePath,"..");
-        if(path.endsWith(File.separator)){
-            path = path.substring(0,path.length() - 1);
+        int count = StringUtils.countMatches(relativePath, "..");
+        if (path.endsWith(File.separator)) {
+            path = path.substring(0, path.length() - 1);
         }
 
-        int idx = StringUtils.lastIndexOf(relativePath,"..");
+        int idx = StringUtils.lastIndexOf(relativePath, "..");
         String realpath = relativePath.substring(idx + 1);
 
-        String[] paths = StringUtils.split(path,File.separatorChar);
+        String[] paths = StringUtils.split(path, File.separatorChar);
         int basepathCount = paths.length - count;
-        if(0 > basepathCount) throw new RuntimeException("parent folder is so short.");
-        if(0 == basepathCount) return realpath;
+        if (0 > basepathCount) throw new RuntimeException("parent folder is so short.");
+        if (0 == basepathCount) return realpath;
         String[] basePaths = new String[basepathCount];
-        for(int i = 0; i < basepathCount; i++){
+        for (int i = 0; i < basepathCount; i++) {
             basePaths[i] = paths[i];
         }
 
-        String basepath = StringUtils.join(basePaths,File.separator);
-        return joinWithFilename(realpath,basepath);
+        String basepath = StringUtils.join(basePaths, File.separator);
+        return joinWithFilename(realpath, basepath);
     }
 
 }

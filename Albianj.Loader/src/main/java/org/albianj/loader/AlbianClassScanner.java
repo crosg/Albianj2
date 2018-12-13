@@ -27,9 +27,9 @@ public class AlbianClassScanner {
      * @return
      */
     public static HashMap<String, Object> filter(ClassLoader classLoader,
-                                                       String pkgName,
-                                                       IAlbianClassFilter filter,
-                                                        IAlbianClassExcavator excavator)
+                                                 String pkgName,
+                                                 IAlbianClassFilter filter,
+                                                 IAlbianClassExcavator excavator)
             throws ClassNotFoundException, IOException {
 
         // 第一个class类的集合
@@ -39,40 +39,40 @@ public class AlbianClassScanner {
         String packageName = pkgName;
         String packageDirName = packageName.replace('.', '/');
         Enumeration<URL> dirs;
-            dirs = classLoader.getResources(packageDirName);
-            while (dirs.hasMoreElements()) {
-                URL url = dirs.nextElement();
-                String protocol = url.getProtocol();
-                if ("file".equals(protocol)) {
-                    String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
-                    findAndAddClassesInPackageByFile(classLoader, packageName,
-                            filePath, recursive, classes, filter,excavator);
-                } else if ("jar".equals(protocol)) {
-                    JarFile jar;
-                        jar = ((JarURLConnection) url.openConnection()).getJarFile();
-                        Enumeration<JarEntry> entries = jar.entries();
-                        while (entries.hasMoreElements()) {
-                            JarEntry entry = entries.nextElement();
-                            String name = entry.getName();
-                            if (name.charAt(0) == '/') {
-                                name = name.substring(1);
-                            }
-                            if (name.startsWith(packageDirName)) {
-                                int idx = name.lastIndexOf('/');
-                                if (idx != -1) {
-                                    packageName = name.substring(0, idx).replace('/', '.');
-                                }
-                                if ((idx != -1) || recursive) {
-                                    if (name.endsWith(".class") && !entry.isDirectory()) {
-                                        String className = name.substring(
-                                                packageName.length() + 1, name.length() - 6);
-                                        loadClass(classLoader, filter, classes, packageName, className,excavator);
-                                    }
-                                }
+        dirs = classLoader.getResources(packageDirName);
+        while (dirs.hasMoreElements()) {
+            URL url = dirs.nextElement();
+            String protocol = url.getProtocol();
+            if ("file".equals(protocol)) {
+                String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
+                findAndAddClassesInPackageByFile(classLoader, packageName,
+                        filePath, recursive, classes, filter, excavator);
+            } else if ("jar".equals(protocol)) {
+                JarFile jar;
+                jar = ((JarURLConnection) url.openConnection()).getJarFile();
+                Enumeration<JarEntry> entries = jar.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    String name = entry.getName();
+                    if (name.charAt(0) == '/') {
+                        name = name.substring(1);
+                    }
+                    if (name.startsWith(packageDirName)) {
+                        int idx = name.lastIndexOf('/');
+                        if (idx != -1) {
+                            packageName = name.substring(0, idx).replace('/', '.');
+                        }
+                        if ((idx != -1) || recursive) {
+                            if (name.endsWith(".class") && !entry.isDirectory()) {
+                                String className = name.substring(
+                                        packageName.length() + 1, name.length() - 6);
+                                loadClass(classLoader, filter, classes, packageName, className, excavator);
                             }
                         }
+                    }
                 }
             }
+        }
 
         return classes;
     }
@@ -85,12 +85,12 @@ public class AlbianClassScanner {
                                   String className,
                                   IAlbianClassExcavator excavator)
             throws ClassNotFoundException {
-            String fullClassName = packageName + '.' + className;
-            Class<?> cls = classLoader.loadClass(fullClassName);
-            if (filter.verify(cls)) {
-                Object info = excavator.finder(cls);
-                classes.put(fullClassName, info);
-            }
+        String fullClassName = packageName + '.' + className;
+        Class<?> cls = classLoader.loadClass(fullClassName);
+        if (filter.verify(cls)) {
+            Object info = excavator.finder(cls);
+            classes.put(fullClassName, info);
+        }
     }
 
 
@@ -128,11 +128,11 @@ public class AlbianClassScanner {
                         file.getAbsolutePath(),
                         recursive,
                         classes,
-                        filter,excavator);
+                        filter, excavator);
             } else {
                 String className = file.getName().substring(0,
                         file.getName().length() - 6);
-                loadClass(classLoader, filter, classes, packageName, className,excavator);
+                loadClass(classLoader, filter, classes, packageName, className, excavator);
             }
         }
     }

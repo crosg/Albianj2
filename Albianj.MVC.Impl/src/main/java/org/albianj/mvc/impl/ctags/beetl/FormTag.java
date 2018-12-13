@@ -10,19 +10,19 @@ import org.beetl.core.statement.Statement;
  */
 public class FormTag extends GeneralVarTagBinding {
 
-    public static String getName(){
-        return "HForm";
-    }
-
     private HttpContext currentContext = null;
     private String mvName = null;
 
-    public void setCurrentContext(HttpContext ctx){
-        this.currentContext = ctx;
+    public static String getName() {
+        return "HForm";
     }
 
-    public HttpContext getCurrentContext(){
+    public HttpContext getCurrentContext() {
         return this.currentContext;
+    }
+
+    public void setCurrentContext(HttpContext ctx) {
+        this.currentContext = ctx;
     }
 
     @Override

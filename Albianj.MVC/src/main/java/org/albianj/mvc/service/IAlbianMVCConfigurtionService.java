@@ -9,5 +9,6 @@ import org.albianj.service.IAlbianService;
  */
 public interface IAlbianMVCConfigurtionService extends IAlbianService {
     String Name = AlbianBuiltinServiceNamePair.AlbianMvcConfigurtionServiceName;
+
     AlbianHttpConfigurtion getHttpConfigurtion();
 }

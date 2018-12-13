@@ -10,17 +10,17 @@ import org.albianj.service.AlbianServiceRouter;
 public class CView extends View {
 
     @NotHttpActionAttribute()
-    public String getSubTitle(){
+    public String getSubTitle() {
         return this.getClass().getSimpleName();
     }
 
     @Override
     @NotHttpActionAttribute()
-    public void kinit(HttpContext ctx){
+    public void kinit(HttpContext ctx) {
         super.kinit(ctx);
         ctx.setView(this);
 
-        model.put("Albian_SubTitle",getSubTitle());
+        model.put("Albian_SubTitle", getSubTitle());
     }
 
 
@@ -31,15 +31,15 @@ public class CView extends View {
 
 
     @NotHttpActionAttribute()
-    public StringBuffer kAfterRender(StringBuffer contextBuffer){
+    public StringBuffer kAfterRender(StringBuffer contextBuffer) {
         StringBuffer sb = new StringBuffer();
-        if(0 != this.jsLinks.size()) {
+        if (0 != this.jsLinks.size()) {
             for (String s : this.jsLinks.values()) {
                 sb.append(s);
             }
         }
 
-        if(0 != jsBlocks.size()) {
+        if (0 != jsBlocks.size()) {
             sb.append("<script language=\"JavaScript\" type=\"text/javascript\">");
             for (String s : this.jsBlocks.values()) {
                 sb.append(s);
@@ -48,7 +48,7 @@ public class CView extends View {
         }
 
         StringBuffer html = ctx.getMasterViewHtml();
-        if(null == html){
+        if (null == html) {
 //            this.getSession()
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
@@ -60,8 +60,8 @@ public class CView extends View {
             return null;
         }
         int idx = html.indexOf(ContentPlaceHolder);
-        html.delete(idx,idx + ContentPlaceHolder.length());
-        html.insert(idx,contextBuffer);
+        html.delete(idx, idx + ContentPlaceHolder.length());
+        html.insert(idx, contextBuffer);
         if (0 != sb.length()) {
             int offset = html.lastIndexOf("</body>");
             html.insert(offset, sb);

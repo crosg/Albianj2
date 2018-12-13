@@ -137,11 +137,11 @@ public class WriterTask implements IWriterTask {
         this.compensating = compensating;
     }
 
-    public void setDatabasePool(IDataBasePool pool){
-        this.pool = pool;
+    public IDataBasePool getDatabasePool() {
+        return this.pool;
     }
 
-    public IDataBasePool getDatabasePool(){
-        return this.pool;
+    public void setDatabasePool(IDataBasePool pool) {
+        this.pool = pool;
     }
 }

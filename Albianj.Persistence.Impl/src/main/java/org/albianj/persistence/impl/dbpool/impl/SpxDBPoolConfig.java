@@ -38,7 +38,6 @@ public class SpxDBPoolConfig implements ISpxDBPoolConfig {
     private long cleanupTimestampMs = 30 * 1000;
 
 
-
     public long getCleanupTimestampMs() {
         return cleanupTimestampMs;
     }
@@ -89,7 +88,7 @@ public class SpxDBPoolConfig implements ISpxDBPoolConfig {
     }
 
     @Override
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 
@@ -158,12 +157,12 @@ public class SpxDBPoolConfig implements ISpxDBPoolConfig {
         this.maxRemedyConnectionCount = maxRemedyConnectionCount;
     }
 
-    public void setMaxRequestTimeMs(long maxRequestTimeMs){
-        this.maxRequestTimeMs = maxRequestTimeMs;
+    public long getMaxRequestTimeMs() {
+        return this.maxRequestTimeMs;
     }
 
-    public long getMaxRequestTimeMs(){
-        return this.maxRequestTimeMs;
+    public void setMaxRequestTimeMs(long maxRequestTimeMs) {
+        this.maxRequestTimeMs = maxRequestTimeMs;
     }
 
 

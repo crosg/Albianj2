@@ -45,9 +45,11 @@ public class MsgHeader implements IMsgHeader {
     private long _offset = 0;
     private boolean _keepalive = false;
     private int _error = 0;
+
     public MsgHeader() {
 
     }
+
     public MsgHeader(int version, int protocol, long bodylen, long offset,
                      boolean keepalive, int error) {
         this._version = version;

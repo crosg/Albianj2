@@ -154,7 +154,7 @@ public class MimeType {
     public static final String z = "application/x-compress";
     public static final String zip = "application/zip";
 
-    public static String getMimeType(String suffixOrUseful){
+    public static String getMimeType(String suffixOrUseful) {
         return null;
     }
 }

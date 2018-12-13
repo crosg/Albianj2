@@ -8,9 +8,10 @@ import java.lang.annotation.*;
  * Created by xuhaifeng on 17/2/3.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE,ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Inherited
 @Documented
 public @interface XmlElementAttribute {
     String Name();
 }
+

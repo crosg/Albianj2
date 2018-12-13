@@ -33,5 +33,5 @@ public @interface AlbianServiceRant {
     /*
      * Class object format for service's interface
      */
-    Class<? extends IAlbianService>  Interface() default IAlbianService.class;
+    Class<? extends IAlbianService> Interface() default IAlbianService.class;
 }

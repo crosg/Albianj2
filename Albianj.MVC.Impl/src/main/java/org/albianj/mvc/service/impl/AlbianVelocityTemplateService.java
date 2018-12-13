@@ -38,15 +38,14 @@ import java.util.Properties;
  */
 public class AlbianVelocityTemplateService extends FreeAlbianService implements IAlbianTemplateService {
 
-    public String getServiceName(){
-        return Name;
-    }
-
-
     protected static final int WRITER_BUFFER_SIZE = 32 * 1024;
     protected SimplePool writerPool = new SimplePool(40);
-    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref,Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
+    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
     private AlbianHttpConfigurtion c;
+
+    public String getServiceName() {
+        return Name;
+    }
 
     public void setHttpConfigurtion(AlbianHttpConfigurtion c) {
         this.c = c;
@@ -111,25 +110,25 @@ public class AlbianVelocityTemplateService extends FreeAlbianService implements 
     }
 
 
-    public void renderTemplate(View page, Map<String, ?> model,Map<String,Class<?>> funcs, Writer writer)
+    public void renderTemplate(View page, Map<String, ?> model, Map<String, Class<?>> funcs, Writer writer)
             throws IOException, TemplateException {
 
         ViewConfigurtion pc = c.getPages().get(page.getClass().getName());
         String templatePath = pc.getTemplate();
 
-        internalRenderTemplate(templatePath, page, model,funcs, writer);
+        internalRenderTemplate(templatePath, page, model, funcs, writer);
     }
 
-    public void renderTemplate(String templatePath, Map<String, ?> model,Map<String,Class<?>> funcs, Writer writer)
+    public void renderTemplate(String templatePath, Map<String, ?> model, Map<String, Class<?>> funcs, Writer writer)
             throws IOException, TemplateException {
 
-        internalRenderTemplate(templatePath, null, model, funcs,writer);
+        internalRenderTemplate(templatePath, null, model, funcs, writer);
     }
 
     protected void internalRenderTemplate(String templatePath,
                                           View page,
                                           Map<String, ?> model,
-                                          Map<String,Class<?>> funcs,
+                                          Map<String, Class<?>> funcs,
                                           Writer writer)
             throws IOException, TemplateException {
 
@@ -178,7 +177,7 @@ public class AlbianVelocityTemplateService extends FreeAlbianService implements 
     }
 
 
-    public StringBuffer renderTemplate(Map params, Map<String,Class<?>> funcs,String vmContext) {
+    public StringBuffer renderTemplate(Map params, Map<String, Class<?>> funcs, String vmContext) {
         VelocityContext context = new VelocityContext(params);
         StringWriter writer = new StringWriter();
         Velocity.evaluate(context, writer, "", vmContext);

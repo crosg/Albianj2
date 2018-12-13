@@ -24,7 +24,7 @@ public class ManualContext implements IManualContext {
     private IRunningStorageAttribute rsa;
     private String dbName;
     private List<Integer> rcs;
-    private WriterJobLifeTime  lifeTime = WriterJobLifeTime.Normal;
+    private WriterJobLifeTime lifeTime = WriterJobLifeTime.Normal;
 
     @Override
     public String getSessionId() {

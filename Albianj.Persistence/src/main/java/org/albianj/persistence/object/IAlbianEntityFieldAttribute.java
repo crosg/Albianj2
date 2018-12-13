@@ -3,7 +3,7 @@ package org.albianj.persistence.object;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public interface IAlbianEntityFieldAttribute  extends  IMemberAttribute{
+public interface IAlbianEntityFieldAttribute extends IMemberAttribute {
 
     Field getEntityField();
 

@@ -113,7 +113,7 @@ public interface IReaderJob extends IPersistenceJob {
      */
     public void setResult(ResultSet result);
 
-    public void setDatabasePool(IDataBasePool pool);
-
     public IDataBasePool getDatabasePool();
+
+    public void setDatabasePool(IDataBasePool pool);
 }

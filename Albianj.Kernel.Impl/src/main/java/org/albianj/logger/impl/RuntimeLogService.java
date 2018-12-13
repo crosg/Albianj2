@@ -8,17 +8,17 @@ public class RuntimeLogService extends FreeAlbianService implements IRuntimeLogS
     @Override
     public void addLog(String sessionId, RuntimeLogType logType, Class<?> type, String fmt, Object[]... args) {
         StackTraceElement[] stes = Thread.currentThread().getStackTrace();
-        int count = stes.length >=6 ? 6: stes.length;
+        int count = stes.length >= 6 ? 6 : stes.length;
         StringBuilder sb = new StringBuilder("Call ");
-        for(int i = 1;i<count;i++){
+        for (int i = 1; i < count; i++) {
             StackTraceElement ste = stes[i];
             sb.append("ST:").append(ste.getFileName())
                     .append(" M:").append(ste.getMethodName())
                     .append(" L:").append(ste.getLineNumber())
                     .append(",");
         }
-        if(0!= sb.length()) {
-            sb.deleteCharAt(sb.length()-1);
+        if (0 != sb.length()) {
+            sb.deleteCharAt(sb.length() - 1);
         }
 
     }
@@ -26,17 +26,17 @@ public class RuntimeLogService extends FreeAlbianService implements IRuntimeLogS
     @Override
     public void addLog(String sessionId, RuntimeLogType logType, Class<?> type, Throwable t, String fmt, Object[]... args) {
         StackTraceElement[] stes = t.getStackTrace();
-        int count = stes.length >=5 ? 5 : stes.length;
+        int count = stes.length >= 5 ? 5 : stes.length;
         StringBuilder sb = new StringBuilder("Call ");
-        for(int i = 0;i<count;i++){
+        for (int i = 0; i < count; i++) {
             StackTraceElement ste = stes[i];
             sb.append("ST:").append(ste.getFileName())
                     .append(" M:").append(ste.getMethodName())
                     .append(" L:").append(ste.getLineNumber())
                     .append(",");
         }
-        if(0!= sb.length()) {
-            sb.deleteCharAt(sb.length()-1);
+        if (0 != sb.length()) {
+            sb.deleteCharAt(sb.length() - 1);
         }
     }
 }

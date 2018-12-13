@@ -72,7 +72,7 @@ public class PersistenceCompensateNotify implements IPersistenceCompensateNotify
             sb = writerJobCommandToString(job);
         } catch (AlbianDataServiceException e) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    job.getId(), AlbianLoggerLevel.Error,e,
+                    job.getId(), AlbianLoggerLevel.Error, e,
                     "send persistence notify is fail.");
         }
         AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,

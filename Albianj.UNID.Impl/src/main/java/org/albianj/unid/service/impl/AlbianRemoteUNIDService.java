@@ -67,7 +67,7 @@ import java.util.List;
 /**
  * @author Seapeak
  */
-@AlbianServiceRant(Id = IAlbianRemoteUNIDService.Name,Interface = IAlbianRemoteUNIDService.class)
+@AlbianServiceRant(Id = IAlbianRemoteUNIDService.Name, Interface = IAlbianRemoteUNIDService.class)
 public class AlbianRemoteUNIDService extends FreeAlbianRemoteUNIDParser
         implements IAlbianRemoteUNIDService {
     private static int _idx = 0;
@@ -75,18 +75,12 @@ public class AlbianRemoteUNIDService extends FreeAlbianRemoteUNIDParser
     private List<IAlbianRemoteUNIDAttribute> _list = null;
     private Object locker = new Object();
 
-    public String getServiceName(){
-        return Name;
-    }
-
-
-
     @SuppressWarnings("unchecked")
     private static BigInteger createID(IAlbianRemoteUNIDAttribute attr, int type) {
         Socket client = null;
         try {
-                client = new Socket(attr.getHost(), attr.getPort());
-                client.setSoTimeout(attr.getTimeout());
+            client = new Socket(attr.getHost(), attr.getPort());
+            client.setSoTimeout(attr.getTimeout());
         } catch (Exception e) {
             AlbianServiceRouter.getLogger().error(IAlbianLoggerService.AlbianRunningLoggerName,
                     e, "create UNID client connect:%s:%d is fail.",
@@ -98,7 +92,7 @@ public class AlbianRemoteUNIDService extends FreeAlbianRemoteUNIDParser
             AlbianServiceRouter.getLogger().warn(IAlbianLoggerService.AlbianRunningLoggerName,
                     "get UNID client connect:%s:%d from pool is fail.create it.",
                     attr.getHost(), attr.getPort());
-                return null;
+            return null;
         }
 
         OutputStream os = null;
@@ -151,7 +145,7 @@ public class AlbianRemoteUNIDService extends FreeAlbianRemoteUNIDParser
 
             if (null != client) {
                 try {
-                        client.close();
+                    client.close();
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     AlbianServiceRouter.getLogger().error(IAlbianLoggerService.AlbianRunningLoggerName, e, "close remote:%s:%d output stream is fail.",
@@ -160,6 +154,10 @@ public class AlbianRemoteUNIDService extends FreeAlbianRemoteUNIDParser
             }
         }
         return null;
+    }
+
+    public String getServiceName() {
+        return Name;
     }
 
     @Override
@@ -253,7 +251,7 @@ public class AlbianRemoteUNIDService extends FreeAlbianRemoteUNIDParser
         return createUNID(type);
     }
 
-    public BigInteger createContractId(){
+    public BigInteger createContractId() {
         return createUNID(0x4ff);
     }
 

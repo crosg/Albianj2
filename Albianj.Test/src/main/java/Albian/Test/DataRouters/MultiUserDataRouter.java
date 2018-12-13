@@ -18,7 +18,7 @@ public class MultiUserDataRouter extends FreeAlbianObjectDataRouter {
     public List<IDataRouterAttribute> mappingWriterRouting(
             Map<String, IDataRouterAttribute> routings, IAlbianObject obj) {
         // TODO Auto-generated method stub
-        IMultiUser u  = (IMultiUser) obj;
+        IMultiUser u = (IMultiUser) obj;
         String id = u.getId();
         String drBasename = "MUserWrite";
         String[] ids = id.split("_");
@@ -32,7 +32,7 @@ public class MultiUserDataRouter extends FreeAlbianObjectDataRouter {
     public String mappingWriterRoutingStorage(IDataRouterAttribute routing,
                                               IAlbianObject obj) {
         return routing.getStorageName(); // 因为使用了一个路由对应了一个storage模式，故直接访问即可
-                                         // 若一个路由下继续对storage进行区分，则需要根据算法进行获取storage
+        // 若一个路由下继续对storage进行区分，则需要根据算法进行获取storage
     }
 
     @Override
@@ -46,7 +46,7 @@ public class MultiUserDataRouter extends FreeAlbianObjectDataRouter {
     public String mappingWriterTable(IDataRouterAttribute routing,
                                      IAlbianObject obj) {
         // TODO Auto-generated method stub
-        IMultiUser u  = (IMultiUser) obj;
+        IMultiUser u = (IMultiUser) obj;
         String id = u.getId();
         String[] ids = id.split("_");
         String tablename = routing.getTableName() + "_" + ids[3]; //使用表标识
@@ -75,7 +75,7 @@ public class MultiUserDataRouter extends FreeAlbianObjectDataRouter {
         IFilterCondition fc = wheres.get("Id");
         String id = (String) fc.getValue();
         String[] ids = id.split("_");
-        String tablename = routing.getTableName() +"_" + ids[3]; //使用表标识定位到那个路由
+        String tablename = routing.getTableName() + "_" + ids[3]; //使用表标识定位到那个路由
         return tablename;
     }
 

@@ -41,6 +41,7 @@ public class RunningStorageAttribute implements IRunningStorageAttribute {
 
     IStorageAttribute sa = null;
     String database = null;
+
     public RunningStorageAttribute(IStorageAttribute sa, String database) {
         this.sa = sa;
         this.database = database;

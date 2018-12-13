@@ -37,11 +37,11 @@ public abstract class FreeAlbianKeywordFilterService extends FreeAlbianParserSer
 //            IAlbianConfigurtionService acs = AlbianServiceRouter.getSingletonService(IAlbianConfigurtionService.class, IAlbianConfigurtionService.Name, false);
 //            if (null != acs) {
 //                Object oKeyword = acs.findConfigurtionValue("root", "keyword");
-                Object oKeyword = null ;//= acs.findConfigurtionValue("root", "keyword");
-                if (null != oKeyword) {
-                    String keyword = oKeyword.toString();
-                    line2Set(keyword, keyWordSet);
-                }
+            Object oKeyword = null;//= acs.findConfigurtionValue("root", "keyword");
+            if (null != oKeyword) {
+                String keyword = oKeyword.toString();
+                line2Set(keyword, keyWordSet);
+            }
 //            }
         }
 
@@ -130,7 +130,7 @@ public abstract class FreeAlbianKeywordFilterService extends FreeAlbianParserSer
      */
     @SuppressWarnings("resource")
     private void readSensitiveWordFile(Set<String> set) {
-        String fname = confirmConfigFile(filename);
+        String fname = findConfigFile(filename);
         File file = new File(fname);    //读取文件
         if (!file.isFile() || !file.exists()) {
             AlbianServiceRouter.getLogger().warn(IAlbianLoggerService.AlbianRunningLoggerName,

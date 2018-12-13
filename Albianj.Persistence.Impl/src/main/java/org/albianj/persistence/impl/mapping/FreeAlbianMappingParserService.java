@@ -59,7 +59,7 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
 
     private final static String tagName = "AlbianObjects/AlbianObject";
     private String file = "persistence.xml";
-//    private HashMap<String, IAlbianObjectAttribute> _objAttrs = null;
+    //    private HashMap<String, IAlbianObjectAttribute> _objAttrs = null;
 //    private HashMap<String, String> _class2Inter = null;
     private HashMap<String, PropertyDescriptor[]> _bpd = null;
 
@@ -77,7 +77,7 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
             parserFile(file);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e,
                     AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "loading the persisten.xml is error.");
@@ -88,11 +88,11 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
     private void parserFile(String filename) throws AlbianParserException {
         Document doc = null;
         try {
-            String fname = confirmConfigFile(filename);
+            String fname = findConfigFile(filename);
             doc = XmlParser.load(fname);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e,
                     AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "loading the persisten.xml is error.");
@@ -100,14 +100,14 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
         }
         if (null == doc) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null,
                     AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "loading the persisten.xml is error.");
         }
 
         @SuppressWarnings("rawtypes")
-        List nodes = XmlParser.analyze(doc, "AlbianObjects/IncludeSet/Include");
+        List nodes = XmlParser.selectNodes(doc, "AlbianObjects/IncludeSet/Include");
         if (!Validate.isNullOrEmpty(nodes)) {
             for (Object node : nodes) {
                 Element elt = XmlParser.toElement(node);
@@ -118,49 +118,49 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
         }
 
         // add rant scaner
-        List pkgNodes = XmlParser.analyze(doc,"AlbianObjects/Packages/Package");
-        if(!Validate.isNullOrEmpty(pkgNodes)){
+        List pkgNodes = XmlParser.selectNodes(doc, "AlbianObjects/Packages/Package");
+        if (!Validate.isNullOrEmpty(pkgNodes)) {
             for (Object node : pkgNodes) {
                 Element elt = XmlParser.toElement(node);
 
-                String enable = XmlParser.getAttributeValue(elt,"Enable");
-                String pkg = XmlParser.getAttributeValue(elt,"Path");
+                String enable = XmlParser.getAttributeValue(elt, "Enable");
+                String pkg = XmlParser.getAttributeValue(elt, "Path");
 
-                if(!Validate.isNullOrEmptyOrAllSpace(enable)){
+                if (!Validate.isNullOrEmptyOrAllSpace(enable)) {
                     boolean b = Boolean.parseBoolean(enable);
-                    if(!b) {
+                    if (!b) {
                         AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Warn,null,
-                                AlbianModuleType.AlbianPersistence,AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Warn, null,
+                                AlbianModuleType.AlbianPersistence, AlbianModuleType.AlbianPersistence.getThrowInfo(),
                                 "Path -> %s in the Package enable is false,so not load it.",
                                 Validate.isNullOrEmptyOrAllSpace(pkg) ? "NoPath" : pkg);
                         continue;// not load pkg
                     }
                 }
 
-                if(Validate.isNullOrEmptyOrAllSpace(pkg)){
+                if (Validate.isNullOrEmptyOrAllSpace(pkg)) {
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
-                            AlbianModuleType.AlbianPersistence,AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null,
+                            AlbianModuleType.AlbianPersistence, AlbianModuleType.AlbianPersistence.getThrowInfo(),
                             "loading the persistence.xml is error. 'Path' attribute in  Package config-item is null or empty.");
                 } else {
                     try {
-                        HashMap<String,Object> pkgMap =  AlbianEntityRantScaner.scanPackage(pkg);
-                        if(null != pkgMap){
+                        HashMap<String, Object> pkgMap = AlbianEntityRantScaner.scanPackage(pkg);
+                        if (null != pkgMap) {
                             AlbianEntityMetadata.putAll(pkgMap);//merger the metedata
                         }
                     } catch (Exception e) {
                         AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e,
-                                AlbianModuleType.AlbianPersistence,AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                                "loading the persistence.xml is error. Path -> %s in Package is fail.",pkg);
+                                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e,
+                                AlbianModuleType.AlbianPersistence, AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                                "loading the persistence.xml is error. Path -> %s in Package is fail.", pkg);
                     }
                 }
 
             }
         }
 
-        List objNodes = XmlParser.analyze(doc, tagName);
+        List objNodes = XmlParser.selectNodes(doc, tagName);
         if (!Validate.isNullOrEmpty(objNodes)) {
             parserAlbianObjects(objNodes);
 //            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,

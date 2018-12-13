@@ -46,7 +46,7 @@ import java.io.IOException;
  */
 public interface IAlbianResourceService extends IAlbianService {
 
-    String Name =  AlbianBuiltinServiceNamePair.AlbianResourceServiceName;
+    String Name = AlbianBuiltinServiceNamePair.AlbianResourceServiceName;
 
 
     /**
@@ -62,6 +62,6 @@ public interface IAlbianResourceService extends IAlbianService {
      * @throws IOException if an IO error occurs rendering the resource
      */
     public void renderResource(HttpContext ctx)
-        throws IOException;
+            throws IOException;
 
 }

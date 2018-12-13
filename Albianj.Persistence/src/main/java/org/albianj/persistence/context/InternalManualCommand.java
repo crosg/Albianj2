@@ -12,9 +12,8 @@ public class InternalManualCommand implements IInternalManualCommand {
 
     private String cmdText;
     private PersistenceCommandType cmdType = PersistenceCommandType.Text;
-    private Map<Integer,String> cmdParameters = null;
-    private Map<String,ISqlParameter> paras = null;
-
+    private Map<Integer, String> cmdParameters = null;
+    private Map<String, ISqlParameter> paras = null;
 
 
     @Override

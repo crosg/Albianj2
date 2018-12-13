@@ -37,14 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.object;
 
-import org.albianj.persistence.object.*;
 import org.albianj.persistence.service.AlbianObjectDataRouterDefaulter;
-import org.albianj.verify.Validate;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
 
 public class AlbianObjectDataRouter extends AlbianObjectDataRouterDefaulter {
 

@@ -2,7 +2,6 @@ package Albian.Test.Model.Impl;
 
 import Albian.Test.Model.IOrgMultiUser;
 import org.albianj.persistence.object.FreeAlbianObject;
-import org.albianj.persistence.object.rants.AlbianObjectDataFieldRant;
 
 public class OrgMultiUser extends FreeAlbianObject implements IOrgMultiUser {
 

@@ -112,28 +112,28 @@ public class SpxWapper extends FreeDataBasePool {
     }
 
     public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn, List<Statement> statements) {
-        for(Statement stmt : statements) {
+        for (Statement stmt : statements) {
             try {
                 stmt.close();
-            }catch (SQLException e) {
+            } catch (SQLException e) {
 
             }
         }
-        this.returnConnection(sessionId,storageName,databaseName,conn);
+        this.returnConnection(sessionId, storageName, databaseName, conn);
     }
 
     public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn, Statement pst, ResultSet rs) {
         try {
             pst.close();
-        }catch (SQLException e) {
+        } catch (SQLException e) {
 
         }
         try {
             rs.close();
-        }catch (SQLException e) {
+        } catch (SQLException e) {
 
         }
-        this.returnConnection(sessionId,storageName,databaseName,conn);
+        this.returnConnection(sessionId, storageName, databaseName, conn);
     }
 
     public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn) {
@@ -149,7 +149,7 @@ public class SpxWapper extends FreeDataBasePool {
             }
             ISpxDBPool pool = (ISpxDBPool) ds;
             pool.rtnConnection(conn);
-        }catch (SQLException e){
+        } catch (SQLException e) {
 
         }
     }

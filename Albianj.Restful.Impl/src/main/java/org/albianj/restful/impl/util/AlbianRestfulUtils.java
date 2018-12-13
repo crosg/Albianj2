@@ -53,8 +53,8 @@ import java.util.Map;
 
 /**
  * @author Sean
- *         <p>
- *         restful 参数获取
+ * <p>
+ * restful 参数获取
  */
 
 public class AlbianRestfulUtils {
@@ -76,9 +76,9 @@ public class AlbianRestfulUtils {
         int offset = 0;
         try {
             int rc = 0;
-            while(-1 != ( rc = buf.read(buffer,offset,total-offset))) {
+            while (-1 != (rc = buf.read(buffer, offset, total - offset))) {
                 offset += rc;
-                if(offset == total) break;
+                if (offset == total) break;
             }
 
 
@@ -191,18 +191,18 @@ public class AlbianRestfulUtils {
 //        ArrayList<Byte> bytes = new ArrayList<>();
         byte[] buffer = new byte[1024];
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        int iRead = 0,count = 0;
+        int iRead = 0, count = 0;
         try {
             while ((iRead = buf.read(buffer)) != -1) {
-                baos.write(buffer,0,iRead);
+                baos.write(buffer, 0, iRead);
                 count += iRead;
             }
 
             byte[] bytes = baos.toByteArray();
-            return new String(bytes,0,count,"UTF-8");
+            return new String(bytes, 0, count, "UTF-8");
 
-       } catch (UnsupportedEncodingException e) {
-             AlbianServiceRouter.getLogger().error(
+        } catch (UnsupportedEncodingException e) {
+            AlbianServiceRouter.getLogger().error(
                     IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
         } catch (IOException e) {
             AlbianServiceRouter.getLogger().error(
@@ -211,10 +211,7 @@ public class AlbianRestfulUtils {
         return null;
 
 
-
 //        bytes.add()
-
-
 
 
 //            byte[] buffer = new byte[1024];

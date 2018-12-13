@@ -51,31 +51,31 @@ public class Convert {
                 boolean.class.isAssignableFrom(cls)) {
             return Types.BIT;
         } else if (Integer.class.isAssignableFrom(cls) ||
-                int.class.isAssignableFrom(cls)){
+                int.class.isAssignableFrom(cls)) {
             return Types.INTEGER;
         } else if (Long.class.isAssignableFrom(cls) ||
-                long.class.isAssignableFrom(cls)){
+                long.class.isAssignableFrom(cls)) {
             return Types.BIGINT;
-        } else if (BigInteger.class.isAssignableFrom(cls)){
+        } else if (BigInteger.class.isAssignableFrom(cls)) {
             return Types.BIGINT;
         } else if (Float.class.isAssignableFrom(cls) ||
-                float.class.isAssignableFrom(cls)){
+                float.class.isAssignableFrom(cls)) {
             return Types.FLOAT;
         } else if (double.class.isAssignableFrom(cls)
-                || Double.class.isAssignableFrom(cls)){
+                || Double.class.isAssignableFrom(cls)) {
             return Types.DOUBLE;
-        } else if (Time.class.isAssignableFrom(cls)){
+        } else if (Time.class.isAssignableFrom(cls)) {
             return Types.TIME;
-        } else if (Timestamp.class.isAssignableFrom(cls)){
+        } else if (Timestamp.class.isAssignableFrom(cls)) {
             return Types.TIMESTAMP;
         } else if (java.sql.Date.class.isAssignableFrom(cls) ||
-                java.util.Date.class.isAssignableFrom(cls)){
+                java.util.Date.class.isAssignableFrom(cls)) {
             return Types.DATE;
-        } else if (Clob.class.isAssignableFrom(cls)){
+        } else if (Clob.class.isAssignableFrom(cls)) {
             return Types.CLOB;
-        } else if (Blob.class.isAssignableFrom(cls)){
+        } else if (Blob.class.isAssignableFrom(cls)) {
             return Types.BLOB;
-        } else if (java.sql.Array.class.isAssignableFrom(cls)){
+        } else if (java.sql.Array.class.isAssignableFrom(cls)) {
             return Types.ARRAY;
         } else {
             return Types.VARCHAR;

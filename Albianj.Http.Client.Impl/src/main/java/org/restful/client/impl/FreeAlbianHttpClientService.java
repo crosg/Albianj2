@@ -1,4 +1,22 @@
 package org.restful.client.impl;//package org.restful.client.impl;
+
+import org.albianj.logger.AlbianLoggerLevel;
+import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.pooling.IReusableObjectPool;
+import org.albianj.restful.client.IAlbianHttpClientService;
+import org.albianj.restful.client.config.*;
+import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianServiceException;
+import org.albianj.service.AlbianServiceRouter;
+import org.albianj.service.parser.AlbianParserException;
+import org.albianj.service.parser.FreeAlbianParserService;
+import org.albianj.verify.Validate;
+import org.albianj.xml.XmlParser;
+import org.dom4j.Document;
+import org.dom4j.Element;
+
+import java.util.Map;
+
 //
 //import org.albianj.datetime.AlbianDateTime;
 //import org.albianj.io.Path;
@@ -33,7 +51,7 @@ package org.restful.client.impl;//package org.restful.client.impl;
 //import org.apache.http.entity.mime.MultipartEntityBuilder;
 //import org.apache.http.impl.client.CloseableHttpClient;
 //import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-//import org.apache.http.impl.client.HttpClients;
+//import org.apache.http.impl.client.HttpClientsConfig;
 //import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 //import org.apache.http.message.BasicNameValuePair;
 //import org.apache.http.util.EntityUtils;
@@ -47,7 +65,76 @@ package org.restful.client.impl;//package org.restful.client.impl;
 ///**
 // * Created by xuhaifeng on 17/2/10.
 // */
-//public abstract class FreeAlbianHttpClientService  extends FreeAlbianService implements IAlbianHttpClientService {
+public abstract class FreeAlbianHttpClientService  extends FreeAlbianParserService implements IAlbianHttpClientService {
+
+    private HttpClientAppConfig httpClientAppConfig;
+    private String cfName = "httpclient.xml";
+    private IReusableObjectPool httpGetPool;
+    private IReusableObjectPool httpPostPool;
+    private Map<String,IReusableObjectPool> httpClientPools;
+
+    public IReusableObjectPool getHttpGetPool() {
+        return httpGetPool;
+    }
+
+    public IReusableObjectPool getHttpPostPool() {
+        return httpPostPool;
+    }
+
+    public IReusableObjectPool getHttpClientPool(String site) {
+       if(Validate.isNullOrEmpty(httpClientPools)) return null;
+       return httpClientPools.get(site);
+    }
+
+    public HttpClientAppConfig getHttpClientAppConfig() {
+        return httpClientAppConfig;
+    }
+
+    @Override
+    public void loading() throws AlbianServiceException, AlbianParserException {
+        Document doc = null;
+        try {
+            String realFilename = findConfigFile(cfName);
+            doc = XmlParser.load(realFilename);
+        } catch (Exception e) {
+            AlbianServiceRouter.throwException("KernelThread",IAlbianLoggerService2.AlbianRunningLoggerName,
+                    "load httpclient config error.",e);
+        }
+        if (null == doc) {
+            AlbianServiceRouter.throwException("KernelThread",IAlbianLoggerService2.AlbianRunningLoggerName,
+                    "httpclient config is null.","httpclient config is null.");
+        }
+        httpClientAppConfig = parserHttpClientAppConfig(doc);
+
+        httpGetPool = newHttpGetPool(httpClientAppConfig.getHttpGetPoolingConfig());
+        httpPostPool = newHttpPostPool(httpClientAppConfig.getHttpPostPoolingConfig());
+        httpClientPools = newHttpClientsPool(httpClientAppConfig.getHttpClientsConfig());
+        super.loading();
+    }
+
+    protected abstract HttpClientAppConfig parserHttpClientAppConfig(Document doc);
+
+    protected abstract HttpEntityPoolingConfig parserHttpGetPoolingConfig(Document doc);
+
+    protected abstract HttpEntityPoolingConfig parserHttpPostPoolingConfig(Document doc);
+
+    protected abstract HttpClientsConfig parserHttpClientsConfig(Document doc);
+
+    protected abstract HttpEntityPoolingConfig parserHttpClientPoolingConfig(Element elt);
+
+    protected abstract HttpClientHeadersConfig parserHttpClientHeadersConfig(Element elt);
+
+    protected abstract HttpClientSocketConfig parserHttpClientSocketConfig(Element elt);
+
+    protected abstract HttpClientSSLConfig parserHttpClientSSLConfig(Element elt);
+
+    protected abstract IReusableObjectPool newHttpGetPool(HttpEntityPoolingConfig httpGetPoolConfig);
+
+    protected abstract IReusableObjectPool newHttpPostPool(HttpEntityPoolingConfig httpPostPoolConfig);
+
+    protected abstract  Map<String,IReusableObjectPool> newHttpClientsPool(HttpClientsConfig httpClientsConfig);
+
+}
 //
 //    protected HttpRequestConfig hrc = null;
 //    protected Map<String,PoolingHttpClientConnectionManager> clientPool = new HashMap<>();
@@ -137,7 +224,7 @@ package org.restful.client.impl;//package org.restful.client.impl;
 //
 //        DefaultHttpRequestRetryHandler dhrrh = new DefaultHttpRequestRetryHandler(hc.getRetry(), 0 != hc.getRetry());
 //        CloseableHttpClient client = null;
-//        client = HttpClients.custom()
+//        client = HttpClientsConfig.custom()
 //                .setConnectionManager(phccm)
 //                .setRetryHandler(dhrrh)
 //                .setDefaultRequestConfig(requestConfig)

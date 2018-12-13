@@ -6,8 +6,10 @@ package org.albianj.mvc.config;
 public interface ICustomTagConfigurtion {
 
     String getName();
+
     void setName(String name);
 
     String getFullClassname();
+
     void setFullClassname(String classname);
 }

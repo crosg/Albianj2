@@ -68,7 +68,7 @@ public interface IAlbianStorageParserService extends IAlbianParserService {
     /**
      * 此service在service.xml中的id
      */
-    static String Name =  AlbianBuiltinServiceNamePair.AlbianStorageServiceName;
+    static String Name = AlbianBuiltinServiceNamePair.AlbianStorageServiceName;
 
     /**
      * 增加storage的元信息
@@ -94,18 +94,20 @@ public interface IAlbianStorageParserService extends IAlbianParserService {
      * @param rsa
      * @return
      */
-    public Connection getConnection(String sessionId,IRunningStorageAttribute rsa);
+    public Connection getConnection(String sessionId, IRunningStorageAttribute rsa);
+
     public Connection getConnection(IRunningStorageAttribute rsa);
 
     public Connection getConnection(String sessionId, IDataBasePool pool, IRunningStorageAttribute rsa);
 
     /**
      * 请自行关闭ResultSet和 Statement后再调用此方法返回链接
+     *
      * @param sessionId
      * @param rsa
      * @param conn
      */
-    public void returnConnection(String sessionId, IRunningStorageAttribute rsa,Connection conn);
+    public void returnConnection(String sessionId, IRunningStorageAttribute rsa, Connection conn);
 
 
 }

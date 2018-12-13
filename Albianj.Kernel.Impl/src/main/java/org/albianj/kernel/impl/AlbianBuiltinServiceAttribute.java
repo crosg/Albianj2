@@ -6,7 +6,7 @@ public class AlbianBuiltinServiceAttribute {
     private boolean required;
     private boolean loadOK;
 
-    public AlbianBuiltinServiceAttribute(String id,String implClzz,boolean required){
+    public AlbianBuiltinServiceAttribute(String id, String implClzz, boolean required) {
         this.id = id;
         this.implClzz = implClzz;
         this.required = required;

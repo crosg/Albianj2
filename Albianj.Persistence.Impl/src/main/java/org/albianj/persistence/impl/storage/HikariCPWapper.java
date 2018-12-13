@@ -21,45 +21,45 @@ import java.sql.SQLException;
  */
 public class HikariCPWapper extends FreeDataBasePool {
 
+    public final static String DRIVER_CLASSNAME = "com.mysql.jdbc.Driver";
+
+    public HikariCPWapper() {
+        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Mark, "use Hikari connection pool.");
+    }
+
     @Override
-    public Connection getConnection(String sessionId,IRunningStorageAttribute rsa) {
+    public Connection getConnection(String sessionId, IRunningStorageAttribute rsa) {
         IStorageAttribute sa = rsa.getStorageAttribute();
         String key = sa.getName() + rsa.getDatabase();
-        DataSource ds =  getDatasource(key,rsa);
+        DataSource ds = getDatasource(key, rsa);
         AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-            sessionId, AlbianLoggerLevel.Info,
-            "Get the connection from storage:%s and database:%s by connection pool.",
-            sa.getName(), rsa.getDatabase());
+                sessionId, AlbianLoggerLevel.Info,
+                "Get the connection from storage:%s and database:%s by connection pool.",
+                sa.getName(), rsa.getDatabase());
         try {
             Connection conn = ds.getConnection();
-            if(null == conn) return null;
+            if (null == conn) return null;
             if (Connection.TRANSACTION_NONE != sa.getTransactionLevel()) {
                 conn.setTransactionIsolation(sa.getTransactionLevel());
             }
             return conn;
         } catch (SQLException e) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
-                sessionId, AlbianLoggerLevel.Error, e,
-                "Get the connection with storage:%s and database:%s form connection pool is error.",
-                sa.getName(), rsa.getDatabase());
+                    sessionId, AlbianLoggerLevel.Error, e,
+                    "Get the connection with storage:%s and database:%s form connection pool is error.",
+                    sa.getName(), rsa.getDatabase());
             return null;
         }
     }
 
-    public final static String DRIVER_CLASSNAME = "com.mysql.jdbc.Driver";
-
-    public HikariCPWapper(){
-        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
-            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Mark,"use Hikari connection pool.");
-    }
-
     @Override
-    public DataSource setupDataSource(String key,IRunningStorageAttribute rsa) {
+    public DataSource setupDataSource(String key, IRunningStorageAttribute rsa) {
         HikariConfig config = new HikariConfig();
         try {
             IStorageAttribute storageAttribute = rsa.getStorageAttribute();
             String url = FreeAlbianStorageParserService
-                .generateConnectionUrl(rsa);
+                    .generateConnectionUrl(rsa);
             config.setDriverClassName(DRIVER_CLASSNAME);
             config.setJdbcUrl(url);
             if (AlbianLevel.Debug == KernelSetting.getAlbianLevel()) {
@@ -72,9 +72,9 @@ public class HikariCPWapper extends FreeDataBasePool {
                     config.setPassword(ass.decryptDES(storageAttribute.getPassword()));
                 } else {
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                        IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
-                        AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                        "the run level is release in the kernel config but security is null,so not use security service.");
+                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
+                            AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                            "the run level is release in the kernel config but security is null,so not use security service.");
 
                     config.setUsername(storageAttribute.getUser());
                     config.setPassword(storageAttribute.getPassword());
@@ -107,9 +107,9 @@ public class HikariCPWapper extends FreeDataBasePool {
 
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
-                AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                "startup database connection pools is fail.");
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
+                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                    "startup database connection pools is fail.");
             return null;
         }
 
@@ -118,9 +118,9 @@ public class HikariCPWapper extends FreeDataBasePool {
             ds = new HikariDataSource(config);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
-                AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                "create dabasepool for storage:%s is fail.",key);
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
+                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                    "create dabasepool for storage:%s is fail.", key);
         }
 
         return ds;

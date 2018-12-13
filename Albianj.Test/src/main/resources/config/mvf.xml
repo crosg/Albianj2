@@ -5,10 +5,10 @@
     <Context Value="/"></Context>
     <Charset Value="UTF-8"></Charset>
     <Items>
-        <Item Key="" Value="" />
+        <Item Key="" Value=""/>
     </Items>
-     <!-- Mode values include: [production], [profile], [development], [debug],
-            [trace] -->
+    <!-- Mode values include: [production], [profile], [development], [debug],
+           [trace] -->
     <Mode Value="production"/>
 
     <Views Package="com.spermbank.frontend.Pages" Path="/pages/"
@@ -29,7 +29,7 @@
     <!--<Pages Package="com.spermbank.backend.Pages.User" Path="/pages/user/"/>-->
 
     <!--<Pages>-->
-        <!--<Include Filename="client-click.xml"></Include>-->
+    <!--<Include Filename="client-click.xml"></Include>-->
     <!--</Pages>-->
 
 
@@ -45,20 +45,20 @@
     <!-- Set the org.apache.click.service.CommonsFileUploadService properties:
         sizeMax and fileSizeMax. -->
     <FileUploadService RequestSizeMax="10485760" ErrorType="exe,cgi,asp,php,jsp"
-                         FileSizeMax="2097152" TempPath="/tmpfile/">
+                       FileSizeMax="2097152" TempPath="/tmpfile/">
     </FileUploadService>
 
     <NotFoundView Template="/pages/inner/NotFound.shtm"
-                  ClassName="com.spermbank.frontend.Pages.Inner.NotFound" />
+                  ClassName="com.spermbank.frontend.Pages.Inner.NotFound"/>
     <ErrorView Template="/pages/inner/Error.shtm"
-               ClassName="com.spermbank.frontend.Pages.Inner.Error" />
+               ClassName="com.spermbank.frontend.Pages.Inner.Error"/>
 
 
     <WelcomePage Path="/index.shtm"></WelcomePage>
 
     <Tags>
-        <Tag Name="MasterView" ClassName="org.albianj.mvc.impl.ctags.beetl.MasterViewTag" ></Tag>
-        <Tag Name="Paging" ClassName="org.albianj.mvc.impl.ctags.beetl.PageTag" ></Tag>
+        <Tag Name="MasterView" ClassName="org.albianj.mvc.impl.ctags.beetl.MasterViewTag"></Tag>
+        <Tag Name="Paging" ClassName="org.albianj.mvc.impl.ctags.beetl.PageTag"></Tag>
     </Tags>
 
 

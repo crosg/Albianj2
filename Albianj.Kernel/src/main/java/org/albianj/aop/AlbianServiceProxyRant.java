@@ -34,15 +34,15 @@ public @interface AlbianServiceProxyRant {
     String NotBeginWith() default "";
 
     /*
- * proxy same function in service by name end with this value
- * default value is empty
- */
+     * proxy same function in service by name end with this value
+     * default value is empty
+     */
     String EndWith() default "";
 
     /*
- * proxy same function in service by name not end with this value
- * defaule value is empty
- */
+     * proxy same function in service by name not end with this value
+     * defaule value is empty
+     */
     String NotEndWith() default "";
 
 
@@ -53,22 +53,22 @@ public @interface AlbianServiceProxyRant {
     String Contain() default "";
 
     /*
- * proxy same function in service by name not contain with this value
- * defaule value is empty
- */
+     * proxy same function in service by name not contain with this value
+     * defaule value is empty
+     */
     String NotContain() default "";
 
     /*
- * proxy all function in service
- * defaule value is false
- */
+     * proxy all function in service
+     * defaule value is false
+     */
     boolean IsAll() default false;
 
     String FullName() default "";
 
     /*
- * proxy same function in service when throw exception.
- * not default value
- */
+     * proxy same function in service when throw exception.
+     * not default value
+     */
     Class<Throwable> Exception();
 }

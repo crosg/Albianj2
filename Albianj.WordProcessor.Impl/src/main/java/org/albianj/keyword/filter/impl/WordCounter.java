@@ -25,6 +25,7 @@ public class WordCounter {
         p = 0;
         len = input == null ? 0 : input.length();
     }
+
     /**
      * 返回内容
      *
@@ -36,6 +37,7 @@ public class WordCounter {
         }
         return input;
     }
+
     /**
      * 空白符包括     英文空格，中文空格，换行符\r，回车符\n，制表符\t
      *
@@ -80,7 +82,7 @@ public class WordCounter {
         }
         return count;
     }
-    
+
     /**
      * 计算章节价格
      *
@@ -113,7 +115,7 @@ public class WordCounter {
 
 
     //空字符
-    private  boolean isEmpty() {
+    private boolean isEmpty() {
         return empty.indexOf(input.charAt(p)) > -1;
     }
 

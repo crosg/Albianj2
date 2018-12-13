@@ -90,8 +90,8 @@ public class RuningTrace {
         return Thread.currentThread().getStackTrace()[2].getMethodName();
     }
 
-    public static IStackTrace getCurrentStackTrace(){
-        StackTraceElement stack =Thread.currentThread().getStackTrace()[2];
+    public static IStackTrace getCurrentStackTrace() {
+        StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
         IStackTrace trace = new StackTrace();
         trace.setClassName(stack.getClassName());
         trace.setFileName(stack.getFileName());

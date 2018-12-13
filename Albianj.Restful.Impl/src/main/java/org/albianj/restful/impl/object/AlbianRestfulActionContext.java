@@ -66,9 +66,9 @@ public class AlbianRestfulActionContext implements IAlbianRestfulActionContext {
     AlbianRestfulResultStyle style = AlbianRestfulResultStyle.Json;
     IAlbianRestfulResult rc = null;
     IAlbianRestfulBodyFilterDelegate handler = null;
-    private boolean _showNull = false;
     IAlbianRestfulResultV1 rcV1 = null;
-    private  int version = 0;
+    private boolean _showNull = false;
+    private int version = 0;
 
     public AlbianRestfulActionContext(HttpServletRequest req, HttpServletResponse resp, ServletContext sc,
                                       String serviceName, String actionName, String sessionId, String sp, Map<String, String> paras,
@@ -183,31 +183,30 @@ public class AlbianRestfulActionContext implements IAlbianRestfulActionContext {
         this.parser = parser;
     }
 
-    public IAlbianRestfulResultV1 getResultV1(){
+    public IAlbianRestfulResultV1 getResultV1() {
         return this.rcV1;
     }
 
-    public void setResultV1(IAlbianRestfulResultV1 rc){
+    public void setResultV1(IAlbianRestfulResultV1 rc) {
         this.rcV1 = rc;
         this.version = 1;
     }
 
     public void setResultV1(AlbianRestfulResultStyle style,
-                            IAlbianRestfulResultParserV1 parser, IAlbianRestfulResultV1 rc){
+                            IAlbianRestfulResultParserV1 parser, IAlbianRestfulResultV1 rc) {
         this.style = style;
         this.rcV1 = rc;
         this.parserV1 = parser;
         this.version = 1;
     }
 
-    public int getVerison(){
+    public int getVerison() {
         return this.version;
     }
 
-    public IAlbianRestfulResultParserV1 getParserV1(){
+    public IAlbianRestfulResultParserV1 getParserV1() {
         return this.parserV1;
     }
-
 
 
     public boolean getShowNull() {

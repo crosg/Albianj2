@@ -17,60 +17,61 @@ import java.io.IOException;
 /**
  * Created by xuhaifeng on 17/1/19.
  */
-@AlbianServiceRant(Id = IAlbianBrushingService.Name,Interface = IAlbianBrushingService.class)
+@AlbianServiceRant(Id = IAlbianBrushingService.Name, Interface = IAlbianBrushingService.class)
 public class AlbianBrushingService extends FreeAlbianService implements IAlbianBrushingService {
-    public String getServiceName(){
+    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
+    private AlbianHttpConfigurtion c;
+
+    public String getServiceName() {
         return Name;
     }
 
-    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref,Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
-    private AlbianHttpConfigurtion c;
     public void setHttpConfigurtion(AlbianHttpConfigurtion c) {
         this.c = c;
     }
 
 
-    public boolean consume(HttpServletRequest request){
+    public boolean consume(HttpServletRequest request) {
         String ip = null;
         try {
             ip = ServerHelper.getIpAddress(request);
-        }catch (IOException e){
+        } catch (IOException e) {
             ip = "unknown";
         }
         BrushingConfigurtion brushing = c.getBrushing();
-        if(null == brushing){
+        if (null == brushing) {
             brushing = new BrushingConfigurtion();
         }
 
         long ts = (AlbianDateTime.getCurrentSeconds() / brushing.getUnitTime()) * brushing.getUnitTime();
-        RequestCounter counter = getRequestCounter(request,ip);
-        if(null == counter){
+        RequestCounter counter = getRequestCounter(request, ip);
+        if (null == counter) {
             counter = new RequestCounter();
             counter.setRequestCount(brushing.getRequestCount() - 1);
             counter.setUnitTime(ts);
-            storeRequestCounter(request,ip,counter);
+            storeRequestCounter(request, ip, counter);
             return true;
         }
 
-        if(ts == counter.getUnitTime()){
+        if (ts == counter.getUnitTime()) {
             counter.subCounter();
-            storeRequestCounter(request,ip,counter);
+            storeRequestCounter(request, ip, counter);
             return 0 <= counter.getRequestCount();
         }
 
         counter.setRequestCount(brushing.getRequestCount() - 1);
         counter.setUnitTime(ts);
-        storeRequestCounter(request,ip,counter);
+        storeRequestCounter(request, ip, counter);
         return true;
 
     }
 
-    public RequestCounter getRequestCounter(HttpServletRequest request,String ip){
+    public RequestCounter getRequestCounter(HttpServletRequest request, String ip) {
         RequestCounter ct = (RequestCounter) request.getSession().getAttribute(ip);
         return ct;
     }
 
-    public void storeRequestCounter(HttpServletRequest request,String ip,RequestCounter counter){
-        request.getSession().setAttribute(ip,counter);
+    public void storeRequestCounter(HttpServletRequest request, String ip, RequestCounter counter) {
+        request.getSession().setAttribute(ip, counter);
     }
 }

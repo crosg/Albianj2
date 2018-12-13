@@ -1,16 +1,14 @@
 package org.albianj.xml;
 
-import java.util.List;
-
 /**
  * Created by xuhaifeng on 17/2/3.
  */
 public class Student implements IAlbianXml2ObjectSigning {
-    public Student(){}
-
     private String name;
     private ClassRooms classRooms;
     private int age;
+    public Student() {
+    }
 
     @XmlElementAttribute(Name = "name")
     public String getName() {

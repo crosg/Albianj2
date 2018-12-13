@@ -18,10 +18,10 @@ import java.util.Vector;
 /**
  * Created by xuhaifeng on 17/8/17.
  */
-@AlbianServiceRant(Id = IAlbianManualPersistenceService.Name,Interface = IAlbianManualPersistenceService.class)
+@AlbianServiceRant(Id = IAlbianManualPersistenceService.Name, Interface = IAlbianManualPersistenceService.class)
 public class AlbianManualPersistenceService extends FreeAlbianService implements IAlbianManualPersistenceService {
 
-    public String getServiceName(){
+    public String getServiceName() {
         return Name;
     }
 
@@ -29,14 +29,14 @@ public class AlbianManualPersistenceService extends FreeAlbianService implements
     public int execute(String sessionId, String storageName, String dbName, IManualCommand cmd) {
         List<IManualCommand> mcs = new Vector<>();
         mcs.add(cmd);
-        List<Integer> rcs = execute(sessionId,storageName,dbName,mcs);
+        List<Integer> rcs = execute(sessionId, storageName, dbName, mcs);
         return rcs.get(0);
     }
 
     public int execute(String sessionId, String storageName, IManualCommand cmd) {
         List<IManualCommand> mcs = new Vector<>();
         mcs.add(cmd);
-        List<Integer> rcs = execute(sessionId,storageName,null,mcs);
+        List<Integer> rcs = execute(sessionId, storageName, null, mcs);
         return rcs.get(0);
     }
 
@@ -59,7 +59,7 @@ public class AlbianManualPersistenceService extends FreeAlbianService implements
 
     public List<Integer> execute(String sessionId, String storageName, List<IManualCommand> cmds) {
 
-        return execute(sessionId,storageName,null,cmds);
+        return execute(sessionId, storageName, null, cmds);
 
     }
 

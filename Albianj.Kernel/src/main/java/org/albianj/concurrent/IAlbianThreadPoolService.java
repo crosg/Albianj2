@@ -41,7 +41,7 @@ import org.albianj.service.AlbianBuiltinServiceNamePair;
 import org.albianj.service.IAlbianService;
 
 public interface IAlbianThreadPoolService extends IAlbianService {
-   String Name = AlbianBuiltinServiceNamePair.AlbianThreadPoolServiceName;
+    String Name = AlbianBuiltinServiceNamePair.AlbianThreadPoolServiceName;
 
     public void execute(Runnable event);
 }

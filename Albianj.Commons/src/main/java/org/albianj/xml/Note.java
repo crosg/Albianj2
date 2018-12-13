@@ -11,7 +11,8 @@ public class Note implements IAlbianXml2ObjectSigning {
     private String heading;
     private String body;
 
-    public Note(){}
+    public Note() {
+    }
 
 
     public String getName() {

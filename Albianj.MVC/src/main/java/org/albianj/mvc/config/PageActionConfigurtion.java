@@ -10,27 +10,27 @@ public class PageActionConfigurtion {
     private String bindingName;
     private Method method;
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getBindingName(){
+    public String getBindingName() {
         return this.bindingName;
     }
 
-    public void setBindingName(String bindingName){
+    public void setBindingName(String bindingName) {
         this.bindingName = bindingName;
     }
 
-    public void setMethod(Method method){
-        this.method = method;
+    public Method getMethod() {
+        return this.method;
     }
 
-    public Method getMethod(){
-        return this.method;
+    public void setMethod(Method method) {
+        this.method = method;
     }
 }

@@ -63,8 +63,8 @@ public abstract class FreeAlbianStorageParserService extends FreeAlbianParserSer
     public static String generateConnectionUrl(
             IRunningStorageAttribute rsa) {
         if (null == rsa) {
-                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
-                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Warn,
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Warn,
                     "The argument storageAttribute is null.");
             return null;
         }
@@ -103,7 +103,7 @@ public abstract class FreeAlbianStorageParserService extends FreeAlbianParserSer
                             storageAttribute.getCharset());
                 }
                 int timeout = rsa.getStorageAttribute().getTimeout();
-                if(0 < timeout){
+                if (0 < timeout) {
                     sb.append("&connectTimeout=").append(timeout * 1000).append("&socketTimeout=").append(timeout * 1000);
                 }
                 sb.append("&autoReconnect=true&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&maxReconnect=3&autoReconnectForPools=true");
@@ -125,7 +125,7 @@ public abstract class FreeAlbianStorageParserService extends FreeAlbianParserSer
             parserFile(file);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "loading the storage.xml is error.");
 
@@ -137,23 +137,23 @@ public abstract class FreeAlbianStorageParserService extends FreeAlbianParserSer
         Document doc = null;
         cached = new HashMap<String, IStorageAttribute>();
         try {
-            String fname = confirmConfigFile(filename);
+            String fname = findConfigFile(filename);
             doc = XmlParser.load(fname);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "loading the storage.xml is error.");
         }
         if (null == doc) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "loading the storage.xml is error.");
         }
 
         @SuppressWarnings("rawtypes")
-        List nodes = XmlParser.analyze(doc, "Storages/IncludeSet/Include");
+        List nodes = XmlParser.selectNodes(doc, "Storages/IncludeSet/Include");
         if (!Validate.isNullOrEmpty(nodes)) {
             for (Object node : nodes) {
                 Element elt = XmlParser.toElement(node);
@@ -164,10 +164,10 @@ public abstract class FreeAlbianStorageParserService extends FreeAlbianParserSer
         }
 
         @SuppressWarnings("rawtypes")
-        List objNodes = XmlParser.analyze(doc, tagName);
+        List objNodes = XmlParser.selectNodes(doc, tagName);
         if (Validate.isNullOrEmpty(objNodes)) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "parser the node tags:%s in the storage.xml is error. the node of the tags is null or empty.",
                     tagName);

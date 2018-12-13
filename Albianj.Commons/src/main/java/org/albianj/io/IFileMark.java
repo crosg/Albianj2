@@ -1,4 +1,3 @@
-
 package org.albianj.io;
 
 import java.io.File;
@@ -8,5 +7,5 @@ import java.io.File;
  */
 public interface IFileMark {
 
-	boolean isMark(File file, String mark);
+    boolean isMark(File file, String mark);
 }

@@ -60,16 +60,15 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Seapeak
  */
-@AlbianServiceRant(Id = IAlbianLoggerService.Name,Interface = IAlbianLoggerService.class)
+@AlbianServiceRant(Id = IAlbianLoggerService.Name, Interface = IAlbianLoggerService.class)
 public class AlbianLoggerService extends FreeAlbianService implements
         IAlbianLoggerService {
 
-    public String getServiceName(){
+    private static ConcurrentHashMap<String, Logger> loggers = null;
+
+    public String getServiceName() {
         return Name;
     }
-
-
-    private static ConcurrentHashMap<String, Logger> loggers = null;
 
     /* (non-Javadoc)
      * @see org.albianj.logger.impl.qqqqqq#loading()
@@ -117,8 +116,8 @@ public class AlbianLoggerService extends FreeAlbianService implements
      * @see org.albianj.logger.IAlbianLoggerService#error(java.lang.String)
      */
     /* (non-Javadoc)
-	 * @see org.albianj.logger.impl.qqqqqq#error(java.lang.String, java.lang.String, java.lang.Object)
-	 */
+     * @see org.albianj.logger.impl.qqqqqq#error(java.lang.String, java.lang.String, java.lang.Object)
+     */
     @Override
     public void error(String loggerName, String format, Object... values) {
         Logger logger = getLogger(loggerName);
@@ -132,9 +131,9 @@ public class AlbianLoggerService extends FreeAlbianService implements
      *
      * @see org.albianj.logger.IAlbianLoggerService#warn(java.lang.String)
      */
-	/* (non-Javadoc)
-	 * @see org.albianj.logger.impl.qqqqqq#warn(java.lang.String, java.lang.String, java.lang.Object)
-	 */
+    /* (non-Javadoc)
+     * @see org.albianj.logger.impl.qqqqqq#warn(java.lang.String, java.lang.String, java.lang.Object)
+     */
     @Override
     public void warn(String loggerName, String format, Object... values) {
         Logger logger = getLogger(loggerName);
@@ -148,9 +147,9 @@ public class AlbianLoggerService extends FreeAlbianService implements
      *
      * @see org.albianj.logger.IAlbianLoggerService#info(java.lang.String)
      */
-	/* (non-Javadoc)
-	 * @see org.albianj.logger.impl.qqqqqq#info(java.lang.String, java.lang.String, java.lang.Object)
-	 */
+    /* (non-Javadoc)
+     * @see org.albianj.logger.impl.qqqqqq#info(java.lang.String, java.lang.String, java.lang.Object)
+     */
     @Override
     public void info(String loggerName, String format, Object... values) {
         Logger logger = getLogger(loggerName);
@@ -164,9 +163,9 @@ public class AlbianLoggerService extends FreeAlbianService implements
      *
      * @see org.albianj.logger.IAlbianLoggerService#debug(java.lang.String)
      */
-	/* (non-Javadoc)
-	 * @see org.albianj.logger.impl.qqqqqq#debug(java.lang.String, java.lang.String, java.lang.Object)
-	 */
+    /* (non-Javadoc)
+     * @see org.albianj.logger.impl.qqqqqq#debug(java.lang.String, java.lang.String, java.lang.Object)
+     */
     @Override
     public void debug(String loggerName, String format, Object... values) {
         Logger logger = getLogger(loggerName);
@@ -393,7 +392,8 @@ public class AlbianLoggerService extends FreeAlbianService implements
                 throw new RuntimeException(e);
             }
             if (null != throwObject)
-                throw new RuntimeException(throwObject);;
+                throw new RuntimeException(throwObject);
+            ;
         }
     }
 
@@ -448,7 +448,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
             return;
         if (logger.isDebugEnabled()) {
             logger.debug(getDebugMsg(e, format, values));
-            throw new RuntimeException(e) ;
+            throw new RuntimeException(e);
         }
     }
 
@@ -514,9 +514,9 @@ public class AlbianLoggerService extends FreeAlbianService implements
      * @see
      * org.albianj.logger.IAlbianLoggerService#getErrorMsg(java.lang.String)
      */
-	/* (non-Javadoc)
-	 * @see org.albianj.logger.impl.qqqqqq#getErrorMsg(java.lang.String, java.lang.Object)
-	 */
+    /* (non-Javadoc)
+     * @see org.albianj.logger.impl.qqqqqq#getErrorMsg(java.lang.String, java.lang.Object)
+     */
     @Override
     public String getErrorMsg(String format, Object... values) {
         return getMessage(MARK_ERROR, format, values);
@@ -527,9 +527,9 @@ public class AlbianLoggerService extends FreeAlbianService implements
      *
      * @see org.albianj.logger.IAlbianLoggerService#getWarnMsg(java.lang.String)
      */
-	/* (non-Javadoc)
-	 * @see org.albianj.logger.impl.qqqqqq#getWarnMsg(java.lang.String, java.lang.Object)
-	 */
+    /* (non-Javadoc)
+     * @see org.albianj.logger.impl.qqqqqq#getWarnMsg(java.lang.String, java.lang.Object)
+     */
     @Override
     public String getWarnMsg(String format, Object... values) {
         return getMessage(MARK_WARN, format, values);
@@ -540,9 +540,9 @@ public class AlbianLoggerService extends FreeAlbianService implements
      *
      * @see org.albianj.logger.IAlbianLoggerService#getInfoMsg(java.lang.String)
      */
-	/* (non-Javadoc)
-	 * @see org.albianj.logger.impl.qqqqqq#getInfoMsg(java.lang.String, java.lang.Object)
-	 */
+    /* (non-Javadoc)
+     * @see org.albianj.logger.impl.qqqqqq#getInfoMsg(java.lang.String, java.lang.Object)
+     */
     @Override
     public String getInfoMsg(String format, Object... values) {
         return getMessage(MARK_INFO, format, values);
@@ -554,9 +554,9 @@ public class AlbianLoggerService extends FreeAlbianService implements
      * @see
      * org.albianj.logger.IAlbianLoggerService#getDebugMsg(java.lang.String)
      */
-	/* (non-Javadoc)
-	 * @see org.albianj.logger.impl.qqqqqq#getDebugMsg(java.lang.String, java.lang.Object)
-	 */
+    /* (non-Javadoc)
+     * @see org.albianj.logger.impl.qqqqqq#getDebugMsg(java.lang.String, java.lang.Object)
+     */
     @Override
     public String getDebugMsg(String format, Object... values) {
         return getMessage(MARK_DEBUG, format, values);

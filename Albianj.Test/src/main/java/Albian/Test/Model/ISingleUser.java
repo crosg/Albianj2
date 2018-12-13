@@ -1,6 +1,5 @@
 package Albian.Test.Model;
 
-import org.albianj.io.BinaryStream;
 import org.albianj.persistence.object.IAlbianObject;
 
 import java.math.BigInteger;
@@ -10,11 +9,14 @@ import java.math.BigInteger;
  */
 public interface ISingleUser extends IAlbianObject {
     BigInteger getId();
+
     void setId(BigInteger id);
 
     String getUserName();
+
     void setUserName(String userName);
 
     String getPassword();
+
     void setPassword(String password);
 }

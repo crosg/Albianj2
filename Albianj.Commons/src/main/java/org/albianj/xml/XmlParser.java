@@ -60,7 +60,7 @@ public final class XmlParser {
     }
 
     @SuppressWarnings("rawtypes")
-    public static List analyze(Document doc, String tagName) {
+    public static List selectNodes(Document doc, String tagName) {
         if (null == doc) {
             throw new IllegalArgumentException("doc");
         }
@@ -78,7 +78,7 @@ public final class XmlParser {
         return (Element) node;
     }
 
-    public static Element analyzeSingle(Document doc, String tagName) {
+    public static Element selectNode(Document doc, String tagName) {
         if (null == doc) {
             throw new IllegalArgumentException("doc");
         }
@@ -86,7 +86,7 @@ public final class XmlParser {
             throw new IllegalArgumentException("tagName");
         }
         @SuppressWarnings("rawtypes")
-        List nodes = analyze(doc, tagName);
+        List nodes = selectNodes(doc, tagName);
         if (null == nodes || 0 == nodes.size())
             return null;
         @SuppressWarnings("rawtypes")
@@ -115,8 +115,8 @@ public final class XmlParser {
             throw new IllegalArgumentException("tagName");
         if (Validate.isNullOrEmptyOrAllSpace(attributeName))
             throw new IllegalArgumentException("attributeName");
-        Element elt = analyzeSingle(doc, tagName);
-        if(null == elt) return null;
+        Element elt = selectNode(doc, tagName);
+        if (null == elt) return null;
         return getAttributeValue(elt, attributeName);
     }
 
@@ -137,7 +137,7 @@ public final class XmlParser {
             throw new IllegalArgumentException("doc");
         if (Validate.isNullOrEmptyOrAllSpace(tagName))
             throw new IllegalArgumentException("tagName");
-        Element ele = analyzeSingle(doc, tagName);
+        Element ele = selectNode(doc, tagName);
         if (null == ele)
             return null;
         return ele.getText();
@@ -163,14 +163,54 @@ public final class XmlParser {
         return chird.getStringValue();
     }
 
-    public static List getChildNodes( Element elt, String childTagName ) {
-        Validate.notNull( elt, "the element of xml-doc is null." );
-        Validate.notBlank( childTagName, "the childTagName of element is blank." );
-        List chirds = elt.selectNodes( childTagName );
+    public static List getChildNodes(Element elt, String childTagName) {
+        Validate.notNull(elt, "the element of xml-doc is null.");
+        Validate.notBlank(childTagName, "the childTagName of element is blank.");
+        List chirds = elt.selectNodes(childTagName);
         return chirds;
     }
 
+    public static Node getChildNode(Element elt, String childTagName) {
+        Validate.notNull(elt, "the element of xml-doc is null.");
+        Validate.notBlank(childTagName, "the childTagName of element is blank.");
+        List chirds = elt.selectNodes(childTagName);
+        if(Validate.isNullOrEmpty(chirds)) return null;
+        return (Node) chirds.get(0);
+    }
 
+    /*
+     get xml value by attribute or childNode in the elt Element
+     */
+    public static String getValueByAttrOrChileNode(Element elt, String attrOrCNodeName){
+        Attribute attr =  elt.attribute(attrOrCNodeName);
+        if(null != attr){
+            return attr.getStringValue();
+        }
+        Node node =  elt.selectSingleNode(attrOrCNodeName);
+        if(null != node){
+            return node.getStringValue();
+        }
+        return null;
+    }
+
+    /*
+    get xml value by attribute or childNode in the elt Element by nodeTagName
+    */
+    public static String getValueByAttrOrChileNode(Document doc,String nodeTagName, String attrOrCNodeName){
+         Element elt =XmlParser.selectNode(doc,nodeTagName);
+         if(null == elt) {
+             return null;
+         }
+        Attribute attr =  elt.attribute(attrOrCNodeName);
+        if(null != attr){
+            return attr.getStringValue();
+        }
+        Node node =  elt.selectSingleNode(attrOrCNodeName);
+        if(null != node){
+            return node.getStringValue();
+        }
+        return null;
+    }
 
 
 }

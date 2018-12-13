@@ -8,6 +8,7 @@ public interface ISpxDBPool extends DataSource {
 
     /**
      * 释放当前线程数据库连接
+     *
      * @param conn 数据库连接对象
      * @throws SQLException
      */
@@ -20,18 +21,21 @@ public interface ISpxDBPool extends DataSource {
 
     /**
      * 连接池可用状态
+     *
      * @return 连接池是否可用
      */
     public boolean isActive();
 
     /**
      * 获取线程池活动连接数
+     *
      * @return 线程池活动连接数
      */
     public int getBusyCount();
 
     /**
      * 获取线程池空闲连接数
+     *
      * @return 线程池空闲连接数
      */
     public int getFreeCount();
@@ -41,7 +45,7 @@ public interface ISpxDBPool extends DataSource {
     void setConfig(ISpxDBPoolConfig config);
 
 
-    public String getPoolName() ;
+    public String getPoolName();
 
     public void setPoolName(String name);
 

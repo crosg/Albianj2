@@ -7,7 +7,7 @@ public class KeyValuePair {
     private String key;
     private Object value;
 
-    public KeyValuePair(String key,Object value){
+    public KeyValuePair(String key, Object value) {
         this.key = key;
         this.value = value;
     }

@@ -43,50 +43,19 @@ import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.IPersistenceCommand;
 import org.albianj.persistence.db.ISqlParameter;
 import org.albianj.persistence.db.PersistenceCommandType;
-import org.albianj.persistence.object.*;
+import org.albianj.persistence.object.IAlbianEntityFieldAttribute;
+import org.albianj.persistence.object.IAlbianObject;
+import org.albianj.persistence.object.IAlbianObjectAttribute;
+import org.albianj.persistence.object.PersistenceDatabaseStyle;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
-import org.albianj.verify.Validate;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class CreateCommandAdapter implements IPersistenceUpdateCommand {
 
-    public IPersistenceCommand buildPstCmd(String sessionId,int dbStyle,String tableName,IAlbianObject object,
-                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue,boolean rbkOnError) throws AlbianDataServiceException{
-        if (!object.getIsAlbianNew()) {
-            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                    "the loaded albianj object can not be insert.please new the object from database first.");
-        }
-
-        IPersistenceCommand cmd = new PersistenceCommand();
-        StringBuilder sqlText = new StringBuilder();
-
-        Map<String, ISqlParameter> sqlParas = makeCreateCommand(sessionId,dbStyle,tableName,
-                                                                 objAttr, mapValue,sqlText);
-
-        cmd.setCommandText(sqlText.toString());
-        cmd.setCommandType(PersistenceCommandType.Text);
-        cmd.setParameters(sqlParas);
-
-        if (rbkOnError) {
-            StringBuilder rollbackText = new StringBuilder();
-
-            Map<String, ISqlParameter> rollbackParas = RemoveCommandAdapter.makeRemoveCommand(sessionId,
-                    dbStyle, tableName, objAttr, mapValue, rollbackText);
-            cmd.setRollbackCommandText(rollbackText.toString());
-            cmd.setRollbackCommandType(PersistenceCommandType.Text);
-            cmd.setRollbackParameters(rollbackParas);
-        }
-
-        PersistenceNamedParameter.parseSql(cmd);
-        return cmd;
-    }
-
-    public static Map<String, ISqlParameter> makeCreateCommand(String sessionId,int dbStyle,String tableName,
+    public static Map<String, ISqlParameter> makeCreateCommand(String sessionId, int dbStyle, String tableName,
                                                                IAlbianObjectAttribute objAttr, Map<String, Object> sqlParaVals,
                                                                StringBuilder sqlText) throws AlbianDataServiceException {
         StringBuilder cols = new StringBuilder();
@@ -100,14 +69,14 @@ public class CreateCommandAdapter implements IPersistenceUpdateCommand {
             sqlText.append("[").append(tableName).append("]");
         }
 
-        Map<String,IAlbianEntityFieldAttribute> fieldsAttr = objAttr.getFields();
+        Map<String, IAlbianEntityFieldAttribute> fieldsAttr = objAttr.getFields();
 
         Map<String, ISqlParameter> sqlParas = new HashMap<String, ISqlParameter>();
         for (Map.Entry<String, IAlbianEntityFieldAttribute> entry : fieldsAttr
                 .entrySet()) {
             IAlbianEntityFieldAttribute member = entry.getValue();
 
-            if(member.isAutoGenKey()){
+            if (member.isAutoGenKey()) {
                 continue;
             }
             Object v = sqlParaVals.get(member.getPropertyName());
@@ -139,6 +108,39 @@ public class CreateCommandAdapter implements IPersistenceUpdateCommand {
         sqlText.append(" (").append(cols).append(") ").append("VALUES (")
                 .append(paras).append(") ");
         return sqlParas;
+    }
+
+    public IPersistenceCommand buildPstCmd(String sessionId, int dbStyle, String tableName, IAlbianObject object,
+                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue, boolean rbkOnError) throws AlbianDataServiceException {
+        if (!object.getIsAlbianNew()) {
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
+                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                    "the loaded albianj object can not be insert.please new the object from database first.");
+        }
+
+        IPersistenceCommand cmd = new PersistenceCommand();
+        StringBuilder sqlText = new StringBuilder();
+
+        Map<String, ISqlParameter> sqlParas = makeCreateCommand(sessionId, dbStyle, tableName,
+                objAttr, mapValue, sqlText);
+
+        cmd.setCommandText(sqlText.toString());
+        cmd.setCommandType(PersistenceCommandType.Text);
+        cmd.setParameters(sqlParas);
+
+        if (rbkOnError) {
+            StringBuilder rollbackText = new StringBuilder();
+
+            Map<String, ISqlParameter> rollbackParas = RemoveCommandAdapter.makeRemoveCommand(sessionId,
+                    dbStyle, tableName, objAttr, mapValue, rollbackText);
+            cmd.setRollbackCommandText(rollbackText.toString());
+            cmd.setRollbackCommandType(PersistenceCommandType.Text);
+            cmd.setRollbackParameters(rollbackParas);
+        }
+
+        PersistenceNamedParameter.parseSql(cmd);
+        return cmd;
     }
 
 }

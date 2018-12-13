@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class AlbianServiceRantParser {
 
-    public static  HashMap<String, Object> scanPackage(String pkgName) throws IOException, ClassNotFoundException {
+    public static HashMap<String, Object> scanPackage(String pkgName) throws IOException, ClassNotFoundException {
         return AlbianClassScanner.filter(AlbianClassLoader.getInstance(),
                 pkgName,
 
@@ -38,13 +38,13 @@ public class AlbianServiceRantParser {
                 new IAlbianClassExcavator() {
                     @Override
                     public Object finder(Class<?> clzz) {
-                       return scanAlbianService(clzz);
+                        return scanAlbianService(clzz);
                     }
                 });
     }
 
-    public static IAlbianServiceAttribute scanAlbianService(Class<?> implClzz){
-        IAlbianServiceAttribute  asa = new AlbianServiceAttribute();
+    public static IAlbianServiceAttribute scanAlbianService(Class<?> implClzz) {
+        IAlbianServiceAttribute asa = new AlbianServiceAttribute();
         AlbianServiceRant rant = implClzz.getAnnotation(AlbianServiceRant.class);
         asa.setId(rant.Id());
         if (Validate.isNullOrEmptyOrAllSpace(rant.sInterface()) && null == rant.Interface()) {
@@ -56,35 +56,35 @@ public class AlbianServiceRantParser {
         asa.setType(implClzz.getName());
         asa.setServiceClass(implClzz.asSubclass(IAlbianService.class));
 
-        if(implClzz.isAnnotationPresent(AlbianServiceProxyRants.class)){
+        if (implClzz.isAnnotationPresent(AlbianServiceProxyRants.class)) {
             AlbianServiceProxyRants prants = implClzz.getAnnotation(AlbianServiceProxyRants.class);
-            Map<String,IAlbianServiceAopAttribute> asaas = new HashMap<>();
-            for (AlbianServiceProxyRant prant : prants.Rants()){
+            Map<String, IAlbianServiceAopAttribute> asaas = new HashMap<>();
+            for (AlbianServiceProxyRant prant : prants.Rants()) {
                 IAlbianServiceAopAttribute aspa = new AlbianServiceAopAttribute();
                 aspa.setServiceName(prant.ServiceName());
                 aspa.setProxyName(prant.ProxyName());
 
-                if(!Validate.isNullOrEmptyOrAllSpace(prant.BeginWith())){
+                if (!Validate.isNullOrEmptyOrAllSpace(prant.BeginWith())) {
                     aspa.setBeginWith(prant.BeginWith());
                 }
-                if(!Validate.isNullOrEmptyOrAllSpace(prant.NotBeginWith())){
+                if (!Validate.isNullOrEmptyOrAllSpace(prant.NotBeginWith())) {
                     aspa.setNotBeginWith(prant.NotBeginWith());
                 }
 
-                if(!Validate.isNullOrEmptyOrAllSpace(prant.EndWith())){
+                if (!Validate.isNullOrEmptyOrAllSpace(prant.EndWith())) {
                     aspa.setEndWith(prant.EndWith());
                 }
-                if(!Validate.isNullOrEmptyOrAllSpace(prant.NotEndWith())){
+                if (!Validate.isNullOrEmptyOrAllSpace(prant.NotEndWith())) {
                     aspa.setNotEndWith(prant.NotEndWith());
                 }
 
-                if(!Validate.isNullOrEmptyOrAllSpace(prant.Contain())){
+                if (!Validate.isNullOrEmptyOrAllSpace(prant.Contain())) {
                     aspa.setContain(prant.Contain());
                 }
-                if(!Validate.isNullOrEmptyOrAllSpace(prant.NotContain())){
+                if (!Validate.isNullOrEmptyOrAllSpace(prant.NotContain())) {
                     aspa.setNotContain(prant.NotContain());
                 }
-                if(!Validate.isNullOrEmptyOrAllSpace(prant.FullName())){
+                if (!Validate.isNullOrEmptyOrAllSpace(prant.FullName())) {
                     aspa.setFullName(prant.FullName());
                 }
                 aspa.setIsAll(prant.IsAll());
@@ -94,19 +94,19 @@ public class AlbianServiceRantParser {
             asa.setAopAttributes(asaas);
         }
 
-        Map<String,IAlbianServiceFieldAttribute> fields = scanFields(implClzz);
-        if(!Validate.isNullOrEmpty(fields)){
+        Map<String, IAlbianServiceFieldAttribute> fields = scanFields(implClzz);
+        if (!Validate.isNullOrEmpty(fields)) {
             asa.setServiceFields(fields);
         }
 
         return asa;
     }
 
-    private static Map<String,IAlbianServiceFieldAttribute> scanFields(Class<?> clzz){
-        Field[] fields =   clzz.getDeclaredFields();
-        Map<String,IAlbianServiceFieldAttribute> fieldsAttr = new HashMap<>();
-        for(Field f : fields){
-            if(f.isAnnotationPresent(AlbianServiceFieldRant.class)){
+    private static Map<String, IAlbianServiceFieldAttribute> scanFields(Class<?> clzz) {
+        Field[] fields = clzz.getDeclaredFields();
+        Map<String, IAlbianServiceFieldAttribute> fieldsAttr = new HashMap<>();
+        for (Field f : fields) {
+            if (f.isAnnotationPresent(AlbianServiceFieldRant.class)) {
                 f.setAccessible(true);
                 IAlbianServiceFieldAttribute aspa = new AlbianServiceFieldAttribute();
                 AlbianServiceFieldRant frant = f.getAnnotation(AlbianServiceFieldRant.class);
@@ -115,7 +115,7 @@ public class AlbianServiceRantParser {
                 aspa.setValue(frant.Value());
                 aspa.setField(f);
                 aspa.setAllowNull(frant.AllowNull());
-                fieldsAttr.put(f.getName(),aspa);
+                fieldsAttr.put(f.getName(), aspa);
             }
         }
         return 0 == fieldsAttr.size() ? null : fieldsAttr;

@@ -62,7 +62,7 @@ public abstract class FreePersistenceQueryScope implements IPersistenceQueryScop
             return list;
         } catch (Throwable e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    job.getId(), AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
+                    job.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "execute data query is fail.");
         } finally {
@@ -80,7 +80,7 @@ public abstract class FreePersistenceQueryScope implements IPersistenceQueryScop
             return o;
         } catch (AlbianDataServiceException e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    job.getId(), AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
+                    job.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "execute data query is fail.");
         } finally {
@@ -89,16 +89,16 @@ public abstract class FreePersistenceQueryScope implements IPersistenceQueryScop
         return null;
     }
 
-    public <T extends IAlbianObject> List<T> execute(String sessionId,Class<T> cls,
+    public <T extends IAlbianObject> List<T> execute(String sessionId, Class<T> cls,
                                                      PersistenceCommandType cmdType, Statement statement) throws AlbianDataServiceException {
         ResultSet result = null;
         List<T> list = null;
         try {
-            result = executing(sessionId,cmdType, statement);
+            result = executing(sessionId, cmdType, statement);
             list = executed(cls, AlbianServiceRouter.getLogIdService().makeJobId(), result);
         } catch (AlbianDataServiceException e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    sessionId, AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
+                    sessionId, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "execute data query is fail.");
         } finally {
@@ -108,7 +108,7 @@ public abstract class FreePersistenceQueryScope implements IPersistenceQueryScop
                 } catch (SQLException e) {
                     // TODO Auto-generated catch block
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                            sessionId, AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
+                            sessionId, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                             AlbianModuleType.AlbianPersistence.getThrowInfo(),
                             "close the ResultSet from database is error.");
                 }
@@ -128,7 +128,7 @@ public abstract class FreePersistenceQueryScope implements IPersistenceQueryScop
 
     protected abstract void unloadExecute(IReaderJob job) throws AlbianDataServiceException;
 
-    protected abstract ResultSet executing(String sessionId,PersistenceCommandType cmdType,
+    protected abstract ResultSet executing(String sessionId, PersistenceCommandType cmdType,
                                            Statement statement) throws AlbianDataServiceException;
 
     protected abstract <T extends IAlbianObject> List<T> executed(Class<T> cls, String jobId,

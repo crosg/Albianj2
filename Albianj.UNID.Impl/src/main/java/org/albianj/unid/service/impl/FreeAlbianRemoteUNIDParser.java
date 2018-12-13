@@ -79,7 +79,7 @@ public abstract class FreeAlbianRemoteUNIDParser extends FreeAlbianParserService
     private void parserFile(String filename) throws AlbianParserException {
         Document doc = null;
         try {
-            String fname = confirmConfigFile(filename);
+            String fname = findConfigFile(filename);
             doc = XmlParser.load(fname);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger()
@@ -99,7 +99,7 @@ public abstract class FreeAlbianRemoteUNIDParser extends FreeAlbianParserService
         }
 
         @SuppressWarnings("rawtypes")
-        List nodes = XmlParser.analyze(doc, "UNID/IncludeSet/Include");
+        List nodes = XmlParser.selectNodes(doc, "UNID/IncludeSet/Include");
         if (!Validate.isNullOrEmpty(nodes)) {
             for (Object node : nodes) {
                 Element elt = XmlParser.toElement(node);
@@ -110,7 +110,7 @@ public abstract class FreeAlbianRemoteUNIDParser extends FreeAlbianParserService
         }
 
         @SuppressWarnings("rawtypes")
-        List objNodes = XmlParser.analyze(doc, tagName);
+        List objNodes = XmlParser.selectNodes(doc, tagName);
         if (Validate.isNullOrEmpty(objNodes)) {
             AlbianServiceRouter.getLogger()
                     .errorAndThrow(

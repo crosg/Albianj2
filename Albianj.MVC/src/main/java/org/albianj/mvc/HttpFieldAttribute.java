@@ -7,5 +7,5 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface HttpFieldAttribute {
-	String Name() default "";
+    String Name() default "";
 }

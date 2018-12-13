@@ -63,8 +63,12 @@
     fixbug：yuewen的apilog监控没有在impl的命名空间，现在易到这个命名空间，导致的问题是实用restful的配置文件需要更改
             service.xml中的YuewenPPLog的service的配置项更改为： com.yuewen.pplogstat.impl.YuewenPPLogStatService
 deploy:2018110702
+
 2018-11-08
     去掉service.xml中的内置albianj服务配置，以后的service.xml中只需要配置业务service即可。
 2018-11-09
     更改了service.xml配置了内置service后会出现加载2次导致元数据出错的问题，更改了pplog的实现类问题，
     更改了内置service的Name全部归AlbianBuiltinServiceNamePair来管理
+2018-11-16
+    更改了如果Field为Date类型，使用Chinese-format而不是chinese-simple-format，即yyyy-mm-dd 改为yyyy-mm-dd hh-mm-ss（羊羊）
+deploy:2018111601

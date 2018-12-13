@@ -63,7 +63,7 @@ public interface IAlbianDataRouterParserService extends IAlbianParserService {
     /**
      * 此service在service.xml中的id
      */
-    static String Name =  AlbianBuiltinServiceNamePair.AlbianDataRouterServiceName;
+    static String Name = AlbianBuiltinServiceNamePair.AlbianDataRouterServiceName;
 
     /**
      * 增加一条路由信息

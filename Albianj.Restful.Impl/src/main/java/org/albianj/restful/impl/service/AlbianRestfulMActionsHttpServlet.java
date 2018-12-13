@@ -161,8 +161,8 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
                 isPass = (boolean) mv.invoke(service, args);
             } catch (Exception e) {
                 AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
-                        sessionId, AlbianLoggerLevel.Error,e,
-                        "exec action:%s of service:%s verify is error.",action, serviceName);
+                        sessionId, AlbianLoggerLevel.Error, e,
+                        "exec action:%s of service:%s verify is error.", action, serviceName);
 
             }
         }
@@ -170,7 +170,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
         if (!isPass) {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId, AlbianLoggerLevel.Error,
-                    "exec action:%s of service:%s verify is error.",action, serviceName);
+                    "exec action:%s of service:%s verify is error.", action, serviceName);
 
 
             sendErrorResponse(resp,
@@ -186,7 +186,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
         if (null == m) {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId, AlbianLoggerLevel.Error,
-                    "action:%s in the service:%s is not exist.",action, serviceName);
+                    "action:%s in the service:%s is not exist.", action, serviceName);
 
 
             sendErrorResponse(resp,
@@ -198,7 +198,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
             ctx = (IAlbianRestfulActionContext) m.invoke(service, args);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
-                    sessionId, AlbianLoggerLevel.Error,e,
+                    sessionId, AlbianLoggerLevel.Error, e,
                     "SP=%s|request=%s|IP=%s|time=%s|service=%s|paras=%s|invoke action:%s is fail.",
                     sp, req.getRequestURI().toString(),
                     req.getRemoteAddr(), queryTime,
@@ -217,7 +217,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
             }
 
             return;
-        }finally {
+        } finally {
             long e1 = Calendar.getInstance().getTimeInMillis();
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId, AlbianLoggerLevel.Info,
@@ -234,123 +234,123 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 
         resp.setStatus(HttpServletResponse.SC_OK);
 
-    if(AlbianRestfulResultStyle.Stream == ctx.getResultStyle()) {
-        OutputStream out = resp.getOutputStream();
-        try {
-            if (null != ctx.getResult()) {
-                byte[] bytes = (byte[]) ctx.getResult().getResult();
-                out.write(bytes);
-                out.flush();
-            }
-        } catch (Exception e) {
-            AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
-                    sessionId, AlbianLoggerLevel.Error,e,
-                    "service:%s print body to http stream is fail.",
-                    serviceName);
-
-        } finally {
-            out.close();
-            long end = Calendar.getInstance().getTimeInMillis();
-            AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
-                    sessionId, AlbianLoggerLevel.Info,
-                    "SP=%s|request=%s|response=%s|IP=%s|time=%s|timespan=%dms|service=%s|paras=%s",
-                    sp, req.getRequestURI().toString(), "get stream,so do not logger context ",
-                    req.getRemoteAddr(), queryTime, end - begin,
-                    serviceName, req.getQueryString());
-
-        }
-    } else {
-        String body = null;
-        if(0 == ctx.getVerison()) {
-            if (AlbianRestfulResultStyle.Xml == ctx.getResultStyle()) {
+        if (AlbianRestfulResultStyle.Stream == ctx.getResultStyle()) {
+            OutputStream out = resp.getOutputStream();
+            try {
                 if (null != ctx.getResult()) {
-                    if (ctx.getParser() != null)
-                        body = ctx.getParser().parserToXml(ctx.getResult())
-                                .toString();
-                    else
-                        body = new AlbianRestfulResultParser().parserToXml(ctx
-                                .getResult());
+                    byte[] bytes = (byte[]) ctx.getResult().getResult();
+                    out.write(bytes);
+                    out.flush();
                 }
-            } else {
-                if (ctx.getShowNull()) {
-                    body = JSON.toJSONString(ctx.getResult(),
-                            SerializerFeature.WriteDateUseDateFormat,
-                            SerializerFeature.SkipTransientField,
-                            SerializerFeature.WriteMapNullValue,
-                            SerializerFeature.WriteNullBooleanAsFalse,
-                            SerializerFeature.WriteNullListAsEmpty,
-                            SerializerFeature.WriteNullNumberAsZero,
-                            SerializerFeature.WriteNullStringAsEmpty,
-                            SerializerFeature.DisableCircularReferenceDetect
-                    );
-                } else {
-                    body = JSON.toJSONString(ctx.getResult(),
-                            SerializerFeature.SkipTransientField,
-                            SerializerFeature.WriteDateUseDateFormat,
-                            SerializerFeature.DisableCircularReferenceDetect
-                    );
-                }
+            } catch (Exception e) {
+                AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
+                        sessionId, AlbianLoggerLevel.Error, e,
+                        "service:%s print body to http stream is fail.",
+                        serviceName);
+
+            } finally {
+                out.close();
+                long end = Calendar.getInstance().getTimeInMillis();
+                AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
+                        sessionId, AlbianLoggerLevel.Info,
+                        "SP=%s|request=%s|response=%s|IP=%s|time=%s|timespan=%dms|service=%s|paras=%s",
+                        sp, req.getRequestURI().toString(), "get stream,so do not logger context ",
+                        req.getRemoteAddr(), queryTime, end - begin,
+                        serviceName, req.getQueryString());
+
             }
         } else {
-            if (AlbianRestfulResultStyle.Xml == ctx.getResultStyle()) {
-                if (null != ctx.getResultV1()) {
-                    if (ctx.getParserV1() != null)
-                        body = ctx.getParserV1().parserToXml(ctx.getResultV1())
-                                .toString();
-                    else
-                        body = new AlbianRestfulResultParserV1().parserToXml(ctx
-                                .getResultV1());
+            String body = null;
+            if (0 == ctx.getVerison()) {
+                if (AlbianRestfulResultStyle.Xml == ctx.getResultStyle()) {
+                    if (null != ctx.getResult()) {
+                        if (ctx.getParser() != null)
+                            body = ctx.getParser().parserToXml(ctx.getResult())
+                                    .toString();
+                        else
+                            body = new AlbianRestfulResultParser().parserToXml(ctx
+                                    .getResult());
+                    }
+                } else {
+                    if (ctx.getShowNull()) {
+                        body = JSON.toJSONString(ctx.getResult(),
+                                SerializerFeature.WriteDateUseDateFormat,
+                                SerializerFeature.SkipTransientField,
+                                SerializerFeature.WriteMapNullValue,
+                                SerializerFeature.WriteNullBooleanAsFalse,
+                                SerializerFeature.WriteNullListAsEmpty,
+                                SerializerFeature.WriteNullNumberAsZero,
+                                SerializerFeature.WriteNullStringAsEmpty,
+                                SerializerFeature.DisableCircularReferenceDetect
+                        );
+                    } else {
+                        body = JSON.toJSONString(ctx.getResult(),
+                                SerializerFeature.SkipTransientField,
+                                SerializerFeature.WriteDateUseDateFormat,
+                                SerializerFeature.DisableCircularReferenceDetect
+                        );
+                    }
                 }
             } else {
-                if (ctx.getShowNull()) {
-                    body = JSON.toJSONString(ctx.getResultV1(),
-                            SerializerFeature.WriteDateUseDateFormat,
-                            SerializerFeature.SkipTransientField,
-                            SerializerFeature.WriteMapNullValue,
-                            SerializerFeature.WriteNullBooleanAsFalse,
-                            SerializerFeature.WriteNullListAsEmpty,
-                            SerializerFeature.WriteNullNumberAsZero,
-                            SerializerFeature.WriteNullStringAsEmpty,
-                            SerializerFeature.DisableCircularReferenceDetect
-                    );
+                if (AlbianRestfulResultStyle.Xml == ctx.getResultStyle()) {
+                    if (null != ctx.getResultV1()) {
+                        if (ctx.getParserV1() != null)
+                            body = ctx.getParserV1().parserToXml(ctx.getResultV1())
+                                    .toString();
+                        else
+                            body = new AlbianRestfulResultParserV1().parserToXml(ctx
+                                    .getResultV1());
+                    }
                 } else {
-                    body = JSON.toJSONString(ctx.getResultV1(),
-                            SerializerFeature.SkipTransientField,
-                            SerializerFeature.WriteDateUseDateFormat,
-                            SerializerFeature.DisableCircularReferenceDetect
-                    );
+                    if (ctx.getShowNull()) {
+                        body = JSON.toJSONString(ctx.getResultV1(),
+                                SerializerFeature.WriteDateUseDateFormat,
+                                SerializerFeature.SkipTransientField,
+                                SerializerFeature.WriteMapNullValue,
+                                SerializerFeature.WriteNullBooleanAsFalse,
+                                SerializerFeature.WriteNullListAsEmpty,
+                                SerializerFeature.WriteNullNumberAsZero,
+                                SerializerFeature.WriteNullStringAsEmpty,
+                                SerializerFeature.DisableCircularReferenceDetect
+                        );
+                    } else {
+                        body = JSON.toJSONString(ctx.getResultV1(),
+                                SerializerFeature.SkipTransientField,
+                                SerializerFeature.WriteDateUseDateFormat,
+                                SerializerFeature.DisableCircularReferenceDetect
+                        );
+                    }
                 }
             }
-        }
 
-        if (null != ctx.getBodyFilterHandler()) {
-            body = ctx.getBodyFilterHandler().filter(body);
-        }
-
-        PrintWriter out = resp.getWriter();
-        try {
-            if (!Validate.isNullOrEmpty(body)) {
-                out.print(body);
-                out.flush();
+            if (null != ctx.getBodyFilterHandler()) {
+                body = ctx.getBodyFilterHandler().filter(body);
             }
-        } catch (Exception e) {
-            AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
-                    sessionId, AlbianLoggerLevel.Error,e,
-                    "service:%s print body to http stream is fail.",
-                    serviceName);
 
-        } finally {
-            out.close();
-            long end = Calendar.getInstance().getTimeInMillis();
-            AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
-                    sessionId, AlbianLoggerLevel.Info,
-                    "SP=%s|request=%s|response=%s|IP=%s|time=%s|timespan=%dms|service=%s|paras=%s",
-                    sp, req.getRequestURI().toString(), body,
-                    req.getRemoteAddr(), queryTime, end - begin,
-                    serviceName, req.getQueryString());
+            PrintWriter out = resp.getWriter();
+            try {
+                if (!Validate.isNullOrEmpty(body)) {
+                    out.print(body);
+                    out.flush();
+                }
+            } catch (Exception e) {
+                AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
+                        sessionId, AlbianLoggerLevel.Error, e,
+                        "service:%s print body to http stream is fail.",
+                        serviceName);
 
+            } finally {
+                out.close();
+                long end = Calendar.getInstance().getTimeInMillis();
+                AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
+                        sessionId, AlbianLoggerLevel.Info,
+                        "SP=%s|request=%s|response=%s|IP=%s|time=%s|timespan=%dms|service=%s|paras=%s",
+                        sp, req.getRequestURI().toString(), body,
+                        req.getRemoteAddr(), queryTime, end - begin,
+                        serviceName, req.getQueryString());
+
+            }
         }
-    }
     }
 
     @Override
@@ -443,7 +443,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
         if (null == m) {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId, AlbianLoggerLevel.Error,
-                    "action:%s in the service:%s is not exist.",action, serviceName);
+                    "action:%s in the service:%s is not exist.", action, serviceName);
 
             sendErrorResponse(resp,
                     "application/" + format + "; charset=UTF-8", 404, "服务没有找到",
@@ -466,7 +466,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 
 
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
-                    sessionId, AlbianLoggerLevel.Error,e,
+                    sessionId, AlbianLoggerLevel.Error, e,
                     "SP=%s|request=%s|IP=%s|time=%s|service=%s|paras=%s|invoke action:%s is fail.",
                     sp, req.getRequestURI().toString(),
                     req.getRemoteAddr(), queryTime,
@@ -495,7 +495,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 
         resp.setStatus(HttpServletResponse.SC_OK);
 
-        if(AlbianRestfulResultStyle.Stream == ctx.getResultStyle()) {
+        if (AlbianRestfulResultStyle.Stream == ctx.getResultStyle()) {
             OutputStream out = resp.getOutputStream();
             try {
                 if (null != ctx.getResult()) {
@@ -505,7 +505,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
                 }
             } catch (Exception e) {
                 AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
-                        sessionId, AlbianLoggerLevel.Error,e,
+                        sessionId, AlbianLoggerLevel.Error, e,
                         "service:%s print body to http stream is fail.",
                         serviceName);
 
@@ -523,7 +523,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
             }
         } else {
             String body = null;
-            if(0 == ctx.getVerison()) {
+            if (0 == ctx.getVerison()) {
                 if (AlbianRestfulResultStyle.Xml == ctx.getResultStyle()) {
                     if (null != ctx.getResult()) {
                         if (ctx.getParser() != null)
@@ -600,7 +600,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
                 }
             } catch (Exception e) {
                 AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
-                        sessionId, AlbianLoggerLevel.Error,e,
+                        sessionId, AlbianLoggerLevel.Error, e,
                         "service:%s print body to http stream is fail.",
                         serviceName);
 
@@ -640,7 +640,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
     private void doUnimplements(String mode, HttpServletRequest req,
                                 HttpServletResponse resp) throws ServletException, IOException {
         AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
-                req.getSession().getId(),AlbianLoggerLevel.Error,
+                req.getSession().getId(), AlbianLoggerLevel.Error,
                 "client use %s,request=%s|IP=%s",
                 mode, req.getRequestURI().toString(), req.getRemoteAddr());
 //        AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name,
@@ -665,7 +665,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
             out.flush();
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
-                    sessionId,AlbianLoggerLevel.Error,e,
+                    sessionId, AlbianLoggerLevel.Error, e,
                     "print body to http stream is fail.");
 
 //            AlbianServiceRouter.getLogger().error(IAlbianRestfulLogger.Name, e,
@@ -687,7 +687,6 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
         // TODO Auto-generated method stub
         super.init();
     }
-
 
 
 }

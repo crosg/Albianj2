@@ -56,7 +56,7 @@ import java.util.List;
 
 public class AlbianCachedService extends FreeAlbianCachedParser implements
         IAlbianCachedService {
-    public String getServiceName(){
+    public String getServiceName() {
         return Name;
     }
 

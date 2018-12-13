@@ -63,7 +63,7 @@ public interface IAlbianMappingParserService extends IAlbianParserService {
     /**
      * 此service在service.xml中的id
      */
-    static String Name =  AlbianBuiltinServiceNamePair.AlbianMappingServiceName;
+    static String Name = AlbianBuiltinServiceNamePair.AlbianMappingServiceName;
 
 //    /**
 //     * 增加数据实体的类型信息

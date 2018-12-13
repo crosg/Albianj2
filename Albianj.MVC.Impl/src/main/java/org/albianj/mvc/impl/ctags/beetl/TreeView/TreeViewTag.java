@@ -10,11 +10,11 @@ import org.beetl.core.statement.Statement;
  */
 public class TreeViewTag extends GeneralVarTagBinding {
 
-    public static String getName(){
+    private HttpContext currentContext = null;
+
+    public static String getName() {
         return "TreeView";
     }
-
-    private HttpContext currentContext = null;
 
     @Override
     public void init(Context ctx, Object[] args, Statement st) {
@@ -23,7 +23,7 @@ public class TreeViewTag extends GeneralVarTagBinding {
         currentContext = (HttpContext) o;
     }
 
-    public void render(){
+    public void render() {
 
     }
 

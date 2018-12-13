@@ -139,8 +139,8 @@ public interface IFilterExpression extends IChainExpression {
      */
     public void setAliasName(String an);
 
-    public void setIdentical(boolean identical);
-
     public boolean isIdentical();
+
+    public void setIdentical(boolean identical);
 
 }

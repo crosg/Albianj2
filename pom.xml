@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.yuewen.nrzx.albianj</groupId>
     <artifactId>Albianj</artifactId>
-    <version>2018110901</version>
+    <version>2018111601</version>
     <modules>
         <module>Albianj.Comment</module>
         <module>Albianj.Commons</module>
@@ -33,14 +33,15 @@
         <module>Albianj.WordProcessor.Impl</module>
         <module>Albianj.Core</module>
         <module>Albianj.Test</module>
-        <module>Albianj.Test2</module>
         <module>Albianj.Monitor</module>
         <module>Albianj.Monitor.Impl</module>
+        <module>Albianj.Pooling</module>
     </modules>
     <packaging>pom</packaging>
 
     <scm>
-        <developerConnection>scm:git:http://git.code.oa.com/albianj-framework/albianj-framework.git</developerConnection>
+        <developerConnection>scm:git:http://git.code.oa.com/albianj-framework/albianj-framework.git
+        </developerConnection>
     </scm>
 
     <properties>

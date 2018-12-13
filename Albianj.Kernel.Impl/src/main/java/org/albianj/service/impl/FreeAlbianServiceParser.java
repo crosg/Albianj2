@@ -81,12 +81,12 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
 
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
-                    AlbianModuleType.AlbianKernel,AlbianModuleType.AlbianKernel.getThrowInfo(),
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null,
+                    AlbianModuleType.AlbianKernel, AlbianModuleType.AlbianKernel.getThrowInfo(),
                     "loading the service.xml is error.");
         }
 
-        if(0 == map.size()){
+        if (0 == map.size()) {
 
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,
@@ -100,25 +100,25 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
     private void parserFile(Map<String, IAlbianServiceAttribute> map, String filename) throws AlbianParserException {
         Document doc = null;
         try {
-            String realFilename = confirmConfigFile(filename);
+            String realFilename = findConfigFile(filename);
             doc = XmlParser.load(realFilename);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
-                    AlbianModuleType.AlbianKernel,AlbianModuleType.AlbianKernel.getThrowInfo(),
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null,
+                    AlbianModuleType.AlbianKernel, AlbianModuleType.AlbianKernel.getThrowInfo(),
                     "loading the service.xml is error.");
 
         }
         if (null == doc) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
-                    AlbianModuleType.AlbianKernel,AlbianModuleType.AlbianKernel.getThrowInfo(),
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null,
+                    AlbianModuleType.AlbianKernel, AlbianModuleType.AlbianKernel.getThrowInfo(),
                     "loading the service.xml is error. the file is null.");
 
 
         }
         @SuppressWarnings("rawtypes")
-        List nodes = XmlParser.analyze(doc, "Services/IncludeSet/Include");
+        List nodes = XmlParser.selectNodes(doc, "Services/IncludeSet/Include");
         if (!Validate.isNullOrEmpty(nodes)) {
             for (Object node : nodes) {
                 Element elt = XmlParser.toElement(node);
@@ -129,56 +129,56 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
         }
 
         //parser pkg in service.xml
-        HashMap<String,Object> pkgMetedataMap = new HashMap<>();
-        List pkgNodes = XmlParser.analyze(doc, pkgTagName);
-        if(!Validate.isNullOrEmpty(pkgNodes)){
-            for(Object node : pkgNodes){
+        HashMap<String, Object> pkgMetedataMap = new HashMap<>();
+        List pkgNodes = XmlParser.selectNodes(doc, pkgTagName);
+        if (!Validate.isNullOrEmpty(pkgNodes)) {
+            for (Object node : pkgNodes) {
                 Element elt = XmlParser.toElement(node);
-                String enable = XmlParser.getAttributeValue(elt,"Enable");
-                String pkg = XmlParser.getAttributeValue(elt,"Path");
+                String enable = XmlParser.getAttributeValue(elt, "Enable");
+                String pkg = XmlParser.getAttributeValue(elt, "Path");
 
-                if(!Validate.isNullOrEmptyOrAllSpace(enable)){
+                if (!Validate.isNullOrEmptyOrAllSpace(enable)) {
                     boolean b = Boolean.parseBoolean(enable);
-                    if(!b) {
+                    if (!b) {
                         AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Warn,null,
-                                AlbianModuleType.AlbianKernel,AlbianModuleType.AlbianKernel.getThrowInfo(),
+                                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Warn, null,
+                                AlbianModuleType.AlbianKernel, AlbianModuleType.AlbianKernel.getThrowInfo(),
                                 "Path -> %s in the Package enable is false,so not load it.",
                                 Validate.isNullOrEmptyOrAllSpace(pkg) ? "NoPath" : pkg);
                         continue;// not load pkg
                     }
                 }
 
-                if(Validate.isNullOrEmptyOrAllSpace(pkg)){
+                if (Validate.isNullOrEmptyOrAllSpace(pkg)) {
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
-                            AlbianModuleType.AlbianKernel,AlbianModuleType.AlbianKernel.getThrowInfo(),
+                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null,
+                            AlbianModuleType.AlbianKernel, AlbianModuleType.AlbianKernel.getThrowInfo(),
                             "loading the service.xml is error. 'Path' attribute in  Package config-item is null or empty.");
                 } else {
                     try {
                         //notice:all pkgmap key is service's type,not service's id
                         //change it when merger
-                        HashMap<String,Object> pkgMap =  AlbianServiceRantParser.scanPackage(pkg);
-                        if(null != pkgMap){
+                        HashMap<String, Object> pkgMap = AlbianServiceRantParser.scanPackage(pkg);
+                        if (null != pkgMap) {
                             pkgMetedataMap.putAll(pkgMap);//merger the metedata
                         }
                     } catch (Exception e) {
                         AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e,
-                                AlbianModuleType.AlbianKernel,AlbianModuleType.AlbianKernel.getThrowInfo(),
-                                "loading the service.xml is error. Path -> %s in Package is fail.",pkg);
+                                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e,
+                                AlbianModuleType.AlbianKernel, AlbianModuleType.AlbianKernel.getThrowInfo(),
+                                "loading the service.xml is error. Path -> %s in Package is fail.", pkg);
                     }
                 }
             }
         }
 
         Map<String, IAlbianServiceAttribute> attrMap = new HashMap<>();
-        List serviceNodes = XmlParser.analyze(doc,"Services/Service");
-        if(!Validate.isNullOrEmpty(serviceNodes)) {
+        List serviceNodes = XmlParser.selectNodes(doc, "Services/Service");
+        if (!Validate.isNullOrEmpty(serviceNodes)) {
             parserServices(attrMap, tagName, serviceNodes);
         }
 
-        mergerServiceAttributes(map,attrMap,pkgMetedataMap);
+        mergerServiceAttributes(map, attrMap, pkgMetedataMap);
         return;
     }
 
@@ -188,79 +188,79 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
      */
     private void mergerServiceAttributes(Map<String, IAlbianServiceAttribute> totalMap,
                                          Map<String, IAlbianServiceAttribute> attrMap,
-                                         Map<String, Object> pkgMap){
-         for(Map.Entry<String,IAlbianServiceAttribute> entry : attrMap.entrySet()) {
-             IAlbianServiceAttribute asa = entry.getValue();
-             IAlbianServiceAttribute asaPkg = null;
+                                         Map<String, Object> pkgMap) {
+        for (Map.Entry<String, IAlbianServiceAttribute> entry : attrMap.entrySet()) {
+            IAlbianServiceAttribute asa = entry.getValue();
+            IAlbianServiceAttribute asaPkg = null;
 
-             if(pkgMap.containsKey(asa.getId())) {
-                 asaPkg = (IAlbianServiceAttribute) pkgMap.get(asa.getId());
-                 pkgMap.remove(asa.getId());
-             } else {
-                 // because reuse，so key must type
-                 // and change type to id when merger
-                 if(pkgMap.containsKey(asa.getType())) {
-                     asaPkg = (IAlbianServiceAttribute) pkgMap.get(asa.getType());
-                     pkgMap.remove(asa.getType());
-                 }
-             }
+            if (pkgMap.containsKey(asa.getId())) {
+                asaPkg = (IAlbianServiceAttribute) pkgMap.get(asa.getId());
+                pkgMap.remove(asa.getId());
+            } else {
+                // because reuse，so key must type
+                // and change type to id when merger
+                if (pkgMap.containsKey(asa.getType())) {
+                    asaPkg = (IAlbianServiceAttribute) pkgMap.get(asa.getType());
+                    pkgMap.remove(asa.getType());
+                }
+            }
 
-             if(!asa.getEnable()) { // not load this service
-                 continue;
-             }
+            if (!asa.getEnable()) { // not load this service
+                continue;
+            }
 
-             if(null == asaPkg){
-                 totalMap.put(asa.getId(),asa);
-                 continue;
-             }
+            if (null == asaPkg) {
+                totalMap.put(asa.getId(), asa);
+                continue;
+            }
 
-             Map<String,IAlbianServiceFieldAttribute> asaFieldAttr = asa.getServiceFields();
-             Map<String,IAlbianServiceFieldAttribute> pkgFieldAttr = asaPkg.getServiceFields();
+            Map<String, IAlbianServiceFieldAttribute> asaFieldAttr = asa.getServiceFields();
+            Map<String, IAlbianServiceFieldAttribute> pkgFieldAttr = asaPkg.getServiceFields();
 
-             if(Validate.isNullOrEmpty(asaFieldAttr)) {
-                 asa.setServiceFields(pkgFieldAttr);
-             } else {
-                 if(!Validate.isNullOrEmpty(pkgFieldAttr)) {
-                     // merger field attribute
-                     // base on service.xml and merger field from pkg
-                     // if exist in service.xml not merger field from pkg
-                     for (Map.Entry<String, IAlbianServiceFieldAttribute> fe : pkgFieldAttr.entrySet()) {
-                         if (!asaFieldAttr.containsKey(fe.getKey())) {
-                             asaFieldAttr.put(fe.getKey(), fe.getValue());
-                         }
-                     }
-                 }
-             }
+            if (Validate.isNullOrEmpty(asaFieldAttr)) {
+                asa.setServiceFields(pkgFieldAttr);
+            } else {
+                if (!Validate.isNullOrEmpty(pkgFieldAttr)) {
+                    // merger field attribute
+                    // base on service.xml and merger field from pkg
+                    // if exist in service.xml not merger field from pkg
+                    for (Map.Entry<String, IAlbianServiceFieldAttribute> fe : pkgFieldAttr.entrySet()) {
+                        if (!asaFieldAttr.containsKey(fe.getKey())) {
+                            asaFieldAttr.put(fe.getKey(), fe.getValue());
+                        }
+                    }
+                }
+            }
 
-             Map<String, IAlbianServiceAopAttribute> asaAopAttr = asa.getAopAttributes();
-             Map<String,IAlbianServiceAopAttribute> pkgAopAttr = asaPkg.getAopAttributes();
-             if(Validate.isNullOrEmpty(asaAopAttr)) {
-                 asa.setAopAttributes(pkgAopAttr);
-             } else {
-                 if(!Validate.isNullOrEmpty(pkgAopAttr)) {
-                     // merger field attribute
-                     // base on service.xml and merger field from pkg
-                     // if exist in service.xml not merger field from pkg
-                     for (Map.Entry<String, IAlbianServiceAopAttribute> fe : pkgAopAttr.entrySet()) {
-                         if (!asaAopAttr.containsKey(fe.getKey())) {
-                             asaAopAttr.put(fe.getKey(), fe.getValue());
-                         }
-                     }
-                 }
-             }
-         }
+            Map<String, IAlbianServiceAopAttribute> asaAopAttr = asa.getAopAttributes();
+            Map<String, IAlbianServiceAopAttribute> pkgAopAttr = asaPkg.getAopAttributes();
+            if (Validate.isNullOrEmpty(asaAopAttr)) {
+                asa.setAopAttributes(pkgAopAttr);
+            } else {
+                if (!Validate.isNullOrEmpty(pkgAopAttr)) {
+                    // merger field attribute
+                    // base on service.xml and merger field from pkg
+                    // if exist in service.xml not merger field from pkg
+                    for (Map.Entry<String, IAlbianServiceAopAttribute> fe : pkgAopAttr.entrySet()) {
+                        if (!asaAopAttr.containsKey(fe.getKey())) {
+                            asaAopAttr.put(fe.getKey(), fe.getValue());
+                        }
+                    }
+                }
+            }
+        }
 
-         // add in pkg but not in attr
+        // add in pkg but not in attr
         // and change the key from type to id
-         for(Object val : pkgMap.values()) {
-             IAlbianServiceAttribute asa = (IAlbianServiceAttribute) val;
-             totalMap.put(asa.getId(),asa);
-         }
+        for (Object val : pkgMap.values()) {
+            IAlbianServiceAttribute asa = (IAlbianServiceAttribute) val;
+            totalMap.put(asa.getId(), asa);
+        }
     }
 
     protected abstract void parserServices(Map<String, IAlbianServiceAttribute> map,
                                            String tagName,
-                                                                           @SuppressWarnings("rawtypes") List nodes) throws NullPointerException;
+                                           @SuppressWarnings("rawtypes") List nodes) throws NullPointerException;
 
     protected abstract IAlbianServiceAttribute parserService(String name, Element node)
             throws NullPointerException, AlbianServiceException;

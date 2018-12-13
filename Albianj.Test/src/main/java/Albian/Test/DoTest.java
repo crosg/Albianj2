@@ -5,29 +5,19 @@ import Albian.Test.Services.IOrgUserService;
 import Albian.Test.Services.IUTF8M64Service;
 import Albian.Test.Services.IUserService;
 import org.albianj.loader.AlbianBootService;
-import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.IAlbianLoggerService2;
-import org.albianj.persistence.object.IRunningStorageAttribute;
-import org.albianj.persistence.object.IStorageAttribute;
-import org.albianj.persistence.object.RunningStorageAttribute;
-import org.albianj.persistence.service.IAlbianStorageParserService;
 import org.albianj.service.AlbianServiceRouter;
-import org.jaxen.function.StringLengthFunction;
-
-import java.sql.Connection;
 
 public class DoTest {
-    public static void main(String[] argv){
+    public static void main(String[] argv) {
         try {
             AlbianBootService.start("D:\\work\\github\\albianj2\\Albianj.Test\\src\\main\\resources\\config");
 
-            String v= "@徐海峰(xuhaifeng)\uD83C\uDF4E\uD83D\uDCB0\uD83D\uDCF1\uD83C\uDF19\uD83C\uDF41\uD83C\uDF42\uD83C\uDF43\uD83C\uDF37\uD83D\uDC8E\uD83D\uDD2A\uD83D\uDD2B\uD83C\uDFC0⚽⚡\uD83D\uDC44\uD83D\uDC4D\uD83D\uDD25tm都是啥玩意jb玩意";
-            IUTF8M64Service utf = AlbianServiceHub.getSingletonService(IUTF8M64Service.class,IUTF8M64Service.ServiceId);
-            int id = 2;
-            utf.saveUtf8M64(id,v);
+            String v = "@徐海峰(xuhaifeng)\uD83C\uDF4E\uD83D\uDCB0\uD83D\uDCF1\uD83C\uDF19\uD83C\uDF41\uD83C\uDF42\uD83C\uDF43\uD83C\uDF37\uD83D\uDC8E\uD83D\uDD2A\uD83D\uDD2B\uD83C\uDFC0⚽⚡\uD83D\uDC44\uD83D\uDC4D\uD83D\uDD25tm都是啥玩意jb玩意";
+            IUTF8M64Service utf = AlbianServiceHub.getSingletonService(IUTF8M64Service.class, IUTF8M64Service.ServiceId);
+            int id = 100;
+            utf.saveUtf8M64(id, v);
             String v1 = utf.getUtf8M64(id);
             System.out.println(v1);
-
 
 
 //            final IAlbianStorageParserService stgService = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class,IAlbianStorageParserService.Name);
@@ -66,13 +56,13 @@ public class DoTest {
 //            Thread.sleep(50000000);
 
 
-            IUserService us = AlbianServiceRouter.getSingletonService(IUserService.class,IUserService.Name);
-            us.addUser("uname-SpxDBCP","pwd");
-            if(us.login("uname-SpxDBCP","pwd")) {
+            IUserService us = AlbianServiceRouter.getSingletonService(IUserService.class, IUserService.Name);
+            us.addUser("uname-SpxDBCP", "pwd");
+            if (us.login("uname-SpxDBCP", "pwd")) {
                 System.out.println("login success.");
             }
             System.out.println("login fail.");
-            if(us.modifyPwd("uname-SpxDBCP","pwd","newpwd-SpxDBCP")){
+            if (us.modifyPwd("uname-SpxDBCP", "pwd", "newpwd-SpxDBCP")) {
                 System.out.println("modify password success.");
             }
             System.out.println("modify password fail.");
@@ -86,13 +76,13 @@ public class DoTest {
             test2();
             return;
 
-        }catch(Throwable t){
+        } catch (Throwable t) {
             t.printStackTrace();
         }
     }
 
-    private static  void test1(){
-        IUserService us = AlbianServiceRouter.getSingletonService(IUserService.class,IUserService.Name);
+    private static void test1() {
+        IUserService us = AlbianServiceRouter.getSingletonService(IUserService.class, IUserService.Name);
         //            us.addUser("uname","pwd");
 //            if(us.login("uname","pwd")) {
 //                System.out.println("login success.");
@@ -111,8 +101,8 @@ public class DoTest {
         us.queryMulitUserById();
     }
 
-    private static  void test2(){
-        IOrgUserService us = AlbianServiceRouter.getSingletonService(IOrgUserService.class,IOrgUserService.Name);
+    private static void test2() {
+        IOrgUserService us = AlbianServiceRouter.getSingletonService(IOrgUserService.class, IOrgUserService.Name);
 //                   if( us.addUser("uname-org","pwd-org")){
 //                       System.out.println("add org user success.");
 //                   } else {
@@ -131,11 +121,11 @@ public class DoTest {
 //                System.out.println("modify password fail.");
 //            }
 
-            if(us.batchAddUser()){
-                System.out.println("batch add use success");
-            } else {
-                System.out.println("batch add user fail.");
-            }
+        if (us.batchAddUser()) {
+            System.out.println("batch add use success");
+        } else {
+            System.out.println("batch add user fail.");
+        }
         us.queryMulitUserById();
     }
 }

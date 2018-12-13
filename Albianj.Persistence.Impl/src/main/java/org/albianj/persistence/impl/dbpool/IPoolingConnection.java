@@ -5,28 +5,27 @@ import java.sql.SQLException;
 
 public interface IPoolingConnection extends Connection {
 
-    public long getStartupTimeMs() ;
+    public long getStartupTimeMs();
 
-    public void setStartupTimeMs(long startupTimeMs) ;
+    public void setStartupTimeMs(long startupTimeMs);
 
-    public boolean isPooling() ;
+    public boolean isPooling();
 
-    public void setPooling(boolean pooling) ;
+    public void setPooling(boolean pooling);
 
-    public long getLastUsedTimeMs() ;
+    public long getLastUsedTimeMs();
 
     public void setLastUsedTimeMs(long lastUsedTimeMs);
 
-    public long getReuseTimes() ;
+    public long getReuseTimes();
 
     public void addReuseTimes();
 
     public Boolean isValid() throws SQLException;
 
+    String getSessionId();
 
-     void setSessionId(String sessionId);
-
-     String getSessionId();
+    void setSessionId(String sessionId);
 
 
-    }
+}

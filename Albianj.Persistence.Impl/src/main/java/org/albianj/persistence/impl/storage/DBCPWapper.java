@@ -22,48 +22,47 @@ import java.sql.SQLException;
  */
 public class DBCPWapper extends FreeDataBasePool {
 
+    public final static String DRIVER_CLASSNAME = "com.mysql.jdbc.Driver";
+
+    public DBCPWapper() {
+
+    }
+
     @Override
     public Connection getConnection(String sessionId, IRunningStorageAttribute rsa) {
         IStorageAttribute sa = rsa.getStorageAttribute();
         String key = sa.getName() + rsa.getDatabase();
-        DataSource ds =  getDatasource(key,rsa);
+        DataSource ds = getDatasource(key, rsa);
         AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-            sessionId, AlbianLoggerLevel.Info,
-            "Get the connection from storage:%s and database:%s by connection pool.",
-            sa.getName(), rsa.getDatabase());
+                sessionId, AlbianLoggerLevel.Info,
+                "Get the connection from storage:%s and database:%s by connection pool.",
+                sa.getName(), rsa.getDatabase());
         try {
             return ds.getConnection();
         } catch (SQLException e) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
-                sessionId, AlbianLoggerLevel.Error, e,
-                "Get the connection with storage:%s and database:%s form connection pool is error.",
-                sa.getName(), rsa.getDatabase());
+                    sessionId, AlbianLoggerLevel.Error, e,
+                    "Get the connection with storage:%s and database:%s form connection pool is error.",
+                    sa.getName(), rsa.getDatabase());
             return null;
         }
     }
 
-    public final static String DRIVER_CLASSNAME = "com.mysql.jdbc.Driver";
-
-
-    public DBCPWapper(){
-
-    }
-
     @Override
-    public DataSource setupDataSource(String key,IRunningStorageAttribute rsa) {
+    public DataSource setupDataSource(String key, IRunningStorageAttribute rsa) {
         BasicDataSource ds = null;
         try {
             ds = new BasicDataSource();
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
-                AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                "create dabasepool for storage:%s is fail.",key);
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
+                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                    "create dabasepool for storage:%s is fail.", key);
         }
         try {
             IStorageAttribute storageAttribute = rsa.getStorageAttribute();
             String url = FreeAlbianStorageParserService
-                .generateConnectionUrl(rsa);
+                    .generateConnectionUrl(rsa);
             ds.setDriverClassName(DRIVER_CLASSNAME);
             ds.setUrl(url);
 
@@ -77,9 +76,9 @@ public class DBCPWapper extends FreeDataBasePool {
                     ds.setPassword(ass.decryptDES(storageAttribute.getPassword()));
                 } else {
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                        IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
-                        AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                        "the run level is release in the kernel config but security is null,so not use security service.");
+                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
+                            AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                            "the run level is release in the kernel config but security is null,so not use security service.");
 
                     ds.setUsername(storageAttribute.getUser());
                     ds.setPassword(storageAttribute.getPassword());
@@ -89,9 +88,9 @@ public class DBCPWapper extends FreeDataBasePool {
             if (storageAttribute.getTransactional()) {
                 ds.setDefaultAutoCommit(false);
                 if (Connection.TRANSACTION_NONE != storageAttribute
-                    .getTransactionLevel()) {
+                        .getTransactionLevel()) {
                     ds.setDefaultTransactionIsolation(storageAttribute
-                        .getTransactionLevel());
+                            .getTransactionLevel());
                 }
             }
             ds.setDefaultReadOnly(false);
@@ -130,9 +129,9 @@ public class DBCPWapper extends FreeDataBasePool {
 
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
-                AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                "startup database connection pools is fail.");
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
+                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                    "startup database connection pools is fail.");
             return null;
         }
 

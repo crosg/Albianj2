@@ -20,7 +20,7 @@ public interface IQueryContext {
          result object or list<object.
      */
 
-    IQueryContext paging(int start,int pagesize);
+    IQueryContext paging(int start, int pagesize);
 
     IQueryContext forceIndex(String idxName);
 
@@ -33,10 +33,11 @@ public interface IQueryContext {
     IQueryContext byRouter(String drouterAlias);
 
 
-    <T extends IAlbianObject> T loadObject(String sessionId,Class<T> itfClzz,LoadType loadType,IChainExpression where) throws AlbianDataServiceException;
+    <T extends IAlbianObject> T loadObject(String sessionId, Class<T> itfClzz, LoadType loadType, IChainExpression where) throws AlbianDataServiceException;
 
-    <T extends IAlbianObject> List<T> loadObjects(String sessionId,Class<T> itfClzz,LoadType loadType,IChainExpression where) throws AlbianDataServiceException;
+    <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> itfClzz, LoadType loadType, IChainExpression where) throws AlbianDataServiceException;
 
-    long loadCounts(String sessionId,Class<? extends IAlbianObject> itfClzz,LoadType loadType,IChainExpression where)throws AlbianDataServiceException;
+    long loadCounts(String sessionId, Class<? extends IAlbianObject> itfClzz, LoadType loadType, IChainExpression where) throws AlbianDataServiceException;
+
     void reset();
 }

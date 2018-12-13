@@ -87,7 +87,7 @@ public class ResultConvert {
             java.util.Date d = null;
             try {
                 SimpleDateFormat dateFormat = new SimpleDateFormat(
-                        AlbianDateTime.CHINESE_SIMPLE_FORMAT);
+                        AlbianDateTime.CHINESE_FORMAT);
                 d = dateFormat.parse(o.toString());
             } catch (Exception e) {
                 d = null;
@@ -95,7 +95,7 @@ public class ResultConvert {
             if (null == d) {
                 try {
                     SimpleDateFormat dateFormat = new SimpleDateFormat(
-                            AlbianDateTime.CHINESE_FORMAT);
+                            AlbianDateTime.CHINESE_SIMPLE_FORMAT);
                     d = dateFormat.parse(o.toString());
                 } catch (Exception e) {
                     throw e;

@@ -119,11 +119,11 @@ public class AlbianHost {
     }
 
     public static String getMacAddr() {
-      return getMacAddrByName("eth1");
+        return getMacAddrByName("eth1");
     }
 
     public static String getLocalIP() {
-      return getLocalIPByName("eth1");
+        return getLocalIPByName("eth1");
     }
 
     public static String getMacAddrByName(String ntkName) {
@@ -168,9 +168,6 @@ public class AlbianHost {
         }
         return ip;
     }
-
-
-
 
 
 }

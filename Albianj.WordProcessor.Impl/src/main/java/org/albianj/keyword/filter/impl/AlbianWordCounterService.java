@@ -9,22 +9,22 @@ import java.util.regex.Pattern;
 /**
  * Created by xuhaifeng on 17/2/16.
  */
-@AlbianServiceRant(Id = IAlbianWordCounterService.Name,Interface = IAlbianWordCounterService.class)
-public class AlbianWordCounterService extends FreeAlbianService implements IAlbianWordCounterService{
+@AlbianServiceRant(Id = IAlbianWordCounterService.Name, Interface = IAlbianWordCounterService.class)
+public class AlbianWordCounterService extends FreeAlbianService implements IAlbianWordCounterService {
 
-    public String getServiceName(){
+    public String getServiceName() {
         return Name;
     }
 
     @org.albianj.comment.Comments("未经测试")
     public int countWithoutBlankOnlyWithEnglish(String value) {
-        String[] sections =value.split("\\s");
+        String[] sections = value.split("\\s");
         int count = 0;
-        for(String s : sections){
+        for (String s : sections) {
             Pattern pat = Pattern.compile("[\u0000-\u00ff]+");
             int ci = pat.matcher(s).groupCount();
-            for(char c : s.toCharArray()){
-                if ((int)c > 0x00FF) ci++;
+            for (char c : s.toCharArray()) {
+                if ((int) c > 0x00FF) ci++;
             }
             count += ci;
         }
@@ -50,7 +50,7 @@ public class AlbianWordCounterService extends FreeAlbianService implements IAlbi
 
     public int countWithEnglishWordWithoutBlank(String input) {
         WordCounter wc = new WordCounter(input);
-        return  wc.countWithEnglishWordWithoutBlank();
+        return wc.countWithEnglishWordWithoutBlank();
     }
 
 }

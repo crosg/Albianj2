@@ -18,15 +18,14 @@ import java.util.Properties;
 /**
  * Created by xuhaifeng on 16/12/13.
  */
-@AlbianServiceRant(Id = IAlbianMimeTypeService.Name,Interface = IAlbianMimeTypeService.class)
+@AlbianServiceRant(Id = IAlbianMimeTypeService.Name, Interface = IAlbianMimeTypeService.class)
 public class AlbianMimeTypeService extends FreeAlbianParserService implements IAlbianMimeTypeService {
 
-    public String getServiceName(){
+    private Properties mtProperties = new Properties();
+
+    public String getServiceName() {
         return Name;
     }
-
-
-    private Properties mtProperties = new Properties();
 
     @Override
     public void init() throws AlbianParserException {

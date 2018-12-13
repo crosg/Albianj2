@@ -39,8 +39,6 @@ package org.albianj.persistence.object;
 
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
-import org.albianj.persistence.context.dactx.AlbianDataAccessOpt;
-import org.albianj.persistence.context.dactx.AlbianObjectWarp;
 import org.albianj.persistence.context.dactx.IAlbianObjectWarp;
 import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.object.rants.AlbianObjectDataFieldRant;
@@ -56,20 +54,19 @@ import java.util.Map;
 public abstract class FreeAlbianObject implements IAlbianObject {
 
 
-
-    @AlbianObjectDataFieldRant(IsSave = false,Ignore = true)
+    @AlbianObjectDataFieldRant(IsSave = false, Ignore = true)
     private static final long serialVersionUID = 1608573290358087720L;
 
-    @AlbianObjectDataFieldRant(IsSave = false,Ignore = true)
+    @AlbianObjectDataFieldRant(IsSave = false, Ignore = true)
     protected transient HashMap<String, Object> dic = null;
 
-    @AlbianObjectDataFieldRant(IsSave = false,Ignore = true)
-    protected transient Map<String,IAlbianObjectWarp> chainEntity = null;
+    @AlbianObjectDataFieldRant(IsSave = false, Ignore = true)
+    protected transient Map<String, IAlbianObjectWarp> chainEntity = null;
 
-    @AlbianObjectDataFieldRant(IsSave = false,Ignore = true)
+    @AlbianObjectDataFieldRant(IsSave = false, Ignore = true)
     private transient boolean isAlbianNew = true;
 
-    protected FreeAlbianObject(){
+    protected FreeAlbianObject() {
         chainEntity = new HashMap<>();
     }
 
@@ -91,7 +88,7 @@ public abstract class FreeAlbianObject implements IAlbianObject {
      * ??????????????albianj?????????????????????????????????????????????
      * ??????????????????????????????????????????????????????
      */
-    @AlbianObjectMemberAttribute(IsSave = false,Ignore = true)
+    @AlbianObjectMemberAttribute(IsSave = false, Ignore = true)
     public boolean getIsAlbianNew() {
         return this.isAlbianNew;
     }
@@ -103,12 +100,12 @@ public abstract class FreeAlbianObject implements IAlbianObject {
      * ??????????????albianj?????????????????????????????????????????????
      * ??????????????????????????????????????????????????????
      */
-    @AlbianObjectMemberAttribute(IsSave = false,Ignore = true)
+    @AlbianObjectMemberAttribute(IsSave = false, Ignore = true)
     public void setIsAlbianNew(boolean isAlbianNew) {
         this.isAlbianNew = isAlbianNew;
     }
 
-    @AlbianObjectMemberAttribute(IsSave = false,Ignore = true)
+    @AlbianObjectMemberAttribute(IsSave = false, Ignore = true)
     public void setOldAlbianObject(String key, Object v) {
         if (null == dic) {
             dic = new HashMap<String, Object>();
@@ -116,7 +113,7 @@ public abstract class FreeAlbianObject implements IAlbianObject {
         dic.put(key, v);
     }
 
-    @AlbianObjectMemberAttribute(IsSave = false,Ignore = true)
+    @AlbianObjectMemberAttribute(IsSave = false, Ignore = true)
     public Object getOldAlbianObject(String key) {
         if (null == dic) {
             return null;
@@ -136,7 +133,7 @@ public abstract class FreeAlbianObject implements IAlbianObject {
     public boolean needUpdate(String sessionId) throws AlbianDataServiceException {
         String className = this.getClass().getName();
         String itf = AlbianEntityMetadata.type2Interface(className);
-        return needUpdate(sessionId,itf);
+        return needUpdate(sessionId, itf);
 //        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
 //        String interName = amps.getAlbianObjectInterface(className);
 //        IAlbianObjectAttribute albianObject = amps.getAlbianObjectAttribute(interName);
@@ -190,55 +187,55 @@ public abstract class FreeAlbianObject implements IAlbianObject {
 
     }
 
-    public boolean needUpdate(String sessionId,Class<? extends IAlbianObject> itf) throws AlbianDataServiceException {
-        return needUpdate(sessionId,itf.getName());
+    public boolean needUpdate(String sessionId, Class<? extends IAlbianObject> itf) throws AlbianDataServiceException {
+        return needUpdate(sessionId, itf.getName());
     }
 
-        private boolean needUpdate(String sessionId,String itf) throws AlbianDataServiceException {
+    private boolean needUpdate(String sessionId, String itf) throws AlbianDataServiceException {
         String className = this.getClass().getName();
         IAlbianObjectAttribute entiryAttr = AlbianEntityMetadata.getEntityMetadata(itf);
         if (null == entiryAttr) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    sessionId, AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianPersistence,
+                    sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     "PersistenceService is error.",
                     "albian-object:%s attribute is not found.",
                     className);
         }
 
 
-        Map<String,IAlbianEntityFieldAttribute> fields = entiryAttr.getFields();
-        if(Validate.isNullOrEmpty(fields)) {
+        Map<String, IAlbianEntityFieldAttribute> fields = entiryAttr.getFields();
+        if (Validate.isNullOrEmpty(fields)) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    sessionId,AlbianLoggerLevel.Error,null,
-                    AlbianModuleType.AlbianPersistence,"PersistenceService is error.",
+                    sessionId, AlbianLoggerLevel.Error, null,
+                    AlbianModuleType.AlbianPersistence, "PersistenceService is error.",
                     "albian-object:%s PropertyDescriptor is not found.",
                     className);
         }
         try {
 
-        for (IAlbianEntityFieldAttribute fieldAttr : fields.values()){
-            if(!fieldAttr.getIsSave()) continue;
-            Object newVal = fieldAttr.getEntityField().get(this);
-            Object oldValue = getOldAlbianObject(AlbianEntityMetadata.makeFieldsKey(fieldAttr.getPropertyName()));
+            for (IAlbianEntityFieldAttribute fieldAttr : fields.values()) {
+                if (!fieldAttr.getIsSave()) continue;
+                Object newVal = fieldAttr.getEntityField().get(this);
+                Object oldValue = getOldAlbianObject(AlbianEntityMetadata.makeFieldsKey(fieldAttr.getPropertyName()));
 
-            if ((null == newVal && null == oldValue)) {
-                continue;
+                if ((null == newVal && null == oldValue)) {
+                    continue;
+                }
+                if (null != newVal && newVal.equals(oldValue)) {
+                    continue;
+                }
+                if (null != oldValue && oldValue.equals(newVal)) {
+                    continue;
+                }
+                return true;
             }
-            if (null != newVal && newVal.equals(oldValue)) {
-                continue;
-            }
-            if (null != oldValue && oldValue.equals(newVal)) {
-                continue;
-            }
-            return true;
+        } catch (Exception e) {
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    sessionId, AlbianLoggerLevel.Error, e,
+                    AlbianModuleType.AlbianPersistence, "PersistenceService is error.",
+                    "invoke bean read method is error.the property is:%s.job id:%s.",
+                    entiryAttr.getType());
         }
-    } catch (Exception e) {
-        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                sessionId,AlbianLoggerLevel.Error,e,
-                AlbianModuleType.AlbianPersistence,"PersistenceService is error.",
-                "invoke bean read method is error.the property is:%s.job id:%s.",
-                entiryAttr.getType());
-    }
 
         return false;
 

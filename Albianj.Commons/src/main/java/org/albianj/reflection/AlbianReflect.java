@@ -62,10 +62,10 @@ public class AlbianReflect {
         return beanInfo.getPropertyDescriptors();
     }
 
-    public static PropertyDescriptor getBeanPropertyDescriptor(Class<?>  clzz,String propertyName)
+    public static PropertyDescriptor getBeanPropertyDescriptor(Class<?> clzz, String propertyName)
             throws ClassNotFoundException, IntrospectionException {
-         String pName = StringHelper.lowercasingFirstLetter(propertyName);
-        PropertyDescriptor pd = new PropertyDescriptor(pName,clzz);
+        String pName = StringHelper.lowercasingFirstLetter(propertyName);
+        PropertyDescriptor pd = new PropertyDescriptor(pName, clzz);
         return pd;
     }
 
@@ -102,23 +102,21 @@ public class AlbianReflect {
      * to declare an enum constant in the given class.
      *
      * @param clazz the {@code Class} object of the enum type from which
-     * 		to return a constant.
-     * @param name the name of the constant to return.
+     *              to return a constant.
+     * @param name  the name of the constant to return.
      * @return the enum constant of the specified enum type with the
-     *      specified name.
-     *
+     * specified name.
      * @throws IllegalArgumentException if the specified enum type has
-     *         no constant with the specified name, or the specified
-     *         class object does not represent an enum type.
-     *
+     *                                  no constant with the specified name, or the specified
+     *                                  class object does not represent an enum type.
      * @see {@link Enum#valueOf(Class, String)}
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static Object getEnumConstant(Class<?> clazz, String name) {
-        if (clazz==null || name==null || name.isEmpty()) {
+        if (clazz == null || name == null || name.isEmpty()) {
             return null;
         }
-        return Enum.valueOf((Class<Enum>)clazz, name);
+        return Enum.valueOf((Class<Enum>) clazz, name);
     }
 
     /**
@@ -127,16 +125,15 @@ public class AlbianReflect {
      * {@code String name} parameter inside the invoked {@code Class<?> clazz} parameter.
      *
      * @param clazz the {@code Class} object whose declared methods to be
-     * 		checked for the wanted method name.
-     * @param name the method name as {@code String} to be
-     * 		compared with {@link Method#getName()}
+     *              checked for the wanted method name.
+     * @param name  the method name as {@code String} to be
+     *              compared with {@link Method#getName()}
      * @return the {@code Class} object representing the return type of the given method name.
-     *
      * @see {@link Class#getDeclaredMethods()}
      * @see {@link Method#getReturnType()}
      */
     public static Class<?> getMethodReturnType(Class<?> clazz, String name) {
-        if (clazz==null || name==null || name.isEmpty()) {
+        if (clazz == null || name == null || name.isEmpty()) {
             return null;
         }
 
@@ -159,16 +156,15 @@ public class AlbianReflect {
      * the invoked {@code Class<?> clazz} parameter.
      *
      * @param clazz the {@code Class} object whose declared fields to be
-     * 		checked for a certain field.
-     * @param name the field name as {@code String} to be
-     * 		compared with {@link Field#getName()}
+     *              checked for a certain field.
+     * @param name  the field name as {@code String} to be
+     *              compared with {@link Field#getName()}
      * @return the {@code Class} object representing the type of given field name.
-     *
      * @see {@link Class#getDeclaredFields()}
      * @see {@link Field#getType()}
      */
     public static Class<?> getFieldClass(Class<?> clazz, String name) {
-        if (clazz==null || name==null || name.isEmpty()) {
+        if (clazz == null || name == null || name.isEmpty()) {
             return null;
         }
 
@@ -192,20 +188,19 @@ public class AlbianReflect {
      * @param clazz the {@code Class} object whose constructors are checked.
      * @return {@code true} if a {@code Constructor} object with no parameter types is specified.
      * @throws SecurityException If a security manager, <i>s</i> is present and any of the
-     *         following conditions is met:
-     *			<ul>
-     *             <li> invocation of
-     *             {@link SecurityManager#checkMemberAccess
-     *             s.checkMemberAccess(this, Member.PUBLIC)} denies
-     *             access to the constructor
+     *                           following conditions is met:
+     *                           <ul>
+     *                           <li> invocation of
+     *                           {@link SecurityManager#checkMemberAccess
+     *                           s.checkMemberAccess(this, Member.PUBLIC)} denies
+     *                           access to the constructor
      *
-     *             <li> the caller's class loader is not the same as or an
-     *             ancestor of the class loader for the current class and
-     *             invocation of {@link SecurityManager#checkPackageAccess
-     *             s.checkPackageAccess()} denies access to the package
-     *             of this class
-     *         </ul>
-     *
+     *                           <li> the caller's class loader is not the same as or an
+     *                           ancestor of the class loader for the current class and
+     *                           invocation of {@link SecurityManager#checkPackageAccess
+     *                           s.checkPackageAccess()} denies access to the package
+     *                           of this class
+     *                           </ul>
      * @see {@link Class#getConstructor(Class...)}
      */
     public static boolean hasDefaultConstructor(Class<?> clazz) throws SecurityException {
@@ -226,8 +221,7 @@ public class AlbianReflect {
      *
      * @param object the {@code object} whose type arguments are needed.
      * @return an array of {@code Type} objects representing the actual type
-     * 		arguments to this object.
-     *
+     * arguments to this object.
      * @see {@link Class#getGenericSuperclass()}
      * @see {@link ParameterizedType#getActualTypeArguments()}
      */
@@ -237,7 +231,7 @@ public class AlbianReflect {
             return null;
         }
 
-        return ((ParameterizedType)superclassType).getActualTypeArguments();
+        return ((ParameterizedType) superclassType).getActualTypeArguments();
     }
 
     public static Type[] getParameterizedTypes(Class<?> clazz) {
@@ -246,10 +240,10 @@ public class AlbianReflect {
             return null;
         }
 
-        return ((ParameterizedType)superclassType).getActualTypeArguments();
+        return ((ParameterizedType) superclassType).getActualTypeArguments();
     }
 
-    public  static Class getGenericClass(ParameterizedType parameterizedType, int i) {
+    public static Class getGenericClass(ParameterizedType parameterizedType, int i) {
         Object genericClass = parameterizedType.getActualTypeArguments()[i];
         if (genericClass instanceof ParameterizedType) { // 处理多级泛型
             return (Class) ((ParameterizedType) genericClass).getRawType();
@@ -271,7 +265,6 @@ public class AlbianReflect {
             return (Class) type;
         }
     }
-
 
 
 }

@@ -13,35 +13,35 @@ public class ViewActionConfigurtion {
     private Method method;
     private HttpActionMethod ham = HttpActionMethod.Get;
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getBindingName(){
+    public String getBindingName() {
         return this.bindingName;
     }
 
-    public void setBindingName(String bindingName){
+    public void setBindingName(String bindingName) {
         this.bindingName = bindingName;
     }
 
-    public void setMethod(Method method){
-        this.method = method;
-    }
-
-    public Method getMethod(){
+    public Method getMethod() {
         return this.method;
     }
 
-    public void setHttpActionMethod(HttpActionMethod ham){
-        this.ham = ham;
+    public void setMethod(Method method) {
+        this.method = method;
     }
 
-    public HttpActionMethod getHttpActionMethod(){
+    public HttpActionMethod getHttpActionMethod() {
         return this.ham;
+    }
+
+    public void setHttpActionMethod(HttpActionMethod ham) {
+        this.ham = ham;
     }
 }

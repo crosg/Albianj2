@@ -54,11 +54,11 @@ import org.albianj.xml.PropertiesParser;
 
 import java.util.Properties;
 
-@AlbianServiceRant(Id = AlbianBuiltinServiceNamePair.AlbianKernelServiceName ,Interface = IAlbianParserService.class)
+@AlbianServiceRant(Id = AlbianBuiltinServiceNamePair.AlbianKernelServiceName, Interface = IAlbianParserService.class)
 public class AlbianKernelParserService extends FreeAlbianParserService {
     private String file = "kernel.properties";
 
-    public String getServiceName(){
+    public String getServiceName() {
         return AlbianBuiltinServiceNamePair.AlbianKernelServiceName;
     }
 
@@ -74,9 +74,9 @@ public class AlbianKernelParserService extends FreeAlbianParserService {
                             .getAlbianKernelConfigFilePath() + file));
             parser(props);
         } catch (Exception e) {
-            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,IAlbianLoggerService2.InnerThreadName,
-                    AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianKernel, "Kernel is Error.",
-                    "load the kernel properties is fail.pls look at the file:%s.",file);
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName, IAlbianLoggerService2.InnerThreadName,
+                    AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianKernel, "Kernel is Error.",
+                    "load the kernel properties is fail.pls look at the file:%s.", file);
         }
     }
 

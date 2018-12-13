@@ -146,9 +146,9 @@ public interface IWriterTask {
 
     public void setCompensating(boolean compensating);
 
-    public void setDatabasePool(IDataBasePool pool);
-
     public IDataBasePool getDatabasePool();
+
+    public void setDatabasePool(IDataBasePool pool);
 
 //    /*
 //        开发者指定storage名称

@@ -15,26 +15,26 @@ public class MView extends View {
 //    }
 
     @NotHttpActionAttribute()
-    public void kBeforeRender(){
-        CView vc =(CView) this.ctx.getView();
+    public void kBeforeRender() {
+        CView vc = (CView) this.ctx.getView();
         String title = Validate.isNullOrEmptyOrAllSpace(vc.getViewTitle()) ? getViewTitle() : vc.getViewTitle();
-        if(!Validate.isNullOrEmptyOrAllSpace(title)){
-            this.model.put("Albian_View_Title",title);
+        if (!Validate.isNullOrEmptyOrAllSpace(title)) {
+            this.model.put("Albian_View_Title", title);
         }
 
-        Map<String,String> cheaders = vc.getHeaders();
-        Map<String,String> cStyleBlocks = vc.getStyleBlocks();
-        Map<String,String> cStyleLinks = vc.getStyleLinks();
+        Map<String, String> cheaders = vc.getHeaders();
+        Map<String, String> cStyleBlocks = vc.getStyleBlocks();
+        Map<String, String> cStyleLinks = vc.getStyleLinks();
 
         this.headers.putAll(cheaders);
         this.styleBlocks.putAll(cStyleBlocks);
         this.styleLinks.putAll(cStyleLinks);
 
 
-        this.model.put("Albian_SubTitle",vc.getSubTitle());
-        this.model.put("Albian_View_Style_Content",styleBlocksToHtml());
-        this.model.put("Albian_View_Style_Link",styleLinksToHtml());
-        this.model.put("Albian_View_Style_Header",headersToHtml());
+        this.model.put("Albian_SubTitle", vc.getSubTitle());
+        this.model.put("Albian_View_Style_Content", styleBlocksToHtml());
+        this.model.put("Albian_View_Style_Link", styleLinksToHtml());
+        this.model.put("Albian_View_Style_Header", headersToHtml());
     }
 
 
@@ -44,7 +44,7 @@ public class MView extends View {
     }
 
     @NotHttpActionAttribute()
-    public boolean isMasterView(){
+    public boolean isMasterView() {
         return true;
     }
 }

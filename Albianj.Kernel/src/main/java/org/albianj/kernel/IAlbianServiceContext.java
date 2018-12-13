@@ -8,6 +8,7 @@ import org.albianj.comment.Comments;
 @Comments("Albian Service的上下文")
 public interface IAlbianServiceContext {
     Object getSessionId();
+
     void setSessionId(Object sessionId);
 
 }

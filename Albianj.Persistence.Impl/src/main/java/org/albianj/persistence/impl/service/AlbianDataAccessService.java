@@ -1,19 +1,28 @@
 package org.albianj.persistence.impl.service;
 
-import org.albianj.persistence.context.*;
+import org.albianj.persistence.context.IPersistenceCompensateNotify;
+import org.albianj.persistence.context.IPersistenceNotify;
+import org.albianj.persistence.context.IReaderJob;
+import org.albianj.persistence.context.IWriterJob;
 import org.albianj.persistence.context.dactx.IDataAccessContext;
 import org.albianj.persistence.context.dactx.IQueryContext;
 import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.ISqlParameter;
 import org.albianj.persistence.db.PersistenceCommandType;
-import org.albianj.persistence.impl.context.*;
+import org.albianj.persistence.impl.context.IReaderJobAdapter;
+import org.albianj.persistence.impl.context.IWriterJobAdapter;
+import org.albianj.persistence.impl.context.ReaderJobAdapter;
+import org.albianj.persistence.impl.context.WriterJobAdapter;
 import org.albianj.persistence.impl.context.dactx.DataAccessContext;
 import org.albianj.persistence.impl.context.dactx.QueryContext;
 import org.albianj.persistence.impl.db.IPersistenceQueryScope;
 import org.albianj.persistence.impl.db.IPersistenceTransactionClusterScope;
 import org.albianj.persistence.impl.db.PersistenceQueryScope;
 import org.albianj.persistence.impl.db.PersistenceTransactionClusterScope;
-import org.albianj.persistence.object.*;
+import org.albianj.persistence.object.IAlbianObject;
+import org.albianj.persistence.object.IOrderByCondition;
+import org.albianj.persistence.object.IRunningStorageAttribute;
+import org.albianj.persistence.object.LogicalOperation;
 import org.albianj.persistence.object.filter.FilterExpression;
 import org.albianj.persistence.object.filter.IChainExpression;
 import org.albianj.persistence.service.IAlbianDataAccessService;
@@ -31,10 +40,10 @@ import java.util.Map;
 /**
  * Created by xuhaifeng on 16/12/22.
  */
-@AlbianServiceRant(Id = IAlbianDataAccessService.Name,Interface = IAlbianDataAccessService.class)
+@AlbianServiceRant(Id = IAlbianDataAccessService.Name, Interface = IAlbianDataAccessService.class)
 public class AlbianDataAccessService extends FreeAlbianService implements IAlbianDataAccessService {
 
-    public String getServiceName(){
+    public String getServiceName() {
         return Name;
     }
 
@@ -133,7 +142,7 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
                                                   LoadType loadType, String rountingName, IChainExpression wheres)
             throws AlbianDataServiceException {
 
-        List<T> list = doLoadObjects(sessionId, cls, LoadType.exact == loadType, rountingName, 0, 0, wheres, null,null);
+        List<T> list = doLoadObjects(sessionId, cls, LoadType.exact == loadType, rountingName, 0, 0, wheres, null, null);
         if (Validate.isNullOrEmpty(list))
             return null;
         return list.get(0);
@@ -197,7 +206,7 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, String rountingName,
                                                          int start, int step, IChainExpression wheres, LinkedList<IOrderByCondition> orderbys)
             throws AlbianDataServiceException {
-        List<T> list = doLoadObjects(sessionId, cls, LoadType.exact == loadType, rountingName, start, step, wheres, orderbys,null);
+        List<T> list = doLoadObjects(sessionId, cls, LoadType.exact == loadType, rountingName, start, step, wheres, orderbys, null);
         if (Validate.isNullOrEmpty(list))
             return null;
         return list;
@@ -231,6 +240,7 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
 
     /**
      * 慎用
+     *
      * @param sessionId
      * @param cls
      * @param loadType
@@ -239,12 +249,13 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
      * @throws AlbianDataServiceException
      */
     public <T extends IAlbianObject> List<T> loadAllObjects(String sessionId, Class<T> cls, LoadType loadType)
-            throws AlbianDataServiceException{
-        return this.loadObjects(sessionId,cls,loadType,new FilterExpression());
+            throws AlbianDataServiceException {
+        return this.loadObjects(sessionId, cls, loadType, new FilterExpression());
     }
 
     /**
      * 慎用
+     *
      * @param sessionId
      * @param cls
      * @param loadType
@@ -252,13 +263,14 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
      * @return
      * @throws AlbianDataServiceException
      */
-    public <T extends IAlbianObject> List<T> loadAllObjects(String sessionId, Class<T> cls, LoadType loadType,LinkedList<IOrderByCondition> orderbys)
-            throws AlbianDataServiceException{
-        return this.loadObjects(sessionId,cls,loadType,new FilterExpression(),orderbys);
+    public <T extends IAlbianObject> List<T> loadAllObjects(String sessionId, Class<T> cls, LoadType loadType, LinkedList<IOrderByCondition> orderbys)
+            throws AlbianDataServiceException {
+        return this.loadObjects(sessionId, cls, loadType, new FilterExpression(), orderbys);
     }
 
     /**
      * 慎用
+     *
      * @param sessionId
      * @param cls
      * @param loadType
@@ -266,22 +278,22 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
      * @return
      * @throws AlbianDataServiceException
      */
-    public <T extends IAlbianObject> List<T> loadAllObjects(String sessionId, Class<T> cls, LoadType loadType,String rountingName,LinkedList<IOrderByCondition> orderbys)
-            throws AlbianDataServiceException{
-        return this.loadObjects(sessionId,cls,loadType,rountingName, new FilterExpression(),orderbys);
+    public <T extends IAlbianObject> List<T> loadAllObjects(String sessionId, Class<T> cls, LoadType loadType, String rountingName, LinkedList<IOrderByCondition> orderbys)
+            throws AlbianDataServiceException {
+        return this.loadObjects(sessionId, cls, loadType, rountingName, new FilterExpression(), orderbys);
 
     }
 
     public <T extends IAlbianObject> T loadObjectById(String sessionId, Class<T> cls, LoadType loadType, BigInteger id)
-            throws AlbianDataServiceException{
-        IChainExpression ce = new FilterExpression("id", LogicalOperation.Equal,id);
-        return loadObject(sessionId,cls, loadType,ce);
+            throws AlbianDataServiceException {
+        IChainExpression ce = new FilterExpression("id", LogicalOperation.Equal, id);
+        return loadObject(sessionId, cls, loadType, ce);
     }
 
-    public <T extends IAlbianObject> T loadObjectById(String sessionId, Class<T> cls, LoadType loadType, String rountingName,  BigInteger id)
-            throws AlbianDataServiceException{
-        IChainExpression ce = new FilterExpression("id", LogicalOperation.Equal,id);
-        return loadObject(sessionId,cls, loadType,rountingName,ce);
+    public <T extends IAlbianObject> T loadObjectById(String sessionId, Class<T> cls, LoadType loadType, String rountingName, BigInteger id)
+            throws AlbianDataServiceException {
+        IChainExpression ce = new FilterExpression("id", LogicalOperation.Equal, id);
+        return loadObject(sessionId, cls, loadType, rountingName, ce);
     }
 
     public <T extends IAlbianObject> long loadObjectsCount(String sessionId, Class<T> cls,
@@ -294,7 +306,7 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
                                                            LoadType loadType, String rountingName, IChainExpression wheres)
             throws AlbianDataServiceException {
 
-        return  doLoadPageingCount(sessionId, cls, LoadType.exact == loadType, rountingName, wheres, null,null);
+        return doLoadPageingCount(sessionId, cls, LoadType.exact == loadType, rountingName, wheres, null, null);
 //        long count = 0;
 //        if (LoadType.exact == loadType) {
 //            count = doLoadPageingCount(sessionId, cls, true, rountingName, wheres, null,null);
@@ -319,7 +331,7 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
 
     public <T extends IAlbianObject> T loadObject(String sessionId, Class<T> cls, PersistenceCommandType cmdType,
                                                   Statement statement) throws AlbianDataServiceException {
-        List<T> list = doLoadObjects(sessionId,cls, cmdType, statement);
+        List<T> list = doLoadObjects(sessionId, cls, cmdType, statement);
         if (Validate.isNullOrEmpty(list))
             return null;
         return list.get(0);
@@ -327,25 +339,25 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
 
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, PersistenceCommandType cmdType,
                                                          Statement statement) throws AlbianDataServiceException {
-        List<T> list = doLoadObjects(sessionId,cls, cmdType, statement);
+        List<T> list = doLoadObjects(sessionId, cls, cmdType, statement);
         if (Validate.isNullOrEmpty(list))
             return null;
         return list;
     }
 
     protected <T extends IAlbianObject> List<T> doLoadObjects(String sessionId,
-            Class<T> cls, PersistenceCommandType cmdType, Statement statement)
+                                                              Class<T> cls, PersistenceCommandType cmdType, Statement statement)
             throws AlbianDataServiceException {
         IPersistenceQueryScope scope = new PersistenceQueryScope();
         List<T> list = null;
-        list = scope.execute(sessionId,cls, cmdType, statement);
+        list = scope.execute(sessionId, cls, cmdType, statement);
         return list;
     }
 
-    protected <T extends IAlbianObject> T doLoadObject(String sessionId,Class<T> cls,
+    protected <T extends IAlbianObject> T doLoadObject(String sessionId, Class<T> cls,
                                                        PersistenceCommandType cmdType, Statement statement)
             throws AlbianDataServiceException {
-        List<T> list = doLoadObjects(sessionId,cls, cmdType, statement);
+        List<T> list = doLoadObjects(sessionId, cls, cmdType, statement);
         if (Validate.isNullOrEmpty(list))
             return null;
         return list.get(0);
@@ -355,7 +367,7 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
                                                        Class<T> cls, boolean isExact,
                                                        String routingName, IChainExpression wheres)
             throws AlbianDataServiceException {
-        List<T> list = doLoadObjects(sessionId, cls, isExact, routingName, 0, 0, wheres, null,null);
+        List<T> list = doLoadObjects(sessionId, cls, isExact, routingName, 0, 0, wheres, null, null);
         if (Validate.isNullOrEmpty(list))
             return null;
         return list.get(0);
@@ -364,12 +376,12 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
     protected <T extends IAlbianObject> List<T> doLoadObjects(String sessionId,
                                                               Class<T> cls, boolean isExact, String routingName, int start, int step,
                                                               IChainExpression wheres,
-                                                              LinkedList<IOrderByCondition> orderbys,String idxName)
+                                                              LinkedList<IOrderByCondition> orderbys, String idxName)
             throws AlbianDataServiceException {
         IReaderJobAdapter ad = new ReaderJobAdapter();
         List<T> list = null;
-        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact,null,null, routingName, start, step,
-                wheres, orderbys,idxName);
+        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact, null, null, routingName, start, step,
+                wheres, orderbys, idxName);
         IPersistenceQueryScope scope = new PersistenceQueryScope();
         list = scope.execute(cls, job);
         return list;
@@ -378,44 +390,44 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
     protected <T extends IAlbianObject> long doLoadPageingCount(String sessionId,
                                                                 Class<T> cls, boolean isExact, String routingName,
                                                                 IChainExpression wheres,
-                                                                LinkedList<IOrderByCondition> orderbys,String idxName)
+                                                                LinkedList<IOrderByCondition> orderbys, String idxName)
             throws AlbianDataServiceException {
         IReaderJobAdapter ad = new ReaderJobAdapter();
-        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact,null,null, routingName,
-                wheres, orderbys,idxName);
+        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact, null, null, routingName,
+                wheres, orderbys, idxName);
         IPersistenceQueryScope scope = new PersistenceQueryScope();
         Object o = scope.execute(job);
         return (long) o;
     }
 
 
-  public   <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, IRunningStorageAttribute storage, PersistenceCommandType cmdType,
-                                                         String text, Map<String,ISqlParameter> paras) throws AlbianDataServiceException{
-      IReaderJobAdapter ad = new ReaderJobAdapter();
-      IReaderJob job = ad.buildReaderJob(sessionId, cls, storage, cmdType,
-              text, paras);
-      IPersistenceQueryScope scope = new PersistenceQueryScope();
-      List<T> list = scope.execute(cls,job);
-      return list;
-  }
+    public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, IRunningStorageAttribute storage, PersistenceCommandType cmdType,
+                                                         String text, Map<String, ISqlParameter> paras) throws AlbianDataServiceException {
+        IReaderJobAdapter ad = new ReaderJobAdapter();
+        IReaderJob job = ad.buildReaderJob(sessionId, cls, storage, cmdType,
+                text, paras);
+        IPersistenceQueryScope scope = new PersistenceQueryScope();
+        List<T> list = scope.execute(cls, job);
+        return list;
+    }
 
-   public  <T extends IAlbianObject> List<T> loadObject(String sessionId, Class<T> cls, IRunningStorageAttribute storage,PersistenceCommandType cmdType,
-                                                 String text, Map<String,ISqlParameter> paras) throws AlbianDataServiceException{
-        return loadObjects(sessionId,cls,storage,cmdType,text,paras);
-   }
+    public <T extends IAlbianObject> List<T> loadObject(String sessionId, Class<T> cls, IRunningStorageAttribute storage, PersistenceCommandType cmdType,
+                                                        String text, Map<String, ISqlParameter> paras) throws AlbianDataServiceException {
+        return loadObjects(sessionId, cls, storage, cmdType, text, paras);
+    }
 
 
-   //-------增加强制制定索引名字
+    //-------增加强制制定索引名字
 
-    public <T extends IAlbianObject> T loadObject(String sessionId, Class<T> cls, LoadType loadType, IChainExpression wheres,String idxName)
+    public <T extends IAlbianObject> T loadObject(String sessionId, Class<T> cls, LoadType loadType, IChainExpression wheres, String idxName)
             throws AlbianDataServiceException {
-        return this.loadObject(sessionId, cls, loadType, null, wheres,idxName);
+        return this.loadObject(sessionId, cls, loadType, null, wheres, idxName);
     }
 
     public <T extends IAlbianObject> T loadObject(String sessionId, Class<T> cls,
-                                                  LoadType loadType, String rountingName, IChainExpression wheres,String idxName)
+                                                  LoadType loadType, String rountingName, IChainExpression wheres, String idxName)
             throws AlbianDataServiceException {
-        List<T> list = doLoadObjects(sessionId, cls, LoadType.exact == loadType, rountingName, 0, 0, wheres, null,idxName);
+        List<T> list = doLoadObjects(sessionId, cls, LoadType.exact == loadType, rountingName, 0, 0, wheres, null, idxName);
         if (Validate.isNullOrEmpty(list))
             return null;
         return list.get(0);
@@ -447,39 +459,39 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
 //        return newObj;
     }
 
-    public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, IChainExpression wheres,String idxName)
+    public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, IChainExpression wheres, String idxName)
             throws AlbianDataServiceException {
-        return loadObjects(sessionId, cls, loadType, null, wheres, null,idxName);
+        return loadObjects(sessionId, cls, loadType, null, wheres, null, idxName);
     }
 
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType,
-                                                         IChainExpression wheres, LinkedList<IOrderByCondition> orderbys,String idxName)
+                                                         IChainExpression wheres, LinkedList<IOrderByCondition> orderbys, String idxName)
             throws AlbianDataServiceException {
-        return loadObjects(sessionId, cls, loadType, null, wheres, orderbys,idxName);
+        return loadObjects(sessionId, cls, loadType, null, wheres, orderbys, idxName);
     }
 
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, String rountingName,
-                                                         IChainExpression wheres, LinkedList<IOrderByCondition> orderbys,String idxName)
+                                                         IChainExpression wheres, LinkedList<IOrderByCondition> orderbys, String idxName)
             throws AlbianDataServiceException {
-        return loadObjects(sessionId, cls, loadType, 0, 0, wheres, orderbys,idxName);
+        return loadObjects(sessionId, cls, loadType, 0, 0, wheres, orderbys, idxName);
     }
 
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType,
-                                                         int start, int step, IChainExpression wheres,String idxName)
+                                                         int start, int step, IChainExpression wheres, String idxName)
             throws AlbianDataServiceException {
-        return this.loadObjects(sessionId, cls, loadType, null, start, step, wheres, null,idxName);
+        return this.loadObjects(sessionId, cls, loadType, null, start, step, wheres, null, idxName);
     }
 
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType,
-                                                         int start, int step, IChainExpression wheres, LinkedList<IOrderByCondition> orderbys,String idxName)
+                                                         int start, int step, IChainExpression wheres, LinkedList<IOrderByCondition> orderbys, String idxName)
             throws AlbianDataServiceException {
-        return this.loadObjects(sessionId, cls, loadType, null, start, step, wheres, orderbys,idxName);
+        return this.loadObjects(sessionId, cls, loadType, null, start, step, wheres, orderbys, idxName);
     }
 
     public <T extends IAlbianObject> List<T> loadObjects(String sessionId, Class<T> cls, LoadType loadType, String rountingName,
-                                                         int start, int step, IChainExpression wheres, LinkedList<IOrderByCondition> orderbys,String idxName)
+                                                         int start, int step, IChainExpression wheres, LinkedList<IOrderByCondition> orderbys, String idxName)
             throws AlbianDataServiceException {
-        List<T> list = doLoadObjects(sessionId, cls, LoadType.exact == loadType, rountingName, start, step, wheres, orderbys,idxName);
+        List<T> list = doLoadObjects(sessionId, cls, LoadType.exact == loadType, rountingName, start, step, wheres, orderbys, idxName);
         if (Validate.isNullOrEmpty(list))
             return null;
         return list;
@@ -512,6 +524,7 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
 
     /**
      * 慎用
+     *
      * @param sessionId
      * @param cls
      * @param loadType
@@ -519,13 +532,14 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
      * @return
      * @throws AlbianDataServiceException
      */
-    public <T extends IAlbianObject> List<T> loadAllObjects(String sessionId, Class<T> cls, LoadType loadType,String idxName)
-            throws AlbianDataServiceException{
-        return this.loadObjects(sessionId,cls,loadType,new FilterExpression(),idxName);
+    public <T extends IAlbianObject> List<T> loadAllObjects(String sessionId, Class<T> cls, LoadType loadType, String idxName)
+            throws AlbianDataServiceException {
+        return this.loadObjects(sessionId, cls, loadType, new FilterExpression(), idxName);
     }
 
     /**
      * 慎用
+     *
      * @param sessionId
      * @param cls
      * @param loadType
@@ -533,13 +547,14 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
      * @return
      * @throws AlbianDataServiceException
      */
-    public <T extends IAlbianObject> List<T> loadAllObjects(String sessionId, Class<T> cls, LoadType loadType,LinkedList<IOrderByCondition> orderbys,String idxName)
-            throws AlbianDataServiceException{
-        return this.loadObjects(sessionId,cls,loadType,new FilterExpression(),orderbys,idxName);
+    public <T extends IAlbianObject> List<T> loadAllObjects(String sessionId, Class<T> cls, LoadType loadType, LinkedList<IOrderByCondition> orderbys, String idxName)
+            throws AlbianDataServiceException {
+        return this.loadObjects(sessionId, cls, loadType, new FilterExpression(), orderbys, idxName);
     }
 
     /**
      * 慎用
+     *
      * @param sessionId
      * @param cls
      * @param loadType
@@ -548,34 +563,34 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
      * @throws AlbianDataServiceException
      */
     public <T extends IAlbianObject> List<T> loadAllObjects(String sessionId, Class<T> cls, LoadType loadType,
-                                                            String rountingName,LinkedList<IOrderByCondition> orderbys,String idxName)
-            throws AlbianDataServiceException{
-        return this.loadObjects(sessionId,cls,loadType,rountingName, new FilterExpression(),orderbys,idxName);
+                                                            String rountingName, LinkedList<IOrderByCondition> orderbys, String idxName)
+            throws AlbianDataServiceException {
+        return this.loadObjects(sessionId, cls, loadType, rountingName, new FilterExpression(), orderbys, idxName);
 
     }
 
-    public <T extends IAlbianObject> T loadObjectById(String sessionId, Class<T> cls, LoadType loadType, BigInteger id,String idxName)
-            throws AlbianDataServiceException{
-        IChainExpression ce = new FilterExpression("id", LogicalOperation.Equal,id);
-        return loadObject(sessionId,cls, loadType,ce,idxName);
+    public <T extends IAlbianObject> T loadObjectById(String sessionId, Class<T> cls, LoadType loadType, BigInteger id, String idxName)
+            throws AlbianDataServiceException {
+        IChainExpression ce = new FilterExpression("id", LogicalOperation.Equal, id);
+        return loadObject(sessionId, cls, loadType, ce, idxName);
     }
 
-    public <T extends IAlbianObject> T loadObjectById(String sessionId, Class<T> cls, LoadType loadType, String rountingName,  BigInteger id,String idxName)
-            throws AlbianDataServiceException{
-        IChainExpression ce = new FilterExpression("id", LogicalOperation.Equal,id);
-        return loadObject(sessionId,cls, loadType,rountingName,ce,idxName);
+    public <T extends IAlbianObject> T loadObjectById(String sessionId, Class<T> cls, LoadType loadType, String rountingName, BigInteger id, String idxName)
+            throws AlbianDataServiceException {
+        IChainExpression ce = new FilterExpression("id", LogicalOperation.Equal, id);
+        return loadObject(sessionId, cls, loadType, rountingName, ce, idxName);
     }
 
     public <T extends IAlbianObject> long loadObjectsCount(String sessionId, Class<T> cls,
-                                                           LoadType loadType, IChainExpression wheres,String idxName)
+                                                           LoadType loadType, IChainExpression wheres, String idxName)
             throws AlbianDataServiceException {
-        return this.loadObjectsCount(sessionId, cls, loadType, null, wheres,idxName);
+        return this.loadObjectsCount(sessionId, cls, loadType, null, wheres, idxName);
     }
 
     public <T extends IAlbianObject> long loadObjectsCount(String sessionId, Class<T> cls,
-                                                           LoadType loadType, String rountingName, IChainExpression wheres,String idxName)
+                                                           LoadType loadType, String rountingName, IChainExpression wheres, String idxName)
             throws AlbianDataServiceException {
-        return doLoadPageingCount(sessionId, cls, LoadType.exact == loadType, rountingName, wheres, null,idxName);
+        return doLoadPageingCount(sessionId, cls, LoadType.exact == loadType, rountingName, wheres, null, idxName);
 
 //        long count = 0;
 //        if (LoadType.exact == loadType) {
@@ -599,13 +614,13 @@ public class AlbianDataAccessService extends FreeAlbianService implements IAlbia
 //        return count;
     }
 
-     // save chain entity
-    public IDataAccessContext newDataAccessContext(){
+    // save chain entity
+    public IDataAccessContext newDataAccessContext() {
 
         return new DataAccessContext();
     }
 
-    public IQueryContext newQueryContext(){
+    public IQueryContext newQueryContext() {
         return new QueryContext();
     }
 

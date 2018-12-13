@@ -3,7 +3,6 @@ package org.albianj.persistence.context.dactx;
 import org.albianj.persistence.context.IPersistenceCompensateNotify;
 import org.albianj.persistence.context.IPersistenceNotify;
 import org.albianj.persistence.object.IAlbianObject;
-import org.albianj.persistence.object.filter.IChainExpression;
 
 /*
     对于单个数据库，单表，支持in
@@ -18,9 +17,9 @@ public interface IDataAccessContext {
 
     IDataAccessContext add(int opt, IAlbianObject entiry);
 
-    IDataAccessContext add(int opt, IAlbianObject entiry,String storageAliasName);
+    IDataAccessContext add(int opt, IAlbianObject entiry, String storageAliasName);
 
-    IDataAccessContext add(int opt, IAlbianObject entiry,String storageAliasName, String tableAliasName);
+    IDataAccessContext add(int opt, IAlbianObject entiry, String storageAliasName, String tableAliasName);
 
     IDataAccessContext withQueryGenKey();
 
@@ -28,7 +27,7 @@ public interface IDataAccessContext {
 
     IDataAccessContext setMakeupFor(IPersistenceCompensateNotify compensateCallback, Object compensateCallbackObject);
 
-     IDataAccessContext setRollBackOnError();
+    IDataAccessContext setRollBackOnError();
 
     boolean commit(String sessionId);
 

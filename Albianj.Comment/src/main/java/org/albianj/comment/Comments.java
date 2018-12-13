@@ -6,18 +6,19 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Target({
-            ElementType.PARAMETER,
-            ElementType.TYPE,
-            ElementType.FIELD,
-            ElementType.METHOD,
-            ElementType.LOCAL_VARIABLE,
-            ElementType.ANNOTATION_TYPE,
-            ElementType.CONSTRUCTOR
-        })
+        ElementType.PARAMETER,
+        ElementType.TYPE,
+        ElementType.FIELD,
+        ElementType.METHOD,
+        ElementType.LOCAL_VARIABLE,
+        ElementType.ANNOTATION_TYPE,
+        ElementType.CONSTRUCTOR
+})
 public @interface Comments {
     /**
      * comments context
-     * @return String,not have default
+     *
+     * @return String, not have default
      */
     String value();
 }

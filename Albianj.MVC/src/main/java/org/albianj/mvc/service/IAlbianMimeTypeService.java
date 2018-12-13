@@ -7,5 +7,6 @@ import org.albianj.service.parser.IAlbianParserService;
  */
 public interface IAlbianMimeTypeService extends IAlbianParserService {
     String Name = "AlbianMimeTypeService";
+
     String getMimeType(String key);
 }

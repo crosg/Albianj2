@@ -2,6 +2,7 @@ package org.albianj.mvc.config.impl;
 
 
 import org.albianj.io.Path;
+import org.albianj.kernel.KernelSetting;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
@@ -13,7 +14,6 @@ import org.albianj.mvc.service.IAlbianMVCConfigurtionService;
 import org.albianj.mvc.service.impl.AlbianFileUploadService;
 import org.albianj.mvc.service.impl.AlbianFormatService;
 import org.albianj.runtime.AlbianModuleType;
-import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.IAlbianServiceAttribute;
 import org.albianj.service.parser.AlbianParserException;
@@ -23,7 +23,6 @@ import org.albianj.verify.Validate;
 import org.albianj.xml.XmlParser;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -31,8 +30,8 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.List;
 
-@AlbianServiceRant(Id = IAlbianMVCConfigurtionService.Name,Interface = IAlbianMVCConfigurtionService.class)
 public class AlbianMVCConfigurtionService extends FreeAlbianParserService implements IAlbianMVCConfigurtionService {
 
     public String getServiceName(){
@@ -65,7 +64,7 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
     public void parserFile(AlbianHttpConfigurtion c, String filename){
         Document doc = null;
         try {
-            String realFilename = confirmConfigFile(filename);
+            String realFilename = findConfigFile(filename);
             doc = XmlParser.load(realFilename);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -88,6 +87,10 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
                     "RootPath for mvf is empry or null.");
 
         }
+        if(!rootPath.endsWith(KernelSetting.getPathSep())){
+            rootPath += KernelSetting.getPathSep();
+        }
+//        Path.relativeToAbsolute();
         c.setRootPath(rootPath);
 
         String suffix = XmlParser.getAttributeValue(doc,"Mvf/Suffix","Value");
@@ -149,7 +152,7 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
 //            c.setFormatServiceClass(AlbianVelocityTemplateService.class);
 //        }
 
-        Element elt = XmlParser.analyzeSingle(doc,"Mvf/FileUploadService");
+        Element elt = XmlParser.selectNode(doc,"Mvf/FileUploadService");
         FileUploadConfigurtion fuc = null;
         if(null == elt){
              fuc = new FileUploadConfigurtion();
@@ -159,8 +162,8 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             fuc = parserFileUploadService(elt);
         }
         c.setFileUploadConfigurtion(fuc);
-//
-        List mvNodes = XmlParser.analyze(doc,"Mvf/MasterViews/MasterView");
+
+        List mvNodes = XmlParser.selectNodes(doc,"Mvf/MasterViews/MasterView");
         if(!Validate.isNullOrEmpty(mvNodes)){
             Map<String,ViewConfigurtion> mvs = parserMasterViews(mvNodes);
             if(!Validate.isNullOrEmpty(mvs)){
@@ -168,28 +171,28 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             }
         }
 
-        Element eNotFoundPage = XmlParser.analyzeSingle(doc,"Mvf/NotFoundView");
+        Element eNotFoundPage = XmlParser.selectNode(doc,"Mvf/NotFoundView");
         ViewConfigurtion notFoundViewConfigurtion = parserNotFoundPage(eNotFoundPage);
         c.setNotFoundViewConfigurtion(notFoundViewConfigurtion);
 
-        Element eErrorPage = XmlParser.analyzeSingle(doc,"Mvf/ErrorView");
+        Element eErrorPage = XmlParser.selectNode(doc,"Mvf/ErrorView");
         ViewConfigurtion errorViewConfigurtion = parserErrorPage(eErrorPage);
         c.setErrorViewConfigurtion(errorViewConfigurtion);
 
 
-        List pagesNodes = XmlParser.analyze(doc,"Mvf/Views");
+        List pagesNodes = XmlParser.selectNodes(doc,"Mvf/Views");
         if(!Validate.isNullOrEmpty(pagesNodes)) {
             parserPages(c, pagesNodes);
         }
 
-        List itemNodes = XmlParser.analyze(doc,"Mvf/Items/Item");
+        List itemNodes = XmlParser.selectNodes(doc,"Mvf/AppSettings/AppSetting");
         if(!Validate.isNullOrEmpty(itemNodes)) {
             Map<String,Object> items = parserItems(itemNodes);
             c.setItems(items);
         }
 
         Map<String,CustomTagConfigurtion> ctcs = new HashedMap();
-        List tagsFileNodes = XmlParser.analyze(doc,"Mvf/Tags/Include");
+        List tagsFileNodes = XmlParser.selectNodes(doc,"Mvf/Tags/Include");
         if(!Validate.isNullOrEmpty(tagsFileNodes)){
             for(Object e : tagsFileNodes){
                 Element eFile = (Element) e;
@@ -199,7 +202,7 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             }
         }
 
-        List tagsNodes = XmlParser.analyze(doc,"Mvf/Tags/Tag");
+        List tagsNodes = XmlParser.selectNodes(doc,"Mvf/Tags/Tag");
         if(!Validate.isNullOrEmpty(tagsNodes)) {
             for(Object e : tagsNodes){
                 CustomTagConfigurtion ctc = parserTags((Element) e);
@@ -213,7 +216,7 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             c.setCustomTags(ctcs);
         }
 
-        Element eltBrushing = XmlParser.analyzeSingle(doc,"Mvf/Brushing");
+        Element eltBrushing = XmlParser.selectNode(doc,"Mvf/Brushing");
         if(null != eltBrushing){
             BrushingConfigurtion brushing = new BrushingConfigurtion();
             String sUnitTime = XmlParser.getSingleChildNodeValue(eltBrushing,"UnitTime");
@@ -232,23 +235,23 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
     private void parserTagsFile(Map<String,CustomTagConfigurtion> map, String filename){
         Document doc = null;
         try {
-            String realFilename = confirmConfigFile(filename);
+            String realFilename = findConfigFile(filename);
             doc = XmlParser.load(realFilename);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
                     AlbianModuleType.AlbianMvf,AlbianModuleType.AlbianMvf.getThrowInfo(),
-                    "loading the mvc.xml is fail.");
+                    "loading the mvf.xml is fail.");
         }
         if (null == doc) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
                     AlbianModuleType.AlbianMvf,AlbianModuleType.AlbianMvf.getThrowInfo(),
-                    "loading the mvc.xml is fail.");
+                    "loading the mvf.xml is fail.");
         }
 
 
-        List tagsNodes = XmlParser.analyze(doc,"Tags/Tag");
+        List tagsNodes = XmlParser.selectNodes(doc,"Tags/Tag");
         for(Object e : tagsNodes){
             CustomTagConfigurtion ctc = parserTags((Element) e);
             if(null != ctc){
@@ -306,13 +309,13 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
 
                 }
 
-                String path = XmlParser.getAttributeValue(elt,"Path");
-                if(Validate.isNullOrEmptyOrAllSpace(path)) path = c.getRootPath();
+                String webPageFloderByWebRoot = XmlParser.getAttributeValue(elt,"Path");
+                if(Validate.isNullOrEmptyOrAllSpace(webPageFloderByWebRoot)) webPageFloderByWebRoot = c.getRootPath();
 
                 String sBinding = XmlParser.getAttributeValue(elt, "AutoBinding");
-                boolean isBinding = true;
+                boolean isAutoBinding = true;
                 if(!Validate.isNullOrEmptyOrAllSpace(sBinding)){
-                    isBinding = Boolean.parseBoolean(sBinding);
+                    isAutoBinding = Boolean.parseBoolean(sBinding);
                 }
 
                 Map<String,ViewConfigurtion> pageConfigurtionMap = c.getPages();
@@ -327,20 +330,21 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
                     c.setTemplates(templateConfigurtionMap);
                 }
 
-
-                String fpath = Path.join(c.getRootPath(),path);
-                List<String> templates = findAllTemplates(c,fpath);
-                for(String t : templates) {
-                    ViewConfigurtion pc =  parserAutoMappingPage(packageName, path, isBinding, t);
-                    if(null == pc) continue;
-                    pageConfigurtionMap.put(pc.getFullClassName(),pc);
-                    templateConfigurtionMap.put(pc.getTemplate(),pc);
+                if(!Validate.isNullOrEmptyOrAllSpace(packageName)) { // no pkg and not find all package
+                    String webPageFullFloder = Path.join(c.getRootPath(), webPageFloderByWebRoot);
+                    List<String> templates = findAllTemplates(c, webPageFullFloder);
+                    for (String t : templates) {
+                        ViewConfigurtion pc = parserAutoMappingPage(packageName, webPageFloderByWebRoot, isAutoBinding, t);
+                        if (null == pc) continue;
+                        pageConfigurtionMap.put(pc.getFullClassName(), pc);
+                        templateConfigurtionMap.put(pc.getTemplate(), pc);
+                    }
                 }
 
                 List pages = XmlParser.getChildNodes(elt, "View");
                 if(!Validate.isNullOrEmpty(pages)){
                     for(Object ePageNode : pages) {
-                        ViewConfigurtion pc = parserCustomPage(packageName, path, isBinding, (Element) ePageNode);
+                        ViewConfigurtion pc = parserCustomPage(packageName, webPageFloderByWebRoot, isAutoBinding, (Element) ePageNode);
                         if(null == pc) continue;
                         pageConfigurtionMap.put(pc.getFullClassName(),pc);
                         templateConfigurtionMap.put(pc.getTemplate(),pc);
@@ -351,8 +355,11 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
         }
     }
 
+    private ViewConfigurtion parserAutoMappingPage(String packageName, String webPageFloderByWebRoot, boolean isAutoBinding, String webPageFileName){
+        return parserPage(packageName,webPageFloderByWebRoot,webPageFileName,null,isAutoBinding);
+    }
 
-    private ViewConfigurtion parserCustomPage(String packageName, String fatherPath, boolean fatherBinding, Element elt){
+    private ViewConfigurtion parserCustomPage(String packageName, String webPageFloderByWebRoot, boolean isAutoBinding, Element elt){
 
         String template = XmlParser.getAttributeValue(elt,"Template");
         if(Validate.isNullOrEmptyOrAllSpace(template)){
@@ -360,21 +367,21 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
         }
         String classname = XmlParser.getAttributeValue(elt, "ClassName");
         String sBinding = XmlParser.getAttributeValue(elt, "AutoBinding");
-        boolean isBinding = fatherBinding;
+        boolean isBinding = isAutoBinding;
         if(!Validate.isNullOrEmptyOrAllSpace(sBinding)){
             isBinding = Boolean.parseBoolean(sBinding);
         }
-        return parserPage(false,packageName,fatherPath,template,classname,isBinding);
+        return parserPage(packageName,webPageFloderByWebRoot,template,classname,isBinding);
     }
 
-    private ViewConfigurtion parserPage(boolean isAutoBinding, String packageName, String fatherPath,
-                                        String template, String classname, boolean isBinding){
+    private ViewConfigurtion parserPage(String packageName, String webPageFloderByWebRoot,
+                                        String webPageFileName, String classname, boolean isAutoBinding){
         ViewConfigurtion pc = new ViewConfigurtion();
         if(Validate.isNullOrEmptyOrAllSpace(classname)) {
-            if(template.startsWith(fatherPath)){
-                template = template.substring(fatherPath.length());
+            if(webPageFileName.startsWith(webPageFloderByWebRoot)){
+                webPageFileName = webPageFileName.substring(webPageFloderByWebRoot.length());
             }
-            String childClassname = template.replace(File.separator,".");
+            String childClassname = webPageFileName.replace(File.separator,".");
             //sub the template suffix
             childClassname = childClassname.substring(0,childClassname.lastIndexOf("."));
             int pos = childClassname.lastIndexOf(".");// have child package?
@@ -400,14 +407,21 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             if(-1 != pos) { //have child package
                 simpleClassname  = cpkg + simpleClassname;
             }
-            if(simpleClassname.startsWith(".")) {
-                classname = packageName +  simpleClassname;
-            } else {
-                classname = packageName + "." + simpleClassname;
+            if(!Validate.isNullOrEmptyOrAllSpace(packageName)) {
+                if (simpleClassname.startsWith(".")) {
+                    classname = packageName + simpleClassname;
+                } else {
+                    classname = packageName + "." + simpleClassname;
+                }
             }
         }
-        template = Path.joinWithFilename(template,fatherPath);
-        pc.setAutoBinding(isBinding);
+
+
+        String template = Path.joinWithFilename(webPageFileName,webPageFloderByWebRoot);
+        if(KernelSetting.Windows == KernelSetting.getSystem()){
+            template = template.replace('\\','/'); //change the window filepath to web path
+        }
+        pc.setAutoBinding(isAutoBinding);
         Class<? extends View> cla = null;
         boolean isload = true;
         int trytime = 3;
@@ -423,11 +437,9 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             }
         }while(!isload && (0 < (trytime--)));
         if(!isload){
-//            if(!isAutoBinding) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName,AlbianLoggerLevel.Warn,
-                    "template -> %s is not finding behind class -> %s.", template,classname);
-//            }
+                    "template -> %s is not finding behind class -> %s.", webPageFileName,classname);
             return null;
         }
         pc.setRealClass(cla);
@@ -438,9 +450,7 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
     }
 
 
-    private ViewConfigurtion parserAutoMappingPage(String packageName, String fatherPath, boolean fatherBinding, String template){
-        return parserPage(true,packageName,fatherPath,template,null,fatherBinding);
-    }
+
 
 
     public static void reflectPage(Class<? extends View> cla, ViewConfigurtion pc){
@@ -507,12 +517,12 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
         }
     }
 
-    private List< String > findAllTemplates(AlbianHttpConfigurtion c, String path ) {
-        String rpath = StringUtils.isBlank( path ) ? c.getRootPath( ) : path;
+    private List< String > findAllTemplates(AlbianHttpConfigurtion c, String webPageFloder ) {
+        String pageFloder = Validate.isNullOrEmptyOrAllSpace( webPageFloder ) ? c.getRootPath( ) : webPageFloder;
         List< String > fs = new ArrayList<>( );
         String suffix = c.getSuffix();
         suffix = suffix.startsWith(".") ? suffix.substring(1) : suffix;
-        Collection<File> files = FileUtils.listFiles(new File(rpath),new String[]{suffix},true);
+        Collection<File> files = FileUtils.listFiles(new File(pageFloder),new String[]{suffix},true);
         int idx = c.getRootPath( ).length();
         for(File f : files){
             fs.add(f.getAbsolutePath().substring(idx - 1));

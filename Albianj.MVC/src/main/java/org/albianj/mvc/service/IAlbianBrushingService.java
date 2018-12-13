@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface IAlbianBrushingService extends IAlbianService {
 
-    String Name =  AlbianBuiltinServiceNamePair.AlbianBrushingServiceName;
+    String Name = AlbianBuiltinServiceNamePair.AlbianBrushingServiceName;
 
     void setHttpConfigurtion(AlbianHttpConfigurtion c);
 

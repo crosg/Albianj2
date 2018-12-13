@@ -42,7 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 
-public class StringHelper  extends StringUtils {
+public class StringHelper extends StringUtils {
     /*
      * Turns a hex encoded string into a byte array. It is specifically meant to
      * "reverse" the toHex(byte[]) method.
@@ -138,26 +138,26 @@ public class StringHelper  extends StringUtils {
     }
 
     public static String captureName(String name) {
-        char[] cs=name.toCharArray();
-        if('a' <= cs[0] && 'z' >= cs[0])
-            cs[0]-= 32;
+        char[] cs = name.toCharArray();
+        if ('a' <= cs[0] && 'z' >= cs[0])
+            cs[0] -= 32;
         return String.valueOf(cs);
 
     }
 
     public static String uppercasingFirstLetter(String name) {
-        char[] cs=name.toCharArray();
-        if('a' <= cs[0] && 'z' >= cs[0])
-            cs[0]-= 32;
+        char[] cs = name.toCharArray();
+        if ('a' <= cs[0] && 'z' >= cs[0])
+            cs[0] -= 32;
         return String.valueOf(cs);
 
     }
 
 
-    public static String lowercasingFirstLetter(String txt){
-        char[] cs=txt.toCharArray();
-        if('A' <= cs[0] && 'Z' >= cs[0])
-            cs[0]+= 32;
+    public static String lowercasingFirstLetter(String txt) {
+        char[] cs = txt.toCharArray();
+        if ('A' <= cs[0] && 'Z' >= cs[0])
+            cs[0] += 32;
         return String.valueOf(cs);
     }
 }

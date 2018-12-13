@@ -40,7 +40,6 @@ package org.albianj.persistence.impl.object;
 import org.albianj.persistence.object.DatabasePoolStyle;
 import org.albianj.persistence.object.IStorageAttribute;
 import org.albianj.persistence.object.PersistenceDatabaseStyle;
-import org.albianj.xml.XmlParser;
 
 public class StorageAttribute implements IStorageAttribute {
 
@@ -61,6 +60,12 @@ public class StorageAttribute implements IStorageAttribute {
     private String options = null;
     private int idelTime = 180;
     private DatabasePoolStyle dbps = DatabasePoolStyle.DBCP;
+    private int waitTimeWhenGetMs = 2;
+    private int lifeCycleTime = 3600000;
+    private int waitInFreePoolMs = 120000;
+    private int maxRemedyConnectionCount = 50;
+    private int cleanupTimestampMs = 30000;
+    private int maxRequestTimeMs = 60000;
 
     public int getWaitTimeWhenGetMs() {
         return waitTimeWhenGetMs;
@@ -109,13 +114,6 @@ public class StorageAttribute implements IStorageAttribute {
     public void setMaxRequestTimeMs(int maxRequestTimeMs) {
         this.maxRequestTimeMs = maxRequestTimeMs;
     }
-
-    private int waitTimeWhenGetMs = 2;
-    private int lifeCycleTime = 3600000;
-    private int  waitInFreePoolMs = 120000;
-    private int maxRemedyConnectionCount = 50;
-    private int  cleanupTimestampMs = 30000;
-    private int maxRequestTimeMs = 60000;
 
     public String getName() {
         // TODO Auto-generated method stub
@@ -263,17 +261,19 @@ public class StorageAttribute implements IStorageAttribute {
         this.options = options;
     }
 
-    public void setAliveTime(int time){
-        this.idelTime = time;
-    }
-    public int getAliveTime(){
+    public int getAliveTime() {
         return this.idelTime;
     }
 
-    public DatabasePoolStyle getDatabasePoolStyle(){
+    public void setAliveTime(int time) {
+        this.idelTime = time;
+    }
+
+    public DatabasePoolStyle getDatabasePoolStyle() {
         return this.dbps;
     }
-    public void setDatabasePoolStyle(DatabasePoolStyle dps){
+
+    public void setDatabasePoolStyle(DatabasePoolStyle dps) {
         this.dbps = dps;
     }
 

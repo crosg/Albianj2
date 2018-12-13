@@ -42,13 +42,8 @@ import org.albianj.io.Path;
 import org.albianj.kernel.AlbianKernel;
 import org.albianj.kernel.KernelSetting;
 import org.albianj.service.parser.AlbianParserException;
-import org.albianj.verify.Validate;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.util.HashMap;
 
 /**
  * ???????????????????????????????????????????????????????????????service???????
@@ -61,6 +56,8 @@ import java.util.HashMap;
 @AlbianKernel
 public abstract class FreeAlbianService implements IAlbianService {
 
+    boolean enableProxy = false;
+    IAlbianService service = null;
     private AlbianServiceLifetime state = AlbianServiceLifetime.Normal;
 
     @AlbianAopAttribute(avoid = true)
@@ -112,26 +109,22 @@ public abstract class FreeAlbianService implements IAlbianService {
 
     }
 
-    boolean enableProxy = false;
     @AlbianAopAttribute(avoid = true)
-    public boolean enableProxy(){
+    public boolean enableProxy() {
         return enableProxy;
     }
 
-    IAlbianService service = null;
-
     @AlbianAopAttribute(avoid = true)
-    public IAlbianService getRealService(){
+    public IAlbianService getRealService() {
         return null == service ? this : service;
     }
 
     @AlbianAopAttribute(avoid = true)
-    public void setRealService(IAlbianService service){
-        if(null != service){
+    public void setRealService(IAlbianService service) {
+        if (null != service) {
             this.service = service;
             enableProxy = true;
-        }
-        else {
+        } else {
             enableProxy = false;
         }
         return;
@@ -171,25 +164,26 @@ public abstract class FreeAlbianService implements IAlbianService {
     /**
      * 判断配置文件是否存在，如果存在就返回配置文件路径
      * 优先根据配置文件目录判断，如果不存在，直接使用filename，就认为filename就是文件地址
+     *
      * @param filename
      * @return
      */
     @AlbianAopAttribute(avoid = true)
-    protected String confirmConfigFile(String filename){
+    protected String findConfigFile(String filename) {
         try {
             File f = new File(filename);
-            if(f.exists()) return filename;
+            if (f.exists()) return filename;
             String fname = Path.getExtendResourcePath(KernelSetting.getAlbianConfigFilePath() + filename);
-             f = new File(fname);
-            if(f.exists()) return fname;
+            f = new File(fname);
+            if (f.exists()) return fname;
             throw new RuntimeException("not found the filename.");
         } catch (Exception e) {
-            AlbianServiceRouter.getLogger().error("not found the config filename:%s",filename);
+            AlbianServiceRouter.getLogger().error("not found the config filename:%s", filename);
             throw new RuntimeException("not found the filename.");
         }
     }
 
-    public String getServiceName(){
+    public String getServiceName() {
         return this.getClass().getSimpleName();
     }
 }

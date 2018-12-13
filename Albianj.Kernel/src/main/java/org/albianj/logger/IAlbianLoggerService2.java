@@ -81,5 +81,5 @@ public interface IAlbianLoggerService2 extends IAlbianService {
                      @Comments("日志的message") String format,
                      @Comments("格式化参数") Object... values);
 
-    public void log3(String loggerName, AlbianLoggerLevel level,String ctx);
+    public void log3(String loggerName, AlbianLoggerLevel level, String ctx);
 }

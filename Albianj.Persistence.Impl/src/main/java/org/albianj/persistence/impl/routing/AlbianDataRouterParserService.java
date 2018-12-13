@@ -58,7 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@AlbianServiceRant(Id = IAlbianDataRouterParserService.Name,Interface = IAlbianDataRouterParserService.class)
+@AlbianServiceRant(Id = IAlbianDataRouterParserService.Name, Interface = IAlbianDataRouterParserService.class)
 public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserService {
 
     public static final String DEFAULT_ROUTING_NAME = "!@#$%Albianj_Default_DataRouter%$#@!";
@@ -82,14 +82,14 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
         }
 
         IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(inter);
-        if(null == objAttr){
+        if (null == objAttr) {
             objAttr = new AlbianObjectAttribute();
             objAttr.setType(type);
             objAttr.setInterface(inter);
-            AlbianEntityMetadata.put(inter,objAttr);
+            AlbianEntityMetadata.put(inter, objAttr);
         }
         IDataRoutersAttribute routing = objAttr.getDataRouters();
-        if(null == routing){
+        if (null == routing) {
             routing = new DataRoutersAttribute();
             objAttr.setDataRouters(routing);
         }

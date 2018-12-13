@@ -3,18 +3,18 @@ package org.albianj.persistence.context.dactx;
 import org.albianj.persistence.object.IAlbianObject;
 
 public class AlbianObjectWarp implements IAlbianObjectWarp {
-    private int opt  = AlbianDataAccessOpt.Save;
+    private int opt = AlbianDataAccessOpt.Save;
     private IAlbianObject entry = null;
     private String storageAliasName = null;
     private String tableAliasName = null;
     private boolean queryIdentitry = false;
 
-    public AlbianObjectWarp (int opt, IAlbianObject entry ) {
+    public AlbianObjectWarp(int opt, IAlbianObject entry) {
         this.opt = opt;
         this.entry = entry;
     }
 
-    public AlbianObjectWarp ( ) {
+    public AlbianObjectWarp() {
     }
 
     @Override

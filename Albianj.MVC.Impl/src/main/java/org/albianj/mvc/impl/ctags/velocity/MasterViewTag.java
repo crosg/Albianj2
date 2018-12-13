@@ -22,6 +22,8 @@ import java.util.Map;
  * Created by xuhaifeng on 16/12/14.
  */
 public class MasterViewTag extends Directive {
+    private static ViewConfigurtion pc = null;
+
     @Override
     public String getName() {
         return "MasterView";
@@ -32,8 +34,6 @@ public class MasterViewTag extends Directive {
         return LINE;
     }
 
-    private static ViewConfigurtion pc = null;
-
     @Override
     public boolean render(InternalContextAdapter ctx, Writer writer, Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
         SimpleNode snCurrCtx = (SimpleNode) node.jjtGetChild(0);
@@ -41,7 +41,7 @@ public class MasterViewTag extends Directive {
         currCtx.setUseMasterView(true);
         SimpleNode snMVName = (SimpleNode) node.jjtGetChild(1);
         String mvName = (String) snMVName.value(ctx);
-        Map<String,ViewConfigurtion> mvs =currCtx.getHttpConfigurtion().getMasterViews();
+        Map<String, ViewConfigurtion> mvs = currCtx.getHttpConfigurtion().getMasterViews();
         ViewConfigurtion pc = mvs.get(mvName);
 
         StringBuffer sb = Path.readLineFile(pc.getTemplate());
@@ -60,8 +60,8 @@ public class MasterViewTag extends Directive {
         mv.load(currCtx);
         mv.kAfterAction(pc);
         mv.kBeforeRender();
-        IAlbianTemplateService ats = AlbianServiceRouter.getSingletonService(IAlbianTemplateService.class,IAlbianTemplateService.Name);
-        StringBuffer masterViewContext = ats.renderTemplate(mv.getModel(),mv.getFunctions(), sb.toString());
+        IAlbianTemplateService ats = AlbianServiceRouter.getSingletonService(IAlbianTemplateService.class, IAlbianTemplateService.Name);
+        StringBuffer masterViewContext = ats.renderTemplate(mv.getModel(), mv.getFunctions(), sb.toString());
         currCtx.setMasterView(mv);
         currCtx.setMasterViewHtml(masterViewContext);
         return true;

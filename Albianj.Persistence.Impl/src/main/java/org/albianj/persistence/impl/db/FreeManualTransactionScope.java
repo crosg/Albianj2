@@ -10,7 +10,7 @@ import org.albianj.service.AlbianServiceRouter;
 /**
  * Created by xuhaifeng on 17/9/1.
  */
-public abstract class FreeManualTransactionScope  implements  IManualTransactionScope{
+public abstract class FreeManualTransactionScope implements IManualTransactionScope {
 
     public boolean execute(IManualContext mctx) {
         boolean isSuccess = true;
@@ -25,7 +25,7 @@ public abstract class FreeManualTransactionScope  implements  IManualTransaction
         } catch (Exception e) {
             isSuccess = false;
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    mctx.getSessionId(), AlbianLoggerLevel.Error,e,
+                    mctx.getSessionId(), AlbianLoggerLevel.Error, e,
                     "Execute the manual command is fail.");
             try {
                 switch (mctx.getLifeTime()) {
@@ -44,7 +44,7 @@ public abstract class FreeManualTransactionScope  implements  IManualTransaction
                             this.exceptionHandler(mctx);
                         } catch (Exception exc) {
                             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                                    mctx.getSessionId(), AlbianLoggerLevel.Error,exc,
+                                    mctx.getSessionId(), AlbianLoggerLevel.Error, exc,
                                     "auto rollback  the manual command is fail.");
                         }
                         mctx.setLifeTime(WriterJobLifeTime.Rollbacked);
@@ -56,7 +56,7 @@ public abstract class FreeManualTransactionScope  implements  IManualTransaction
 
             } catch (Exception exc) {
                 AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                        mctx.getSessionId(), AlbianLoggerLevel.Error,exc,
+                        mctx.getSessionId(), AlbianLoggerLevel.Error, exc,
                         "rollback the query the manual command is fail.");
             }
         } finally {
@@ -64,7 +64,7 @@ public abstract class FreeManualTransactionScope  implements  IManualTransaction
                 unLoadExecute(mctx);
             } catch (Exception exc) {
                 AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                        mctx.getSessionId(), AlbianLoggerLevel.Error,exc,
+                        mctx.getSessionId(), AlbianLoggerLevel.Error, exc,
                         "unload the manual command is fail.");
             }
 

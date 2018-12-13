@@ -37,18 +37,21 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.object;
 
-import org.albianj.persistence.object.*;
+import org.albianj.persistence.object.IAlbianEntityFieldAttribute;
+import org.albianj.persistence.object.IAlbianObjectAttribute;
+import org.albianj.persistence.object.IDataRouterAttribute;
+import org.albianj.persistence.object.IDataRoutersAttribute;
 
 import java.util.Map;
 
 public class AlbianObjectAttribute implements IAlbianObjectAttribute {
 
-//    private ICacheAttribute cache = null;
+    //    private ICacheAttribute cache = null;
     private IDataRouterAttribute defaultRouting = null;
-//    private Map<String, IMemberAttribute> members = null;
+    //    private Map<String, IMemberAttribute> members = null;
     private String type = null;
     private String inter = null;
-//    private boolean compensating = true;
+    //    private boolean compensating = true;
     private IDataRoutersAttribute dra = null;
     private Map<String, IAlbianEntityFieldAttribute> fields = null;
     private Class<?> implClzz = null;
@@ -116,11 +119,11 @@ public class AlbianObjectAttribute implements IAlbianObjectAttribute {
 //    }
 
 
-    public IDataRoutersAttribute getDataRouters(){
+    public IDataRoutersAttribute getDataRouters() {
         return this.dra;
     }
 
-    public void setDataRouters(IDataRoutersAttribute dra){
+    public void setDataRouters(IDataRoutersAttribute dra) {
         this.dra = dra;
     }
 

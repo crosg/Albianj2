@@ -27,17 +27,17 @@ import java.util.Vector;
 /**
  * Created by xuhaifeng on 17/8/31.
  */
-public class ManualTransactionScope  extends  FreeManualTransactionScope{
+public class ManualTransactionScope extends FreeManualTransactionScope {
 
     protected void preExecute(IManualContext mctx) throws AlbianDataServiceException {
-        List<IManualCommand> mcs =  mctx.getCommands();
+        List<IManualCommand> mcs = mctx.getCommands();
         List<IInternalManualCommand> imcs = mctx.getInternalCommands();
         IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
         IStorageAttribute storage = asps.getStorageAttribute(mctx.getStorageName());
-        if(Validate.isNullOrEmptyOrAllSpace(mctx.getDatabaseName())){
+        if (Validate.isNullOrEmptyOrAllSpace(mctx.getDatabaseName())) {
             mctx.setDatabaseName(storage.getDatabase());
         }
-        IRunningStorageAttribute rsa = new RunningStorageAttribute(storage,mctx.getDatabaseName());
+        IRunningStorageAttribute rsa = new RunningStorageAttribute(storage, mctx.getDatabaseName());
         mctx.setRunningStorage(rsa);
         Connection conn = asps.getConnection(mctx.getSessionId(), rsa);
         mctx.setConnection(conn);
@@ -66,7 +66,7 @@ public class ManualTransactionScope  extends  FreeManualTransactionScope{
             }
         } catch (SQLException e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    mctx.getSessionId(), AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
+                    mctx.getSessionId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "make manual sql command with mctx and the command is empty or null");
         }
@@ -77,86 +77,86 @@ public class ManualTransactionScope  extends  FreeManualTransactionScope{
     protected void executeHandler(IManualContext mctx) throws AlbianDataServiceException {
         try {
 
-                List<Integer> rcs = new Vector<>();
-                List<Statement> statements = mctx.getStatements();
-                List<IManualCommand> cmds = mctx.getCommands();
-                for (int i = 0; i < statements.size(); i++) {
-                    try {
-                        IManualCommand cmd = cmds.get(i);
-                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                                mctx.getSessionId(), AlbianLoggerLevel.Info,
-                                "storage:%s,sqltext:%s,parars:%s.",
-                                mctx.getStorageName(), cmd.getCommandText(), ListConvert.toString(cmd.getCommandParameters()));
-                        int rc = ((PreparedStatement) statements.get(i)).executeUpdate();
-                        rcs.add(rc);
-                    } catch (SQLException e) {
+            List<Integer> rcs = new Vector<>();
+            List<Statement> statements = mctx.getStatements();
+            List<IManualCommand> cmds = mctx.getCommands();
+            for (int i = 0; i < statements.size(); i++) {
+                try {
+                    IManualCommand cmd = cmds.get(i);
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                            mctx.getSessionId(), AlbianLoggerLevel.Info,
+                            "storage:%s,sqltext:%s,parars:%s.",
+                            mctx.getStorageName(), cmd.getCommandText(), ListConvert.toString(cmd.getCommandParameters()));
+                    int rc = ((PreparedStatement) statements.get(i)).executeUpdate();
+                    rcs.add(rc);
+                } catch (SQLException e) {
 
-                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                                mctx.getSessionId(), AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
-                                AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                                "execute manual command to storage:%s dtabase:%s is fail.",
-                                mctx.getStorageName(),mctx.getDatabaseName());
-                    }
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                            mctx.getSessionId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
+                            AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                            "execute manual command to storage:%s dtabase:%s is fail.",
+                            mctx.getStorageName(), mctx.getDatabaseName());
                 }
+            }
 
-                mctx.setResults(rcs);
+            mctx.setResults(rcs);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         return;
     }
 
     protected void commit(IManualContext mctx) throws AlbianDataServiceException {
-            try {
-                mctx.getConnection().commit();
-            } catch (SQLException e) {
-                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                        mctx.getSessionId(), AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
-                        AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                        "commit manual command to storage:%s database:%s is fail.",
-                        mctx.getStorageName(),mctx.getDatabaseName());
-            }
+        try {
+            mctx.getConnection().commit();
+        } catch (SQLException e) {
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    mctx.getSessionId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
+                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                    "commit manual command to storage:%s database:%s is fail.",
+                    mctx.getStorageName(), mctx.getDatabaseName());
         }
+    }
 
 
     protected void exceptionHandler(IManualContext mctx) throws AlbianDataServiceException {
         try {
             mctx.getConnection().rollback();
         } catch (SQLException e) {
-                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                        mctx.getSessionId(), AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
-                        AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                        "rollback manual command to storage:%s database:%s is fail.",
-                        mctx.getStorageName(),mctx.getDatabaseName());
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    mctx.getSessionId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
+                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                    "rollback manual command to storage:%s database:%s is fail.",
+                    mctx.getStorageName(), mctx.getDatabaseName());
         }
     }
 
 
     protected void unLoadExecute(IManualContext mctx) throws AlbianDataServiceException {
         boolean isThrow = false;
-            try {
-                List<Statement> statements = mctx.getStatements();
-                for (Statement statement : statements) {
-                    try {
-                        ((PreparedStatement) statement).clearParameters();
-                        statement.close();
-                    } catch (Exception e) {
-                        isThrow = true;
-                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                                mctx.getSessionId(), AlbianLoggerLevel.Error,e,
-                                "clear the statement to storage:%s database:%s is fail.",
-                                mctx.getStorageName(),mctx.getDatabaseName());
-                    }
+        try {
+            List<Statement> statements = mctx.getStatements();
+            for (Statement statement : statements) {
+                try {
+                    ((PreparedStatement) statement).clearParameters();
+                    statement.close();
+                } catch (Exception e) {
+                    isThrow = true;
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                            mctx.getSessionId(), AlbianLoggerLevel.Error, e,
+                            "clear the statement to storage:%s database:%s is fail.",
+                            mctx.getStorageName(), mctx.getDatabaseName());
                 }
-                mctx.getConnection().close();
-            } catch (Exception exc) {
-                isThrow = true;
-                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                        mctx.getSessionId(), AlbianLoggerLevel.Error,exc,
-                        "close the connect to storage:%s database:%s is fail.",
-                        mctx.getStorageName(),mctx.getDatabaseName());
             }
+            mctx.getConnection().close();
+        } catch (Exception exc) {
+            isThrow = true;
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    mctx.getSessionId(), AlbianLoggerLevel.Error, exc,
+                    "close the connect to storage:%s database:%s is fail.",
+                    mctx.getStorageName(), mctx.getDatabaseName());
+        }
         if (isThrow)
             throw new AlbianDataServiceException(
                     "there is error in the unload trancation scope.");

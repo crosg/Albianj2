@@ -1,6 +1,5 @@
 package org.albianj.xml;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -9,7 +8,7 @@ import java.util.Map;
 public class BeanMetadata {
     private String name;
     private Class<?> realClass;
-    private Map<String,PropertyMetadata> propertyMetadatas;
+    private Map<String, PropertyMetadata> propertyMetadatas;
 
     /**
      * Getter for property 'name'.

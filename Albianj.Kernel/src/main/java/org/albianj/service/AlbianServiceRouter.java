@@ -43,7 +43,6 @@ import org.albianj.kernel.IAlbianLogicIdService;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.logger.IAlbianLoggerService2;
-import org.albianj.logger.RuntimeLogType;
 import org.albianj.verify.Validate;
 
 /**
@@ -52,6 +51,9 @@ import org.albianj.verify.Validate;
 public class AlbianServiceRouter extends ServiceContainer {
 
     public static String AlbianRuntimeLogName = "AlbianRuntime";
+    // 时间 级别 call-chain fmt -args
+    private static String logFmt = "%s %s SessionId:%s Thread:%d CallChain:[%s] ctx:[%s]";
+    private static String logExceptionFmt = "%s %s SessionId:%s Thread:%d CallChain:[%s] except:[type:%s msg:%s] ctx:[%s]";
 
     @Deprecated
     public static IAlbianLoggerService getLogger() {
@@ -110,7 +112,6 @@ public class AlbianServiceRouter extends ServiceContainer {
         return getSingletonService(cla, id, false);
     }
 
-
     /**
      * 获取service.xml中配置的service.
      * 注意： 1：获取的service都是单例模式
@@ -167,98 +168,95 @@ public class AlbianServiceRouter extends ServiceContainer {
         return getSingletonService(IAlbianLoggerService2.class, IAlbianLoggerService2.Name, false);
     }
 
-    // 时间 级别 call-chain fmt -args
-    private static String logFmt = "%s %s SessionId:%s Thread:%d CallChain:[%s] ctx:[%s]";
-    public static void addLog(String sessionId, String logName, AlbianLoggerLevel logLevel, String fmt, Object... args){
+    public static void addLog(String sessionId, String logName, AlbianLoggerLevel logLevel, String fmt, Object... args) {
         StackTraceElement[] stes = Thread.currentThread().getStackTrace();
-        int count = stes.length >= 7 ? 7: stes.length;
+        int count = stes.length >= 7 ? 7 : stes.length;
         StringBuilder sb = new StringBuilder();
-        for(int i = 2;i < count;i++){
+        for (int i = 2; i < count; i++) {
             StackTraceElement ste = stes[i];
             sb.append(ste.getFileName())
                     .append("$").append(ste.getMethodName())
                     .append("$").append(ste.getLineNumber())
                     .append(" -> ");
         }
-        if(0!= sb.length()) {
-            sb.delete(sb.length()-4,sb.length() -1);
+        if (0 != sb.length()) {
+            sb.delete(sb.length() - 4, sb.length() - 1);
         }
 
 
-        IAlbianLoggerService2 log = getSingletonService(IAlbianLoggerService2.class,IAlbianLoggerService2.Name, false);
-        if(null != log){
-            String msg = String.format(logFmt, AlbianDateTime.fmtCurrentLongDatetime(),logLevel.getTag(),sessionId,
-                                        Thread.currentThread().getId(),sb, String.format(fmt,args));
-            log.log3(logName,logLevel,msg);
+        IAlbianLoggerService2 log = getSingletonService(IAlbianLoggerService2.class, IAlbianLoggerService2.Name, false);
+        if (null != log) {
+            String msg = String.format(logFmt, AlbianDateTime.fmtCurrentLongDatetime(), logLevel.getTag(), sessionId,
+                    Thread.currentThread().getId(), sb, String.format(fmt, args));
+            log.log3(logName, logLevel, msg);
         }
     }
 
-    private static String logExceptionFmt = "%s %s SessionId:%s Thread:%d CallChain:[%s] except:[type:%s msg:%s] ctx:[%s]";
-    public static void addLog(String sessionId, String logName,AlbianLoggerLevel logLevel, Throwable t, String fmt, Object... args){
+    public static void addLog(String sessionId, String logName, AlbianLoggerLevel logLevel, Throwable t, String fmt, Object... args) {
         StackTraceElement[] stes = t.getStackTrace();
-        int count = stes.length >=6 ? 6: stes.length;
+        int count = stes.length >= 6 ? 6 : stes.length;
 
         StringBuilder sb = new StringBuilder();
-        for(int i = 0;i < count;i++){
+        for (int i = 0; i < count; i++) {
             StackTraceElement ste = stes[i];
             sb.append(ste.getFileName())
                     .append("$").append(ste.getMethodName())
                     .append("$").append(ste.getLineNumber())
                     .append(" -> ");
         }
-        if(0!= sb.length()) {
-            sb.delete(sb.length()-4,sb.length() -1);
+        if (0 != sb.length()) {
+            sb.delete(sb.length() - 4, sb.length() - 1);
         }
 
-        IAlbianLoggerService2 log = getSingletonService(IAlbianLoggerService2.class,IAlbianLoggerService2.Name, false);
-        if(null != log){
-            String msg = String.format(logExceptionFmt, AlbianDateTime.fmtCurrentLongDatetime(),logLevel.getTag(),sessionId,
-                    Thread.currentThread().getId(),sb,t.getClass().getName(),t.getMessage(), String.format(fmt,args));
-            log.log3(logName,logLevel,msg);
+        IAlbianLoggerService2 log = getSingletonService(IAlbianLoggerService2.class, IAlbianLoggerService2.Name, false);
+        if (null != log) {
+            String msg = String.format(logExceptionFmt, AlbianDateTime.fmtCurrentLongDatetime(), logLevel.getTag(), sessionId,
+                    Thread.currentThread().getId(), sb, t.getClass().getName(), t.getMessage(), String.format(fmt, args));
+            log.log3(logName, logLevel, msg);
         }
     }
 
-    public static void throwException(String sessionId,String logName,Throwable throwable){
-        throwException(sessionId,logName,"throw",throwable,true);
+    public static void throwException(String sessionId, String logName, Throwable throwable) {
+        throwException(sessionId, logName, "throw", throwable, true);
     }
 
-    public static void throwException(String sessionId,String logName,String brief,Throwable throwable){
-        throwException(sessionId,logName,brief,throwable,true);
+    public static void throwException(String sessionId, String logName, String brief, Throwable throwable) {
+        throwException(sessionId, logName, brief, throwable, true);
     }
 
-    public static void throwException(String sessionId,String logName,String brief,Throwable throwable,boolean throwsOut){
-        if(AlbianRuntimeException.class.isAssignableFrom(throwable.getClass())){
+    public static void throwException(String sessionId, String logName, String brief, Throwable throwable, boolean throwsOut) {
+        if (AlbianRuntimeException.class.isAssignableFrom(throwable.getClass())) {
             //warp once over,and not again
-            addLog(sessionId,logName, AlbianLoggerLevel.Warn,throwable,"throw exception -> %s",throwable.getClass().getName());
-            if(throwsOut){
-                throw  ((AlbianRuntimeException) throwable);
+            addLog(sessionId, logName, AlbianLoggerLevel.Warn, throwable, "throw exception -> %s", throwable.getClass().getName());
+            if (throwsOut) {
+                throw ((AlbianRuntimeException) throwable);
             }
             return;
         }
         AlbianRuntimeException thw = new AlbianRuntimeException(throwable);
-        addLog(sessionId,logName,AlbianLoggerLevel.Warn,throwable,
+        addLog(sessionId, logName, AlbianLoggerLevel.Warn, throwable,
                 "brief-> %s warp excetion -> %s with msg ->%s to new AlbianRuntimeException.",
-                brief,throwable.getClass().getName(),throwable.getMessage());
-        if(throwsOut){
-            throw  thw;
+                brief, throwable.getClass().getName(), throwable.getMessage());
+        if (throwsOut) {
+            throw thw;
         }
     }
 
-    public static void throwException(String sessionId,String logName, String brief,String msg){
+    public static void throwException(String sessionId, String logName, String brief, String msg) {
         StackTraceElement[] stacks = Thread.currentThread().getStackTrace();
-        AlbianRuntimeException thw = new AlbianRuntimeException(stacks[2].getClassName(),stacks[2].getMethodName(),stacks[2].getLineNumber(),msg);
-        addLog(sessionId,logName,AlbianLoggerLevel.Warn,
+        AlbianRuntimeException thw = new AlbianRuntimeException(stacks[2].getClassName(), stacks[2].getMethodName(), stacks[2].getLineNumber(), msg);
+        addLog(sessionId, logName, AlbianLoggerLevel.Warn,
                 "brief-> %s new excetion with msg ->%s to AlbianRuntimeException.",
-                brief,msg);
+                brief, msg);
         throw thw;
     }
 
-    public static void throwException(String sessionId,String logName, String msg){
+    public static void throwException(String sessionId, String logName, String msg) {
         StackTraceElement[] stacks = Thread.currentThread().getStackTrace();
-        AlbianRuntimeException thw = new AlbianRuntimeException(stacks[2].getClassName(),stacks[2].getMethodName(),stacks[2].getLineNumber(),msg);
-        addLog(sessionId,logName,AlbianLoggerLevel.Warn,
+        AlbianRuntimeException thw = new AlbianRuntimeException(stacks[2].getClassName(), stacks[2].getMethodName(), stacks[2].getLineNumber(), msg);
+        addLog(sessionId, logName, AlbianLoggerLevel.Warn,
                 "new excetion with msg ->%s to AlbianRuntimeException.",
-               msg);
+                msg);
         throw thw;
     }
 }

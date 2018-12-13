@@ -3,7 +3,6 @@ package org.albianj.persistence.db;
 import org.albianj.persistence.object.IRunningStorageAttribute;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
@@ -20,13 +19,16 @@ public interface IDataBasePool {
 
     /**
      * 返回一个读取数据库的链接到链接池
+     *
      * @param conn
      * @param pst
      * @param rs
      */
     public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn, Statement pst, ResultSet rs);
+
     /**
      * 返回一直执行sql语句的链接到链接池
+     *
      * @param conn
      * @param pst
      */
@@ -34,4 +36,4 @@ public interface IDataBasePool {
 
     public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn);
 
-    }
+}

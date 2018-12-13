@@ -3,8 +3,6 @@ package org.albianj.aop.impl;
 import org.albianj.aop.IAlbianServiceAopAttribute;
 import org.albianj.verify.Validate;
 
-import java.util.List;
-
 /**
  * Created by xuhaifeng on 16/5/31.
  */
@@ -102,7 +100,7 @@ public class AlbianServiceAopAttribute implements IAlbianServiceAopAttribute {
     }
 
     public boolean matches(String name) {
-        if(isAll) return true;
+        if (isAll) return true;
         return Validate.isNullOrEmptyOrAllSpace(this.fullname)
                 ?
                 Validate.isNullOrEmptyOrAllSpace(this.beginWith) ? true : name.startsWith(this.beginWith)
@@ -116,7 +114,6 @@ public class AlbianServiceAopAttribute implements IAlbianServiceAopAttribute {
     }
 
 
-
     public String getFullName() {
         return fullname;
     }
@@ -126,11 +123,11 @@ public class AlbianServiceAopAttribute implements IAlbianServiceAopAttribute {
     }
 
 
-
-    public boolean getIsAll(){
+    public boolean getIsAll() {
         return isAll;
     }
-    public void setIsAll(boolean isAll){
+
+    public void setIsAll(boolean isAll) {
         this.isAll = isAll;
     }
 

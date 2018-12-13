@@ -12,7 +12,7 @@ public class ManualCommand implements IManualCommand {
 
     private String cmdText;
     private PersistenceCommandType cmdType = PersistenceCommandType.Text;
-    private Map<String,ISqlParameter> cmdParameters = null;
+    private Map<String, ISqlParameter> cmdParameters = null;
 
     @Override
     public String getCommandText() {

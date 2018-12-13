@@ -18,10 +18,9 @@ public interface IManualCommand {
 
     void setCmdType(PersistenceCommandType cmdType);
 
-    Map<String,ISqlParameter> getCommandParameters();
+    Map<String, ISqlParameter> getCommandParameters();
 
-    void setCommandParameters(Map<String,ISqlParameter> paras);
-
+    void setCommandParameters(Map<String, ISqlParameter> paras);
 
 
 }

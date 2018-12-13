@@ -72,7 +72,7 @@ public interface IWriterJobAdapter {
     public IWriterJob buildSaving(String sessionId, List<? extends IAlbianObject> objects)
             throws AlbianDataServiceException;
 
-    IWriterJob buildWriterJob(String sessionId, List<IAlbianObjectWarp> entities,boolean rollbackOnError)
+    IWriterJob buildWriterJob(String sessionId, List<IAlbianObjectWarp> entities, boolean rollbackOnError)
             throws AlbianDataServiceException;
 
 }

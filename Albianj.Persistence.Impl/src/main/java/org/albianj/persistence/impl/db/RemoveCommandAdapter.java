@@ -43,42 +43,19 @@ import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.IPersistenceCommand;
 import org.albianj.persistence.db.ISqlParameter;
 import org.albianj.persistence.db.PersistenceCommandType;
-import org.albianj.persistence.object.*;
+import org.albianj.persistence.object.IAlbianEntityFieldAttribute;
+import org.albianj.persistence.object.IAlbianObject;
+import org.albianj.persistence.object.IAlbianObjectAttribute;
+import org.albianj.persistence.object.PersistenceDatabaseStyle;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
-import org.albianj.verify.Validate;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class RemoveCommandAdapter implements IPersistenceUpdateCommand {
 
-    public IPersistenceCommand buildPstCmd(String sessionId,int dbStyle,String tableName,IAlbianObject object,
-                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue,boolean rbkOnError) throws AlbianDataServiceException{
-        IPersistenceCommand cmd = new PersistenceCommand();
-        StringBuilder sqlText = new StringBuilder();
-
-        Map<String, ISqlParameter> sqlParas = makeRemoveCommand(sessionId,dbStyle,tableName,
-                objAttr, mapValue,sqlText);
-
-        cmd.setCommandText(sqlText.toString());
-        cmd.setCommandType(PersistenceCommandType.Text);
-        cmd.setParameters(sqlParas);
-
-        if (rbkOnError) {
-            StringBuilder rollbackText = new StringBuilder();
-            Map<String, ISqlParameter> rollbackParas = CreateCommandAdapter.makeCreateCommand(sessionId, dbStyle,tableName,
-                                                                                             objAttr, mapValue, rollbackText);
-            cmd.setRollbackCommandText(rollbackText.toString());
-            cmd.setRollbackCommandType(PersistenceCommandType.Text);
-            cmd.setRollbackParameters(rollbackParas);
-        }
-
-        PersistenceNamedParameter.parseSql(cmd);
-        return cmd;
-    }
-
-    public static Map<String, ISqlParameter> makeRemoveCommand(String sessionId,int dbStyle,String tableName,
+    public static Map<String, ISqlParameter> makeRemoveCommand(String sessionId, int dbStyle, String tableName,
                                                                IAlbianObjectAttribute objAttr, Map<String, Object> sqlParaVals,
                                                                StringBuilder sqlText) throws AlbianDataServiceException {
         StringBuilder where = new StringBuilder();
@@ -115,15 +92,40 @@ public class RemoveCommandAdapter implements IPersistenceUpdateCommand {
                     .append("# ");
         }
 
-        if(0 == where.length()) {
+        if (0 == where.length()) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
+                    sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "the albianj object can not be delete .there is not PrimaryKey in the object.");
         }
 
         sqlText.append(" WHERE 1=1 ").append(where);
         return sqlParas;
+    }
+
+    public IPersistenceCommand buildPstCmd(String sessionId, int dbStyle, String tableName, IAlbianObject object,
+                                           IAlbianObjectAttribute objAttr, Map<String, Object> mapValue, boolean rbkOnError) throws AlbianDataServiceException {
+        IPersistenceCommand cmd = new PersistenceCommand();
+        StringBuilder sqlText = new StringBuilder();
+
+        Map<String, ISqlParameter> sqlParas = makeRemoveCommand(sessionId, dbStyle, tableName,
+                objAttr, mapValue, sqlText);
+
+        cmd.setCommandText(sqlText.toString());
+        cmd.setCommandType(PersistenceCommandType.Text);
+        cmd.setParameters(sqlParas);
+
+        if (rbkOnError) {
+            StringBuilder rollbackText = new StringBuilder();
+            Map<String, ISqlParameter> rollbackParas = CreateCommandAdapter.makeCreateCommand(sessionId, dbStyle, tableName,
+                    objAttr, mapValue, rollbackText);
+            cmd.setRollbackCommandText(rollbackText.toString());
+            cmd.setRollbackCommandType(PersistenceCommandType.Text);
+            cmd.setRollbackParameters(rollbackParas);
+        }
+
+        PersistenceNamedParameter.parseSql(cmd);
+        return cmd;
     }
 
 

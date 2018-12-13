@@ -54,19 +54,19 @@ public interface IReaderJobAdapter {
     @Deprecated
     public IReaderJob buildReaderJob(String sessionId, Class<?> cls, boolean isExact, String drouterAlias,
                                      int start, int step, LinkedList<IFilterCondition> wheres,
-                                     LinkedList<IOrderByCondition> orderbys,String idxName) throws AlbianDataServiceException;
+                                     LinkedList<IOrderByCondition> orderbys, String idxName) throws AlbianDataServiceException;
 
     @Deprecated
     public IReaderJob buildReaderJob(String sessionId, Class<?> cls, boolean isExact, String drouterAlias,
-                                     LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys,String idxName) throws AlbianDataServiceException;
+                                     LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys, String idxName) throws AlbianDataServiceException;
 
 
-    public IReaderJob buildReaderJob(String sessionId, Class<?> cls, boolean isExact,String storageAlias,String tableAlias, String drouterAlias,
+    public IReaderJob buildReaderJob(String sessionId, Class<?> cls, boolean isExact, String storageAlias, String tableAlias, String drouterAlias,
                                      int start, int step, IChainExpression f,
-                                     LinkedList<IOrderByCondition> orderbys,String idxName) throws AlbianDataServiceException;
+                                     LinkedList<IOrderByCondition> orderbys, String idxName) throws AlbianDataServiceException;
 
-    public IReaderJob buildReaderJob(String sessionId, Class<?> cls, boolean isExact, String storageAlias,String tableAlias,String drouterAlias,
-                                     IChainExpression f, LinkedList<IOrderByCondition> orderbys,String idxName) throws AlbianDataServiceException;
+    public IReaderJob buildReaderJob(String sessionId, Class<?> cls, boolean isExact, String storageAlias, String tableAlias, String drouterAlias,
+                                     IChainExpression f, LinkedList<IOrderByCondition> orderbys, String idxName) throws AlbianDataServiceException;
 
     public IReaderJob buildReaderJob(String sessionId, Class<?> cls, IRunningStorageAttribute storage,
                                      PersistenceCommandType cmdType, String text, Map<String, ISqlParameter> paras) throws AlbianDataServiceException;

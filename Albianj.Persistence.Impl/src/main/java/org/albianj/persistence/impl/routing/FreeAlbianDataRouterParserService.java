@@ -72,7 +72,7 @@ public abstract class FreeAlbianDataRouterParserService extends FreeAlbianParser
             parserFile(file);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "loading the drouter.xml is error.");
         }
@@ -83,25 +83,25 @@ public abstract class FreeAlbianDataRouterParserService extends FreeAlbianParser
     private void parserFile(String filename) throws AlbianParserException {
         Document doc = null;
         try {
-            String fname = confirmConfigFile(filename);
+            String fname = findConfigFile(filename);
             doc = XmlParser.load(fname);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e, AlbianModuleType.AlbianPersistence,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "loading the drouter.xml is error.");
 
         }
         if (null == doc) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "loading the drouter.xml is error.");
 
         }
 
         @SuppressWarnings("rawtypes")
-        List nodes = XmlParser.analyze(doc, "AlbianObjects/IncludeSet/Include");
+        List nodes = XmlParser.selectNodes(doc, "AlbianObjects/IncludeSet/Include");
         if (!Validate.isNullOrEmpty(nodes)) {
             for (Object node : nodes) {
                 Element elt = XmlParser.toElement(node);
@@ -112,7 +112,7 @@ public abstract class FreeAlbianDataRouterParserService extends FreeAlbianParser
         }
 
         @SuppressWarnings("rawtypes")
-        List objNodes = XmlParser.analyze(doc, tagName);
+        List objNodes = XmlParser.selectNodes(doc, tagName);
         if (Validate.isNullOrEmpty(objNodes)) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Warn,

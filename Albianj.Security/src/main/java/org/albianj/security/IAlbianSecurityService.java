@@ -42,7 +42,7 @@ import org.albianj.service.IAlbianService;
 
 public interface IAlbianSecurityService extends IAlbianService {
 
-    final String Name =  AlbianBuiltinServiceNamePair.AlbianSecurityServiceName;
+    final String Name = AlbianBuiltinServiceNamePair.AlbianSecurityServiceName;
 
     public String decryptDES(String message) throws RuntimeException;
 

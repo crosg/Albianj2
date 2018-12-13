@@ -3,92 +3,92 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-	<!-- %c 输出日志信息所属的类的全名 %d 输出日志时间点的日期或时间，默认格式为ISO8601，也可以在其后指定格式，比如：%d{yyy-MM-dd 
-		HH:mm:ss }，输出类似：2002-10-18- 22：10：28 %f 输出日志信息所属的类的类名 %l 输出日志事件的发生位置，即输出日志信息的语句处于它所在的类的第几行 
-		%m 输出代码中指定的信息，如log(message)中的message %n 输出一个回车换行符，Windows平台为“rn”，Unix平台为“n” 
-		%p 输出优先级，即DEBUG，INFO，WARN，ERROR，FATAL。如果是调用debug()输出的，则为DEBUG，依此类推 %r 输出自应用启动到输出该日志信息所耗费的毫秒数 
-		%t 输出产生该日志事件的线程名 -->
-	<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %p %m%n" />
-		</layout>
-	</appender>
+    <!-- %c 输出日志信息所属的类的全名 %d 输出日志时间点的日期或时间，默认格式为ISO8601，也可以在其后指定格式，比如：%d{yyy-MM-dd
+        HH:mm:ss }，输出类似：2002-10-18- 22：10：28 %f 输出日志信息所属的类的类名 %l 输出日志事件的发生位置，即输出日志信息的语句处于它所在的类的第几行
+        %m 输出代码中指定的信息，如log(message)中的message %n 输出一个回车换行符，Windows平台为“rn”，Unix平台为“n”
+        %p 输出优先级，即DEBUG，INFO，WARN，ERROR，FATAL。如果是调用debug()输出的，则为DEBUG，依此类推 %r 输出自应用启动到输出该日志信息所耗费的毫秒数
+        %t 输出产生该日志事件的线程名 -->
+    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %p %m%n"/>
+        </layout>
+    </appender>
 
-	<appender name="AlbianRunningAppender"
-		class="org.albianj.logger.impl.AlbianRollingFileAppender">
-		<param name="File" value="v2logs" /><!-- 设置日志输出文件名 -->
-		<!-- 设置是否在重新启动服务时，在原有日志的基础添加新日志 -->
-		<param name="Append" value="false" />
-		<param name="MaxBackupIndex" value="-1" />
-		<param name="MaxFileSize" value="5mb" />
-		<!-- 请配置你的业务名称-->
-		<param name="prefix" value="prefix" />
-		<param name="Format" value="HHmmss" />   
-		<param name="Suffix" value="running.log" />
-		<param name="encoding" value="UTF-8" />
-		<!-- 请配置你的log存放的文件夹路径，和上面的File保持一致-->
-		<param name="path" value="v2logs" />
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %p %m%n" />
-		</layout>
-	</appender>
+    <appender name="AlbianRunningAppender"
+              class="org.albianj.logger.impl.AlbianRollingFileAppender">
+        <param name="File" value="v2logs"/><!-- 设置日志输出文件名 -->
+        <!-- 设置是否在重新启动服务时，在原有日志的基础添加新日志 -->
+        <param name="Append" value="false"/>
+        <param name="MaxBackupIndex" value="-1"/>
+        <param name="MaxFileSize" value="5mb"/>
+        <!-- 请配置你的业务名称-->
+        <param name="prefix" value="prefix"/>
+        <param name="Format" value="HHmmss"/>
+        <param name="Suffix" value="running.log"/>
+        <param name="encoding" value="UTF-8"/>
+        <!-- 请配置你的log存放的文件夹路径，和上面的File保持一致-->
+        <param name="path" value="v2logs"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %p %m%n"/>
+        </layout>
+    </appender>
 
-	<appender name="AlbianSqlAppender"
-		class="org.albianj.logger.impl.AlbianRollingFileAppender">
-		<param name="File" value="v2logs/" /><!-- 设置日志输出文件名 -->
-		<!-- 设置是否在重新启动服务时，在原有日志的基础添加新日志 -->
-		<param name="Append" value="false" />
-		<param name="MaxBackupIndex" value="-1" />
-		<param name="MaxFileSize" value="5mb" />
-		<!-- 请配置你的业务名称-->
-		<param name="prefix" value="prefix" />
-		<param name="Format" value="HHmmss" />   
-		<param name="Suffix" value="sql.log" />
-		<param name="encoding" value="UTF-8" />
-		<!-- 请配置你的log存放的文件夹路径，和上面的File保持一致-->
-		<param name="path" value="v2logs" />
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %p %m%n" />
-		</layout>
-	</appender>
-	
-	<appender name="AlbianRestfulAppender"
-		class="org.albianj.logger.impl.AlbianRollingFileAppender">
-		<param name="File" value="v2logs/" /><!-- 设置日志输出文件名 -->
-		<!-- 设置是否在重新启动服务时，在原有日志的基础添加新日志 -->
-		<param name="Append" value="false" />
-		<param name="MaxBackupIndex" value="-1" />
-		<param name="MaxFileSize" value="5mb" />
-		<!-- 请配置你的业务名称-->
-		<param name="prefix" value="prefix" />
-		<param name="Format" value="HHmmss" />   
-		<param name="Suffix" value="restful.log" />
-		<param name="encoding" value="UTF-8" />
-		<!-- 请配置你的log存放的文件夹路径，和上面的File保持一致-->
-		<param name="path" value="v2logs" />
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %p %m%n" />
-		</layout>
-	</appender>
-	
+    <appender name="AlbianSqlAppender"
+              class="org.albianj.logger.impl.AlbianRollingFileAppender">
+        <param name="File" value="v2logs/"/><!-- 设置日志输出文件名 -->
+        <!-- 设置是否在重新启动服务时，在原有日志的基础添加新日志 -->
+        <param name="Append" value="false"/>
+        <param name="MaxBackupIndex" value="-1"/>
+        <param name="MaxFileSize" value="5mb"/>
+        <!-- 请配置你的业务名称-->
+        <param name="prefix" value="prefix"/>
+        <param name="Format" value="HHmmss"/>
+        <param name="Suffix" value="sql.log"/>
+        <param name="encoding" value="UTF-8"/>
+        <!-- 请配置你的log存放的文件夹路径，和上面的File保持一致-->
+        <param name="path" value="v2logs"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %p %m%n"/>
+        </layout>
+    </appender>
 
-	<logger name="AlbianRunningLogger">
-		<level value="DEBUG" />
-		<appender-ref ref="AlbianRunningAppender" />
-		 <appender-ref ref="STDOUT" /> 
-	</logger>
-	<logger name="AlbianSqlLogger">
-		<level value="DEBUG" />
-		<appender-ref ref="AlbianSqlAppender" />
-		 <appender-ref ref="STDOUT" /> 
-	</logger>
-	<logger name="AlbianRestfulLogger">
-		<level value="DEBUG" />
-		<appender-ref ref="AlbianRestfulAppender" />
-		 <appender-ref ref="STDOUT" /> 
-	</logger>
+    <appender name="AlbianRestfulAppender"
+              class="org.albianj.logger.impl.AlbianRollingFileAppender">
+        <param name="File" value="v2logs/"/><!-- 设置日志输出文件名 -->
+        <!-- 设置是否在重新启动服务时，在原有日志的基础添加新日志 -->
+        <param name="Append" value="false"/>
+        <param name="MaxBackupIndex" value="-1"/>
+        <param name="MaxFileSize" value="5mb"/>
+        <!-- 请配置你的业务名称-->
+        <param name="prefix" value="prefix"/>
+        <param name="Format" value="HHmmss"/>
+        <param name="Suffix" value="restful.log"/>
+        <param name="encoding" value="UTF-8"/>
+        <!-- 请配置你的log存放的文件夹路径，和上面的File保持一致-->
+        <param name="path" value="v2logs"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %p %m%n"/>
+        </layout>
+    </appender>
 
-	<!--默认级别，需要输出哪种类型日志，就写哪种类型 -->
-	<!-- <root> <level value="DEBUG" /> <appender-ref ref="AlbianRootAppender" 
-		/> <appender-ref ref="STDOUT" /> </root> -->
+
+    <logger name="AlbianRunningLogger">
+        <level value="DEBUG"/>
+        <appender-ref ref="AlbianRunningAppender"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="AlbianSqlLogger">
+        <level value="DEBUG"/>
+        <appender-ref ref="AlbianSqlAppender"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="AlbianRestfulLogger">
+        <level value="DEBUG"/>
+        <appender-ref ref="AlbianRestfulAppender"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <!--默认级别，需要输出哪种类型日志，就写哪种类型 -->
+    <!-- <root> <level value="DEBUG" /> <appender-ref ref="AlbianRootAppender"
+        /> <appender-ref ref="STDOUT" /> </root> -->
 </log4j:configuration>

@@ -46,73 +46,70 @@ public class ActionResult {
      * 如果ajax的时候发生了错误，则不可以使用该信息，而使用Json直接输出。
      */
     public static final int InnerError = 4;
-
-
+    /**
+     * 默认action返回值
+     * type为0，将会继续执行svlt流程
+     */
+    public static final ActionResult Default = new ActionResult();
     private int type = Normal;
     private Object rc = null;
 
-    /**
-     *  默认action返回值
-     *  type为0，将会继续执行svlt流程
-     */
-    public static final  ActionResult Default = new ActionResult();
-
-    public ActionResult(int resultType,Object result){
+    public ActionResult(int resultType, Object result) {
         this.type = resultType;
         this.rc = result;
     }
 
-    public ActionResult(int resultType){
+    public ActionResult(int resultType) {
         this.type = resultType;
     }
 
 
-    public ActionResult(){
+    public ActionResult() {
     }
 
-    public int getResultType(){
-        return this.type;
+    public static ActionResult value(int resultType, Object result) {
+        return new ActionResult(resultType, result);
     }
 
-    public Object getResult(){
-        return this.rc;
+    public static ActionResult redirect(String url) {
+        return value(ActionResult.Redirect, url);
     }
 
-    public static ActionResult value(int resultType,Object result){
-        return new ActionResult(resultType,result);
-    }
-
-    public static ActionResult redirect(String url){
-        return value(ActionResult.Redirect,url);
-    }
-
-    public static ActionResult redirect(HttpContext ctx,Class<? extends  View> cla, String... paras){
+    public static ActionResult redirect(HttpContext ctx, Class<? extends View> cla, String... paras) {
         AlbianHttpConfigurtion c = ctx.getHttpConfigurtion();
-        Map<String, ViewConfigurtion> map  = c.getPages();
-        if(!Validate.isNullOrEmpty(map)){
-            throw new  RuntimeException("not found the view.");
+        Map<String, ViewConfigurtion> map = c.getPages();
+        if (!Validate.isNullOrEmpty(map)) {
+            throw new RuntimeException("not found the view.");
         }
 
         ViewConfigurtion vc = map.get(cla.getName());
-        if(null == vc){
-            throw new  RuntimeException("not found the view.");
+        if (null == vc) {
+            throw new RuntimeException("not found the view.");
         }
 
         String template = vc.getTemplate();
         StringBuffer sb = new StringBuffer();
-        if(null != paras){
-            for(String s : paras){
+        if (null != paras) {
+            for (String s : paras) {
                 sb.append(s).append("&");
             }
         }
-        if(0 != sb.length()){
-            sb.insert(0,'?');
-            sb.insert(0,template);
+        if (0 != sb.length()) {
+            sb.insert(0, '?');
+            sb.insert(0, template);
         } else {
             sb.append(template);
         }
 
         return redirect(sb.toString());
+    }
+
+    public int getResultType() {
+        return this.type;
+    }
+
+    public Object getResult() {
+        return this.rc;
     }
 
 }

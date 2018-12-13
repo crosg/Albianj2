@@ -7,6 +7,7 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface HttpActionAttribute {
-	String Name() default "";
-	HttpActionMethod Method() default HttpActionMethod.Get;
+    String Name() default "";
+
+    HttpActionMethod Method() default HttpActionMethod.Get;
 }

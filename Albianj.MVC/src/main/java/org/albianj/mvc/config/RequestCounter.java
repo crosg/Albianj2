@@ -8,24 +8,24 @@ public class RequestCounter {
     private long unitTime = 60;
     private long requestCount = 120;
 
-    public long getUnitTime(){
+    public long getUnitTime() {
         return this.unitTime;
     }
 
-    public void setUnitTime(long unitTime){
+    public void setUnitTime(long unitTime) {
         this.unitTime = unitTime;
     }
 
-    public long getRequestCount(){
+    public long getRequestCount() {
         return this.requestCount;
     }
 
-    public void setRequestCount(long requestCount){
+    public void setRequestCount(long requestCount) {
         this.requestCount = requestCount;
     }
 
-    public synchronized void subCounter(){
-        this.requestCount --;
+    public synchronized void subCounter() {
+        this.requestCount--;
     }
 }
 

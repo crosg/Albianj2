@@ -3,7 +3,7 @@ package org.albianj.mvc;
 /**
  * Created by xuhaifeng on 16/11/30.
  */
-public class AlbianMVCException extends  RuntimeException{
+public class AlbianMVCException extends RuntimeException {
 
     public AlbianMVCException() {
         super();

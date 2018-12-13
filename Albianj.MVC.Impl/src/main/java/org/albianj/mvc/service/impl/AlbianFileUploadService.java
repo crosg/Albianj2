@@ -9,7 +9,8 @@ import org.albianj.mvc.service.IAlbianFileUploadService;
 import org.albianj.mvc.service.UploadFile;
 import org.albianj.service.*;
 import org.albianj.verify.Validate;
-import org.apache.commons.fileupload.*;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
@@ -20,16 +21,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@AlbianServiceRant(Id = IAlbianFileUploadService.Name,Interface = IAlbianFileUploadService.class)
+@AlbianServiceRant(Id = IAlbianFileUploadService.Name, Interface = IAlbianFileUploadService.class)
 public class AlbianFileUploadService extends FreeAlbianService implements IAlbianFileUploadService {
-    public String getServiceName(){
+    private ServletFileUpload upload = null;
+    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
+    private AlbianHttpConfigurtion c = null;
+
+    public String getServiceName() {
         return Name;
     }
-
-    private ServletFileUpload upload = null;
-
-    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref,Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
-    private AlbianHttpConfigurtion c = null;
 
     public void setHttpConfigurtion(AlbianHttpConfigurtion c) {
         this.c = c;
@@ -54,10 +54,10 @@ public class AlbianFileUploadService extends FreeAlbianService implements IAlbia
     }
 
     @Override
-    public void parseRequest(HttpContext  ctx) throws IOException, FileUploadException {
+    public void parseRequest(HttpContext ctx) throws IOException, FileUploadException {
         HttpServletRequest request = ctx.getCurrentRequest();
         Map<String, UploadFile> files = new LinkedHashMap<>();
-        Map<String,String> attributes = new LinkedHashMap<>();
+        Map<String, String> attributes = new LinkedHashMap<>();
         FileUploadConfigurtion fc = c.getFileUploadConfigurtion();
         List list = upload.parseRequest(request);
         Iterator iterator = list.iterator();
@@ -66,7 +66,7 @@ public class AlbianFileUploadService extends FreeAlbianService implements IAlbia
             if (formitem.isFormField()) {
                 String name = formitem.getFieldName();
                 String value = formitem.getString(Validate.isNullOrEmptyOrAllSpace(c.getCharset()) ? "utf-8" : c.getCharset());
-                attributes.put(name,value);
+                attributes.put(name, value);
             } else {
                 //这里是上传文件的表单域
                 String name = formitem.getName();
@@ -75,11 +75,11 @@ public class AlbianFileUploadService extends FreeAlbianService implements IAlbia
                     AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Warn,
                             "the file -> %s size -> %d is overflow the max-file-size -> %d.then skip it",
-                            name,formitem.getSize(),fc.getMaxFileSize());
+                            name, formitem.getSize(), fc.getMaxFileSize());
                     continue;
                 }
                 byte[] bytes = formitem.get();
-                if(0 != bytes.length) {
+                if (0 != bytes.length) {
                     UploadFile uf = new UploadFile();
                     uf.setClientFileName(name);
                     uf.setFieldName(fieldName);
@@ -90,10 +90,10 @@ public class AlbianFileUploadService extends FreeAlbianService implements IAlbia
 
         }
 
-        if(!Validate.isNullOrEmpty(files)) {
+        if (!Validate.isNullOrEmpty(files)) {
             ctx.setFileItems(files);
         }
-        if(!Validate.isNullOrEmpty(attributes)){
+        if (!Validate.isNullOrEmpty(attributes)) {
             ctx.setAttributes(attributes);
         }
 

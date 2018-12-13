@@ -265,7 +265,7 @@ public class FilterGroupExpression implements IFilterGroupExpression {
         return this._chains;
     }
 
-    public IChainExpression addIdenticalExpression(){
+    public IChainExpression addIdenticalExpression() {
         IFilterExpression fe = new FilterExpression();
         fe.setIdentical(true);
         this.add(fe);
