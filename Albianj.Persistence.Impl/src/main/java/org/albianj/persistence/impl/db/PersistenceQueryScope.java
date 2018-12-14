@@ -67,7 +67,7 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
         IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
         long begin1 = System.currentTimeMillis();
         IDataBasePool dbp = asps.getDatabasePool(sessionId, rsa);
-        Connection conn = dbp.getConnection(sessionId, rsa);
+        Connection conn = dbp.getConnection(sessionId, rsa,true);
         if (!Validate.isNullOrEmptyOrAllSpace(sessionId) && sessionId.endsWith("_SPX_LOG")) {
             long end1 = System.currentTimeMillis();
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
@@ -139,6 +139,12 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
                     job.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "execute the reader job is fail.");
+        }finally {
+            try {
+                job.getConnection().commit();
+            }catch(Exception e) {
+
+            }
         }
         job.setResult(result);
     }
@@ -155,6 +161,14 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
                     "SpxLog executed query and make data result use times:%d.",
                     end1 - begin1);
         }
+        String text = job.getCommand().getCommandText();
+        Map<String, ISqlParameter> map = job.getCommand().getParameters();
+        IRunningStorageAttribute st = job.getStorage();
+        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                job.getId(), AlbianLoggerLevel.Info,
+                " Storage:%s,database:%s,SqlText:%s,paras:%s.return count:%s",
+                st.getStorageAttribute().getName(), st.getDatabase(), text, ListConvert.toString(map),
+                Validate.isNullOrEmpty(list) ? "NULL" : String.valueOf(list.size()));
         return list;
     }
 
@@ -244,6 +258,14 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
         try {
             if (result.next()) {
                 v = result.getObject("COUNT");
+                String text = job.getCommand().getCommandText();
+                Map<String, ISqlParameter> map = job.getCommand().getParameters();
+                IRunningStorageAttribute st = job.getStorage();
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                        job.getId(), AlbianLoggerLevel.Info,
+                        " Storage:%s,database:%s,SqlText:%s,paras:%s.return COUNT(1) :%s",
+                        st.getStorageAttribute().getName(), st.getDatabase(), text, ListConvert.toString(map),
+                        String.valueOf(v));
             }
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,

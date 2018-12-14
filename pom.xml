@@ -6,7 +6,7 @@
 
     <groupId>com.yuewen.nrzx.albianj</groupId>
     <artifactId>Albianj</artifactId>
-    <version>2018111601</version>
+    <version>2018121401</version>
     <modules>
         <module>Albianj.Comment</module>
         <module>Albianj.Commons</module>
@@ -25,8 +25,8 @@
         <module>Albianj.Restful.Impl</module>
         <module>Albianj.UNID</module>
         <module>Albianj.UNID.Impl</module>
-        <module>Albianj.Http.Client</module>
-        <module>Albianj.Http.Client.Impl</module>
+        <!--<module>Albianj.Http.Client</module>-->
+        <!--<module>Albianj.Http.Client.Impl</module>-->
         <module>Yuewen.PPLogStat</module>
         <module>Yuewen.PPLogStat.Impl</module>
         <module>Albianj.WordProcessor</module>
@@ -35,7 +35,7 @@
         <module>Albianj.Test</module>
         <module>Albianj.Monitor</module>
         <module>Albianj.Monitor.Impl</module>
-        <module>Albianj.Pooling</module>
+        <!--<module>Albianj.Pooling</module>-->
     </modules>
     <packaging>pom</packaging>
 

@@ -88,7 +88,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
                 IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
                 IDataBasePool dbp = asps.getDatabasePool(writerJob.getId(), rsa);
                 t.setDatabasePool(dbp);
-                t.setConnection(asps.getConnection(writerJob.getId(), dbp, rsa));
+                t.setConnection(asps.getConnection(writerJob.getId(), dbp, rsa,false));
             } catch (Exception e) {
                 AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,

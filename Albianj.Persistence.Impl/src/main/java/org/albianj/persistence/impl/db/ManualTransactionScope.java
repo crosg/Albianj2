@@ -39,7 +39,7 @@ public class ManualTransactionScope extends FreeManualTransactionScope {
         }
         IRunningStorageAttribute rsa = new RunningStorageAttribute(storage, mctx.getDatabaseName());
         mctx.setRunningStorage(rsa);
-        Connection conn = asps.getConnection(mctx.getSessionId(), rsa);
+        Connection conn = asps.getConnection(mctx.getSessionId(), rsa,false);
         mctx.setConnection(conn);
 
         List<Statement> statements = new Vector<Statement>();

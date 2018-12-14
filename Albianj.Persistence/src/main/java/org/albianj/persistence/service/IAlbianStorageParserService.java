@@ -94,11 +94,11 @@ public interface IAlbianStorageParserService extends IAlbianParserService {
      * @param rsa
      * @return
      */
-    public Connection getConnection(String sessionId, IRunningStorageAttribute rsa);
+    public Connection getConnection(String sessionId, IRunningStorageAttribute rsa,boolean isAutoCommit);
 
-    public Connection getConnection(IRunningStorageAttribute rsa);
+    public Connection getConnection(IRunningStorageAttribute rsa,boolean isAutoCommit);
 
-    public Connection getConnection(String sessionId, IDataBasePool pool, IRunningStorageAttribute rsa);
+    public Connection getConnection(String sessionId, IDataBasePool pool, IRunningStorageAttribute rsa,boolean isAutoCommit);
 
     /**
      * 请自行关闭ResultSet和 Statement后再调用此方法返回链接

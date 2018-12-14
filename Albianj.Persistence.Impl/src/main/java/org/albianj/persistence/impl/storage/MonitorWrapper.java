@@ -25,11 +25,11 @@ public class MonitorWrapper implements IDataBasePool {
     }
 
     @Override
-    public Connection getConnection(String sessionId, IRunningStorageAttribute rsa) {
+    public Connection getConnection(String sessionId, IRunningStorageAttribute rsa,boolean isAutoCommit) {
         long start = System.currentTimeMillis();
         Connection connection = null;
         try {
-            connection = delegatePool.getConnection(sessionId, rsa);
+            connection = delegatePool.getConnection(sessionId, rsa,isAutoCommit);
             return connection;
         } finally {
             connectionMonitorService.monitorConnectionCost(rsa.getStorageAttribute().getName(), rsa.getDatabase(),

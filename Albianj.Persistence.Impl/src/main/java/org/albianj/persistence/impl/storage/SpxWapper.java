@@ -24,7 +24,7 @@ import java.util.List;
 public class SpxWapper extends FreeDataBasePool {
     public final static String DRIVER_CLASSNAME = "com.mysql.jdbc.Driver";
 
-    public Connection getConnection(String sessionid, IRunningStorageAttribute rsa) {
+    public Connection getConnection(String sessionid, IRunningStorageAttribute rsa,boolean isAutoCommit) {
         IStorageAttribute sa = rsa.getStorageAttribute();
         String key = sa.getName() + rsa.getDatabase();
         DataSource ds = getDatasource(key, rsa);
@@ -41,7 +41,7 @@ public class SpxWapper extends FreeDataBasePool {
             if (Connection.TRANSACTION_NONE != sa.getTransactionLevel()) {
                 conn.setTransactionIsolation(sa.getTransactionLevel());
             }
-            conn.setAutoCommit(false);
+            conn.setAutoCommit(isAutoCommit);
             return conn;
         } catch (SQLException e) {
             AlbianServiceRouter.getLogger2()

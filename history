@@ -72,3 +72,7 @@ deploy:2018110702
 2018-11-16
     更改了如果Field为Date类型，使用Chinese-format而不是chinese-simple-format，即yyyy-mm-dd 改为yyyy-mm-dd hh-mm-ss（羊羊）
 deploy:2018111601
+
+2018-12-14
+    更改因为autocommit=false而造成的read读不到正确数据-来自大师
+    deploy 2018121401

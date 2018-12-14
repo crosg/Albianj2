@@ -300,11 +300,11 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
         }
     }
 
-    public Connection getConnection(IRunningStorageAttribute rsa) {
-        return getConnection(IAlbianLoggerService2.InnerThreadName, rsa);
+    public Connection getConnection(IRunningStorageAttribute rsa,boolean isAutoCommit) {
+        return getConnection(IAlbianLoggerService2.InnerThreadName, rsa,isAutoCommit);
     }
 
-    public Connection getConnection(String sessionId, IRunningStorageAttribute rsa) {
+    public Connection getConnection(String sessionId, IRunningStorageAttribute rsa,boolean isAutoCommit) {
         IStorageAttribute sa = rsa.getStorageAttribute();
         //            String key = sa.getName() + rsa.getDatabase();
         try {
@@ -317,7 +317,7 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
                                 rsa.getDatabase());
                 return null;
             }
-            return dbp.getConnection(sessionId, rsa);
+            return dbp.getConnection(sessionId, rsa, isAutoCommit);
 
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2()
@@ -329,7 +329,7 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
 
     }
 
-    public Connection getConnection(String sessionId, IDataBasePool pool, IRunningStorageAttribute rsa) {
+    public Connection getConnection(String sessionId, IDataBasePool pool, IRunningStorageAttribute rsa,boolean isAutoCommit) {
         IStorageAttribute sa = rsa.getStorageAttribute();
         try {
             if (null == pool) {
@@ -340,7 +340,7 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
                                 rsa.getDatabase());
                 return null;
             }
-            return pool.getConnection(sessionId, rsa);
+            return pool.getConnection(sessionId, rsa, isAutoCommit);
 
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2()

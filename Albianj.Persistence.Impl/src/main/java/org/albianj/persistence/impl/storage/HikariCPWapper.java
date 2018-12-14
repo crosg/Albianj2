@@ -29,7 +29,7 @@ public class HikariCPWapper extends FreeDataBasePool {
     }
 
     @Override
-    public Connection getConnection(String sessionId, IRunningStorageAttribute rsa) {
+    public Connection getConnection(String sessionId, IRunningStorageAttribute rsa,boolean isAutoCommit) {
         IStorageAttribute sa = rsa.getStorageAttribute();
         String key = sa.getName() + rsa.getDatabase();
         DataSource ds = getDatasource(key, rsa);
@@ -43,6 +43,7 @@ public class HikariCPWapper extends FreeDataBasePool {
             if (Connection.TRANSACTION_NONE != sa.getTransactionLevel()) {
                 conn.setTransactionIsolation(sa.getTransactionLevel());
             }
+            conn.setAutoCommit(isAutoCommit);
             return conn;
         } catch (SQLException e) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,

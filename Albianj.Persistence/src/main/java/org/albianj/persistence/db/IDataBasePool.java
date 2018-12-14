@@ -15,15 +15,16 @@ public interface IDataBasePool {
     /**
      * 从链接池中得到一个连接
      */
-    Connection getConnection(String sessionId, IRunningStorageAttribute rsa);
+    public Connection getConnection(String sessionid, IRunningStorageAttribute rsa,boolean isAutoCommit) ;
 
-    /**
-     * 返回一个读取数据库的链接到链接池
-     *
-     * @param conn
-     * @param pst
-     * @param rs
-     */
+
+        /**
+         * 返回一个读取数据库的链接到链接池
+         *
+         * @param conn
+         * @param pst
+         * @param rs
+         */
     public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn, Statement pst, ResultSet rs);
 
     /**
