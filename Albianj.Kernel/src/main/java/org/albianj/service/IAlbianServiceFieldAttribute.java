@@ -48,4 +48,9 @@ public interface IAlbianServiceFieldAttribute {
     boolean isReady();
 
     void setReady(boolean isReady);
+
+    AlbianServiceFieldSetterLifetime getSetterLifetime();
+
+    void setSetterLifetime(AlbianServiceFieldSetterLifetime lifetime);
+
 }

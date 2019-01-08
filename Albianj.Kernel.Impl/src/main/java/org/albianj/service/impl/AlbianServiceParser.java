@@ -201,6 +201,11 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
             pa.setAllowNull(Boolean.parseBoolean(allowNull));
         }
 
+//        String stn = XmlParser.getAttributeValue(e,"SetterName");
+//        if(!Validate.isNullOrEmptyOrAllSpace(stn)){
+//            pa.setSetterName(stn);
+//        }
+
         try {
             Field f = clzz.getDeclaredField(name);
             f.setAccessible(true);

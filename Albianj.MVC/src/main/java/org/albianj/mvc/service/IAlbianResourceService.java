@@ -21,6 +21,7 @@ package org.albianj.mvc.service;
 import org.albianj.mvc.HttpContext;
 import org.albianj.service.AlbianBuiltinServiceNamePair;
 import org.albianj.service.IAlbianService;
+import org.albianj.service.parser.IAlbianParserService;
 
 import java.io.IOException;
 
@@ -44,7 +45,7 @@ import java.io.IOException;
  *
  * &lt;/click-app&gt; </pre>
  */
-public interface IAlbianResourceService extends IAlbianService {
+public interface IAlbianResourceService extends IAlbianParserService {
 
     String Name = AlbianBuiltinServiceNamePair.AlbianResourceServiceName;
 

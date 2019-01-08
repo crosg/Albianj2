@@ -122,7 +122,7 @@ public class ChainExpressionParser {
                 }
 
                 String className = cls.getName();
-                IAlbianEntityFieldAttribute fieldAttr = albianObject.getFields().get(AlbianEntityMetadata.makeFieldsKey(fe.getFieldName()));
+                IAlbianEntityFieldAttribute fieldAttr = albianObject.getFields().get(AlbianEntityMetadata.makeFieldsKey(fe.getFieldName().toLowerCase()));
 
                 if (null == fieldAttr) {
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,

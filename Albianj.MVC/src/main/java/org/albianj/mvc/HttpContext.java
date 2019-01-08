@@ -32,6 +32,7 @@ public class HttpContext {
     private ServletContext currentServlet;
     private boolean isAjaxRequest = false;
     private boolean isMultipartRequest = false;
+    private boolean isWelcomeViewRequest = false;
     private HttpSession session;
     private boolean isPost = false;
     private ViewConfigurtion pc;
@@ -65,9 +66,11 @@ public class HttpContext {
         this.session = session;
         this.isPost = isPost;
         String baseUrl = currentRequest.getRequestURI();
-        if (Validate.isNullOrEmptyOrAllSpace(baseUrl)) {
-            baseUrl = c.getWelcomePage();
+        if (Validate.isNullOrEmptyOrAllSpace(baseUrl) || baseUrl.endsWith(c.getWelcomePage().getTemplate())) {
+            baseUrl = c.getWelcomePage().getTemplate();
+            isWelcomeViewRequest = true;
         }
+
 
         if (Validate.isNullOrEmptyOrAllSpace(currentRequest.getQueryString())) {
             this.currentUrl = baseUrl;
@@ -107,6 +110,10 @@ public class HttpContext {
 
     public HttpSession getHttpSession() {
         return this.session;
+    }
+
+    public boolean isWelcomeViewRequest(){
+        return this.isWelcomeViewRequest;
     }
 
     /**

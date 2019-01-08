@@ -14,8 +14,7 @@ import org.albianj.verify.Validate;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class AlbianServiceRantParser {
 
@@ -103,7 +102,12 @@ public class AlbianServiceRantParser {
     }
 
     private static Map<String, IAlbianServiceFieldAttribute> scanFields(Class<?> clzz) {
-        Field[] fields = clzz.getDeclaredFields();
+        Class tempClass = clzz;
+        List<Field> fields = new ArrayList<>() ;
+        while (tempClass !=null && !tempClass.getName().toLowerCase().equals("java.lang.object") ) {//当父类为null的时候说明到达了最上层的父类(Object类).
+            fields.addAll(Arrays.asList(tempClass .getDeclaredFields()));
+            tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
+        }
         Map<String, IAlbianServiceFieldAttribute> fieldsAttr = new HashMap<>();
         for (Field f : fields) {
             if (f.isAnnotationPresent(AlbianServiceFieldRant.class)) {
@@ -115,6 +119,10 @@ public class AlbianServiceRantParser {
                 aspa.setValue(frant.Value());
                 aspa.setField(f);
                 aspa.setAllowNull(frant.AllowNull());
+                aspa.setSetterLifetime(frant.SetterLifetime());
+//                if(AlbianServiceFieldType.Property == frant.Type() ||AlbianServiceFieldType.Field == frant.Type() ) {
+//                    aspa.setSetterName(frant.SetterName());
+//                }
                 fieldsAttr.put(f.getName(), aspa);
             }
         }

@@ -1,5 +1,6 @@
 package org.albianj.service;
 
+import javax.swing.*;
 import java.lang.annotation.*;
 
 /**
@@ -28,4 +29,6 @@ public @interface AlbianServiceFieldRant {
     String Value() default "";
 
     boolean AllowNull() default false;
+
+    AlbianServiceFieldSetterLifetime SetterLifetime() default AlbianServiceFieldSetterLifetime.AfterNew;
 }

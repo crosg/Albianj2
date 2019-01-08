@@ -9,10 +9,7 @@ import org.albianj.mvc.config.ViewConfigurtion;
 import org.albianj.mvc.impl.ctags.velocity.MasterViewTag;
 import org.albianj.mvc.service.IAlbianTemplateService;
 import org.albianj.mvc.service.TemplateException;
-import org.albianj.service.AlbianServiceFieldRant;
-import org.albianj.service.AlbianServiceFieldType;
-import org.albianj.service.AlbianServiceRouter;
-import org.albianj.service.FreeAlbianService;
+import org.albianj.service.*;
 import org.albianj.service.parser.AlbianParserException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -40,7 +37,7 @@ public class AlbianVelocityTemplateService extends FreeAlbianService implements 
 
     protected static final int WRITER_BUFFER_SIZE = 32 * 1024;
     protected SimplePool writerPool = new SimplePool(40);
-    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
+    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianMvcConfigurtionService.HttpConfigurtion",SetterLifetime = AlbianServiceFieldSetterLifetime.AfterNew)
     private AlbianHttpConfigurtion c;
 
     public String getServiceName() {

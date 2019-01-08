@@ -24,7 +24,7 @@ import java.util.Map;
 @AlbianServiceRant(Id = IAlbianFileUploadService.Name, Interface = IAlbianFileUploadService.class)
 public class AlbianFileUploadService extends FreeAlbianService implements IAlbianFileUploadService {
     private ServletFileUpload upload = null;
-    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
+    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianMvcConfigurtionService.HttpConfigurtion",SetterLifetime = AlbianServiceFieldSetterLifetime.AfterNew)
     private AlbianHttpConfigurtion c = null;
 
     public String getServiceName() {

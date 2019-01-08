@@ -76,3 +76,15 @@ deploy:2018111601
 2018-12-14
     更改因为autocommit=false而造成的read读不到正确数据-来自大师
     deploy 2018121401
+
+2019-01-04
+    更改mvf的servlte降级为jdk1.7的版本
+    deploy 2019010401
+    增加对于builtin service的field进行赋值的时候，指定lifetime，解决service在loading的时候可能会出现问题
+    fixed bug：mvf中，autobinding view到class的时候会出现路径出错问题
+
+2019-01-07
+    使用查询表达式查询的时候，查找字段改成小写
+    fixed bug：当使用field作为entry赋值依据的时候，无法获取父类private字段
+    mvf修改welcome的配置
+    2deploy 2019010701

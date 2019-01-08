@@ -7,10 +7,7 @@ import org.albianj.mvc.config.CustomTagConfigurtion;
 import org.albianj.mvc.config.ViewConfigurtion;
 import org.albianj.mvc.service.IAlbianTemplateService;
 import org.albianj.mvc.service.TemplateException;
-import org.albianj.service.AlbianServiceFieldRant;
-import org.albianj.service.AlbianServiceFieldType;
-import org.albianj.service.AlbianServiceRant;
-import org.albianj.service.FreeAlbianService;
+import org.albianj.service.*;
 import org.albianj.service.parser.AlbianParserException;
 import org.albianj.verify.Validate;
 import org.beetl.core.Configuration;
@@ -33,7 +30,7 @@ import java.util.Map;
 @AlbianServiceRant(Id = IAlbianTemplateService.Name, Interface = IAlbianTemplateService.class)
 public class AlbianBeetlTemplateService extends FreeAlbianService implements IAlbianTemplateService {
 
-    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianMvcConfigurtionService.HttpConfigurtion")
+    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianMvcConfigurtionService.HttpConfigurtion",SetterLifetime = AlbianServiceFieldSetterLifetime.AfterNew)
     private AlbianHttpConfigurtion c;
     private GroupTemplate gt;
     private GroupTemplate sgt;

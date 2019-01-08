@@ -12,6 +12,8 @@ public class AlbianServiceFieldAttribute implements IAlbianServiceFieldAttribute
     Field field;
     boolean allowNull = false;
     boolean isReady = false;
+    AlbianServiceFieldSetterLifetime lifetime = AlbianServiceFieldSetterLifetime.AfterLoading;
+//    String stn;
 
     /**
      * @return
@@ -90,4 +92,24 @@ public class AlbianServiceFieldAttribute implements IAlbianServiceFieldAttribute
     public void setReady(boolean isReady) {
         this.isReady = isReady;
     }
+
+    @Override
+    public AlbianServiceFieldSetterLifetime getSetterLifetime() {
+        return this.lifetime;
+    }
+
+    @Override
+    public void setSetterLifetime(AlbianServiceFieldSetterLifetime lifetime) {
+        this.lifetime = lifetime;
+    }
+
+//    @Override
+//    public String getSetterName() {
+//        return this.stn;
+//    }
+//
+//    @Override
+//    public void setSetterName(String stn) {
+//        this.stn = stn;
+//    }
 }

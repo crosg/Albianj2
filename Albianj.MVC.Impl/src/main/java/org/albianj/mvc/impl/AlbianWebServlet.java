@@ -13,6 +13,7 @@ import org.albianj.mvc.View;
 import org.albianj.mvc.config.AlbianHttpConfigurtion;
 import org.albianj.mvc.config.ViewActionConfigurtion;
 import org.albianj.mvc.config.ViewConfigurtion;
+import org.albianj.mvc.server.IServerLifeCycle;
 import org.albianj.mvc.service.IAlbianBrushingService;
 import org.albianj.mvc.service.IAlbianMVCConfigurtionService;
 import org.albianj.mvc.service.IAlbianResourceService;
@@ -40,6 +41,17 @@ public class AlbianWebServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
+        try {
+            IAlbianMVCConfigurtionService albianMVCConfigurtionService = AlbianServiceRouter.getSingletonService(IAlbianMVCConfigurtionService.class,
+                    IAlbianMVCConfigurtionService.Name);
+            IServerLifeCycle server = albianMVCConfigurtionService.getHttpConfigurtion().getServerLifeCycle();
+            if(null != server){
+                server.ServerStartup(albianMVCConfigurtionService.getHttpConfigurtion());
+            }
+        }catch (Exception e){
+            AlbianServiceRouter.throwException("WebStartup",IAlbianLoggerService2.AlbianRunningLoggerName,
+                    "Startup web server fail.",e);
+        }
         super.init();
     }
 
@@ -63,12 +75,13 @@ public class AlbianWebServlet extends HttpServlet {
         boolean isError = false;
         boolean isAjaxRequest = false;
         String sessionId = null;
+        AlbianHttpConfigurtion c = null;
         do {
             try {
                 IAlbianMVCConfigurtionService albianMVCConfigurtionService = AlbianServiceRouter.getSingletonService(IAlbianMVCConfigurtionService.class,
                         IAlbianMVCConfigurtionService.Name);
 
-                AlbianHttpConfigurtion c = albianMVCConfigurtionService.getHttpConfigurtion();
+                c = albianMVCConfigurtionService.getHttpConfigurtion();
                 resp.setCharacterEncoding(c.getCharset());
                 req.setCharacterEncoding(c.getCharset());
                 HttpContext ctx = new HttpContext(isPost, req, resp,
@@ -126,7 +139,12 @@ public class AlbianWebServlet extends HttpServlet {
                     break;
                 }
 
-                ViewConfigurtion pc = templates.get(ctx.getTemplateFullName());
+                ViewConfigurtion pc = null;
+                if(ctx.isWelcomeViewRequest()) {
+                  pc = c.getWelcomePage();
+                } else {
+                    pc = templates.get(ctx.getTemplateFullName());
+                }
                 if (null == pc) {
                     AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
@@ -371,7 +389,8 @@ public class AlbianWebServlet extends HttpServlet {
                 }
             } else {
                 try {
-                    resp.sendRedirect("/pages/inner/Error.shtm");
+
+                    resp.sendRedirect(c.getErrorViewConfigurtion().getTemplate());
                 } catch (Exception e) {
 
                 }
@@ -390,7 +409,7 @@ public class AlbianWebServlet extends HttpServlet {
                 }
             } else {
                 try {
-                    resp.sendRedirect("/pages/inner/NotFound.shtm");
+                    resp.sendRedirect(c.getNotFoundViewConfigurtion().getTemplate());
                 } catch (Exception e) {
 
                 }
@@ -404,7 +423,7 @@ public class AlbianWebServlet extends HttpServlet {
         AlbianHttpConfigurtion c = ctx.getConfig();
 
         if (path.equals("/")) {
-            path = c.getWelcomePage();
+            path = c.getWelcomePage().getTemplate();
         }
 
         if (StringHelper.isNotBlank(c.getContextPath()) && !StringHelper.equals("/", c.getContextPath())) {

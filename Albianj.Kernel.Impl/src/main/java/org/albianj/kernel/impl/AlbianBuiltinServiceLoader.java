@@ -5,6 +5,7 @@ import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.service.*;
 import org.albianj.service.impl.AlbianServiceRantParser;
+import org.albianj.verify.Validate;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -82,6 +83,8 @@ public class AlbianBuiltinServiceLoader {
     }
 
     public void loadServices() {
+
+        Map<String,IAlbianServiceAttribute> bltServMap = sacnService();
         String id = null;
         String sImplClzz = null;
         int failCount = 0;
@@ -104,14 +107,11 @@ public class AlbianBuiltinServiceLoader {
             for (AlbianBuiltinServiceAttribute bltSerAttr : this.bltServ.values()) {
                 if (bltSerAttr.isLoadOK()) continue;
                 id = bltSerAttr.getId();
-                sImplClzz = bltSerAttr.getImplClzz();
                 try {
-                    Class<?> implClzz = AlbianClassLoader.getInstance().loadClass(sImplClzz);
-                    IAlbianServiceAttribute attr = AlbianServiceRantParser.scanAlbianService(implClzz);
-                    IAlbianService service = AlbianServiceLoader.makeupService(attr);
+                    IAlbianServiceAttribute attr = bltServMap.get(id);
+                    IAlbianService service = AlbianServiceLoader.makeupService(attr,bltServMap);
                     ServiceContainer.addService(id, service);
                     bltSerAttr.setLoadOK(true);
-                    bltSrvAttrs.put(attr.getId(), attr);
                 } catch (Exception e) {
                     bltSerAttr.setLoadOK(false);
                     if (bltSerAttr.isRequired()) {
@@ -156,4 +156,24 @@ public class AlbianBuiltinServiceLoader {
     public Map<String, IAlbianServiceAttribute> getBltSrvAttrs() {
         return this.bltSrvAttrs;
     }
+
+    public Map<String,IAlbianServiceAttribute> sacnService(){
+        bltSrvAttrs = new LinkedHashMap<>();
+        for (AlbianBuiltinServiceAttribute bltSerAttr : this.bltServ.values()) {
+            String id = bltSerAttr.getId();
+            String sImplClzz = bltSerAttr.getImplClzz();
+            try {
+                Class<?> implClzz = AlbianClassLoader.getInstance().loadClass(sImplClzz);
+                IAlbianServiceAttribute attr = AlbianServiceRantParser.scanAlbianService(implClzz);
+                bltSrvAttrs.put(id,attr);
+            }catch (Exception e){
+                AlbianServiceRouter.throwException("BuiltinServiceLoader",
+                        IAlbianLoggerService2.AlbianRunningLoggerName,
+                        "Load builtin service fail.", String.format("loader builtin  service -> %s is fail.",bltSerAttr.getId()));
+            }
+        }
+        if(Validate.isNullOrEmpty(bltSrvAttrs))  return null;
+        return bltSrvAttrs;
+    }
+
 }

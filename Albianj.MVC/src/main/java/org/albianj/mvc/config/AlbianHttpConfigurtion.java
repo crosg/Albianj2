@@ -1,5 +1,6 @@
 package org.albianj.mvc.config;
 
+import org.albianj.mvc.server.IServerLifeCycle;
 import org.albianj.verify.Validate;
 
 import java.util.Map;
@@ -18,10 +19,19 @@ public class AlbianHttpConfigurtion {
     private String charset = "UTF-8";
     private HttpMode mode = HttpMode.production;
     private Map<String, ViewConfigurtion> masterView;
-    private String welcomePage = "index.shtm";
+    private ViewConfigurtion welcomePage;
     private Map<String, Object> items = null;
     private Map<String, CustomTagConfigurtion> customTags;
     private BrushingConfigurtion brushing;
+    private IServerLifeCycle serverLifeCycle;
+
+    public IServerLifeCycle getServerLifeCycle() {
+        return serverLifeCycle;
+    }
+
+    public void setServerLifeCycle(IServerLifeCycle serverLifeCycle) {
+        this.serverLifeCycle = serverLifeCycle;
+    }
 
     /**
      * @return the pages
@@ -138,11 +148,11 @@ public class AlbianHttpConfigurtion {
         this.masterView = pc;
     }
 
-    public String getWelcomePage() {
+    public ViewConfigurtion getWelcomePage() {
         return this.welcomePage;
     }
 
-    public void setWelcomePage(String welcomePage) {
+    public void setWelcomePage(ViewConfigurtion welcomePage) {
         this.welcomePage = welcomePage;
     }
 

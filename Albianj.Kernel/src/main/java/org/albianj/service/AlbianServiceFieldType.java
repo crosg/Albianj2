@@ -11,4 +11,12 @@ public enum AlbianServiceFieldType {
     BigInterger,
     Float,
     Double,
+//    /*
+//     赋值的时候，使用标注的service的属性
+//     */
+//    Property,
+//    /*
+//    赋值的时候，使用标注的service 的字段
+//     */
+//    Field,
 }

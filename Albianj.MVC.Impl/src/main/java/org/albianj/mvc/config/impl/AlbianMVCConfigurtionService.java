@@ -10,10 +10,12 @@ import org.albianj.mvc.*;
 import org.albianj.mvc.config.*;
 import org.albianj.mvc.internal.impl.ErrorView;
 import org.albianj.mvc.internal.impl.NotFoundView;
+import org.albianj.mvc.server.IServerLifeCycle;
 import org.albianj.mvc.service.IAlbianMVCConfigurtionService;
 import org.albianj.mvc.service.impl.AlbianFileUploadService;
 import org.albianj.mvc.service.impl.AlbianFormatService;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.IAlbianServiceAttribute;
 import org.albianj.service.parser.AlbianParserException;
@@ -32,6 +34,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
 
+@AlbianServiceRant(Id = IAlbianMVCConfigurtionService.Name, Interface = IAlbianMVCConfigurtionService.class)
 public class AlbianMVCConfigurtionService extends FreeAlbianParserService implements IAlbianMVCConfigurtionService {
 
     public String getServiceName(){
@@ -48,7 +51,6 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
     public void init() throws AlbianParserException {
         c = new AlbianHttpConfigurtion();
 
-        Map<String, IAlbianServiceAttribute> map = new LinkedHashMap<>();
         try {
             parserFile(c,configFilename);
         } catch (Exception e) {
@@ -99,11 +101,11 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
         }
         c.setSuffix(suffix);
 
-        String welcomePath = XmlParser.getAttributeValue(doc,"Mvf/WelcomePage","Path");
-        if(Validate.isNullOrEmptyOrAllSpace(welcomePath)){
-            welcomePath = "/index.shtm";
-        }
-        c.setWelcomePage(welcomePath);
+//        String welcomePath = XmlParser.getAttributeValue(doc,"Mvf/WelcomePage","Path");
+//        if(Validate.isNullOrEmptyOrAllSpace(welcomePath)){
+//            welcomePath = "/index.shtm";
+//        }
+//        c.setWelcomePage(welcomePath);
 
 
         String context = XmlParser.getAttributeValue(doc,"Mvf/Context","Value");
@@ -137,21 +139,6 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             c.setFormatServiceClass(AlbianFormatService.class);
         }
 
-//        String templateClassname = XmlParser.getAttributeValue(doc,"Mvf/TemplateService","ClassName");
-//        if(!Validate.isNullOrEmptyOrAllSpace(templateClassname)){
-//            try {
-//                Class<?> template = AlbianClassLoader.getSystemClassLoader().loadClass(templateClassname);
-//                c.setFormatServiceClass(template);
-//            } catch (ClassNotFoundException e) {
-//                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-//                        IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e,
-//                        AlbianModuleType.AlbianMvf,AlbianModuleType.AlbianMvf.getThrowInfo(),
-//                        "cannot found template service class:%s.",formatClassname);
-//            }
-//        } else {
-//            c.setFormatServiceClass(AlbianVelocityTemplateService.class);
-//        }
-
         Element elt = XmlParser.selectNode(doc,"Mvf/FileUploadService");
         FileUploadConfigurtion fuc = null;
         if(null == elt){
@@ -171,9 +158,15 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             }
         }
 
+        Element eWelcomeView = XmlParser.selectNode(doc,"Mvf/WelcomeView");
+        ViewConfigurtion welcomeView = parserWelcomePage(eWelcomeView,suffix);
+        c.setWelcomePage(welcomeView);
+
         Element eNotFoundPage = XmlParser.selectNode(doc,"Mvf/NotFoundView");
         ViewConfigurtion notFoundViewConfigurtion = parserNotFoundPage(eNotFoundPage);
         c.setNotFoundViewConfigurtion(notFoundViewConfigurtion);
+
+
 
         Element eErrorPage = XmlParser.selectNode(doc,"Mvf/ErrorView");
         ViewConfigurtion errorViewConfigurtion = parserErrorPage(eErrorPage);
@@ -215,6 +208,13 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
         if(!Validate.isNullOrEmpty(ctcs)){
             c.setCustomTags(ctcs);
         }
+
+        Element eLifeCycle = XmlParser.selectNode(doc,"Mvf/ServerLifeCycle");
+        if(null != eLifeCycle){
+            IServerLifeCycle lifeCycle = parsetServerLifeCycle(eLifeCycle);
+            c.setServerLifeCycle(lifeCycle);
+        }
+
 
         Element eltBrushing = XmlParser.selectNode(doc,"Mvf/Brushing");
         if(null != eltBrushing){
@@ -523,7 +523,7 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
         String suffix = c.getSuffix();
         suffix = suffix.startsWith(".") ? suffix.substring(1) : suffix;
         Collection<File> files = FileUtils.listFiles(new File(pageFloder),new String[]{suffix},true);
-        int idx = c.getRootPath( ).length();
+        int idx = pageFloder.length();
         for(File f : files){
             fs.add(f.getAbsolutePath().substring(idx - 1));
         }
@@ -653,6 +653,43 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
         return pc;
     }
 
+    private ViewConfigurtion parserWelcomePage(Element elt,String suffix){
+        ViewConfigurtion pc = new ViewConfigurtion();
+        if(null == elt) {
+            pc.setTemplate("/index.html");
+            return pc;
+        }
+        String template = XmlParser.getAttributeValue(elt,"Template");
+        if(!template.endsWith(suffix)) {
+            pc.setTemplate("/index.html");
+            return pc;
+        }
+        pc.setTemplate(template);
+        String classname = XmlParser.getAttributeValue(elt,"ClassName");
+        if(Validate.isNullOrEmptyOrAllSpace(classname)){
+
+        }
+
+        try {
+            Class<? extends View> cla = (Class<? extends View>) AlbianClassLoader.getInstance().loadClass(classname);
+            pc.setFullClassName(classname);
+            pc.setRealClass(cla);
+        } catch (ClassNotFoundException e) {
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                    IAlbianLoggerService2.InnerThreadName,AlbianLoggerLevel.Warn,e,
+                    "welcome page class:%s is not found.", classname);
+        }
+
+        boolean isBinding = true;
+        String sBinding = XmlParser.getAttributeValue(elt,"AutoBinding");
+        if(!Validate.isNullOrEmptyOrAllSpace(sBinding)){
+            isBinding = Boolean.parseBoolean(sBinding);
+        }
+        pc.setAutoBinding(isBinding);
+        reflectPage(pc.getRealClass(),pc);
+        return pc;
+    }
+
     private Map<String,ViewConfigurtion> parserMasterViews(List mvNodes){
         Map<String,ViewConfigurtion> map = new HashMap<>();
         for (Object node : mvNodes) {
@@ -694,6 +731,25 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
                     "masterview:%s find class:%s is fail.", sName, classname);
         }
         return null;
+    }
+
+    public IServerLifeCycle parsetServerLifeCycle(Element elt) {
+        String className = XmlParser.getAttributeValue(elt,"ClassName");
+        if (Validate.isNullOrEmptyOrAllSpace(className)) {
+            return null;
+        }
+        try {
+            Class<? extends IServerLifeCycle> cla = (Class<? extends IServerLifeCycle>) AlbianClassLoader.getSystemClassLoader().loadClass(className);
+            if (null == cla) {
+                return null;
+            }
+            IServerLifeCycle serverLifeCycle = (IServerLifeCycle) cla.newInstance();
+            return serverLifeCycle;
+        }catch (Exception e){
+
+        }
+        return null;
+
     }
     @Override
     public AlbianHttpConfigurtion getHttpConfigurtion() {
