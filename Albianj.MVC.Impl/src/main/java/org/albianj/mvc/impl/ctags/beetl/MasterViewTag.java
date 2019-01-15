@@ -2,7 +2,7 @@ package org.albianj.mvc.impl.ctags.beetl;
 
 import org.albianj.io.Path;
 import org.albianj.mvc.HttpContext;
-import org.albianj.mvc.MView;
+import org.albianj.mvc.view.MView;
 import org.albianj.mvc.config.ViewConfigurtion;
 import org.albianj.mvc.service.IAlbianTemplateService;
 import org.albianj.service.AlbianServiceRouter;

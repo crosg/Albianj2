@@ -1,7 +1,7 @@
 package org.albianj.mvc.service.impl;
 
 import org.albianj.loader.AlbianClassLoader;
-import org.albianj.mvc.View;
+import org.albianj.mvc.view.View;
 import org.albianj.mvc.config.AlbianHttpConfigurtion;
 import org.albianj.mvc.config.CustomTagConfigurtion;
 import org.albianj.mvc.config.ViewConfigurtion;
@@ -49,6 +49,7 @@ public class AlbianBeetlTemplateService extends FreeAlbianService implements IAl
         try {
             FileResourceLoader resourceLoader = new FileResourceLoader(c.getRootPath(), c.getCharset());
             Configuration cfg = Configuration.defaultConfiguration();
+            cfg.setHtmlTagSupport(true);
             gt = new GroupTemplate(resourceLoader, cfg);
             StringTemplateResourceLoader rl = new StringTemplateResourceLoader();
             sgt = new GroupTemplate(rl, cfg);

@@ -37,28 +37,6 @@ public class FormTag extends GeneralVarTagBinding {
 
     @Override
     public void render() {
-//        currentContext.setUseMasterView(true);
-//        Map<String, ViewConfigurtion> mvs = currentContext.getHttpConfigurtion().getMasterViews();
-//        ViewConfigurtion pc = mvs.get(mvName);
-//
-//        StringBuffer sb = Path.readLineFile(pc.getTemplate());
-//
-//        MView view = null;
-//        try {
-//            view = (MView) pc.getRealClass().newInstance();
-//        } catch (InstantiationException  | IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-//
-//        view.kinit(currentContext);
-//        view.kBeforeAction(pc);
-//        view.load(currentContext);
-//        view.kAfterAction(pc);
-//        view.kBeforeRender();
-//        IAlbianTemplateService ats = AlbianServiceRouter.getSingletonService(IAlbianTemplateService.class,IAlbianTemplateService.Name);
-//        StringBuffer masterViewContext = ats.renderTemplate(view.getModel(),view.getFunctions(),sb.toString());
-//        currentContext.setMasterView(view);
-//        currentContext.setMasterViewHtml(masterViewContext);
 
     }
 }
