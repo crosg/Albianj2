@@ -1,4 +1,4 @@
-package org.albianj.mvc.impl;
+package org.albianj.mvc.web;
 
 /**
  * Created by xuhaifeng on 16/12/2.

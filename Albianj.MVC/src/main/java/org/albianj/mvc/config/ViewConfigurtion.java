@@ -1,6 +1,6 @@
 package org.albianj.mvc.config;
 
-import org.albianj.mvc.View;
+import org.albianj.mvc.view.View;
 
 import java.util.Map;
 

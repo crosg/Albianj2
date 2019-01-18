@@ -1,4 +1,4 @@
-package org.albianj.mvc.impl;
+package org.albianj.mvc.web;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -9,7 +9,7 @@ import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.mvc.ActionResult;
 import org.albianj.mvc.HttpActionMethod;
 import org.albianj.mvc.HttpContext;
-import org.albianj.mvc.View;
+import org.albianj.mvc.view.View;
 import org.albianj.mvc.config.AlbianHttpConfigurtion;
 import org.albianj.mvc.config.ViewActionConfigurtion;
 import org.albianj.mvc.config.ViewConfigurtion;

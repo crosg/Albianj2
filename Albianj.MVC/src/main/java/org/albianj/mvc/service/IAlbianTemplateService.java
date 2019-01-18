@@ -1,6 +1,6 @@
 package org.albianj.mvc.service;
 
-import org.albianj.mvc.View;
+import org.albianj.mvc.view.View;
 import org.albianj.service.AlbianBuiltinServiceNamePair;
 import org.albianj.service.IAlbianService;
 

@@ -1,5 +1,6 @@
-package org.albianj.mvc;
+package org.albianj.mvc.view;
 
+import org.albianj.mvc.NotHttpActionAttribute;
 import org.albianj.verify.Validate;
 
 import java.util.Map;

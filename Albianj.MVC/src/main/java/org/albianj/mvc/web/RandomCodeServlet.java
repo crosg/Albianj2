@@ -1,4 +1,4 @@
-package org.albianj.mvc.impl;
+package org.albianj.mvc.web;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

@@ -2,6 +2,7 @@ package org.albianj.mvc;
 
 import org.albianj.mvc.config.AlbianHttpConfigurtion;
 import org.albianj.mvc.config.ViewConfigurtion;
+import org.albianj.mvc.view.View;
 import org.albianj.verify.Validate;
 
 import java.util.Map;

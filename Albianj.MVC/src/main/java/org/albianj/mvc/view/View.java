@@ -1,8 +1,11 @@
-package org.albianj.mvc;
+package org.albianj.mvc.view;
 
 import org.albianj.io.Path;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.mvc.HttpContext;
+import org.albianj.mvc.NotHttpActionAttribute;
+import org.albianj.mvc.NotHttpFieldAttribute;
 import org.albianj.mvc.config.ViewConfigurtion;
 import org.albianj.mvc.config.ViewFieldConfigurtion;
 import org.albianj.mvc.lang.HttpHelper;
@@ -45,9 +48,6 @@ public abstract class View extends FreeView {
                         ctx.getHttpSessionId(), AlbianLoggerLevel.Error, e,
                         "new instance by the mapping class:%s is fail.template -> %s.",
                         pc.getFullClassName(), ctx.getTemplateFullName());
-//				AlbianServiceRouter.getLogger().error(IAlbianLoggerService.AlbianRunningLoggerName,
-//						e, "new instance by the mapping class:%s is fail.template -> %s.",
-//						pc.getFullClassName(), ctx.getTemplateFullName());
             }
         }
 
@@ -77,9 +77,6 @@ public abstract class View extends FreeView {
                     "box value from request to Object and then for class:%s is fail.template -> %s.",
                     pc.getFullClassName(), ctx.getTemplateFullName());
 
-//			AlbianServiceRouter.getLogger().error(IAlbianLoggerService.AlbianRunningLoggerName,
-//					e, "box value from request to Object and then for class:%s is fail.template -> %s.",
-//					pc.getFullClassName(), ctx.getTemplateFullName());
         }
     }
 
@@ -102,11 +99,6 @@ public abstract class View extends FreeView {
                     ctx.getHttpSessionId(), AlbianLoggerLevel.Error, e,
                     "auto mapping fields to response by class  -> %s is fail.from template -> %s.",
                     pc.getFullClassName(), ctx.getTemplateFullName());
-
-
-//			AlbianServiceRouter.getLogger().error(IAlbianLoggerService.AlbianRunningLoggerName,
-//					e, "auto mapping fields to response by class  -> %s is fail.from template -> %s.",
-//					pc.getFullClassName(), ctx.getTemplateFullName());
         }
     }
 
@@ -134,7 +126,6 @@ public abstract class View extends FreeView {
         this.fbinding("HttpHelper", HttpHelper.class);
         model.put("CurrentContext", ctx);
         model.put("Header", headers);
-//		model.put();
         StringWriter sw = new StringWriter();
         try {
             String templateFullname = Path.joinWithFilename(ctx.getTemplateFullName(), ctx.getHttpConfigurtion().getRootPath());
@@ -144,9 +135,6 @@ public abstract class View extends FreeView {
                         "not found the template -> %s.",
                         ctx.getTemplateFullName());
 
-//				AlbianServiceRouter.getLogger().error(IAlbianLoggerService.AlbianRunningLoggerName,
-//						"not found the template -> %s.",
-//						ctx.getTemplateFullName());
             }
             ats.renderTemplate(ctx.getTemplateFullName(), model, this.getFunctions(), sw);
         } catch (IOException | TemplateException e) {
@@ -155,9 +143,6 @@ public abstract class View extends FreeView {
                     "render the template -> %s is fail.",
                     ctx.getTemplateFullName());
 
-//			AlbianServiceRouter.getLogger().error(IAlbianLoggerService.AlbianRunningLoggerName,
-//					"render the template -> %s is fail.",
-//					ctx.getTemplateFullName());
         }
 
         StringBuffer sb = new StringBuffer(sw.toString());
