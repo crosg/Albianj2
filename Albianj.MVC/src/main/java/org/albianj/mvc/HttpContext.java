@@ -11,6 +11,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 
@@ -25,7 +26,7 @@ public class HttpContext {
     private String templateName;
     private String templatePath;
     private String templateFullName;
-    private Map<String, String> paras;
+    private Map<String, String> paras = new LinkedHashMap<>();
     private AlbianHttpConfigurtion config;
     private HttpServletRequest currentRequest;
     private HttpServletResponse currentResponse;

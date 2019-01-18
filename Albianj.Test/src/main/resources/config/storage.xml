@@ -72,7 +72,7 @@
 		<Timeout>120</Timeout>
 		<Charset>utf8</Charset>
 		<Transactional>true</Transactional>
-		<AliveTime>300</AliveTime>
+		<AliveTime>120</AliveTime>
 		<PoolStyle>SpxDBCP</PoolStyle>
 		<WaitTimeWhenGetMs>2</WaitTimeWhenGetMs> <!-- 获取连接时，没有连接等到的时间，单位毫秒，设置小于0，不等待 -->
 		<LifeCycleTime>3600000</LifeCycleTime> <!-- 一个连接最长的生命周期，单位毫秒 -->

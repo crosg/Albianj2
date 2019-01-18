@@ -246,6 +246,9 @@ public abstract class FreeView implements IView {
             BigDecimal bd = new BigDecimal(o.toString());
             return bd;
         } else if ("boolean".equalsIgnoreCase(type)) {
+            if(isNumeric(o.toString())){
+                return 0 != new BigDecimal(o.toString()).longValue();
+            }
             return Boolean.parseBoolean(o.toString());
         } else if ("integer".equalsIgnoreCase(type) || "int".equalsIgnoreCase(type)) {
             return Integer.parseInt(o.toString());
@@ -289,6 +292,16 @@ public abstract class FreeView implements IView {
         } else {
             return o;
         }
+    }
+
+    public static boolean isNumeric(String str) {
+        String bigStr;
+        try {
+            bigStr = new BigDecimal(str).toString();
+        } catch (Exception e) {
+            return false;//异常 说明包含非数字。
+        }
+        return true;
     }
 
     @NotHttpActionAttribute()

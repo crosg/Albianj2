@@ -382,7 +382,7 @@ public class SpxDBPool implements ISpxDBPool {
                 "DBPOOL", AlbianLoggerLevel.Mark,
                 "regedit cleanup task for dbpool -> %s.which startup every millisecond -> %d.",
                 this.getPoolName(), cf.getCleanupTimestampMs());
-        new Thread(new cleanupTask(this)).start();
+        new cleanupTask(this).start();
     }
 
     @Override

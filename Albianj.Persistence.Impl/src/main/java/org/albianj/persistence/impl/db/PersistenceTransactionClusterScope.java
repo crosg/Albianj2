@@ -232,17 +232,29 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
 
 
     protected void unLoadExecute(IWriterJob writerJob) throws AlbianDataServiceException {
-//        boolean isThrow = false;
+        boolean isThrow = false;
         Map<String, IWriterTask> tasks = writerJob.getWriterTasks();
         if (Validate.isNullOrEmpty(tasks)) {
             throw new RuntimeException("The task is null or empty.");
         }
+        IWriterTask t = null;
         for (Map.Entry<String, IWriterTask> task : tasks.entrySet()) {
-            IWriterTask t = task.getValue();
-            IRunningStorageAttribute rsa = t.getStorage();
-            IDataBasePool dbp = t.getDatabasePool();
-            dbp.returnConnection(writerJob.getId(), rsa.getStorageAttribute().getName(), rsa.getDatabase(),
-                    t.getConnection(), t.getStatements());
+            try {
+                t = task.getValue();
+                IRunningStorageAttribute rsa = t.getStorage();
+                IDataBasePool dbp = t.getDatabasePool();
+                dbp.returnConnection(writerJob.getId(), rsa.getStorageAttribute().getName(), rsa.getDatabase(),
+                        t.getConnection(), t.getStatements());
+            }catch (Exception e){
+                isThrow = true;
+                IRunningStorageAttribute rsa = t.getStorage();
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                        writerJob.getId(), AlbianLoggerLevel.Error,e,
+                        "close the connect to storage:%s database:%s is fail.",
+                        rsa.getStorageAttribute().getName(), rsa.getDatabase());
+            }finally {
+                t = null;
+            }
 //            try {
 //                List<Statement> statements = t.getStatements();
 //                for (Statement statement : statements) {

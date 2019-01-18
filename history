@@ -88,3 +88,11 @@ deploy:2018111601
     fixed bug：当使用field作为entry赋值依据的时候，无法获取父类private字段
     mvf修改welcome的配置
     2deploy 2019010701
+
+2019-01-09
+    fixed bug:当执行多数据库pool rtn connection的时候,可能会出现前面的rtn connection发生异常导致后面的connection无法再执行rtn pool
+    fixed bug:dbpool的的clean线程可能会开启两个线程的情况
+    更改mvc中，参数的map默认为empty的map而不是null
+
+2019-01-18
+    增加pplogstat。impl

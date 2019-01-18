@@ -14,8 +14,6 @@ Albianj.DFS.YDB.Client.Test
 Albianj.DFS.YDB.Client.Impl
 Albianj.DFS.YDB.Client
 *.config
-Yuewen.*
-Yuewen.*
 *.prefs
 *.iml
 *.log
@@ -23,3 +21,6 @@ Yuewen.*
 /.idea
 /logs
 /Albianj.Test2
+target
+pom.xml.versionBackup
+logs
