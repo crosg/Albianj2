@@ -1,6 +1,5 @@
 package org.albianj.except;
 
-import com.sun.javafx.scene.shape.PathUtils;
 import org.albianj.verify.Validate;
 
 import java.io.File;

@@ -160,4 +160,15 @@ public class StringHelper extends StringUtils {
             cs[0] += 32;
         return String.valueOf(cs);
     }
+
+//    public static String join(Object... args){
+//        if(null == args || 0 == args.length) {
+//            return "";
+//        }
+//        StringBuilder sb = new StringBuilder();
+//        for(Object arg : args){
+//            sb.append(arg);
+//        }
+//        return sb.toString();
+//    }
 }

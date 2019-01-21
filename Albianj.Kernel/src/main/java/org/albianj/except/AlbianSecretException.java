@@ -1,6 +1,8 @@
 package org.albianj.except;
 
 
+import org.albianj.text.StringHelper;
+
 /**
  * 具有私密属性的异常,和AlbianDisplayException正好是互补类型
  * 该异常必须经过开发人员处理,开发人员不可以直接抛出这个异常,
@@ -22,9 +24,9 @@ public class AlbianSecretException extends Exception{
      * @param msg : 异常的详细信息,注意:不能包括敏感信息,包括但不限于密码,用户名,手机,身份证号,数据库信息等等
      * @param secret : 具有私密,敏感性质的异常信息,包括但不限于密码,用户名,手机,身份证号,数据库信息等等
      */
-    public AlbianSecretException(int code,String brief, String msg, String secret){
+    public AlbianSecretException(int code,String secret,String brief, Object... msg){
         this.brief = brief;
-        this.msg = msg;
+        this.msg = StringHelper.join(msg);
         this.secret = secret;
         this.code = code;
     }
@@ -36,9 +38,9 @@ public class AlbianSecretException extends Exception{
      * @param secret : 具有私密,敏感性质的异常信息,包括但不限于密码,用户名,手机,身份证号,数据库信息等等
      * @param origin : 原先程序抛出的异常
      */
-    public AlbianSecretException(int code,String brief,String msg,String secret,Throwable origin){
+    public AlbianSecretException(int code,Throwable origin,String secret,String brief,Object... msg){
         this.brief = brief;
-        this.msg = msg;
+        this.msg = StringHelper.join(msg);
         this.origin = origin;
         this.secret = secret;
         this.code = code;
@@ -87,6 +89,6 @@ public class AlbianSecretException extends Exception{
      * @return AlbianDisplayableException对象
      */
     public AlbianDisplayableException toDisplayableException(){
-        return new AlbianDisplayableException(this.code,this.brief,this.msg,this.origin);
+        return new AlbianDisplayableException(this.code,origin,this.brief,this.msg);
     }
 }

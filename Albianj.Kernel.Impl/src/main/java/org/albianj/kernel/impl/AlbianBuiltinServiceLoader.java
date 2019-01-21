@@ -167,9 +167,18 @@ public class AlbianBuiltinServiceLoader {
                 IAlbianServiceAttribute attr = AlbianServiceRantParser.scanAlbianService(implClzz);
                 bltSrvAttrs.put(id,attr);
             }catch (Exception e){
-                AlbianServiceRouter.throwException("BuiltinServiceLoader",
-                        IAlbianLoggerService2.AlbianRunningLoggerName,
-                        "Load builtin service fail.", String.format("loader builtin  service -> %s is fail.",bltSerAttr.getId()));
+                if(bltSerAttr.isRequired()) {
+                    AlbianServiceRouter.throwException("BuiltinServiceLoader",
+                            IAlbianLoggerService2.AlbianRunningLoggerName,
+                            "Load builtin service fail.",
+                            String.format("loader builtin  service -> %s is fail.",
+                                    bltSerAttr.getId()));
+                } else {
+                    AlbianServiceRouter.addLog("BuiltinServiceLoader",
+                            IAlbianLoggerService2.AlbianRunningLoggerName,AlbianLoggerLevel.Warn,
+                            String.format("loader builtin  service -> %s is fail. but it is not must load.",
+                                    bltSerAttr.getId()));
+                }
             }
         }
         if(Validate.isNullOrEmpty(bltSrvAttrs))  return null;
