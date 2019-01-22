@@ -1,4 +1,4 @@
-package org.albianj.mvc.impl.ctags;
+package org.albianj.mvc.ctags;
 
 /**
  * Created by xuhaifeng on 16/12/21.

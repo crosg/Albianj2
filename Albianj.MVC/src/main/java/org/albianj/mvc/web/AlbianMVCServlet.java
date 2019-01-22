@@ -184,10 +184,7 @@ public class AlbianMVCServlet  extends HttpServlet {
             ActionResult ar = page.interceptor(ctx);
 
             if(!execResult(ar,ctx,pc)) {
-                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
-                        "Interceptor action error.",
-                        String.format("exec interceptor action in template -> %s with behind class -> %s  is fail. session -> %s req -> %s.",
-                                ctx.getTemplateFullName(), pc.getFullClassName(), sessionId,ctx.getCurrentUrl()));
+                return;
             }
 
             page.kBeforeAction(pc);
@@ -238,11 +235,17 @@ public class AlbianMVCServlet  extends HttpServlet {
             }
 
             if(!execResult(result,ctx,pc)){
-                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
-                        "exec action error.",
-                        String.format("exec action ->%s in template -> %s with behind class -> %s  is fail. session -> %s req -> %s.",
-                                pac.getName(), ctx.getTemplateFullName(), pc.getFullClassName(), sessionId,ctx.getCurrentUrl()));
+                return;
             }
+
+            page.kAfterAction(pc);
+            page.kBeforeRender();
+            StringBuffer stringBuffer = page.render();
+            StringBuffer html = page.kAfterRender(stringBuffer);
+
+            resp.setContentType("text/html");
+            resp.getOutputStream().write(html.toString().getBytes(c.getCharset()));
+
         }catch (Exception e){
             try {
                 resp.setContentType("application/text");
@@ -302,7 +305,7 @@ public class AlbianMVCServlet  extends HttpServlet {
         String actionName = isPost ? "execute" : "load";
         int pos = url.lastIndexOf("/");
         String pathSimpleName = url.substring(pos + 1); //actionaname$template.shtm
-        templatePath = url.substring(0,pos); // /template-path
+        templatePath = url.substring(0,pos + 1); // /template-path
         String fileSimpleName = pathSimpleName; // if no action,fileSimpleName is template.shtm
 
         if(pathSimpleName.contains("$")) {
@@ -340,62 +343,6 @@ public class AlbianMVCServlet  extends HttpServlet {
         ctx.setTemplatePath(templatePath);
         ctx.setTemplateFullName(Path.joinWithFilename(fileSimpleName, templatePath));
         ctx.setParas(pMap);
-
-//        if (StringHelper.isNotBlank(c.getContextPath()) && !StringHelper.equals("/", c.getContextPath())) {
-//            int pos = 0;
-//            if(0 > (pos = path.indexOf('/'))) {
-//                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
-//                        "Request Url Fail.",
-//                        String.format("Request url -> %s have no contextPath"),
-//                        )
-//            }
-//            path = path.substring(path.indexOf('/'), 2);
-//        }
-//
-//        // url:/context-path/template-path/actionaname$template.shtm?k=v&k=v
-//        String templatePath = path.substring(0, path.lastIndexOf('/') + 1);
-//        String templateName = path.substring(path.lastIndexOf('/') + 1);
-//        String actionName = isPost ? "execute" : "load";
-//
-//        if (templateName.contains("$")) {
-//            String[] strs = templateName.split("\\$");
-//            actionName = strs[0];
-//            templateName = strs[1];
-//        }
-//
-//        ctx.setActionName(actionName);
-//        ctx.setTemplateName(templateName);
-//        ctx.setTemplatePath(templatePath);
-//        ctx.setTemplateFullName(Path.joinWithFilename(templateName, templatePath));
-//
-//        String queryString = req.getQueryString();
-//        if (StringHelper.isBlank(queryString)) {
-//            return;
-//        }
-//
-//        String[] paras = null;
-//        if (StringHelper.contains(queryString, "&")) {
-//            paras = queryString.split("&");
-//        } else {
-//            paras = new String[1];
-//            paras[0] = queryString;
-//        }
-//
-//        Map<String, String> pMap = new HashMap<>();
-//        for (String para : paras) {
-//            if (!StringHelper.contains(para, "=")) {
-//                break;
-//            }
-//            String[] kv = para.split("=");
-//            if (0 == kv.length) continue;
-//            if (1 == kv.length) {
-//                pMap.put(kv[0], null);
-//            } else {
-//                pMap.put(kv[0], kv[1]);
-//            }
-//        }
-//
-//        ctx.setParas(pMap);
     }
 
     private boolean isAjaxRequest(HttpServletRequest req) {
@@ -408,11 +355,12 @@ public class AlbianMVCServlet  extends HttpServlet {
 
     /**
      * 根据interceptor或者action被执行后返回的返回值进行执行相应的操作
+     * 如果函数执行失败，会抛出异常
      * @param ar
      * @param hc
      * @param pc
      * @return 如果返回true,则调用此函数的上一层函数继续执行,
-     *          如果返回false,则调用此函数的上一层函数终止执行
+     *          如果返回false,则调用此函数的上一层函数终止执行,但并表示这次函数执行失败
      */
     private boolean execResult(ActionResult ar,HttpContext hc,ViewConfigurtion pc) throws AlbianDisplayableException{
         switch (ar.getResultType()) {
@@ -426,7 +374,7 @@ public class AlbianMVCServlet  extends HttpServlet {
                 }
                 try {
                     hc.getCurrentResponse().sendRedirect(rc.toString());
-                    return true;
+                    return false;
                 }catch (Exception e){
                     throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
                             "Redirect error.",

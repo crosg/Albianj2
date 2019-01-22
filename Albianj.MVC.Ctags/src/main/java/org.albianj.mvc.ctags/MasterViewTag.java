@@ -1,4 +1,4 @@
-package org.albianj.mvc.impl.ctags.beetl;
+package org.albianj.mvc.ctags;
 
 import org.albianj.io.Path;
 import org.albianj.mvc.HttpContext;
