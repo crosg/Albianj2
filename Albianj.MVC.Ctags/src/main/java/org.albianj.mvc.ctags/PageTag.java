@@ -1,7 +1,6 @@
-package org.albianj.mvc.impl.ctags.beetl;
+package org.albianj.mvc.ctags;
 
 import org.albianj.mvc.HttpContext;
-import org.albianj.mvc.impl.ctags.PagingInfo;
 import org.albianj.verify.Validate;
 import org.beetl.core.Context;
 import org.beetl.core.GeneralVarTagBinding;
