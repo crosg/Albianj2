@@ -2,14 +2,14 @@
 <!-- 此配置文件提供所有的servie功能，所有的业务service必须使用此配置文件； 使用此配置文件的对象必须实现IAlbianService或者继承FreeAlbianService -->
 <Services>
     <!-- Kernel ，这部分必须存在并且不要更改任何项，此部分是albianj的基础服务 -->
-    <Service Id="AlbianKernelService" Type="org.albianj.kernel.impl.AlbianKernelParserService"/>
-    <Service Id="AlbianStorageService" Type="org.albianj.persistence.impl.storage.AlbianStorageParserService"/>
-    <Service Id="AlbianDataRouterService" Type="org.albianj.persistence.impl.routing.AlbianDataRouterParserService"/>
-    <Service Id="AlbianMappingService" Type="org.albianj.persistence.impl.mapping.AlbianMappingParserService"/>
-    <Service Id="AlbianPersistenceService" Type="org.albianj.persistence.impl.service.AlbianPersistenceService"/>
-    <Service Id="AlbianThreadPoolService" Type="org.albianj.concurrent.impl.AlbianThreadPoolService"/>
-    <Service Id="AlbianSecurityService" Type="org.albianj.security.impl.AlbianSecurityService"/>
-    <Service Id="AlbianDataAccessService" Type="org.albianj.persistence.impl.service.AlbianDataAccessService"/>
+    <!--<Service Id="AlbianKernelService" Type="org.albianj.kernel.impl.AlbianKernelParserService"/>-->
+    <!--<Service Id="AlbianStorageService" Type="org.albianj.persistence.impl.storage.AlbianStorageParserService"/>-->
+    <!--<Service Id="AlbianDataRouterService" Type="org.albianj.persistence.impl.routing.AlbianDataRouterParserService"/>-->
+    <!--<Service Id="AlbianMappingService" Type="org.albianj.persistence.impl.mapping.AlbianMappingParserService"/>-->
+    <!--<Service Id="AlbianPersistenceService" Type="org.albianj.persistence.impl.service.AlbianPersistenceService"/>-->
+    <!--<Service Id="AlbianThreadPoolService" Type="org.albianj.concurrent.impl.AlbianThreadPoolService"/>-->
+    <!--<Service Id="AlbianSecurityService" Type="org.albianj.security.impl.AlbianSecurityService"/>-->
+    <!--<Service Id="AlbianDataAccessService" Type="org.albianj.persistence.impl.service.AlbianDataAccessService"/>-->
 
     <!-- 使用rant进行标注的service必须要在这里配置所在的包，否则albianj不会加载 -->
     <Packages>

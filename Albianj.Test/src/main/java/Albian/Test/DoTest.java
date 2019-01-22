@@ -5,19 +5,30 @@ import Albian.Test.Services.IOrgUserService;
 import Albian.Test.Services.IUTF8M64Service;
 import Albian.Test.Services.IUserService;
 import org.albianj.loader.AlbianBootService;
+import org.albianj.logger.AlbianLoggerLevel;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.service.AlbianServiceRouter;
 
 public class DoTest {
     public static void main(String[] argv) {
         try {
-            AlbianBootService.start("D:\\work\\github\\albianj2\\Albianj.Test\\src\\main\\resources\\config");
+            AlbianBootService.start("/Users/xuhaifeng/work/github/Albianj2/Albianj.Test/src/main/resources/config");
 
-            String v = "@徐海峰(xuhaifeng)\uD83C\uDF4E\uD83D\uDCB0\uD83D\uDCF1\uD83C\uDF19\uD83C\uDF41\uD83C\uDF42\uD83C\uDF43\uD83C\uDF37\uD83D\uDC8E\uD83D\uDD2A\uD83D\uDD2B\uD83C\uDFC0⚽⚡\uD83D\uDC44\uD83D\uDC4D\uD83D\uDD25tm都是啥玩意jb玩意";
-            IUTF8M64Service utf = AlbianServiceHub.getSingletonService(IUTF8M64Service.class, IUTF8M64Service.ServiceId);
-            int id = 100;
-            utf.saveUtf8M64(id, v);
-            String v1 = utf.getUtf8M64(id);
-            System.out.println(v1);
+            IAlbianLoggerService2 logServ = AlbianServiceRouter.getLogger2();
+            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
+                    "wolaile");
+            Thread.sleep(65* 1000);
+            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
+                    "wolaile2");
+            return;
+
+
+//            String v = "@徐海峰(xuhaifeng)\uD83C\uDF4E\uD83D\uDCB0\uD83D\uDCF1\uD83C\uDF19\uD83C\uDF41\uD83C\uDF42\uD83C\uDF43\uD83C\uDF37\uD83D\uDC8E\uD83D\uDD2A\uD83D\uDD2B\uD83C\uDFC0⚽⚡\uD83D\uDC44\uD83D\uDC4D\uD83D\uDD25tm都是啥玩意jb玩意";
+//            IUTF8M64Service utf = AlbianServiceHub.getSingletonService(IUTF8M64Service.class, IUTF8M64Service.ServiceId);
+//            int id = 100;
+//            utf.saveUtf8M64(id, v);
+//            String v1 = utf.getUtf8M64(id);
+//            System.out.println(v1);
 
 
 //            final IAlbianStorageParserService stgService = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class,IAlbianStorageParserService.Name);
@@ -56,16 +67,16 @@ public class DoTest {
 //            Thread.sleep(50000000);
 
 
-            IUserService us = AlbianServiceRouter.getSingletonService(IUserService.class, IUserService.Name);
-            us.addUser("uname-SpxDBCP", "pwd");
-            if (us.login("uname-SpxDBCP", "pwd")) {
-                System.out.println("login success.");
-            }
-            System.out.println("login fail.");
-            if (us.modifyPwd("uname-SpxDBCP", "pwd", "newpwd-SpxDBCP")) {
-                System.out.println("modify password success.");
-            }
-            System.out.println("modify password fail.");
+//            IUserService us = AlbianServiceRouter.getSingletonService(IUserService.class, IUserService.Name);
+//            us.addUser("uname-SpxDBCP", "pwd");
+//            if (us.login("uname-SpxDBCP", "pwd")) {
+//                System.out.println("login success.");
+//            }
+//            System.out.println("login fail.");
+//            if (us.modifyPwd("uname-SpxDBCP", "pwd", "newpwd-SpxDBCP")) {
+//                System.out.println("modify password success.");
+//            }
+//            System.out.println("modify password fail.");
 
 //            if(us.batchAddUser()){
 //                System.out.println("batch add use success");
@@ -73,8 +84,8 @@ public class DoTest {
 //                System.out.println("batch add user fail.");
 //            }
 //            us.queryMulitUserById();
-            test2();
-            return;
+//            test2();
+//            return;
 
         } catch (Throwable t) {
             t.printStackTrace();
