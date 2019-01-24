@@ -248,7 +248,7 @@ public class AlbianMVCServlet  extends HttpServlet {
 
         }catch (Exception e){
             try {
-                resp.setContentType("application/text");
+                resp.setContentType("text/html");
                 resp.getOutputStream().write(e.getMessage().getBytes(ctx.getConfig().getCharset()));
             }catch (Exception ie){
 

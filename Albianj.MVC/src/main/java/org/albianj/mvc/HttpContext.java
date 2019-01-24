@@ -69,7 +69,7 @@ public class HttpContext {
         this.session = session;
         this.isPost = isPost;
         String baseUrl = currentRequest.getRequestURI();
-        if (Validate.isNullOrEmptyOrAllSpace(baseUrl) || baseUrl.endsWith(c.getWelcomePage().getTemplate())) {
+        if (Validate.isNullOrEmptyOrAllSpace(baseUrl) || baseUrl.endsWith(c.getWelcomePage().getTemplate()) || baseUrl.equals(c.getContextPath())) {
             baseUrl = c.getWelcomePage().getTemplate();
             isWelcomeViewRequest = true;
         }
