@@ -59,6 +59,11 @@ public final class XmlParser {
         }
     }
 
+    @Deprecated
+    public static List analyze(Document doc, String tagName){
+        return selectNodes(doc,tagName);
+    }
+
     @SuppressWarnings("rawtypes")
     public static List selectNodes(Document doc, String tagName) {
         if (null == doc) {

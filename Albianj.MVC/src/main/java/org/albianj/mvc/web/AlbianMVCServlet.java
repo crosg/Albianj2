@@ -171,12 +171,8 @@ public class AlbianMVCServlet  extends HttpServlet {
 
             if (page.isMultiActions()) {
                 String actionName = page.getCurrentActionName();
-                if (Validate.isNullOrEmptyOrAllSpace(actionName)) {
-                    throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
-                            "Action Not Exist.",
-                            String.format("action in template -> %s with behind class -> %s  is null or empty. session -> %s req -> %s.",
-                                    ctx.getTemplateFullName(), pc.getFullClassName(), sessionId,ctx.getCurrentUrl()));
-                } else {
+                // if actionName is empty or null,exec page load
+                if (!Validate.isNullOrEmptyOrAllSpace(actionName)) {
                     ctx.setActionName(actionName);
                 }
             }
@@ -265,29 +261,29 @@ public class AlbianMVCServlet  extends HttpServlet {
      * @param isPost
      */
     private void parserRequestUrl(HttpServletRequest req, HttpContext ctx, boolean isPost) {
-        String fullUrl = req.getRequestURI();
+        String url = req.getRequestURI();
+        String queryString = req.getQueryString();
         AlbianHttpConfigurtion c = ctx.getConfig();
         String templatePath = null;
         String contextPath = c.getContextPath();
 
         //input welcome page with simple by expl:www.expl.com or www.expl.com/
-        if (Validate.isNullOrEmptyOrAllSpace(fullUrl) ||  fullUrl.equals(contextPath)) {
-            fullUrl = c.getWelcomePage().getTemplate();
+        if (Validate.isNullOrEmptyOrAllSpace(url) ||  url.equals(contextPath)) {
+            url = c.getWelcomePage().getTemplate();
         }
 
         // url = /context-path/template-path/actionaname$template.shtm?k=v&k=v
         // 1. deal query string
-        String url  = null;
-        String queryString = null;
-        if(fullUrl.contains("?")) {
-            String strs[] = StringHelper.split(fullUrl,"?");
-            url = strs[0];
-            if(2 == strs.length) {
-                queryString = strs[1];
-            }
-        } else {
-            url = fullUrl;
-        }
+//        String url  = fullUrl;
+//        if(fullUrl.contains("?")) {
+//            String strs[] = StringHelper.split(fullUrl,"?");
+//            url = strs[0];
+//            if(2 == strs.length) {
+//                queryString = strs[1];
+//            }
+//        } else {
+//            url = fullUrl;
+//        }
 
         // url = /context-path/template-path/actionaname$template.shtm
         // 2. deal context-path

@@ -17,6 +17,7 @@ public class AlbianBuiltinServiceNamePair {
 
     //pplog monitor
     public final static String YuewenPPLogServiceName = "YuewenPPLogService";
+    public final static String AlbianMonitorLoggerServiceName = "AlbianMonitorLoggerService";
 
     // web mvf framework
     public final static String AlbianMvcConfigurtionServiceName = "AlbianMvcConfigurtionService";
@@ -41,6 +42,9 @@ public class AlbianBuiltinServiceNamePair {
     public final static String[] AlbianDataRouterServicePair = {AlbianDataRouterServiceName, "org.albianj.persistence.impl.routing.AlbianDataRouterParserService"};
     public final static String[] AlbianPersistenceServicePair = {AlbianPersistenceServiceName, "org.albianj.persistence.impl.service.AlbianPersistenceService"};
     public final static String[] AlbianDataAccessServicePair = {AlbianDataAccessServiceName, "org.albianj.persistence.impl.service.AlbianDataAccessService"};
+
+    public final static String[] AlbianMonitorLoggerServicePair = {AlbianMonitorLoggerServiceName, "org.albianj.logger.impl.monitor.AlbianMonitorLoggerService"};
+
 
     //pplog monitor
     public final static String[] YuewenPPLogPair = {YuewenPPLogServiceName, "com.yuewen.pplogstat.impl.YuewenPPLogStatService"};

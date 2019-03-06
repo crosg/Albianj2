@@ -96,3 +96,10 @@ deploy:2018111601
 
 2019-01-18
     增加pplogstat。impl
+
+2019-02-20
+    修改mvc中，isMultiActions打开的时候，无actionName时执行page load函数
+    增加genid函数
+
+2019-03-06
+    增加xml和service中的原来被删除的函数，以兼容原来的版本（PS：以后不要随便删除函数）

@@ -164,7 +164,6 @@ public class AlbianHost {
             }
         } catch (SocketException e) {
             e.printStackTrace();
-            System.exit(-1);
         }
         return ip;
     }

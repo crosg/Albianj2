@@ -116,8 +116,8 @@
         <param name="Append" value="false"/>
         <param name="MaxBackupIndex" value="-1"/>
         <!-- 请配置你的业务名称-->
-        <param name="prefix" value="prefix"/>
-        <param name="Suffix" value="monitor.log"/>
+        <param name="prefix" value="monitor"/>
+        <param name="Suffix" value=".log"/>
         <param name="encoding" value="UTF-8"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd-HH'.log'" />
         <!-- 请配置你的log存放的文件夹路径，和上面的File保持一致-->

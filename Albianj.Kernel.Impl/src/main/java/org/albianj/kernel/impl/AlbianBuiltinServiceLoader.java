@@ -55,6 +55,11 @@ public class AlbianBuiltinServiceLoader {
                 new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianDataAccessServicePair[0],
                         AlbianBuiltinServiceNamePair.AlbianDataAccessServicePair[1], false));
 
+        //monitor
+        bltServ.put(AlbianBuiltinServiceNamePair.AlbianMonitorLoggerServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianMonitorLoggerServicePair[0],
+                        AlbianBuiltinServiceNamePair.AlbianMonitorLoggerServicePair[1], false));
+
         //pplog monitor
         bltServ.put(AlbianBuiltinServiceNamePair.YuewenPPLogPair[0],
                 new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.YuewenPPLogPair[0],

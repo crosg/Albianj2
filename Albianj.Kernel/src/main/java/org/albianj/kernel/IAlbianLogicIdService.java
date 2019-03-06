@@ -77,5 +77,6 @@ public interface IAlbianLogicIdService extends IAlbianService {
     String makeJobId();
 
     BigInteger makeSimpleId();
+    public BigInteger genId( String networkName);
 
-}
+    }

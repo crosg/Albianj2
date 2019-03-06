@@ -183,6 +183,12 @@ public abstract class FreeAlbianService implements IAlbianService {
         }
     }
 
+    @AlbianAopAttribute(avoid = true)
+    @Deprecated
+    protected String confirmConfigFile(String filename) {
+        return findConfigFile(filename);
+    }
+
     public String getServiceName() {
         return this.getClass().getSimpleName();
     }

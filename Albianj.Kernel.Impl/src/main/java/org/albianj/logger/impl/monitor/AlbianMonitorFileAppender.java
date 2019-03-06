@@ -10,8 +10,8 @@ import java.io.IOException;
 public class AlbianMonitorFileAppender extends DailyRollingFileAppender {
     protected String format = "yyyyMMddHHmmss";
     protected String suffix = "log";
-    protected String prefix = "albianj";
-    protected String path = "logs";
+    protected String prefix = "monitor";
+    protected String path = "monitor-logs";
 
     public String getFormat() {
         return format;

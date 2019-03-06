@@ -12,7 +12,9 @@ import org.albianj.persistence.context.dactx.IDataAccessContext;
 import org.albianj.persistence.context.dactx.IQueryContext;
 import org.albianj.persistence.object.LogicalOperation;
 import org.albianj.persistence.object.filter.FilterExpression;
+import org.albianj.persistence.object.filter.FilterGroupExpression;
 import org.albianj.persistence.object.filter.IChainExpression;
+import org.albianj.persistence.object.filter.IFilterGroupExpression;
 import org.albianj.persistence.service.IAlbianDataAccessService;
 import org.albianj.persistence.service.LoadType;
 import org.albianj.service.AlbianServiceFieldRant;
@@ -21,6 +23,7 @@ import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.FreeAlbianService;
 
 import java.math.BigInteger;
+import java.nio.channels.IllegalChannelGroupException;
 
 // service必须使用此特性进行标注，否则albianj不对其进行解析
 @AlbianServiceRant(Id = "UserService", Interface = IUserService.class)
@@ -120,6 +123,11 @@ public class UserService extends FreeAlbianService implements IUserService {
     public void queryMulitUserById() {
         // where条件推荐使用表达式这种写法
         IChainExpression whrs1 = new FilterExpression("Id", LogicalOperation.Equal, "1539240117605_1_1_1");
+
+        IFilterGroupExpression st = new FilterGroupExpression();
+        st.add("stauts",LogicalOperation.Equal,1).or("stauts","st",LogicalOperation.Equal,3);
+        whrs1.and(st);
+
         //查询sql推荐使用query ctx，不推荐原来的具体方法，通过重载区分
         IQueryContext qctx = da.newQueryContext();
         IMultiUser mu1 = qctx.loadObject("sessionId", IMultiUser.class, LoadType.quickly, whrs1);

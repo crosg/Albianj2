@@ -4,22 +4,37 @@ import Albian.Core.Service.AlbianServiceHub;
 import Albian.Test.Services.IOrgUserService;
 import Albian.Test.Services.IUTF8M64Service;
 import Albian.Test.Services.IUserService;
+import com.mysql.jdbc.interceptors.SessionAssociationInterceptor;
 import org.albianj.loader.AlbianBootService;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.logger.monitor.AlbianMonitorData;
+import org.albianj.logger.monitor.IAlbianMonitorLoggerService;
 import org.albianj.service.AlbianServiceRouter;
+
+import java.util.Date;
 
 public class DoTest {
     public static void main(String[] argv) {
         try {
-            AlbianBootService.start("/Users/xuhaifeng/work/github/Albianj2/Albianj.Test/src/main/resources/config");
+            AlbianBootService.start(argv[0]);
 
             IAlbianLoggerService2 logServ = AlbianServiceRouter.getLogger2();
-            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
-                    "wolaile");
-            Thread.sleep(65* 1000);
-            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
-                    "wolaile2");
+//            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
+//                    "wolaile");
+//            Thread.sleep(65* 1000);
+//            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
+//                    "wolaile2");
+
+            IAlbianMonitorLoggerService mlogServ = AlbianServiceRouter.getSingletonService(IAlbianMonitorLoggerService.class,IAlbianMonitorLoggerService.Name);
+            mlogServ.addMonitorLog("session",
+                    AlbianMonitorData.build()
+                            .setAppName("appname").setBizExtend("bizExtend")
+                    .setBizId("bizid").setBizName("bizName").setDesIp("desip")
+                    .setDesPort(8080).setDetail("detail")
+                    .setLevel("debug").setSessionId("session")
+                    .setStatus(200).setTasktime(60)
+                    );
             return;
 
 
