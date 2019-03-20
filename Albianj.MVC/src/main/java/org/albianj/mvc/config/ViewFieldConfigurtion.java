@@ -8,7 +8,15 @@ public class ViewFieldConfigurtion {
     private String bindingName;
     private Field field;
     private Class<?> type;
+    private boolean autoBinding = false;
 
+    public boolean isAutoBinding() {
+        return autoBinding;
+    }
+
+    public void setAutoBinding(boolean autoBinding) {
+        this.autoBinding = autoBinding;
+    }
 
     /**
      * @return the type

@@ -59,6 +59,12 @@ public class ResultConvert {
             return bd;
         } else if (boolean.class.isAssignableFrom(cls) ||
                 Boolean.class.isAssignableFrom(cls)) {
+            try {
+                int i = new Integer(o.toString());
+                return 0 == i ? false : true;
+            }catch(Exception e){
+
+            }
             return Boolean.parseBoolean(o.toString());
         } else if (Integer.class.isAssignableFrom(cls)
                 || int.class.isAssignableFrom(cls)) {

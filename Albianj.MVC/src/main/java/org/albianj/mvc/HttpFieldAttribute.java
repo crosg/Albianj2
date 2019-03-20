@@ -8,4 +8,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface HttpFieldAttribute {
     String Name() default "";
+    boolean AutoBinding() default false;
 }

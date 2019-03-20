@@ -463,10 +463,12 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             f.setAccessible(true);
             Class t = f.getType();
             String bindingName = null;
+            boolean isAutoBinding = false;
             String name = f.getName();
             if(f.isAnnotationPresent(HttpFieldAttribute.class)){
                 HttpFieldAttribute hfa = f.getAnnotation(HttpFieldAttribute.class);
                 bindingName = hfa.Name();
+                isAutoBinding = hfa.AutoBinding();
             } else {
                 bindingName = name;
             }
@@ -474,6 +476,7 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             pfc.setField(f);
             pfc.setName(name);
             pfc.setType(t);
+            pfc.setAutoBinding(isAutoBinding);
             fieldConfigurtionMap.put(bindingName,pfc);
         }
 
