@@ -200,7 +200,7 @@ public class AlbianMVCServlet  extends HttpServlet {
                                 ctx.getTemplateFullName(), pc.getFullClassName(), ctx.getActionName(),
                                 sessionId,ctx.getCurrentUrl()));
             }
-            if (pac.getHttpActionMethod() != ham) {
+            if (HttpActionMethod.All != pac.getHttpActionMethod() && pac.getHttpActionMethod() != ham) {
                 throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
                         "Action method  error.",
                         String.format("template -> %s with behind class -> %s,session -> %s req -> %s." +
