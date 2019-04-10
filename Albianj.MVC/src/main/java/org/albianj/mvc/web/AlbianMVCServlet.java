@@ -119,10 +119,9 @@ public class AlbianMVCServlet  extends HttpServlet {
 
             HttpActionMethod ham = isPost ? HttpActionMethod.Post : HttpActionMethod.Get;
 
-            parserRequestUrl(req, ctx, isPost);
-
             isAjaxRequest = isAjaxRequest(req);
             ctx.setAjaxRequest(isAjaxRequest);
+            parserRequestUrl(req, ctx, isPost,isAjaxRequest);
 
             boolean isMultipartRequest = isMultipartRequest(req);
             ctx.setMultipartRequest(isMultipartRequest);
@@ -260,7 +259,7 @@ public class AlbianMVCServlet  extends HttpServlet {
      * @param ctx
      * @param isPost
      */
-    private void parserRequestUrl(HttpServletRequest req, HttpContext ctx, boolean isPost) {
+    private void parserRequestUrl(HttpServletRequest req, HttpContext ctx, boolean isPost,boolean isAjax) {
         String url = req.getRequestURI();
         String queryString = req.getQueryString();
         AlbianHttpConfigurtion c = ctx.getConfig();
@@ -271,19 +270,6 @@ public class AlbianMVCServlet  extends HttpServlet {
         if (Validate.isNullOrEmptyOrAllSpace(url) ||  url.equals(contextPath)) {
             url = c.getWelcomePage().getTemplate();
         }
-
-        // url = /context-path/template-path/actionaname$template.shtm?k=v&k=v
-        // 1. deal query string
-//        String url  = fullUrl;
-//        if(fullUrl.contains("?")) {
-//            String strs[] = StringHelper.split(fullUrl,"?");
-//            url = strs[0];
-//            if(2 == strs.length) {
-//                queryString = strs[1];
-//            }
-//        } else {
-//            url = fullUrl;
-//        }
 
         // url = /context-path/template-path/actionaname$template.shtm
         // 2. deal context-path
@@ -333,6 +319,18 @@ public class AlbianMVCServlet  extends HttpServlet {
             }
         }
 
+        //add for ajax
+        // if ajax method,use action by argument in th url
+        if(isAjax){
+           String action =  pMap.containsKey("action") ? pMap.get("action") :
+                    pMap.containsKey("Action") ?  pMap.get("Action") :
+                            pMap.containsKey("actionName") ? pMap.get("actionName") :
+                                    pMap.containsKey("actionname") ? pMap.get("actionname") :
+                            pMap.containsKey("ActionName") ?  pMap.get("ActionName") : null;
+           if(!Validate.isNullOrEmptyOrAllSpace(action)) {
+               actionName = action;
+           }
+        }
 
         ctx.setActionName(actionName);
         ctx.setTemplateName(fileSimpleName);
@@ -418,7 +416,7 @@ public class AlbianMVCServlet  extends HttpServlet {
                 hc.getCurrentResponse().setContentType("application/json");
                 try {
                     hc.getCurrentResponse().getOutputStream().write(body.getBytes());
-                    return true;
+                    return false;
                 }catch (Exception e){
                     throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
                             "output json error.",
