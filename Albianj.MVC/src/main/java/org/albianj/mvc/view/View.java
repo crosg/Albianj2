@@ -61,7 +61,14 @@ public abstract class View extends FreeView {
                         Class<?> type = f.getType();
                         Object realValue = null;
 
-                        realValue = toBoxValue(type, value);
+                        try {
+                            realValue = toBoxValue(type, value);
+                        }catch (Exception e){
+                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                                    ctx.getHttpSessionId(), AlbianLoggerLevel.Error, e,
+                                    "set field -> %s in mapping class:%s is fail.template -> %s.",
+                                    f.getBindingName(),pc.getFullClassName(), ctx.getTemplateFullName());
+                        }
                         if (realValue instanceof String) {
                             realValue = HttpHelper.escapeHtmlString(realValue.toString());
                         }

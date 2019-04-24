@@ -1,5 +1,8 @@
 package org.albianj.mvc.view;
 
+import org.albianj.datetime.AlbianDateTimeHelper;
+import org.albianj.except.AlbianDisplayableException;
+import org.albianj.except.ExceptionUtil;
 import org.albianj.io.Path;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
@@ -239,30 +242,28 @@ public abstract class FreeView implements IView {
 
     @NotHttpActionAttribute()
     public Object toBoxValue(Class<?> cls, Object o) throws Exception {
-        String type = cls.getSimpleName().toLowerCase();
-        String fulltype = cls.getName().toLowerCase();
-        if ("string".equalsIgnoreCase(type)) {
+        if(cls.equals(String.class)) {
             return o.toString();
-        } else if ("bigdecimal".equalsIgnoreCase(type)) {
+        } else if(cls.equals(BigDecimal.class)) {
             BigDecimal bd = new BigDecimal(o.toString());
             return bd;
-        } else if ("boolean".equalsIgnoreCase(type)) {
+        } else if(cls.equals(boolean.class) || cls.equals(Boolean.class)) {
             if(isNumeric(o.toString())){
                 return 0 != new BigDecimal(o.toString()).longValue();
             }
             return Boolean.parseBoolean(o.toString());
-        } else if ("integer".equalsIgnoreCase(type) || "int".equalsIgnoreCase(type)) {
+        } else if(cls.equals(int.class) || cls.equals(Integer.class)) {
             return Integer.parseInt(o.toString());
-        } else if ("long".equalsIgnoreCase(type)) {
+        } else if(cls.equals(long.class) || cls.equals(Long.class)) {
             return Long.parseLong(o.toString());
-        } else if ("biginteger".equalsIgnoreCase(type)) {
+        } else if(cls.equals(BigInteger.class)) {
             BigInteger bi = new BigInteger(o.toString());
             return bi;
-        } else if ("float".equalsIgnoreCase(type)) {
+        } else if(cls.equals(float.class) || cls.equals(Float.class)) {
             return Float.parseFloat(o.toString());
-        } else if ("double".equalsIgnoreCase(type)) {
+        } else if (cls.equals(double.class) || cls.equals(Double.class)) {
             return Double.parseDouble(o.toString());
-        } else if ("date".equalsIgnoreCase(type)) {
+        } else if(cls.equals(java.util.Date.class)) {
             Date d = null;
             try {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -275,24 +276,24 @@ public abstract class FreeView implements IView {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     d = dateFormat.parse(o.toString());
                 } catch (Exception e) {
-                    throw e;
+
                 }
             }
-            if (fulltype.equalsIgnoreCase(
-                    "java.sql.date")) {
-                return new java.sql.Date(d.getTime());
-            }
             return d;
-
-        } else if ("time".equalsIgnoreCase(type)) {
-            return Time.parse(o.toString());
-        } else if ("timestamp".equalsIgnoreCase(type)) {
-            return o;// donot ask me why,if i parser ,it will be
-            // crash
-            // return Timestamp.parse(o.toString());
-        } else {
-            return o;
+        } else if(cls.equals(java.sql.Date.class)) {
+            return AlbianDateTimeHelper.valueOfSqlDate(o.toString());
+        } else if(cls.equals(java.sql.Time.class)){
+            return java.sql.Time.valueOf(o.toString());
+        } else if(cls.equals(java.sql.Timestamp.class)) {
+            long ts = AlbianDateTimeHelper.toTimeMillis(o.toString());
+            if(0 == ts) {
+                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                        "Cast fail.",
+                        "cast string -> ",o.toString()," to sql.Timestamp fail.");
+            }
+            return new java.sql.Timestamp(ts);
         }
+        return o.toString();
     }
 
     public static boolean isNumeric(String str) {
