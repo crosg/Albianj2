@@ -1,7 +1,9 @@
 package org.albianj.datetime;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class AlbianDateTimeHelper {
     public static Date valueOf(String date,String pattern){
@@ -45,5 +47,39 @@ public class AlbianDateTimeHelper {
         return new java.sql.Date(d.getTime());
     }
 
+    public static java.sql.Date today(){
+        Date date = new Date();//取时间
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR,0);
+        cal.set(Calendar.MINUTE,0);
+        cal.set(Calendar.SECOND,0);
+        cal.set(Calendar.MILLISECOND,0);
+        return new java.sql.Date(cal.getTimeInMillis());
+    }
+
+    public static java.sql.Date yesterday(){
+        Date date = new Date();//取时间
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR,0);
+        cal.set(Calendar.MINUTE,0);
+        cal.set(Calendar.SECOND,0);
+        cal.set(Calendar.MILLISECOND,0);
+        cal.add(Calendar.DATE,-1);
+        return new java.sql.Date(cal.getTimeInMillis());
+    }
+
+    public static java.sql.Date tomorrow(){
+        Date date = new Date();//取时间
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR,0);
+        cal.set(Calendar.MINUTE,0);
+        cal.set(Calendar.SECOND,0);
+        cal.set(Calendar.MILLISECOND,0);
+        cal.add(Calendar.DATE,1);
+        return new java.sql.Date(cal.getTimeInMillis());
+    }
 
 }

@@ -59,9 +59,15 @@ public class PageTag extends GeneralVarTagBinding {
         StringBuffer sb = new StringBuffer();
         if (!Validate.isNullOrEmpty(paras)) {
             for (Map.Entry<String, String[]> entry : paras.entrySet()) {
-                if (!entry.getKey().equals(PagingParamentName)) {
-                    if (null != entry.getValue() || 0 < entry.getValue().length)
-                        sb.append(entry.getKey()).append("=").append(entry.getValue()[0]).append("&");
+                if (!entry.getKey().equals(PagingParamentName)
+                && !entry.getKey().equals("__AlbianActionName")
+                && !entry.getKey().equals("__AlbianActionArgs") ) {
+                    if (null != entry.getValue() || 0 < entry.getValue().length) {
+                        String[] val = entry.getValue();
+                        if(1 == val.length && !Validate.isNullOrEmpty(val[0])) {
+                            sb.append(entry.getKey()).append("=").append(entry.getValue()[0]).append("&");
+                        }
+                    }
                 }
             }
         }

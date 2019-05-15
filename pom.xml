@@ -6,7 +6,7 @@
 
     <groupId>com.yuewen.nrzx.albianj</groupId>
     <artifactId>Albianj</artifactId>
-    <version>2019031901</version>
+    <version>2019051503</version>
     <modules>
         <module>Albianj.Comment</module>
         <module>Albianj.Commons</module>
@@ -109,15 +109,15 @@
 
     <distributionManagement>
         <repository>
-            <id>yw-nrzx-plateform</id>
-            <name>yw-nrzx-plateform</name>
-            <url>http://nexus.nrzx.yuewen.qq.com/nexus/content/repositories/plateform/</url>
+            <id>yw-qa</id>
+            <name>yw-qa</name>
+            <url>http://maven.yuewen.com/nexus/content/repositories/nrzx-releases/</url>
         </repository>
 
         <snapshotRepository>
-            <id>yw-nrzx-plateform-snapshot</id>
-            <name>yw-nrzx-plateform-snapshot</name>
-            <url>http://nexus.nrzx.yuewen.qq.com/nexus/content/repositories/platform-SNAPSHOT/</url>
+            <id>yw-qa-snapshot</id>
+            <name>yw-qa-snapshot</name>
+            <url>http://maven.yuewen.com/nexus/content/repositories/nrzx-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -135,12 +135,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.2</version>
+                <version>3.0.1</version>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>attach-sources</id>
+                        <phase>compile</phase>
                         <goals>
-                            <goal>jar-no-fork</goal>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>

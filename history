@@ -111,3 +111,15 @@ deploy:2018111601
 2019-04-24
 新增加AlbianDateTimeHelper以解决AlbianDateTime过于混乱的问题
 将mvc中对于view中字段的复制操作由原来的string对比改为class类型对比
+
+2019-05-13
+增加AlbianDateTimeHelper中的today，yeaterday，tomorrow
+
+2019-05-15
+   发布版本2019051501
+
+2019-05-15
+    更改了mvf.ctag中的分页控件 ，过滤掉了makeurl的时候，albianj的mvf中内置的from属性
+    过滤了内容为空的文本框等信息，将url复制以后加入作为view的load函数处理
+    maven中更改公司内部的maven仓库，pom中增加source的打包
+    发布版本2019051503
