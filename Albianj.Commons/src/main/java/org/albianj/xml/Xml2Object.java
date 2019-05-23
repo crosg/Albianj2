@@ -16,11 +16,10 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 解析xml to javabean
@@ -45,63 +44,102 @@ public class Xml2Object {
             parseBeanMetadatas(c);
         }
 
-        String rootName = null;
+        String parentNodeName = null;
         if (cls.isAnnotationPresent(XmlElementAttribute.class)) {
             XmlElementAttribute xea = cls.getAnnotation(XmlElementAttribute.class);
-            rootName = xea.Name();
-        }
-        if (Validate.isNullOrEmptyOrAllSpace(rootName)) {
-            rootName = cls.getSimpleName();
-            rootName = StringHelper.captureName(rootName);
+            parentNodeName = xea.Name();
         }
 
-        if (beanMetadatas.containsKey(rootName)) return;
+        if (Validate.isNullOrEmptyOrAllSpace(parentNodeName)) {
+            parentNodeName = cls.getSimpleName();
+            parentNodeName = StringHelper.captureName(parentNodeName);
+        }
+
+        if (beanMetadatas.containsKey(parentNodeName)) return;
 
         BeanMetadata bmd = new BeanMetadata();
-        bmd.setName(rootName);
+        bmd.setName(parentNodeName);
         bmd.setRealClass(cls);
 
-        BeanInfo info = Introspector.getBeanInfo(cls, Object.class);
-        PropertyDescriptor[] pds = info.getPropertyDescriptors();
-        Map<String, PropertyMetadata> propertyMetadatas = new HashMap();
-        for (PropertyDescriptor pd : pds) {
-            PropertyMetadata pm = new PropertyMetadata();
-            Class<?> type = pd.getPropertyType();
+        Class tempClass = cls;
+        List<Field> fields = new ArrayList<>() ;
+        while (tempClass !=null && !tempClass.getName().toLowerCase().equals("java.lang.object") ) {//当父类为null的时候说明到达了最上层的父类(Object类).
+            fields.addAll(Arrays.asList(tempClass .getDeclaredFields()));
+            tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
+        }
+
+        Map<String, FieldMetadata> fms = new HashMap();
+        for (Field f : fields) {
+            FieldMetadata fm = new FieldMetadata();
+
+            if(f.isAnnotationPresent(XmlElementIgnoreAttribute.class)) {
+                continue;
+            }
+            f.setAccessible(true);
+            Class<?> type = f.getType();
             if (IAlbianXml2ObjectSigning.class.isAssignableFrom(type)) {
-//                System.out.println(type.getSimpleName());
                 parseBeanMetadatas(type);
             }
-            pm.setType(type);
-            Method mr = pd.getReadMethod();
-            Method mw = pd.getWriteMethod();
-            if (null == mw) {
-                continue;
-//                    throw new RuntimeException("no setter method.");
-            }
-            XmlElementAttribute xeap = null;
-            String pname = null;
-            if (mr.isAnnotationPresent(XmlElementAttribute.class)) {
-                xeap = mr.getAnnotation(XmlElementAttribute.class);
-                pname = xeap.Name();
-            }
-            if (mw.isAnnotationPresent(XmlElementAttribute.class)) {
-                xeap = mw.getAnnotation(XmlElementAttribute.class);
-                pname = xeap.Name();
 
+            String nodeName = StringHelper.captureName(f.getName());
+
+            if(f.isAnnotationPresent(XmlElementAttribute.class)){
+                XmlElementAttribute xea = f.getAnnotation(XmlElementAttribute.class);
+                nodeName = xea.Name();
             }
-            if (Validate.isNullOrEmptyOrAllSpace(pname)) {
-                pname = pd.getName();
-                pname = StringHelper.captureName(pname);
-            }
-            pm.setName(pname);
-            pm.setGetter(mr);
-            pm.setSetter(mw);
-            propertyMetadatas.put(pname, pm);
+
+            fm.setField(f);
+            fm.setFieldName(f.getName());
+            fm.setNodeName(nodeName);
+            fm.setType(type);
+
+            fms.put(nodeName,fm);
         }
-        if (!Validate.isNullOrEmpty(propertyMetadatas)) {
-            bmd.setPropertyMetadatas(propertyMetadatas);
+        if (!Validate.isNullOrEmpty(fms)) {
+            bmd.setFieldMetadatas(fms);
         }
-        beanMetadatas.put(rootName, bmd);
+        beanMetadatas.put(parentNodeName, bmd);
+
+//        BeanInfo info = Introspector.getBeanInfo(cls, Object.class);
+//        PropertyDescriptor[] pds = info.getPropertyDescriptors();
+//        Map<String, FieldMetadata> propertyMetadatas = new HashMap();
+//        for (PropertyDescriptor pd : pds) {
+//            FieldMetadata pm = new FieldMetadata();
+//            Class<?> type = pd.getPropertyType();
+//            if (IAlbianXml2ObjectSigning.class.isAssignableFrom(type)) {
+////                System.out.println(type.getSimpleName());
+//                parseBeanMetadatas(type);
+//            }
+//            pm.setType(type);
+//            Method mr = pd.getReadMethod();
+//            Method mw = pd.getWriteMethod();
+//            if (null == mw) {
+//                continue;
+////                    throw new RuntimeException("no setter method.");
+//            }
+//            XmlElementAttribute xeap = null;
+//            String pname = null;
+//            if (mr.isAnnotationPresent(XmlElementAttribute.class)) {
+//                xeap = mr.getAnnotation(XmlElementAttribute.class);
+//                pname = xeap.Name();
+//            }
+//            if (mw.isAnnotationPresent(XmlElementAttribute.class)) {
+//                xeap = mw.getAnnotation(XmlElementAttribute.class);
+//                pname = xeap.Name();
+//
+//            }
+//            if (Validate.isNullOrEmptyOrAllSpace(pname)) {
+//                pname = pd.getName();
+//                pname = StringHelper.captureName(pname);
+//            }
+//            pm.setName(pname);
+//            pm.setField(f);
+//            propertyMetadatas.put(pname, pm);
+//        }
+//        if (!Validate.isNullOrEmpty(propertyMetadatas)) {
+//            bmd.setPropertyMetadatas(propertyMetadatas);
+//        }
+//        beanMetadatas.put(nodeName, bmd);
     }
 
     public static Object convert(@Comments("xml content") String content,
@@ -150,22 +188,24 @@ public class Xml2Object {
                         axpn.addNode(oc.getKey(), oc);
                     } else {
                         String propertyName = child.getName();
-                        PropertyMetadata pm = bmd.getPropertyMetadatas().get(propertyName);
+
+                        FieldMetadata pm = bmd.getFieldMetadatas().get(propertyName);
                         if (null == pm) continue;
-                        Method m = pm.getSetter();
+
                         Class<?> type = pm.getType();
                         Object value = convertValType(ochild, type);
-                        m.invoke(obj, value);
+                        pm.getField().set(obj,value);
+//                        m.invoke(obj, value);
                     }
 
                 } else {
                     String propertyName = child.getName();
-                    PropertyMetadata pm = bmd.getPropertyMetadatas().get(propertyName);
+                    FieldMetadata pm = bmd.getFieldMetadatas().get(propertyName);
                     if (null == pm) continue;
-                    Method m = pm.getSetter();
+//                    Method m = pm.getSetter();
                     Class<?> type = pm.getType();
                     Object value = convertValType(child.getTextTrim(), type);
-                    m.invoke(obj, value);
+                    pm.getField().set(obj,value);
                 }
 
             }
@@ -173,16 +213,15 @@ public class Xml2Object {
 
         for (DefaultAttribute att : attrs) {
             String propertyName = att.getName();
-            PropertyMetadata pm = bmd.getPropertyMetadatas().get(propertyName);
+            FieldMetadata pm = bmd.getFieldMetadatas().get(propertyName);
             if (null == pm) continue;
-            Method m = pm.getSetter();
+//            Method m = pm.getSetter();
             Class<?> type = pm.getType();
             Object value = convertValType(att.getText(), type);
-            m.invoke(obj, value);
+            pm.getField().set(obj,value);
         }
 
         return obj;
-
     }
 
     /**

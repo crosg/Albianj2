@@ -3,11 +3,18 @@ package org.albianj.persistence.service;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.persistence.object.IAlbianEntityFieldAttribute;
 import org.albianj.persistence.object.IAlbianObject;
 import org.albianj.persistence.object.IAlbianObjectAttribute;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
+
+import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -18,8 +25,6 @@ public class AlbianObjectCreator {
 
     public static IAlbianObject newInstance(String sessionId, String itf) {
         IAlbianObjectAttribute attr = AlbianEntityMetadata.getEntityMetadata(itf);
-//            IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
-//            IAlbianObjectAttribute attr = amps.getAlbianObjectAttribute(itf);
         if (null == attr) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error,
@@ -82,5 +87,61 @@ public class AlbianObjectCreator {
 
     public static IAlbianObject newInstance(String sessionId, Class<? extends IAlbianObject> clazz) {
         return newInstance(sessionId, clazz.getName());
+    }
+
+    public static void copyObject(IAlbianObject dest,IAlbianObject src){
+        copyObject(dest,src);
+    }
+
+    /**
+     *  将src中的值按照field复制到dest
+     * @param dest
+     * @param src
+     * @param ctrlFields 控制字段
+     *                      1. !fielename，field前加!,表示此字段不被复制
+     *                      2. destFieldName=secFieldName，表示src中的field和dest中的对应复制
+     */
+    public static void copyObject(IAlbianObject dest,IAlbianObject src,String[] ctrlFields){
+
+        Set<String> ignoreFields = new HashSet();
+        Map<String,String>  rltFields = new HashMap<>();
+        if(null != ctrlFields) {
+            for (String f : ctrlFields) {
+                if (f.startsWith("!")) {
+                    ignoreFields.add(f.substring(1).toLowerCase());
+                } else if (f.contains("=")) {
+                    String[] ds = f.split("=");
+                    rltFields.put(ds[0].toLowerCase(), ds[1].toLowerCase());
+                }
+
+            }
+        }
+
+        Class destClzz = dest.getClass();
+        Class srcClzz = src.getClass();
+        IAlbianObjectAttribute destObjAttr = AlbianEntityMetadata.getEntityMetadataByType(destClzz);
+        IAlbianObjectAttribute srcObjAttr = AlbianEntityMetadata.getEntityMetadataByType(srcClzz);
+        Map<String , IAlbianEntityFieldAttribute> destFieldAttrs = destObjAttr.getFields();
+        Map<String , IAlbianEntityFieldAttribute> srcFieldAttrs = srcObjAttr.getFields();
+
+        for(Map.Entry<String,IAlbianEntityFieldAttribute> entry : destFieldAttrs.entrySet()) {
+            String key = entry.getKey();
+            if(ignoreFields.contains(key)) { // 忽略这个field
+                continue;
+            }
+
+           String srcKey =  rltFields.containsKey(key) ? rltFields.get(key) : key;
+            if(!srcFieldAttrs.containsKey(srcKey)) { // src中没有这个field
+                continue;
+            }
+
+            IAlbianEntityFieldAttribute srcFieldAttr =  srcFieldAttrs.get(srcKey);
+            IAlbianEntityFieldAttribute destFieldAttr =  entry.getValue();
+            try {
+                destFieldAttr.getEntityField().set(dest,srcFieldAttr.getEntityField().get(src));
+            } catch (IllegalAccessException e) {
+
+            }
+        }
     }
 }

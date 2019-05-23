@@ -37,18 +37,38 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.service;
 
+import org.albianj.comment.Comments;
 import org.albianj.datetime.AlbianDateTime;
+import org.albianj.except.AlbianExternalException;
+import org.albianj.except.AlbianInternalException;
 import org.albianj.except.AlbianRuntimeException;
+import org.albianj.except.ExceptionUtil;
 import org.albianj.kernel.IAlbianLogicIdService;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.text.StringHelper;
 import org.albianj.verify.Validate;
+import org.apache.commons.lang3.text.StrSubstitutor;
+
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * albianj的service管理类，交由albianj托管的service全部由这个类提供获取service。
  */
 public class AlbianServiceRouter extends ServiceContainer {
+
+    public static String LoggerRunning = IAlbianLoggerService2.AlbianRunningLoggerName;
+    public static String LoggerSql = IAlbianLoggerService2.AlbianSqlLoggerName;
+
+    public static AlbianLoggerLevel Debug = AlbianLoggerLevel.Debug;
+    public static AlbianLoggerLevel Info = AlbianLoggerLevel.Info;
+    public static AlbianLoggerLevel Warn = AlbianLoggerLevel.Warn;
+    public static AlbianLoggerLevel Error = AlbianLoggerLevel.Error;
+    public static AlbianLoggerLevel Mark = AlbianLoggerLevel.Mark;
+
 
     public static String AlbianRuntimeLogName = "AlbianRuntime";
     // 时间 级别 call-chain fmt -args
@@ -258,5 +278,85 @@ public class AlbianServiceRouter extends ServiceContainer {
                 "new excetion with msg ->%s to AlbianRuntimeException.",
                 msg);
         throw thw;
+    }
+
+    private static String logExceptionFmtV2 = "{time} {level} SessionId:{sessionId} Thread:{tid} CallChain:[{chain}] except:[type:{type} msg:{msg}] ctx:[{ctx}]";
+
+    @Comments("统一的日志处理方法")
+    public static void addLogV2(String sessionId,String logName,AlbianLoggerLevel level,
+                              Throwable excp,String brief,Object... info){
+        try {
+            StackTraceElement[] stes = null;
+            if (null == excp) {
+                stes = Thread.currentThread().getStackTrace();
+            } else {
+                stes = excp.getStackTrace();
+            }
+
+            int count = stes.length >= 6 ? 6 : stes.length;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < count; i++) {
+                StackTraceElement ste = stes[i];
+                sb.append(ste.getFileName())
+                        .append("$").append(ste.getMethodName())
+                        .append("$").append(ste.getLineNumber())
+                        .append(" -> ");
+            }
+            if (0 != sb.length()) {
+                sb.delete(sb.length() - 4, sb.length() - 1);
+            }
+
+            String mInfo = null;
+            if (null != info && 0 != info.length) {
+                mInfo = StringHelper.join(info);
+            }
+            Map<String, Object> map = new HashMap<>();
+            map.put("time", AlbianDateTime.fmtCurrentLongDatetime());
+            map.put("level", level.getTag());
+            map.put("sessionId", sessionId);
+            map.put("tid", Thread.currentThread().getId());
+            map.put("chain", sb);
+            map.put("type", null == excp ? "" : excp.getClass().getName());
+            map.put("msg", null == excp ? brief : excp.getMessage());
+            map.put("ctx", null == mInfo ? "" : mInfo);
+
+            IAlbianLoggerService2 log = getSingletonService(IAlbianLoggerService2.class, IAlbianLoggerService2.Name, false);
+            if (null != log) {
+                String msg = StringHelper.formatTemplate(logExceptionFmtV2, map);
+                log.log3(logName, level, msg);
+            }
+        }catch (Throwable t){
+            System.out.println("logger in fail and ignore the exception -> " + t.getMessage());
+        }
+    }
+
+    @Comments("统一的日志处理方法")
+    public static void throwExternalExceptionV2(String sessionId,String logName,AlbianLoggerLevel level,
+                               Throwable excp,String brief,Object... info){
+        addLogV2(sessionId,logName,level,excp, brief,info);
+        if (AlbianExternalException.class.isAssignableFrom(excp.getClass())) {
+            throw (AlbianExternalException) excp;
+        }
+
+        if(null == excp) {
+            throw new AlbianExternalException(ExceptionUtil.logLevel2Code(level), brief, info);
+        }
+
+        throw new AlbianExternalException(ExceptionUtil.logLevel2Code(level), excp,brief, info);
+    }
+
+    @Comments("统一的日志处理方法")
+    public static void throwInternalExceptionV2(String sessionId,String logName,AlbianLoggerLevel level,
+                                                Throwable excp,String internalMsg,String brief,Object... info){
+        addLogV2(sessionId,logName,level,excp, brief,info);
+        if (AlbianInternalException.class.isAssignableFrom(excp.getClass())) {
+            throw (AlbianInternalException) excp;
+        }
+
+        if(null == excp) {
+            throw new AlbianInternalException(ExceptionUtil.logLevel2Code(level),internalMsg, brief, info);
+        }
+
+        throw new AlbianInternalException(ExceptionUtil.logLevel2Code(level), excp,internalMsg,brief, info);
     }
 }

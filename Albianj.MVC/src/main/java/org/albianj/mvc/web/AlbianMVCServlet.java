@@ -1,14 +1,12 @@
 package org.albianj.mvc.web;
 
-import Albian.Core.Service.AlbianServiceHub;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.albianj.datetime.AlbianDateTime;
-import org.albianj.except.AlbianDisplayableException;
+import org.albianj.except.AlbianExternalException;
 import org.albianj.except.ExceptionUtil;
 import org.albianj.io.Path;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.mvc.ActionResult;
 import org.albianj.mvc.HttpActionMethod;
@@ -17,7 +15,6 @@ import org.albianj.mvc.config.AlbianHttpConfigurtion;
 import org.albianj.mvc.config.ViewActionConfigurtion;
 import org.albianj.mvc.config.ViewConfigurtion;
 import org.albianj.mvc.server.IServerLifeCycle;
-import org.albianj.mvc.service.IAlbianBrushingService;
 import org.albianj.mvc.service.IAlbianMVCConfigurtionService;
 import org.albianj.mvc.service.IAlbianResourceService;
 import org.albianj.mvc.view.View;
@@ -89,7 +86,7 @@ public class AlbianMVCServlet  extends HttpServlet {
 
 //            IAlbianBrushingService abs = AlbianServiceRouter.getSingletonService(IAlbianBrushingService.class, IAlbianBrushingService.Name);
 //            if (null != abs && !abs.consume(req)) {
-//                throw new AlbianDisplayableException(ExceptionUtil.ExceptForWarn,
+//                throw new AlbianExternalException(ExceptionUtil.ExceptForWarn,
 //                        "Brushing Fail.",
 //                        String.format("this req with session -> %s brushing fail. url -> %s",
 //                                sessionId,ctx.getCurrentUrl()));
@@ -101,7 +98,7 @@ public class AlbianMVCServlet  extends HttpServlet {
                     ars.renderResource(ctx);
                     return;
                 } catch (IOException e) {
-                    throw new AlbianDisplayableException(ExceptionUtil.ExceptForWarn,
+                    throw new AlbianExternalException(ExceptionUtil.ExceptForWarn,
                             "Resource render Fail.",
                             String.format("this req with session -> %s url -> %s render fail.",
                                     sessionId,ctx.getCurrentUrl()),e);
@@ -128,7 +125,7 @@ public class AlbianMVCServlet  extends HttpServlet {
 
             Map<String, ViewConfigurtion> templates = c.getTemplates();
             if (null == templates) {
-                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                         "Templates resource Fail.",
                         String.format("templates is null in the web,no config resource.session -> %s, req -> %s.",
                                 sessionId,ctx.getCurrentUrl()));
@@ -142,7 +139,7 @@ public class AlbianMVCServlet  extends HttpServlet {
             }
 
             if (null == pc) {
-                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                         "Template Not Found.",
                         String.format("template -> %s is not found, session -> %s req -> %s.",
                                 ctx.getTemplateFullName(), sessionId,ctx.getCurrentUrl()));
@@ -151,7 +148,7 @@ public class AlbianMVCServlet  extends HttpServlet {
             ctx.setPageConfigurtion(pc);
             Class<?> cla = pc.getRealClass();
             if (!View.class.isAssignableFrom(cla)) {
-                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                         "Behind class inherited error.",
                         String.format("template -> %s with behind class -> %s is not extends from View , session -> %s req -> %s.",
                                  ctx.getTemplateFullName(),pc.getFullClassName(), sessionId,ctx.getCurrentUrl()));
@@ -162,7 +159,7 @@ public class AlbianMVCServlet  extends HttpServlet {
                 page = pc.getRealClass().newInstance();
                 page.kinit(ctx);
             } catch (InstantiationException | IllegalAccessException e) {
-                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                         "Init View Object fail.",
                         String.format("new or init template -> %s with behind class -> %s is fail. session -> %s req -> %s.",
                                 ctx.getTemplateFullName(), pc.getFullClassName(), sessionId,ctx.getCurrentUrl()));
@@ -186,21 +183,21 @@ public class AlbianMVCServlet  extends HttpServlet {
 
             Map<String, ViewActionConfigurtion> actions = pc.getActions();
             if (null == actions) {
-                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                         "Not found view's actions.",
                         String.format("template -> %s with behind class -> %s  actions is null. session -> %s req -> %s.",
                                 ctx.getTemplateFullName(), pc.getFullClassName(), sessionId,ctx.getCurrentUrl()));
             }
             ViewActionConfigurtion pac = actions.get(ctx.getActionName());
             if (null == pac) {
-                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                         "Not found action.",
                         String.format("template -> %s with behind class -> %s not found action -> %s. session -> %s req -> %s.",
                                 ctx.getTemplateFullName(), pc.getFullClassName(), ctx.getActionName(),
                                 sessionId,ctx.getCurrentUrl()));
             }
             if (HttpActionMethod.All != pac.getHttpActionMethod() && pac.getHttpActionMethod() != ham) {
-                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                         "Action method  error.",
                         String.format("template -> %s with behind class -> %s,session -> %s req -> %s." +
                                         "action -> %s method is error.query action method -> %s,action method -> %s",
@@ -209,7 +206,7 @@ public class AlbianMVCServlet  extends HttpServlet {
             }
             Method m = pac.getMethod();
             if (null == m) {
-                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                         "action function error.",
                         String.format("template -> %s with behind class -> %s  is fail,session -> %s req -> %s." +
                                         "action -> %s function is null.",
@@ -221,7 +218,7 @@ public class AlbianMVCServlet  extends HttpServlet {
             try {
                 result = (ActionResult) m.invoke(page, ctx);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                         "Interceptor action error.",
                         String.format("template -> %s with behind class -> %s  is fail,session -> %s req -> %s." +
                                         "exec action -> %s function is fail.",
@@ -356,12 +353,12 @@ public class AlbianMVCServlet  extends HttpServlet {
      * @return 如果返回true,则调用此函数的上一层函数继续执行,
      *          如果返回false,则调用此函数的上一层函数终止执行,但并表示这次函数执行失败
      */
-    private boolean execResult(ActionResult ar,HttpContext hc,ViewConfigurtion pc) throws AlbianDisplayableException{
+    private boolean execResult(ActionResult ar,HttpContext hc,ViewConfigurtion pc) throws AlbianExternalException {
         switch (ar.getResultType()) {
             case ActionResult.Redirect: {
                 Object rc = ar.getResult();
                 if (null == rc && !(rc instanceof String)) {
-                    throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                    throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                             "Redirect url format error.",
                             String.format("Redirect url in template -> %s with behind class -> %s  is format error. session -> %s req -> %s.",
                                     hc.getTemplateFullName(), pc.getFullClassName(), hc.getHttpSessionId(),hc.getCurrentUrl()));
@@ -370,7 +367,7 @@ public class AlbianMVCServlet  extends HttpServlet {
                     hc.getCurrentResponse().sendRedirect(rc.toString());
                     return false;
                 }catch (Exception e){
-                    throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                    throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                             "Redirect error.",
                             String.format("Redirect url -> %s error in template -> %s with behind class -> %s. session -> %s req -> %s.",
                                     rc.toString(),hc.getTemplateFullName(),
@@ -382,7 +379,7 @@ public class AlbianMVCServlet  extends HttpServlet {
             }
             case ActionResult.InnerError: {
                 Object rc = ar.getResult();
-                throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                         "Inner Error.",
                         String.format("template -> %s with behind class -> %s  is inner error -> %s. session -> %s req -> %s.",
                                 hc.getTemplateFullName(), pc.getFullClassName(), rc,
@@ -391,7 +388,7 @@ public class AlbianMVCServlet  extends HttpServlet {
             }
             case ActionResult.Json: {
                 if (!hc.isAjaxRequest()) {
-                    throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                    throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                             "Result output Error.",
                             String.format("template -> %s with behind class -> %s  is result output error:json just only for ajax. session -> %s req -> %s.",
                                     hc.getTemplateFullName(), pc.getFullClassName(),
@@ -418,7 +415,7 @@ public class AlbianMVCServlet  extends HttpServlet {
                     hc.getCurrentResponse().getOutputStream().write(body.getBytes());
                     return false;
                 }catch (Exception e){
-                    throw new AlbianDisplayableException(ExceptionUtil.ExceptForError,
+                    throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                             "output json error.",
                             String.format("template -> %s with behind class -> %s output json -> %s fail. session -> %s req -> %s.",
                                     hc.getTemplateFullName(), pc.getFullClassName(),body,

@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE, ElementType.FIELD})
 @Inherited
 @Documented
-public @interface XmlElementAttribute {
+public @interface XmlElementIgnoreAttribute {
     String Name();
 }
 

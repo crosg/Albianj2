@@ -8,7 +8,7 @@ import java.util.Map;
 public class BeanMetadata {
     private String name;
     private Class<?> realClass;
-    private Map<String, PropertyMetadata> propertyMetadatas;
+    private Map<String, FieldMetadata> fieldMetadatas;
 
     /**
      * Getter for property 'name'.
@@ -51,16 +51,15 @@ public class BeanMetadata {
      *
      * @return Value for property 'writeMethods'.
      */
-    public Map<String, PropertyMetadata> getPropertyMetadatas() {
-        return propertyMetadatas;
+    public Map<String, FieldMetadata> getFieldMetadatas() {
+        return fieldMetadatas;
     }
 
     /**
      * Setter for property 'writeMethods'.
      *
-     * @param propertyMetadatas Value to set for property 'property Metadatas'.
      */
-    public void setPropertyMetadatas(Map<String, PropertyMetadata> propertyMetadatas) {
-        this.propertyMetadatas = propertyMetadatas;
+    public void setFieldMetadatas(Map<String, FieldMetadata> fieldMetadatas) {
+        this.fieldMetadatas = fieldMetadatas;
     }
 }

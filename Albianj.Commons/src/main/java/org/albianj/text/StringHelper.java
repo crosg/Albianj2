@@ -39,8 +39,10 @@ package org.albianj.text;
 
 import org.albianj.verify.Validate;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.StrSubstitutor;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class StringHelper extends StringUtils {
     /*
@@ -159,6 +161,21 @@ public class StringHelper extends StringUtils {
         if ('A' <= cs[0] && 'Z' >= cs[0])
             cs[0] += 32;
         return String.valueOf(cs);
+    }
+
+    /**
+     * 通过具名参数的方式来格式化
+     * @param template
+     * @param values
+     * @code
+     * String template = "Welcome to {theWorld}. My name is {myName}.";
+     * Map<String, String> values = new HashMap<>();
+     * values.put("theWorld", "Stackoverflow");
+     * values.put("myName", "Thanos");
+     * @return
+     */
+    public static String formatTemplate(String template, Map<String, Object> values) {
+        return StrSubstitutor.replace(template, values, "{", "}");
     }
 
 //    public static String join(Object... args){

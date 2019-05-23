@@ -37,6 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.object.filter;
 
+import org.albianj.comment.Comments;
 import org.albianj.persistence.object.LogicalOperation;
 import org.albianj.persistence.object.RelationalOperator;
 
@@ -80,6 +81,12 @@ public class FilterExpression implements IFilterExpression {
         this._fieldName = fieldName;
         this._lo = lo;
         this._value = value;
+        this._chains.add(this);
+    }
+
+    @Comments("就是给条件赋值：1=1")
+    public FilterExpression(boolean isIdentical) {
+        this._isIdentical = isIdentical;
         this._chains.add(this);
     }
 

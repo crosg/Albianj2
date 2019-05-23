@@ -8,7 +8,7 @@ import java.lang.annotation.*;
  * Created by xuhaifeng on 17/2/5.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.FIELD})
 @Inherited
 @Documented
 public @interface XmlElementGenericAttribute {

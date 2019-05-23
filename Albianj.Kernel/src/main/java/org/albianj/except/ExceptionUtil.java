@@ -1,5 +1,6 @@
 package org.albianj.except;
 
+import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.verify.Validate;
 
 import java.io.File;
@@ -44,6 +45,10 @@ public class ExceptionUtil {
             sb.append(" OriginStacks ->").append(makeStackBuffer(origin.getStackTrace()));
         }
         return sb;
+    }
+
+    public static  int logLevel2Code(AlbianLoggerLevel level){
+        return level.getLevel()  * 10;
     }
 
 

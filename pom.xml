@@ -6,7 +6,7 @@
 
     <groupId>com.yuewen.nrzx.albianj</groupId>
     <artifactId>Albianj</artifactId>
-    <version>2019051503</version>
+    <version>2019052302-SNAPSHOT</version>
     <modules>
         <module>Albianj.Comment</module>
         <module>Albianj.Commons</module>
@@ -153,8 +153,8 @@
 
     <repositories>
         <repository>
-            <id>yw-nrzx</id>
-            <name>yw-nexus</name>
+            <id>yw-qa</id>
+            <name>yw-qa</name>
             <url>http://maven.yuewen.com/nexus/content/groups/nrzx/</url>
             <snapshots>
                 <enabled>true</enabled>

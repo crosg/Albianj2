@@ -123,3 +123,22 @@ deploy:2018111601
     过滤了内容为空的文本框等信息，将url复制以后加入作为view的load函数处理
     maven中更改公司内部的maven仓库，pom中增加source的打包
     发布版本2019051503
+
+2019-05-16
+    增加FilterExpression一个初始化函数，给与一个1=1的选项
+    2019051601-SNAPSHOT
+
+2019-05-21
+    增加copyObject函数
+    2019052102-SNAPSHOT
+
+2019-05-23
+    修改displayable异常到external异常
+    修改serct异常到internel异常
+    在AlbianServiceRouter中增加对于logger name和logger level的快捷方式
+    2019052301-SNAPSHOT
+
+    将ExternalException和InternalException改为RuntimeException
+    增加参数统一的日志和异常处理，addLogV2，throwExternalExceptionV2，throwInternalExceptionV2
+    StringHelper增加使用{name}作为索引的字符串模板化处理方法
+     2019052302-SNAPSHOT
