@@ -52,8 +52,8 @@ public class AlbianServiceAopProxy implements MethodInterceptor {
             return rc;
         }
 
-        Method rm = this._service.getClass().getMethod(mName, method.getParameterTypes());
-        AlbianAopAttribute attr = rm.getAnnotation(AlbianAopAttribute.class);
+        Method func = this._service.getClass().getMethod(mName, method.getParameterTypes());
+        AlbianAopAttribute attr = func.getAnnotation(AlbianAopAttribute.class);
         if (null != attr && attr.avoid()) {
             Object rc = methodProxy.invokeSuper(proxy, args);
             return rc;
@@ -76,13 +76,9 @@ public class AlbianServiceAopProxy implements MethodInterceptor {
                 try {
                     aas.before(ctx, _service, method, args);
                 } catch (Throwable e) {
-                    AlbianServiceRouter.addLog("AOPService", AlbianServiceRouter.AlbianRuntimeLogName, AlbianLoggerLevel.Error, e,
+                    AlbianServiceRouter.addLog("AOPService", AlbianServiceRouter.LoggerRunning, AlbianLoggerLevel.Error, e,
                             "execute before method in the aop service:%s for real service:%s is fail.",
                             asaa.getServiceName(), this._service.getServiceName());
-//                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
-//                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e,
-//                            "execute the before method in the aop service:%s for real service:%s is fail.",
-//                            asaa.getServiceName(),this._service.getServiceName());
                 }
             }
         }
@@ -92,12 +88,9 @@ public class AlbianServiceAopProxy implements MethodInterceptor {
             rc = methodProxy.invokeSuper(proxy, args);
         } catch (Throwable t) {
             throwable = t;
-            AlbianServiceRouter.addLog("AOPService", AlbianServiceRouter.AlbianRuntimeLogName, AlbianLoggerLevel.Error, t,
+            AlbianServiceRouter.addLog("AOPService", AlbianServiceRouter.LoggerRunning, AlbianLoggerLevel.Error, t,
                     "exception in proxy service:%s method:%s.",
                     this._service.getServiceName(), mName);
-//            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
-//                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,t,
-//                    "execute the proxy service:%s method:%s is fail.",this._service.getServiceName(),mName);
         }
 
         for (IAlbianServiceAopAttribute asaa : _aopAttributes.values()) {
@@ -109,14 +102,9 @@ public class AlbianServiceAopProxy implements MethodInterceptor {
                 try {
                     aas.after(ctx, _service, method, rc, throwable, args);
                 } catch (Throwable e) {
-                    AlbianServiceRouter.addLog("AOPService", AlbianServiceRouter.AlbianRuntimeLogName, AlbianLoggerLevel.Error, e,
+                    AlbianServiceRouter.addLog("AOPService", AlbianServiceRouter.LoggerRunning, AlbianLoggerLevel.Error, e,
                             "exception in the after method in the aop service:%s for real service:%s is fail.",
                             asaa.getServiceName(), this._service.getServiceName());
-
-//                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
-//                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e,
-//                            "execute the after method in the aop service:%s for real service:%s is fail.",
-//                            asaa.getServiceName(),this._service.getServiceName());
                 }
             }
         }
