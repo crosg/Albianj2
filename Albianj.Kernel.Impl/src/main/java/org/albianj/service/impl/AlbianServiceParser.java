@@ -37,9 +37,12 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.service.impl;
 
-import org.albianj.aop.IAlbianServiceAopAttribute;
+import org.albianj.aop.*;
 import org.albianj.aop.impl.AlbianServiceAopAttribute;
+import org.albianj.aop.rant.AlbianMethodProxyRant;
+import org.albianj.argument.RefArg;
 import org.albianj.loader.AlbianClassLoader;
+import org.albianj.loader.FinalAlbianReflectService;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.runtime.AlbianModuleType;
@@ -48,8 +51,10 @@ import org.albianj.service.parser.IAlbianParserService;
 import org.albianj.verify.Validate;
 import org.albianj.xml.XmlParser;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,8 +160,23 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
             Map<String, IAlbianServiceAopAttribute> aas = parserAlbianServiceAopAttribute(id, aopNodes);
             if (!Validate.isNullOrEmpty(aas)) {
                 serviceAttr.setAopAttributes(aas);
+                serviceAttr.setUseProxy(true);
             }
 
+        }
+
+        List funcNodes = elt.selectNodes("Methods/Method");
+        if (!Validate.isNullOrEmpty(funcNodes)) {
+            Map<String, Method> funcs = rftMethod(clzz);
+            Map<String,IAlbianServiceMethodAttribute> map = new HashMap<>();
+            RefArg<Boolean> useProxy = new RefArg<>();
+            for (Object node : funcNodes) {
+                RefArg<String> sigFuncName = new RefArg<>();
+                IAlbianServiceMethodAttribute sma = parserAlbianServiceMethodAttribute(id, (Element) node, funcs, sigFuncName, useProxy);
+                map.put(sigFuncName.getValue(),sma);
+            }
+            serviceAttr.setMethodsAttribute(map);
+            serviceAttr.setUseProxy(useProxy.getValue());
         }
 
         return serviceAttr;
@@ -200,11 +220,6 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
         if (!Validate.isNullOrEmptyOrAllSpace(allowNull)) {
             pa.setAllowNull(Boolean.parseBoolean(allowNull));
         }
-
-//        String stn = XmlParser.getAttributeValue(e,"SetterName");
-//        if(!Validate.isNullOrEmptyOrAllSpace(stn)){
-//            pa.setSetterName(stn);
-//        }
 
         try {
             Field f = clzz.getDeclaredField(name);
@@ -303,4 +318,96 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
 
     }
 
+    protected IAlbianServiceMethodAttribute parserAlbianServiceMethodAttribute(String serviceId, Element e, Map<String, Method> funcAttrs, RefArg<String> funcSigName, RefArg<Boolean> useProxy) {
+        String funcId = XmlParser.getAttributeValue(e, "Id");
+        if (Validate.isNullOrEmptyOrAllSpace(funcId)) {
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,
+                    null, AlbianModuleType.AlbianKernel, "Kernel is error.",
+                    "the service:%s's  method's id is null or empty.",
+                    serviceId);
+        }
+
+        IAlbianServiceMethodAttribute sma = new AlbianServiceMethodAttribute();
+
+        Method f = funcAttrs.get(funcId);
+        funcSigName.setValue(FinalAlbianReflectService.Instance.getMethodSignature(f));
+
+        String sNonProxy = XmlParser.getAttributeValue(e, "NonProxy");
+        if (!Validate.isNullOrEmptyOrAllSpace(sNonProxy)) {
+            sma.setIgnore(Boolean.parseBoolean(sNonProxy));
+            useProxy.setValue(true);
+        }
+
+        String sTimeoutMs = XmlParser.getAttributeValue(e, "TimeoutMs");
+        if (!Validate.isNullOrEmptyOrAllSpace(sTimeoutMs)) {
+            IAlbianServiceMethodTimeoutAttribute mcca = new AlbianServiceMethodTimeoutAttribute();
+            mcca.setTimetampMs(Long.parseLong(sTimeoutMs));
+            sma.setTimeoutAttribute(mcca);
+            useProxy.setValue(true);
+        }
+
+        Node retryNode = e.selectSingleNode("Retry");
+        if (null != retryNode) {
+            IAlbianServiceMethodRetryAttribute mra = parserMethodRetry((Element) retryNode);
+            sma.setRetryAttribute(mra);
+            useProxy.setValue(true);
+        }
+
+        Node statisticsNode = e.selectSingleNode("Statistics");
+        if (null != statisticsNode) {
+            IAlbianServiceMethodStatisticsAttribute mta = parserMethodStatistics(serviceId, funcId, (Element) statisticsNode);
+            sma.setStatisticsAttribute(mta);
+            useProxy.setValue(true);
+        }
+        return sma;
+    }
+
+    protected Map<String, Method> rftMethod(Class<?> clzz) {
+        Map<String, Method> map = new HashMap<>();
+        Method[] funcs = FinalAlbianReflectService.Instance.getAllMethod(clzz);
+        for (Method f : funcs) {
+            if (f.isAnnotationPresent(AlbianMethodProxyRant.class)) {
+                AlbianMethodProxyRant fpr = f.getAnnotation(AlbianMethodProxyRant.class);
+                map.put(fpr.Id(), f);
+            }
+        }
+        if (Validate.isNullOrEmpty(map))
+            return null;
+        return map;
+    }
+
+    protected IAlbianServiceMethodRetryAttribute parserMethodRetry(Element e) {
+        IAlbianServiceMethodRetryAttribute mra = new AlbianServiceMethodRetryAttribute();
+        String sRetryTimes = XmlParser.getAttributeValue(e, "RetryTimes");
+        if (!Validate.isNullOrEmptyOrAllSpace(sRetryTimes)) {
+            mra.setRetryTimes(Integer.parseInt(sRetryTimes));
+        }
+        String sDelayMs = XmlParser.getAttributeValue(e, "DelayMs");
+        if (!Validate.isNullOrEmptyOrAllSpace(sDelayMs)) {
+            mra.setDelayMs(Integer.parseInt(sDelayMs));
+        }
+        return mra;
+    }
+
+    protected IAlbianServiceMethodStatisticsAttribute parserMethodStatistics(String serviceId, String funcId, Element e) {
+        IAlbianServiceMethodStatisticsAttribute mta = new AlbianServiceMethodStatisticsAttribute();
+        String sEnable = XmlParser.getAttributeValue(e, "Enable");
+        if (!Validate.isNullOrEmptyOrAllSpace(sEnable)) {
+            mta.setEnable(Boolean.parseBoolean(sEnable));
+        }
+
+        if (mta.isEnable()) {
+            String sLogTagName = XmlParser.getAttributeValue(e, "LogTagName");
+            if (Validate.isNullOrEmptyOrAllSpace(sLogTagName)) {
+                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+                        IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,
+                        null, AlbianModuleType.AlbianKernel, "Kernel is error.",
+                        "the service:%s's  method:%s timing logname id is null or empty.",
+                        serviceId, funcId);
+            }
+            mta.setLogTagName(sLogTagName);
+        }
+        return mta;
+    }
 }

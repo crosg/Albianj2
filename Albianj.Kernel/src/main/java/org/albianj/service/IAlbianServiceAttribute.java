@@ -38,6 +38,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.service;
 
 import org.albianj.aop.IAlbianServiceAopAttribute;
+import org.albianj.aop.IAlbianServiceMethodAttribute;
 
 import java.util.Map;
 
@@ -69,6 +70,14 @@ public interface IAlbianServiceAttribute {
     public boolean getEnable();
 
     public void setEnable(boolean enable);
+
+    public void setUseProxy(boolean isProxy);
+
+    public boolean isUseProxy();
+
+    public void setMethodsAttribute(Map<String, IAlbianServiceMethodAttribute> methodsAttribute);
+
+    public Map<String, IAlbianServiceMethodAttribute> getMethodsAttribute();
 
 //    public boolean getModifyIdWhenLoading();
 

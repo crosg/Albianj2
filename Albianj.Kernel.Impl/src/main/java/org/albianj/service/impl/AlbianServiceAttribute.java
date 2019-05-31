@@ -38,6 +38,8 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.service.impl;
 
 import org.albianj.aop.IAlbianServiceAopAttribute;
+import org.albianj.aop.IAlbianServiceMethodAttribute;
+import org.albianj.aop.IAlbianServiceMethodRetryAttribute;
 import org.albianj.service.IAlbianService;
 import org.albianj.service.IAlbianServiceAttribute;
 import org.albianj.service.IAlbianServiceFieldAttribute;
@@ -54,6 +56,8 @@ public class AlbianServiceAttribute implements IAlbianServiceAttribute {
     private String itf;
     private Class<? extends IAlbianService> clzz = null;
     private boolean enable = true;
+    private boolean isUseProxy = false;
+    private Map<String, IAlbianServiceMethodAttribute> methodsAttribute;
 
     public String getId() {
         return this.id;
@@ -122,6 +126,26 @@ public class AlbianServiceAttribute implements IAlbianServiceAttribute {
     @Override
     public void setEnable(boolean enable) {
         this.enable = enable;
+    }
+
+    @Override
+    public void setUseProxy(boolean isProxy) {
+        this.isUseProxy = isProxy;
+    }
+
+    @Override
+    public boolean isUseProxy() {
+        return this.isUseProxy;
+    }
+
+    @Override
+    public void setMethodsAttribute(Map<String, IAlbianServiceMethodAttribute> methodsAttribute) {
+        this.methodsAttribute = methodsAttribute;
+    }
+
+    @Override
+    public Map<String, IAlbianServiceMethodAttribute> getMethodsAttribute() {
+        return methodsAttribute;
     }
 
 }

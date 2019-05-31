@@ -449,7 +449,7 @@ public abstract class FreeView implements IView {
 
     @NotHttpActionAttribute()
     public boolean isFormSubmitOnlyOnce() {
-        return true;
+        return false;
     }
 
     @NotHttpActionAttribute()

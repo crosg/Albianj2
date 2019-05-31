@@ -60,17 +60,42 @@ import java.util.Map;
  */
 public class AlbianServiceRouter extends ServiceContainer {
 
-    public static String LoggerRunning = IAlbianLoggerService2.AlbianRunningLoggerName;
-    public static String LoggerSql = IAlbianLoggerService2.AlbianSqlLoggerName;
+    /**
+     * 运行时logger，记录日志的loggerName
+     */
+    public final static String LoggerRunning = IAlbianLoggerService2.AlbianRunningLoggerName;
+    /**
+     * 数据库语句logger 记录日志的loggerName
+     */
+    public final static String LoggerSql = IAlbianLoggerService2.AlbianSqlLoggerName;
 
-    public static AlbianLoggerLevel Debug = AlbianLoggerLevel.Debug;
-    public static AlbianLoggerLevel Info = AlbianLoggerLevel.Info;
-    public static AlbianLoggerLevel Warn = AlbianLoggerLevel.Warn;
-    public static AlbianLoggerLevel Error = AlbianLoggerLevel.Error;
-    public static AlbianLoggerLevel Mark = AlbianLoggerLevel.Mark;
+    /**
+     *  日志的级别
+     */
+    public final static AlbianLoggerLevel Debug = AlbianLoggerLevel.Debug;
+    public final static AlbianLoggerLevel Info = AlbianLoggerLevel.Info;
+    public final static AlbianLoggerLevel Warn = AlbianLoggerLevel.Warn;
+    public final static AlbianLoggerLevel Error = AlbianLoggerLevel.Error;
+    public final static AlbianLoggerLevel Mark = AlbianLoggerLevel.Mark;
+
+    /**
+     * 异常级别,表示正常的异常,可能只是一个过程的需要,或者用来控制一个程序的流程
+     */
+    public final static int ExceptForNormal = ExceptionUtil.ExceptForNormal;
+    /**
+     * 警告的异常,通常对程序无实质性影响,一把会使用默认值等处理掉或者容错机制处理掉
+     */
+    public final static int ExceptForWarn = ExceptionUtil.ExceptForWarn;
+    /**
+     * 错误的异常,程序无法对该异常做出任何可修正的措施,程序必须中断或者停止
+     */
+    public final static int ExceptForError = ExceptionUtil.ExceptForError;
+    /**
+     * 无比重要的异常,比刑爷还要重要的异常,必须引起所有人的注意,不管什么程序都需要12w分警惕
+     */
+    public final static int ExceptForMark = ExceptionUtil.ExceptForMark;
 
 
-    public static String AlbianRuntimeLogName = "AlbianRuntime";
     // 时间 级别 call-chain fmt -args
     private static String logFmt = "%s %s SessionId:%s Thread:%d CallChain:[%s] ctx:[%s]";
     private static String logExceptionFmt = "%s %s SessionId:%s Thread:%d CallChain:[%s] except:[type:%s msg:%s] ctx:[%s]";

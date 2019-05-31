@@ -54,8 +54,14 @@
         <Properties>
             <Property Type="Ref" Name="HttpConfigurtion" Value="AlbianMvcConfigurtionService.HttpConfigurtion"/>
         </Properties>
+        <Methods>
+        //使用id和AlbianMethodProxyRant结合使用，主要是为了不配参数，当参数复杂的时候要弄死我
+            <Method Id="testMethod" NonProxy="true" CallCountS="300" TimeoutMs="100">
+                <Retry RetryTimes="3" DelayMs="100"></Retry>
+                <Timing Enable="true" LogTagName="tagName"></Timing>
+            </Method>
+        </Methods>
     </Service>
-
   -->
 
 </Services>

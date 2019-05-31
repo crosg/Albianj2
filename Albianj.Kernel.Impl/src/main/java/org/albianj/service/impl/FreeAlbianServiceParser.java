@@ -39,6 +39,7 @@ package org.albianj.service.impl;
 
 import org.albianj.aop.AlbianAopAttribute;
 import org.albianj.aop.IAlbianServiceAopAttribute;
+import org.albianj.aop.IAlbianServiceMethodAttribute;
 import org.albianj.io.Path;
 import org.albianj.kernel.KernelSetting;
 import org.albianj.logger.AlbianLoggerLevel;
@@ -244,6 +245,23 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
                     for (Map.Entry<String, IAlbianServiceAopAttribute> fe : pkgAopAttr.entrySet()) {
                         if (!asaAopAttr.containsKey(fe.getKey())) {
                             asaAopAttr.put(fe.getKey(), fe.getValue());
+                        }
+                    }
+                }
+            }
+
+            Map<String, IAlbianServiceMethodAttribute> asaFuncsAttr = asa.getMethodsAttribute();
+            Map<String, IAlbianServiceMethodAttribute> pkgFuncsAttr = asaPkg.getMethodsAttribute();
+            if (Validate.isNullOrEmpty(asaFuncsAttr)) {
+                asa.setMethodsAttribute(pkgFuncsAttr);
+            } else {
+                if (!Validate.isNullOrEmpty(pkgFuncsAttr)) {
+                    // merger field attribute
+                    // base on service.xml and merger field from pkg
+                    // if exist in service.xml not merger field from pkg
+                    for (Map.Entry<String, IAlbianServiceMethodAttribute> fe : pkgFuncsAttr.entrySet()) {
+                        if (!asaFuncsAttr.containsKey(fe.getKey())) {
+                            asaFuncsAttr.put(fe.getKey(), fe.getValue());
                         }
                     }
                 }

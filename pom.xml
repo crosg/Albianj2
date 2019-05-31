@@ -6,7 +6,7 @@
 
     <groupId>com.yuewen.nrzx.albianj</groupId>
     <artifactId>Albianj</artifactId>
-    <version>2019052302-SNAPSHOT</version>
+    <version>2019052304-SNAPSHOT</version>
     <modules>
         <module>Albianj.Comment</module>
         <module>Albianj.Commons</module>
@@ -33,9 +33,11 @@
         <module>Albianj.WordProcessor.Impl</module>
         <module>Albianj.Core</module>
         <module>Albianj.Test</module>
-        <module>Albianj.Monitor</module>
-        <module>Albianj.Monitor.Impl</module>
+        <!--<module>Albianj.Monitor</module>-->
+        <!--<module>Albianj.Monitor.Impl</module>-->
         <module>Albianj.MVC.Ctags</module>
+        <module>Albianj.Statistics</module>
+        <module>Albianj.Statistics.Impl</module>
         <!--<module>Albianj.Pooling</module>-->
         <!--<module>Albianj.Pooling</module>-->
     </modules>

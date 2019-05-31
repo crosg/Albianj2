@@ -38,6 +38,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.service;
 
 import org.albianj.aop.AlbianAopAttribute;
+import org.albianj.comment.Comments;
 import org.albianj.io.Path;
 import org.albianj.kernel.AlbianKernel;
 import org.albianj.kernel.KernelSetting;
@@ -191,5 +192,25 @@ public abstract class FreeAlbianService implements IAlbianService {
 
     public String getServiceName() {
         return this.getClass().getSimpleName();
+    }
+
+    private String id = null;
+    @Comments("设置当前service的名字，service的子类必须实现该方法，并且值必须和service.xml中配置的Id一致。默认为当前类的名称。")
+    @AlbianAopAttribute(avoid = true)
+    public void setServiceId(String id){
+        this.id = id;
+    }
+    @Comments("设置当前service的名字，service的子类必须实现该方法，并且值必须和service.xml中配置的Id一致。默认为当前类的名称。")
+    @AlbianAopAttribute(avoid = true)
+    public String getServiceId(){
+        return  this.id;
+    }
+
+    private IAlbianServiceAttribute attr;
+    public void setServiceAttribute(IAlbianServiceAttribute attr){
+        this.attr = attr;
+    }
+    public IAlbianServiceAttribute getServiceAttribute(){
+        return this.attr;
     }
 }

@@ -142,3 +142,19 @@ deploy:2018111601
     增加参数统一的日志和异常处理，addLogV2，throwExternalExceptionV2，throwInternalExceptionV2
     StringHelper增加使用{name}作为索引的字符串模板化处理方法
      2019052302-SNAPSHOT
+
+     去掉AlbianServiceRouter中的RuntimeLogName，因为和logNAME太容易混淆了
+     2019052303-SNAPSHOT
+
+     去掉AlbianServiceRouter中增加ExternalException和InternalException的code快捷引用
+      2019052304-SNAPSHOT
+
+ 2019-05-29
+    把mvc中的验证表单重复提交的功能默认从打开变为关闭
+
+ 2019-05-30
+    更改aop对象线程不安全的bug：对于IAlbianService增加serviceID的setter和getter，增加IAlbianServiceAttribute的setter和getter
+
+ 2019-05-31
+    增加统计功能（但是目前flush到log只在add中才可以），没有flush的线程一并flush
+    在AOP中增加对于method的重试，timeout，统计等aop功能。

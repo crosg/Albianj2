@@ -1,7 +1,7 @@
 package org.albianj.kernel.impl;
 
 import ognl.Ognl;
-import org.albianj.aop.impl.AlbianServiceAopProxy;
+import org.albianj.aop.impl.AlbianServiceProxyExecutor;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.reflection.AlbianTypeConvert;
@@ -59,15 +59,19 @@ public class AlbianServiceLoader {
             service.loading();
             setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.AfterLoading, servAttrs);
             service.afterLoading();
-            if (Validate.isNullOrEmpty(serviceAttr.getAopAttributes())) {
+            service.setServiceId(id);
+            service.setServiceAttribute(serviceAttr);
+            if (!serviceAttr.isUseProxy()) {
                 rtnService = service;
             } else {
-                AlbianServiceAopProxy proxy = new AlbianServiceAopProxy();
-                IAlbianService serviceProxy = (IAlbianService) proxy.newInstance(service, serviceAttr.getAopAttributes());
+//                AlbianServiceProxyExecutor proxy = new AlbianServiceProxyExecutor();
+                IAlbianService serviceProxy = (IAlbianService) AlbianServiceProxyExecutor.Instance.newProxyService(service, serviceAttr.getAopAttributes());
                 serviceProxy.setRealService(service);
                 serviceProxy.beforeLoad();
                 serviceProxy.loading();
                 serviceProxy.afterLoading();
+                serviceProxy.setServiceId(id);
+                service.setServiceAttribute(serviceAttr);
                 rtnService = serviceProxy;
             }
         } catch (Exception e) {

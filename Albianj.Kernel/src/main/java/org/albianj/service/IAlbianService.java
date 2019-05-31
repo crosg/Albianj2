@@ -85,4 +85,14 @@ public interface IAlbianService {
     @AlbianAopAttribute(avoid = true)
     @Comments("得到当前service的名字，service的子类必须实现该方法，并且值必须和service.xml中配置的Id一致。默认为当前类的名称。")
     public String getServiceName();
+
+    @Comments("设置当前service的名字，service的子类必须实现该方法，并且值必须和service.xml中配置的Id一致。默认为当前类的名称。")
+    public void setServiceId(String id);
+    @Comments("设置当前service的名字，service的子类必须实现该方法，并且值必须和service.xml中配置的Id一致。默认为当前类的名称。")
+    public String getServiceId();
+
+    @Comments("设置当前service的名字，service的子类必须实现该方法，并且值必须和service.xml中配置的Id一致。默认为当前类的名称。")
+    public void setServiceAttribute(IAlbianServiceAttribute attr);
+    @Comments("设置当前service的名字，service的子类必须实现该方法，并且值必须和service.xml中配置的Id一致。默认为当前类的名称。")
+    public IAlbianServiceAttribute getServiceAttribute();
 }
