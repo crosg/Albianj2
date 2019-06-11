@@ -90,8 +90,8 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
                     "RootPath for mvf is empry or null.");
 
         }
-        if(!rootPath.endsWith(KernelSetting.getPathSep())){
-            rootPath += KernelSetting.getPathSep();
+        if(!rootPath.endsWith(File.separator)){
+            rootPath += File.separator;
         }
 //        Path.relativeToAbsolute();
         c.setRootPath(rootPath);

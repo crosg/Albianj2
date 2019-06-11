@@ -21,8 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AlbianLoggerService2 extends FreeAlbianService implements
         IAlbianLoggerService2 {
 
-    private static ConcurrentHashMap<String, Logger> loggers = null;
-
     public String getServiceName() {
         return Name;
     }
@@ -87,6 +85,9 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
         String method = stack.getMethodName();
         int line = stack.getLineNumber();
         log(filename, method, line, loggerName, sessionId, level, e, format, values);
+    }
+    public boolean isExistLogger(String logName){
+        return AlbianServiceRouter.getLogger().isExistLogger(logName);
     }
 
     @Deprecated

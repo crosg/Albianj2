@@ -37,7 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.kernel;
 
-import org.albianj.service.AlbianBuiltinServiceNamePair;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.IAlbianService;
 
 import java.math.BigInteger;
@@ -46,7 +46,7 @@ import java.util.Date;
 
 public interface IAlbianLogicIdService extends IAlbianService {
 
-    static String Name = AlbianBuiltinServiceNamePair.AlbianLogicIdServiceName;
+    static String Name = AlbianBuiltinNames.AlbianLogicIdServiceName;
 
     /**
      * ?????????????????????kernel???????????????ID???
@@ -79,4 +79,5 @@ public interface IAlbianLogicIdService extends IAlbianService {
     BigInteger makeSimpleId();
     public BigInteger genId( String networkName);
 
-    }
+    BigInteger genId();
+}

@@ -39,11 +39,10 @@ package org.albianj.service;
 
 import org.albianj.aop.IAlbianServiceAopAttribute;
 import org.albianj.aop.IAlbianServiceMethodAttribute;
-import org.albianj.loader.IAlbianModuleConf;
 
 import java.util.Map;
 
-public interface IAlbianServiceAttribute extends IAlbianModuleConf {
+public interface IAlbianBundleServiceAttribute{
     public String getId();
 
     public void setId(String id) throws IllegalArgumentException;

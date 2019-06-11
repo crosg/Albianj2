@@ -264,7 +264,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
 //                    } catch (Exception e) {
 //                        isThrow = true;
 //                        IRunningStorageAttribute rsa = t.getStorage();
-//                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+//                        AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
 //                                writerJob.getId(), AlbianLoggerLevel.Error,e,
 //                                "clear the statement to storage:%s database:%s is fail.",
 //                                rsa.getStorageAttribute().getName(), rsa.getDatabase());
@@ -274,7 +274,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
 //            } catch (Exception exc) {
 //                isThrow = true;
 //                IRunningStorageAttribute rsa = t.getStorage();
-//                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+//                AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
 //                        writerJob.getId(), AlbianLoggerLevel.Error,exc,
 //                        "close the connect to storage:%s database:%s is fail.",
 //                        rsa.getStorageAttribute().getName(), rsa.getDatabase());

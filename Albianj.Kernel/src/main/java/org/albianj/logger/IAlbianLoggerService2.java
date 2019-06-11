@@ -2,7 +2,7 @@ package org.albianj.logger;
 
 import org.albianj.comment.Comments;
 import org.albianj.runtime.AlbianModuleType;
-import org.albianj.service.AlbianBuiltinServiceNamePair;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.IAlbianService;
 //import org.apache.http.annotation.Contract;
 
@@ -13,7 +13,7 @@ import org.albianj.service.IAlbianService;
 public interface IAlbianLoggerService2 extends IAlbianService {
 
     @Comments("Albianj Logger Service2在server.xml中的标识")
-    String Name = AlbianBuiltinServiceNamePair.AlbianLoggerService2Name;
+    String Name = AlbianBuiltinNames.AlbianLoggerService2Name;
 
     @Comments("the session id for albianj inner thread")
     String InnerThreadName = "AlbianInnerThread";
@@ -23,6 +23,9 @@ public interface IAlbianLoggerService2 extends IAlbianService {
 
     @Comments("albianj runtime logger name")
     String AlbianRunningLoggerName = "AlbianRunningLogger";
+
+    boolean isExistLogger(String logName);
+
 
     void log(@Comments("当前日志记录处的文件名") String filename,
              @Comments("当前日志记录处的方法名") String methodName,

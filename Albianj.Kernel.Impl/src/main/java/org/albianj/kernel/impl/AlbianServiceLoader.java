@@ -2,6 +2,7 @@ package org.albianj.kernel.impl;
 
 import ognl.Ognl;
 import org.albianj.aop.impl.AlbianServiceProxyExecutor;
+import org.albianj.loader.AlbianBundleContext;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.reflection.AlbianTypeConvert;
@@ -13,14 +14,22 @@ import java.util.Map;
 public class AlbianServiceLoader {
     private static String sessionId = "AlbianServiceLoader";
 
-    public static IAlbianService makeupService(IAlbianServiceAttribute serviceAttr, Map<String, IAlbianServiceAttribute> servAttrs) {
+    /**
+     * 创建service，并且将其依附与BundleContext管理
+     * @param bundleContext
+     * @param serviceAttr
+     * @param servAttrs
+     * @return
+     */
+    public static IAlbianService makeupServiceAndAttachBundleContext(AlbianBundleContext bundleContext, IAlbianBundleServiceAttribute serviceAttr, Map<String, IAlbianBundleServiceAttribute> servAttrs) {
         String sImplClzz = serviceAttr.getType();
         String id = serviceAttr.getId();
         IAlbianService rtnService = null;
 
         String sInterface = serviceAttr.getInterface();
         try {
-            Class<?> cla = AlbianClassLoader.getInstance().loadClass(sImplClzz);
+//            Class<?> cla = AlbianClassLoader.getInstance().loadClass(sImplClzz);
+            Class<?> cla = bundleContext.getClassLoader().loadClass(sImplClzz);
             if (null == cla) {
                 AlbianServiceRouter.throwException(sessionId,
                         IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -36,7 +45,8 @@ public class AlbianServiceLoader {
 
             Class<?> itf = null;
             if (!Validate.isNullOrEmptyOrAllSpace(sInterface)) {
-                itf = AlbianClassLoader.getInstance().loadClass(sInterface);
+//                itf = AlbianClassLoader.getInstance().loadClass(sInterface);
+                itf = bundleContext.getClassLoader().loadClass(sInterface);
                 if (!itf.isAssignableFrom(cla)) {
                     AlbianServiceRouter.throwException(sessionId,
                             IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -53,6 +63,7 @@ public class AlbianServiceLoader {
             }
 
             IAlbianService service = (IAlbianService) cla.newInstance();
+            service.setBundleContext(bundleContext);
             setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.AfterNew, servAttrs);
             service.beforeLoad();
             setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.BeforeLoading, servAttrs);
@@ -65,7 +76,8 @@ public class AlbianServiceLoader {
                 rtnService = service;
             } else {
 //                AlbianServiceProxyExecutor proxy = new AlbianServiceProxyExecutor();
-                IAlbianService serviceProxy = (IAlbianService) AlbianServiceProxyExecutor.Instance.newProxyService(service, serviceAttr.getAopAttributes());
+                IAlbianService serviceProxy = (IAlbianService) AlbianServiceProxyExecutor.Instance.newProxyService(bundleContext.getClassLoader(),service, serviceAttr.getAopAttributes());
+                serviceProxy.setBundleContext(bundleContext);
                 serviceProxy.setRealService(service);
                 serviceProxy.beforeLoad();
                 serviceProxy.loading();
@@ -74,6 +86,7 @@ public class AlbianServiceLoader {
                 service.setServiceAttribute(serviceAttr);
                 rtnService = serviceProxy;
             }
+            bundleContext.addBundleService(id,rtnService);
         } catch (Exception e) {
             AlbianServiceRouter.throwException(sessionId,
                     IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -83,7 +96,7 @@ public class AlbianServiceLoader {
         return rtnService;
     }
 
-    public static void setServiceFields(IAlbianService serv, IAlbianServiceAttribute servAttr, AlbianServiceFieldSetterLifetime lifetime, Map<String, IAlbianServiceAttribute> servAttrs) {
+    public static void setServiceFields(IAlbianService serv, IAlbianBundleServiceAttribute servAttr, AlbianServiceFieldSetterLifetime lifetime, Map<String, IAlbianBundleServiceAttribute> servAttrs) {
         if(Validate.isNullOrEmpty(servAttr.getServiceFields())) {
             return;
         }
@@ -146,7 +159,7 @@ public class AlbianServiceLoader {
             }
 
             if (null != refService) {
-                IAlbianServiceAttribute sAttr = servAttrs.get(refServiceId);
+                IAlbianBundleServiceAttribute sAttr = servAttrs.get(refServiceId);
                 Object refRealObj = sAttr.getServiceClass().cast(refService);//must get service full type sign
                 try {
                     realObject = Ognl.getValue(exp, refRealObj);// get read value from full-sgin ref service

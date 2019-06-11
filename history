@@ -158,3 +158,12 @@ deploy:2018111601
  2019-05-31
     增加统计功能（但是目前flush到log只在add中才可以），没有flush的线程一并flush
     在AOP中增加对于method的重试，timeout，统计等aop功能。
+
+2019-6-4
+    去掉albianj中的并行service，即线程池AlbianThreadPoolService，该功能无人用
+
+2019-06-11
+    不在维护albianj的cached和unid。因为cached没有扔使用，unid请请使用http方式，不再提供tcp方式。
+    增加boot.xml的配置文件，其中有root logger的配置
+    当多bundle的时候，增加logger。xml配置文件，以此来解决log4j单进程可能会出现的loggerName冲突问题
+    增加Bundle模式

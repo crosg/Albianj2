@@ -45,7 +45,7 @@ import org.albianj.persistence.object.IAlbianObject;
 import org.albianj.persistence.object.IFilterCondition;
 import org.albianj.persistence.object.IOrderByCondition;
 import org.albianj.persistence.object.filter.IChainExpression;
-import org.albianj.service.AlbianBuiltinServiceNamePair;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.IAlbianService;
 
 import java.sql.Statement;
@@ -93,7 +93,7 @@ public interface IAlbianPersistenceService extends IAlbianService {
     /**
      * 此service在service.xml中的id
      */
-    final static String Name = AlbianBuiltinServiceNamePair.AlbianPersistenceServiceName;
+    final static String Name = AlbianBuiltinNames.AlbianPersistenceServiceName;
 
     /**
      * 从存储中删除指定的对象

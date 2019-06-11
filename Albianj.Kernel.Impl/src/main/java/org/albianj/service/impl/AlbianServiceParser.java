@@ -59,18 +59,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@AlbianServiceRant(Id = AlbianBuiltinServiceNamePair.AlbianServiceParserName, Interface = IAlbianParserService.class)
+@AlbianServiceRant(Id = AlbianBuiltinNames.AlbianServiceParserName, Interface = IAlbianParserService.class)
 public class AlbianServiceParser extends FreeAlbianServiceParser {
 
     private final static String ID_ATTRBUITE_NAME = "Id";
     private final static String TYPE_ATTRBUITE_NAME = "Type";
 
     public String getServiceName() {
-        return AlbianBuiltinServiceNamePair.AlbianServiceParserName;
+        return AlbianBuiltinNames.AlbianServiceParserName;
     }
 
     @Override
-    protected void parserServices(Map<String, IAlbianServiceAttribute> map,
+    protected void parserServices(Map<String, IAlbianBundleServiceAttribute> map,
                                   String tagName, @SuppressWarnings("rawtypes") List nodes) {
         if (Validate.isNullOrEmpty(nodes)) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -82,7 +82,7 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
         for (Object node : nodes) {
             Element elt = XmlParser.toElement(node);
             name = null == name ? "tagName" : name;
-            IAlbianServiceAttribute serviceAttr = parserService(name, elt);
+            IAlbianBundleServiceAttribute serviceAttr = parserService(name, elt);
             if (null == serviceAttr) {
                 AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
                         IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,
@@ -96,14 +96,14 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
     }
 
     @Override
-    protected IAlbianServiceAttribute parserService(String name, Element elt) {
+    protected IAlbianBundleServiceAttribute parserService(String name, Element elt) {
         if (null == elt) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null,
                     AlbianModuleType.AlbianKernel, "Kernel is error.",
                     "parser the node for service is null or empty.the service id:%s", name);
         }
-        IAlbianServiceAttribute serviceAttr = new AlbianServiceAttribute();
+        IAlbianBundleServiceAttribute serviceAttr = new AlbianBundleServiceAttribute();
         String id = XmlParser.getAttributeValue(elt, ID_ATTRBUITE_NAME);
         if (Validate.isNullOrEmptyOrAllSpace(id)) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -312,8 +312,6 @@ public class AlbianServiceParser extends FreeAlbianServiceParser {
                     id);
         }
         aa.setProxyName(proxyName);
-
-
         return aa;
 
     }

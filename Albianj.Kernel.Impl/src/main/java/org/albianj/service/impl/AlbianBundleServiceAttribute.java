@@ -39,16 +39,14 @@ package org.albianj.service.impl;
 
 import org.albianj.aop.IAlbianServiceAopAttribute;
 import org.albianj.aop.IAlbianServiceMethodAttribute;
-import org.albianj.aop.IAlbianServiceMethodRetryAttribute;
-import org.albianj.loader.FreeAlbianModuleConf;
 import org.albianj.service.IAlbianService;
-import org.albianj.service.IAlbianServiceAttribute;
+import org.albianj.service.IAlbianBundleServiceAttribute;
 import org.albianj.service.IAlbianServiceFieldAttribute;
 import org.albianj.verify.Validate;
 
 import java.util.Map;
 
-public class AlbianServiceAttribute extends FreeAlbianModuleConf implements IAlbianServiceAttribute {
+public class AlbianBundleServiceAttribute implements IAlbianBundleServiceAttribute {
 
     Map<String, IAlbianServiceFieldAttribute> ps;
     Map<String, IAlbianServiceAopAttribute> aopAttributes = null;

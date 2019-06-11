@@ -40,6 +40,7 @@ package org.albianj.service;
 import org.albianj.aop.AlbianAopAttribute;
 import org.albianj.comment.Comments;
 import org.albianj.kernel.AlbianKernel;
+import org.albianj.loader.IAlbianBundleService;
 
 /**
  * ??????albianj???service??????????????????????????????FreeAlbianService???????
@@ -48,7 +49,7 @@ import org.albianj.kernel.AlbianKernel;
  * @author Seapeak
  */
 @AlbianKernel
-public interface IAlbianService {
+public interface IAlbianService extends IAlbianBundleService {
 
     String FullName = "org.albianj.service.IAlbianService";
 
@@ -92,7 +93,7 @@ public interface IAlbianService {
     public String getServiceId();
 
     @Comments("设置当前service的名字，service的子类必须实现该方法，并且值必须和service.xml中配置的Id一致。默认为当前类的名称。")
-    public void setServiceAttribute(IAlbianServiceAttribute attr);
+    public void setServiceAttribute(IAlbianBundleServiceAttribute attr);
     @Comments("设置当前service的名字，service的子类必须实现该方法，并且值必须和service.xml中配置的Id一致。默认为当前类的名称。")
-    public IAlbianServiceAttribute getServiceAttribute();
+    public IAlbianBundleServiceAttribute getServiceAttribute();
 }

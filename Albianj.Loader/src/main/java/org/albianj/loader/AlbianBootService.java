@@ -39,14 +39,19 @@ package org.albianj.loader;
 
 import org.albianj.kernel.AlbianState;
 import org.albianj.kernel.IAlbianTransmitterService;
+import org.albianj.loader.entry.AlbianBootAttribute;
 import org.albianj.net.MemoryToIOStream;
 import org.albianj.verify.Validate;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.FileInputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class AlbianBootService {
+
+    public final static  String RootBundleName = "root";
+
     @SuppressWarnings("resource")
     private static ArrayList<byte[]> unpack(FileInputStream fis) {
         ArrayList<byte[]> list = null;
@@ -170,6 +175,54 @@ public class AlbianBootService {
 
     public static boolean start(String configPath) {
         return start(null, configPath, configPath);
+    }
+
+    /**
+     * 使用bundle模式启动albianj，默认的bundleName为root
+     * @param workPath  项目工程路径
+     * @return
+     */
+    public static boolean attachBundle(String workPath){
+        return attachBundle(RootBundleName,workPath);
+    }
+
+    /**
+     * 指定bundleName从而使用bundle模式启动albianj，
+     * @param  bundleName bundle的名字
+     * @param workPath 项目工程路径
+     * @return
+     */
+    public static boolean attachBundle(String bundleName,String workPath){
+
+        AlbianBootContext bootContext = AlbianBootContext.Instance;
+        boolean needLoadBoot = bootContext.needBootStart(); // 只有当第一次启动的时候，才需要加载bootloader
+        if(needLoadBoot) {
+            AlbianBootAttribute bootAttr = bootContext.findBootAttrOrNewIfNotExist();
+            String system = System.getProperty("os.name");
+            boolean isWin = system.toLowerCase().contains("windows");
+            bootAttr.setWindows(isWin);
+        }
+
+        if(null == bundleName || bundleName.isEmpty() || bundleName.trim().isEmpty()) {
+            bundleName = RootBundleName;
+        }
+
+        String tranServiceClass = "org.albianj.kernel.impl.FinalAlbianBootStartupService";
+        AlbianBundleContext bundleContext = AlbianBootContext.Instance.findBundleContextOrNewIfNotExit(bundleName,workPath);
+        try {
+            Class<?> clzz = bundleContext.getClassLoader().loadClass(tranServiceClass);
+            Object bundleTransmitterService = clzz.newInstance();
+            Method m = clzz.getMethod("init",AlbianBundleContext.class);
+            Object rc = m.invoke(bundleTransmitterService,bundleContext,needLoadBoot);
+            return null == rc ? false : Boolean.parseBoolean(rc.toString());
+        }catch (Exception e){
+            System.out.println("Start Bundle -> " + bundleName + ",WorkPath -> " + workPath + " throw exception " + e.getMessage());
+        }
+        return false;
+    }
+
+    public static void detachBundle(String bundleName){
+        AlbianBootContext.Instance.deleteBundle(bundleName);
     }
 
 }

@@ -2,6 +2,9 @@ package org.albianj.service;
 
 public class AlbianBuiltinNames {
 
+    /**
+     * 配置文件的模块名称，bundle context中conf attribute的key的值
+     */
     public class Conf{
         public final static String Service = "Service";
         public final static String Logger = "Logger";

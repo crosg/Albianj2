@@ -37,8 +37,6 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.kernel.impl;
 
-import ognl.Ognl;
-import org.albianj.except.AlbianRuntimeException;
 import org.albianj.kernel.AlbianKernel;
 import org.albianj.kernel.AlbianState;
 import org.albianj.kernel.IAlbianTransmitterService;
@@ -46,11 +44,9 @@ import org.albianj.kernel.KernelSetting;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.logger.IAlbianLoggerService2;
-import org.albianj.reflection.AlbianTypeConvert;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.*;
 import org.albianj.service.impl.FreeAlbianServiceParser;
-import org.albianj.verify.Validate;
 
 import java.util.*;
 
@@ -126,14 +122,14 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
         // do load builtin service
         AlbianBuiltinServiceLoader bltSevLoader = new AlbianBuiltinServiceLoader();
         bltSevLoader.loadServices();
-        Map<String, IAlbianServiceAttribute> bltSrvAttrs = bltSevLoader.getBltSrvAttrs();
+        Map<String, IAlbianBundleServiceAttribute> bltSrvAttrs = bltSevLoader.getBltSrvAttrs();
 
         //do load bussiness service
-        Map<String, IAlbianServiceAttribute> bnsSrvAttrs = (Map<String, IAlbianServiceAttribute>)
-                ServiceAttributeMap
-                        .get(FreeAlbianServiceParser.ALBIANJSERVICEKEY);
+        Map<String, IAlbianBundleServiceAttribute> bnsSrvAttrs = (Map<String, IAlbianBundleServiceAttribute>)
+                AlbianBundleServiceConf
+                        .get(FreeAlbianServiceParser.AlbianServiceModuleName);
 
-        Map<String, IAlbianServiceAttribute> mapAttr = new HashMap<>();
+        Map<String, IAlbianBundleServiceAttribute> mapAttr = new HashMap<>();
         mapAttr.putAll(bnsSrvAttrs); // copy it for field setter
 
         for (String bltServKey : bltSrvAttrs.keySet()) { // remove builtin service in service.xml
@@ -142,7 +138,7 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
             }
         }
 
-        Map<String, IAlbianServiceAttribute> failMap = new LinkedHashMap<String, IAlbianServiceAttribute>();
+        Map<String, IAlbianBundleServiceAttribute> failMap = new LinkedHashMap<String, IAlbianBundleServiceAttribute>();
         int lastFailSize = 0;
         int currentFailSize = 0;
         Exception e = null;
@@ -152,11 +148,11 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
             String sType = null;
             String id = null;
             String sInterface = null;
-            for (Map.Entry<String, IAlbianServiceAttribute> entry : mapAttr
+            for (Map.Entry<String, IAlbianBundleServiceAttribute> entry : mapAttr
                     .entrySet())
                 try {
-                    IAlbianServiceAttribute serviceAttr = entry.getValue();
-                    IAlbianService service = AlbianServiceLoader.makeupService(serviceAttr,mapAttr);
+                    IAlbianBundleServiceAttribute serviceAttr = entry.getValue();
+                    IAlbianService service = AlbianServiceLoader.makeupServiceAndAttachBundleContext(serviceAttr,mapAttr);
                     ServiceContainer.addService(serviceAttr.getId(), service);
                 } catch (Exception exc) {
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -204,7 +200,7 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
         // merger kernel service and bussines service
         // then update the all service attribute
         bltSrvAttrs.putAll(bnsSrvAttrs);
-        ServiceAttributeMap.insert(FreeAlbianServiceParser.ALBIANJSERVICEKEY, bltSrvAttrs);
+        AlbianBundleServiceConf.insert(FreeAlbianServiceParser.AlbianServiceModuleName, bltSrvAttrs);
 
         state = AlbianState.Running;
         AlbianServiceRouter.getLogger2().log(IAlbianLoggerService.AlbianRunningLoggerName,

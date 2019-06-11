@@ -95,6 +95,10 @@ public class AlbianLoggerService extends FreeAlbianService implements
         }
     }
 
+    public boolean isExistLogger(String logName){
+        return (null != loggers) && loggers.contains(logName);
+    }
+
     /* (non-Javadoc)
      * @see org.albianj.logger.impl.qqqqqq#getLogger(java.lang.String)
      */

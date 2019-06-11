@@ -1,7 +1,7 @@
 package org.albianj.mvc.service;
 
 import org.albianj.mvc.view.View;
-import org.albianj.service.AlbianBuiltinServiceNamePair;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.IAlbianService;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.Map;
  * Created by xuhaifeng on 16/12/1.
  */
 public interface IAlbianTemplateService extends IAlbianService {
-    String Name = AlbianBuiltinServiceNamePair.AlbianTemplateServiceName;
+    String Name = AlbianBuiltinNames.AlbianTemplateServiceName;
 
     void renderTemplate(View page, Map<String, ?> model, Map<String, Class<?>> funcs, Writer writer)
             throws IOException, TemplateException;

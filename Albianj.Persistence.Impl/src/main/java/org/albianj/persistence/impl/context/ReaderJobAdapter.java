@@ -295,7 +295,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
 
         if (null == routings || Validate.isNullOrEmpty(routers)) {
             IDataRouterAttribute dra = albianObject.getDefaultRouting();
-            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Warn,
                     "albian-object:%s reader-data-router is null or empty and use default:%s.",
                     className, dra.getName());
@@ -306,7 +306,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
             if (isExact) {
                 if (!routings.getWriterRouterEnable()) {
                     IDataRouterAttribute dra = albianObject.getDefaultRouting();
-                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
                             sessionId, AlbianLoggerLevel.Warn,
                             "the reader-date-router is not appoint and the object:%s all reader router are disable. then use defaut:%s.",
                             className, dra.getName());
@@ -315,7 +315,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
             } else {
                 if (!routings.getReaderRouterEnable()) {
                     IDataRouterAttribute dra = albianObject.getDefaultRouting();
-                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
                             sessionId, AlbianLoggerLevel.Warn,
                             "the reader-date-router is not appoint and the object:%s all reader router are disable. then use defaut:%s.",
                             className, dra.getName());
@@ -333,7 +333,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
                 }
                 if (null == routing) {
                     IDataRouterAttribute dra = albianObject.getDefaultRouting();
-                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
                             sessionId, AlbianLoggerLevel.Warn,
                             "the reader-date-router is not appoint and the object:%s not found router. then use defaut:%s.",
                             className, dra.getName());
@@ -341,7 +341,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
                 }
                 if (!routing.getEnable()) {
                     IDataRouterAttribute dra = albianObject.getDefaultRouting();
-                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
                             sessionId, AlbianLoggerLevel.Warn,
                             "the reader-date-router is not appoint and the object:%s found router:%s but it disable. then use defaut:%s.",
                             className, routing.getName(), dra.getName());
@@ -350,7 +350,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
                 return routing;
             }
             IDataRouterAttribute dra = albianObject.getDefaultRouting();
-            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Warn,
                     "the reader-date-router is not appoint and the object:%s reader-date-router arithmetic is null. then use defaut:%s.",
                     className, dra.getName());
@@ -362,7 +362,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
         if (null == routing) {
             IDataRouterAttribute dra = albianObject.getDefaultRouting();
 
-            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Warn,
                     "albian-object:%s reader-data-router is not found and use default:%s.",
                     className, dra.getName());
@@ -370,7 +370,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
         }
         if (!routing.getEnable()) {
             IDataRouterAttribute dra = albianObject.getDefaultRouting();
-            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Warn,
                     "the reader-date-router is not appoint and the object:%s found router:%s but it disable. then use defaut:%s.",
                     className, routing.getName(), dra.getName());
@@ -400,7 +400,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
 
         if (null == routings) {
             String name = readerRouting.getStorageName();
-            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Warn,
                     "albian-object:%s reader-data-router is not found and use default storage:%s.",
                     className, name);
@@ -409,7 +409,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
         IAlbianObjectDataRouter router = routings.getDataRouter();
         if (null == router) {
             String name = readerRouting.getStorageName();
-            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Warn,
                     IAlbianLoggerService.AlbianSqlLoggerName,
                     "albian-object:%s reader-data-router arithmetic is not found and use default storage:%s.",
@@ -421,7 +421,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
                 : router.mappingReaderRoutingStorage(readerRouting, hashWheres, hashOrderbys);
         if (Validate.isNullOrEmpty(name)) {
             String dname = readerRouting.getStorageName();
-            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Warn,
                     IAlbianLoggerService.AlbianSqlLoggerName,
                     IAlbianLoggerService.AlbianSqlLoggerName,

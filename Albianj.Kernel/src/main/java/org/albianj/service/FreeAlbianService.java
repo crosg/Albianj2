@@ -42,6 +42,7 @@ import org.albianj.comment.Comments;
 import org.albianj.io.Path;
 import org.albianj.kernel.AlbianKernel;
 import org.albianj.kernel.KernelSetting;
+import org.albianj.loader.AlbianBundleContext;
 import org.albianj.service.parser.AlbianParserException;
 
 import java.io.File;
@@ -60,6 +61,7 @@ public abstract class FreeAlbianService implements IAlbianService {
     boolean enableProxy = false;
     IAlbianService service = null;
     private AlbianServiceLifetime state = AlbianServiceLifetime.Normal;
+    private AlbianBundleContext bundleContext;
 
     @AlbianAopAttribute(avoid = true)
     public AlbianServiceLifetime getAlbianServiceState() {
@@ -206,11 +208,18 @@ public abstract class FreeAlbianService implements IAlbianService {
         return  this.id;
     }
 
-    private IAlbianServiceAttribute attr;
-    public void setServiceAttribute(IAlbianServiceAttribute attr){
+    private IAlbianBundleServiceAttribute attr;
+    public void setServiceAttribute(IAlbianBundleServiceAttribute attr){
         this.attr = attr;
     }
-    public IAlbianServiceAttribute getServiceAttribute(){
+    public IAlbianBundleServiceAttribute getServiceAttribute(){
         return this.attr;
+    }
+
+    public AlbianBundleContext getBundleContext(){
+        return this.bundleContext;
+    }
+    public void setBundleContext(AlbianBundleContext bundleContext){
+        this.bundleContext = bundleContext;
     }
 }

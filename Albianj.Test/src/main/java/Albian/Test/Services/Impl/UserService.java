@@ -56,11 +56,11 @@ public class UserService extends FreeAlbianService implements IUserService {
     @Override
     public boolean addUser(String uname, String pwd) {
         AlbianServiceHub.addLog("Sessionid", IAlbianLoggerService.AlbianRunningLoggerName,
-                AlbianLoggerLevel.Info, "i am %s", "log");
+                AlbianLoggerLevel.Info, "i am %s", "addLog");
 
         NullPointerException exc = new NullPointerException();
         AlbianServiceHub.addLog("Sessionid", IAlbianLoggerService.AlbianRunningLoggerName,
-                AlbianLoggerLevel.Info, exc, "i am %s", "log");
+                AlbianLoggerLevel.Info, exc, "i am %s", "addLog");
 
         //创建对象请使用此方法
         ISingleUser user = AlbianServiceHub.newInstance("SessionId", ISingleUser.class);

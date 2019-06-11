@@ -50,14 +50,14 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-@AlbianServiceRant(Id = IAlbianThreadPoolService.Name, Interface = IAlbianThreadPoolService.class)
+//@AlbianServiceRant(Id = IAlbianThreadPoolService.Name, Interface = IAlbianThreadPoolService.class)
 public class AlbianThreadPoolService extends FreeAlbianService implements
         IAlbianThreadPoolService {
 
     private ThreadPoolExecutor threadPool;
 
     public String getServiceName() {
-        return Name;
+        return "";
     }
 
     public void loading()

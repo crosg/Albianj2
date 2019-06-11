@@ -40,8 +40,8 @@ public class AlbianServiceRantParser {
                 });
     }
 
-    public static IAlbianServiceAttribute scanAlbianService(Class<?> implClzz) {
-        IAlbianServiceAttribute asa = new AlbianServiceAttribute();
+    public static IAlbianBundleServiceAttribute scanAlbianService(Class<?> implClzz) {
+        IAlbianBundleServiceAttribute asa = new AlbianBundleServiceAttribute();
         AlbianServiceRant rant = implClzz.getAnnotation(AlbianServiceRant.class);
         asa.setId(rant.Id());
         if (Validate.isNullOrEmptyOrAllSpace(rant.sInterface()) && null == rant.Interface()) {

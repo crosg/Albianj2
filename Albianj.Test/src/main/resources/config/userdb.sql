@@ -1,8 +1,9 @@
 /*
 SQLyog 企业版 - MySQL GUI v8.14 
-MySQL - 5.7.23-log : Database - userdb
+MySQL - 5.7.23-addLog : Database - userdb
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 

@@ -1,7 +1,7 @@
 package org.albianj.mvc.view;
 
 import org.albianj.datetime.AlbianDateTimeHelper;
-import org.albianj.except.AlbianExternalException;
+import org.albianj.except.AlbianExterException;
 import org.albianj.except.ExceptionUtil;
 import org.albianj.io.Path;
 import org.albianj.logger.AlbianLoggerLevel;
@@ -286,7 +286,7 @@ public abstract class FreeView implements IView {
         } else if(cls.equals(java.sql.Timestamp.class)) {
             long ts = AlbianDateTimeHelper.toTimeMillis(o.toString());
             if(0 == ts) {
-                throw new AlbianExternalException(ExceptionUtil.ExceptForError,
+                throw new AlbianExterException(ExceptionUtil.ExceptForError,
                         "Cast fail.",
                         "cast string -> ",o.toString()," to sql.Timestamp fail.");
             }

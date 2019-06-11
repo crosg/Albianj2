@@ -27,5 +27,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>${common.lang3.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.yuewen.nrzx.albianj</groupId>
+            <artifactId>Albianj.Loader</artifactId>
+            <version>2019052304-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

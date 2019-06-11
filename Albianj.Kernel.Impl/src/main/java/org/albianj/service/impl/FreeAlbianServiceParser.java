@@ -42,6 +42,7 @@ import org.albianj.aop.IAlbianServiceAopAttribute;
 import org.albianj.aop.IAlbianServiceMethodAttribute;
 import org.albianj.io.Path;
 import org.albianj.kernel.KernelSetting;
+import org.albianj.loader.entry.AlbianBundleModuleKeyValueConf;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.runtime.AlbianModuleType;
@@ -54,13 +55,12 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
 
-    public final static String ALBIANJSERVICEKEY = "@$#&ALBIANJ_ALL_SERVICE&#$@";
+//    public final static String AlbianServiceModuleName = "AlbianServiceModule";
     private final static String tagName = "Services/Service";
     private final static String pkgTagName = "Services/Packages/Package";
     private String file = "service.xml";
@@ -73,9 +73,10 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
     @AlbianAopAttribute(avoid = true)
     public void init() throws AlbianParserException {
 
-        Map<String, IAlbianServiceAttribute> map = new LinkedHashMap<>();
+//        Map<String, IAlbianBundleServiceAttribute> map = new LinkedHashMap<>();
+        AlbianBundleModuleKeyValueConf conf = new AlbianBundleModuleKeyValueConf();
         try {
-            parserFile(map,
+            parserFile(conf,
                     Path.getExtendResourcePath(KernelSetting.getAlbianConfigFilePath()
                             + getConfigFileName()));
 
@@ -87,18 +88,20 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
                     "loading the service.xml is error.");
         }
 
-        if (0 == map.size()) {
+        if (0 == conf.size()) {
 
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,
                     "The albian services is empty.");
             return;
         }
-        ServiceAttributeMap.insert(ALBIANJSERVICEKEY, map);
+
+        this.getBundleContext().addModuleConf(AlbianBuiltinNames.Conf.Service,conf);
+//        AlbianBundleServiceConf.insert(AlbianServiceModuleName, map);
         return;
     }
 
-    private void parserFile(Map<String, IAlbianServiceAttribute> map, String filename) throws AlbianParserException {
+    private void parserFile(Map<String, IAlbianBundleServiceAttribute> map, String filename) throws AlbianParserException {
         Document doc = null;
         try {
             String realFilename = findConfigFile(filename);
@@ -173,7 +176,7 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
             }
         }
 
-        Map<String, IAlbianServiceAttribute> attrMap = new HashMap<>();
+        Map<String, IAlbianBundleServiceAttribute> attrMap = new HashMap<>();
         List serviceNodes = XmlParser.selectNodes(doc, "Services/Service");
         if (!Validate.isNullOrEmpty(serviceNodes)) {
             parserServices(attrMap, tagName, serviceNodes);
@@ -187,21 +190,21 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
      * merger the map from annotation and map form service.xml
      * if config-item in annotation as the same as in service.xml then use the service.xml
      */
-    private void mergerServiceAttributes(Map<String, IAlbianServiceAttribute> totalMap,
-                                         Map<String, IAlbianServiceAttribute> attrMap,
+    private void mergerServiceAttributes(Map<String, IAlbianBundleServiceAttribute> totalMap,
+                                         Map<String, IAlbianBundleServiceAttribute> attrMap,
                                          Map<String, Object> pkgMap) {
-        for (Map.Entry<String, IAlbianServiceAttribute> entry : attrMap.entrySet()) {
-            IAlbianServiceAttribute asa = entry.getValue();
-            IAlbianServiceAttribute asaPkg = null;
+        for (Map.Entry<String, IAlbianBundleServiceAttribute> entry : attrMap.entrySet()) {
+            IAlbianBundleServiceAttribute asa = entry.getValue();
+            IAlbianBundleServiceAttribute asaPkg = null;
 
             if (pkgMap.containsKey(asa.getId())) {
-                asaPkg = (IAlbianServiceAttribute) pkgMap.get(asa.getId());
+                asaPkg = (IAlbianBundleServiceAttribute) pkgMap.get(asa.getId());
                 pkgMap.remove(asa.getId());
             } else {
                 // because reuse，so key must type
                 // and change type to id when merger
                 if (pkgMap.containsKey(asa.getType())) {
-                    asaPkg = (IAlbianServiceAttribute) pkgMap.get(asa.getType());
+                    asaPkg = (IAlbianBundleServiceAttribute) pkgMap.get(asa.getType());
                     pkgMap.remove(asa.getType());
                 }
             }
@@ -271,15 +274,15 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
         // add in pkg but not in attr
         // and change the key from type to id
         for (Object val : pkgMap.values()) {
-            IAlbianServiceAttribute asa = (IAlbianServiceAttribute) val;
+            IAlbianBundleServiceAttribute asa = (IAlbianBundleServiceAttribute) val;
             totalMap.put(asa.getId(), asa);
         }
     }
 
-    protected abstract void parserServices(Map<String, IAlbianServiceAttribute> map,
+    protected abstract void parserServices(Map<String, IAlbianBundleServiceAttribute> map,
                                            String tagName,
                                            @SuppressWarnings("rawtypes") List nodes) throws NullPointerException;
 
-    protected abstract IAlbianServiceAttribute parserService(String name, Element node)
+    protected abstract IAlbianBundleServiceAttribute parserService(String name, Element node)
             throws NullPointerException, AlbianServiceException;
 }

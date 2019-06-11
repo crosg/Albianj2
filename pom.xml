@@ -15,16 +15,16 @@
         <module>Albianj.Kernel</module>
         <module>Albianj.Kernel.Impl</module>
         <module>Albianj.Loader</module>
-        <module>Albianj.Cached</module>
-        <module>Albianj.Cached.Impl</module>
+        <!--<module>Albianj.Cached</module>-->
+        <!--<module>Albianj.Cached.Impl</module>-->
         <module>Albianj.Persistence</module>
         <module>Albianj.Persistence.Impl</module>
         <module>Albianj.MVC</module>
         <module>Albianj.MVC.Impl</module>
         <module>Albianj.Restful</module>
         <module>Albianj.Restful.Impl</module>
-        <module>Albianj.UNID</module>
-        <module>Albianj.UNID.Impl</module>
+        <!--<module>Albianj.UNID</module>-->
+        <!--<module>Albianj.UNID.Impl</module>-->
         <!--<module>Albianj.Http.Client</module>-->
         <!--<module>Albianj.Http.Client.Impl</module>-->
         <module>Yuewen.PPLogStat</module>

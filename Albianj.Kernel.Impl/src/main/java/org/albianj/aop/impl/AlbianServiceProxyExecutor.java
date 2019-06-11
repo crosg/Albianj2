@@ -9,7 +9,7 @@ import org.albianj.loader.FinalAlbianReflectService;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.IAlbianService;
-import org.albianj.service.IAlbianServiceAttribute;
+import org.albianj.service.IAlbianBundleServiceAttribute;
 import org.albianj.verify.Validate;
 
 import java.lang.reflect.Method;
@@ -26,11 +26,11 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
         Instance = new AlbianServiceProxyExecutor();
     }
 
-    public Object newProxyService(IAlbianService service, Map<String, IAlbianServiceAopAttribute> aopAttributes) {
+    public Object newProxyService(ClassLoader loader,IAlbianService service, Map<String, IAlbianServiceAopAttribute> aopAttributes) {
         try {
             Enhancer enhancer = new Enhancer();  //增强类
             //不同于JDK的动态代理。它不能在创建代理时传obj对 象，obj对象必须被CGLIB包来创建
-            enhancer.setClassLoader(AlbianClassLoader.getInstance());
+            enhancer.setClassLoader(loader);
 
             enhancer.setSuperclass(service.getClass()); //设置被代理类字节码（obj将被代理类设置成父类；作为产生的代理的父类传进来的）。CGLIB依据字节码生成被代理类的子类
             enhancer.setCallback(this);    //设置回调函数，即一个方法拦截
@@ -67,7 +67,7 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
             }
         }
 
-        IAlbianServiceAttribute attr = proxyServ.getServiceAttribute();
+        IAlbianBundleServiceAttribute attr = proxyServ.getServiceAttribute();
         Map<String, IAlbianServiceMethodAttribute> funcsAttr = attr.getMethodsAttribute();
         String sigFuncName = FinalAlbianReflectService.Instance.getMethodSignature(func);
         IAlbianServiceMethodAttribute sma = funcsAttr.get(sigFuncName);

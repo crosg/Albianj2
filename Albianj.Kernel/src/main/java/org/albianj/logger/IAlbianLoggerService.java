@@ -37,13 +37,13 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.logger;
 
-import org.albianj.service.AlbianBuiltinServiceNamePair;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.AlbianServiceException;
 import org.albianj.service.IAlbianService;
 import org.slf4j.Logger;
 
 public interface IAlbianLoggerService extends IAlbianService {
-    static String Name = AlbianBuiltinServiceNamePair.AlbianLoggerServiceName;
+    static String Name = AlbianBuiltinNames.AlbianLoggerServiceName;
 
     static String AlbianSqlLoggerName = "AlbianSqlLogger";
     static String AlbianRunningLoggerName = "AlbianRunningLogger";
@@ -56,6 +56,8 @@ public interface IAlbianLoggerService extends IAlbianService {
     void loading() throws AlbianServiceException;
 
     Logger getLogger(String name);
+
+    boolean isExistLogger(String logName);
 
     /*
      * (non-Javadoc)

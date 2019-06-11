@@ -20,10 +20,10 @@ public class DoTest {
             AlbianBootService.start(argv[0]);
 
             IAlbianLoggerService2 logServ = AlbianServiceRouter.getLogger2();
-//            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
+//            logServ.addLog("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
 //                    "wolaile");
 //            Thread.sleep(65* 1000);
-//            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
+//            logServ.addLog("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
 //                    "wolaile2");
 
             IAlbianMonitorLoggerService mlogServ = AlbianServiceRouter.getSingletonService(IAlbianMonitorLoggerService.class,IAlbianMonitorLoggerService.Name);
@@ -66,7 +66,7 @@ public class DoTest {
 //                            e.printStackTrace();
 //                        }
 //                        if(null == conn){
-//                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+//                            AlbianServiceRouter.getLogger2().addLog(IAlbianLoggerService2.AlbianSqlLoggerName,
 //                                    "DBPOOLMAIN", AlbianLoggerLevel.Info,
 //                                    "get conn is null.");
 //                        } else {

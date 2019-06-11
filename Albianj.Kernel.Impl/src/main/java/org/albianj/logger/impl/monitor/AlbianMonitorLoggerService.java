@@ -24,7 +24,7 @@ public class AlbianMonitorLoggerService extends FreeAlbianService implements IAl
         mlog = getLogger(logName);
         if(null == mlog) {
             AlbianServiceRouter.addLog("startup thread", IAlbianLoggerService2.AlbianRunningLoggerName,
-                    AlbianLoggerLevel.Mark,"init monitor log service is fail.this service is unuseful.");
+                    AlbianLoggerLevel.Mark,"init monitor addLog service is fail.this service is unuseful.");
         }
 
         super.loading();

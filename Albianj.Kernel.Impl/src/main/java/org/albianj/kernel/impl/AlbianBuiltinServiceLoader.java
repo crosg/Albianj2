@@ -1,5 +1,6 @@
 package org.albianj.kernel.impl;
 
+import org.albianj.loader.AlbianBundleContext;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
@@ -13,83 +14,83 @@ import java.util.Map;
 public class AlbianBuiltinServiceLoader {
 
     private LinkedHashMap<String, AlbianBuiltinServiceAttribute> bltServ = null;
-    private Map<String, IAlbianServiceAttribute> bltSrvAttrs = null;
+    private Map<String, IAlbianBundleServiceAttribute> bltSrvAttrs = null;
 
     public AlbianBuiltinServiceLoader() {
         bltServ = new LinkedHashMap<>();
         bltSrvAttrs = new LinkedHashMap<>();
         // kernel
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianLoggerServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianLoggerServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianLoggerServicePair[1], true));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianLoggerService2Pair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianLoggerService2Pair[0],
-                        AlbianBuiltinServiceNamePair.AlbianLoggerService2Pair[1], true));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianKernelServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianKernelServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianKernelServicePair[1], true));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianLogicIdServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianLogicIdServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianLogicIdServicePair[1], true));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianThreadPoolServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianThreadPoolServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianThreadPoolServicePair[1], true));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianSecurityServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianSecurityServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianSecurityServicePair[1], true));
+        bltServ.put(AlbianBuiltinNames.AlbianLoggerServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianLoggerServicePair[0],
+                        AlbianBuiltinNames.AlbianLoggerServicePair[1], true));
+        bltServ.put(AlbianBuiltinNames.AlbianLoggerService2Pair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianLoggerService2Pair[0],
+                        AlbianBuiltinNames.AlbianLoggerService2Pair[1], true));
+        bltServ.put(AlbianBuiltinNames.AlbianKernelServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianKernelServicePair[0],
+                        AlbianBuiltinNames.AlbianKernelServicePair[1], true));
+        bltServ.put(AlbianBuiltinNames.AlbianLogicIdServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianLogicIdServicePair[0],
+                        AlbianBuiltinNames.AlbianLogicIdServicePair[1], true));
+//        bltServ.put(AlbianBuiltinNames.AlbianThreadPoolServicePair[0],
+//                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianThreadPoolServicePair[0],
+//                        AlbianBuiltinNames.AlbianThreadPoolServicePair[1], true));
+        bltServ.put(AlbianBuiltinNames.AlbianSecurityServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianSecurityServicePair[0],
+                        AlbianBuiltinNames.AlbianSecurityServicePair[1], true));
 
         // persistence
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianStorageServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianStorageServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianStorageServicePair[1], false));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianMappingServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianMappingServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianMappingServicePair[1], false));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianDataRouterServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianDataRouterServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianDataRouterServicePair[1], false));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianPersistenceServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianPersistenceServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianPersistenceServicePair[1], false));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianDataAccessServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianDataAccessServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianDataAccessServicePair[1], false));
+        bltServ.put(AlbianBuiltinNames.AlbianStorageServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianStorageServicePair[0],
+                        AlbianBuiltinNames.AlbianStorageServicePair[1], false));
+        bltServ.put(AlbianBuiltinNames.AlbianMappingServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianMappingServicePair[0],
+                        AlbianBuiltinNames.AlbianMappingServicePair[1], false));
+        bltServ.put(AlbianBuiltinNames.AlbianDataRouterServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianDataRouterServicePair[0],
+                        AlbianBuiltinNames.AlbianDataRouterServicePair[1], false));
+        bltServ.put(AlbianBuiltinNames.AlbianPersistenceServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianPersistenceServicePair[0],
+                        AlbianBuiltinNames.AlbianPersistenceServicePair[1], false));
+        bltServ.put(AlbianBuiltinNames.AlbianDataAccessServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianDataAccessServicePair[0],
+                        AlbianBuiltinNames.AlbianDataAccessServicePair[1], false));
 
         //monitor
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianMonitorLoggerServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianMonitorLoggerServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianMonitorLoggerServicePair[1], false));
+        bltServ.put(AlbianBuiltinNames.AlbianMonitorLoggerServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianMonitorLoggerServicePair[0],
+                        AlbianBuiltinNames.AlbianMonitorLoggerServicePair[1], false));
 
         //pplog monitor
-        bltServ.put(AlbianBuiltinServiceNamePair.YuewenPPLogPair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.YuewenPPLogPair[0],
-                        AlbianBuiltinServiceNamePair.YuewenPPLogPair[1], false));
+        bltServ.put(AlbianBuiltinNames.YuewenPPLogPair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.YuewenPPLogPair[0],
+                        AlbianBuiltinNames.YuewenPPLogPair[1], false));
         // web mvf framework
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianMvcConfigurtionServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianMvcConfigurtionServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianMvcConfigurtionServicePair[1], false));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianFileUploadServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianFileUploadServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianFileUploadServicePair[1], false));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianResourceServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianResourceServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianResourceServicePair[1], false));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianTemplateServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianTemplateServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianTemplateServicePair[1], false));
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianBrushingServicePair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianBrushingServicePair[0],
-                        AlbianBuiltinServiceNamePair.AlbianBrushingServicePair[1], false));
+        bltServ.put(AlbianBuiltinNames.AlbianMvcConfigurtionServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianMvcConfigurtionServicePair[0],
+                        AlbianBuiltinNames.AlbianMvcConfigurtionServicePair[1], false));
+        bltServ.put(AlbianBuiltinNames.AlbianFileUploadServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianFileUploadServicePair[0],
+                        AlbianBuiltinNames.AlbianFileUploadServicePair[1], false));
+        bltServ.put(AlbianBuiltinNames.AlbianResourceServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianResourceServicePair[0],
+                        AlbianBuiltinNames.AlbianResourceServicePair[1], false));
+        bltServ.put(AlbianBuiltinNames.AlbianTemplateServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianTemplateServicePair[0],
+                        AlbianBuiltinNames.AlbianTemplateServicePair[1], false));
+        bltServ.put(AlbianBuiltinNames.AlbianBrushingServicePair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianBrushingServicePair[0],
+                        AlbianBuiltinNames.AlbianBrushingServicePair[1], false));
 
         // load service.xml
-        bltServ.put(AlbianBuiltinServiceNamePair.AlbianServiceParserPair[0],
-                new AlbianBuiltinServiceAttribute(AlbianBuiltinServiceNamePair.AlbianServiceParserPair[0],
-                        AlbianBuiltinServiceNamePair.AlbianServiceParserPair[1], true));
+        bltServ.put(AlbianBuiltinNames.AlbianServiceParserPair[0],
+                new AlbianBuiltinServiceAttribute(AlbianBuiltinNames.AlbianServiceParserPair[0],
+                        AlbianBuiltinNames.AlbianServiceParserPair[1], true));
     }
 
-    public void loadServices() {
+    public void loadServices(AlbianBundleContext bundleContext) {
 
-        Map<String,IAlbianServiceAttribute> bltServMap = sacnService();
+        Map<String, IAlbianBundleServiceAttribute> bltServMap = sacnService(bundleContext);
         String id = null;
         String sImplClzz = null;
         int failCount = 0;
@@ -113,9 +114,9 @@ public class AlbianBuiltinServiceLoader {
                 if (bltSerAttr.isLoadOK()) continue;
                 id = bltSerAttr.getId();
                 try {
-                    IAlbianServiceAttribute attr = bltServMap.get(id);
-                    IAlbianService service = AlbianServiceLoader.makeupService(attr,bltServMap);
-                    ServiceContainer.addService(id, service);
+                    IAlbianBundleServiceAttribute attr = bltServMap.get(id);
+                    IAlbianService service = AlbianServiceLoader.makeupServiceAndAttachBundleContext(bundleContext,attr,bltServMap);
+//                    ServiceContainer.addService(id, service);
                     bltSerAttr.setLoadOK(true);
                 } catch (Exception e) {
                     bltSerAttr.setLoadOK(false);
@@ -158,18 +159,19 @@ public class AlbianBuiltinServiceLoader {
         }
     }
 
-    public Map<String, IAlbianServiceAttribute> getBltSrvAttrs() {
+    public Map<String, IAlbianBundleServiceAttribute> getBltSrvAttrs() {
         return this.bltSrvAttrs;
     }
 
-    public Map<String,IAlbianServiceAttribute> sacnService(){
+    public Map<String, IAlbianBundleServiceAttribute> sacnService(AlbianBundleContext bundleContext){
         bltSrvAttrs = new LinkedHashMap<>();
         for (AlbianBuiltinServiceAttribute bltSerAttr : this.bltServ.values()) {
             String id = bltSerAttr.getId();
             String sImplClzz = bltSerAttr.getImplClzz();
             try {
                 Class<?> implClzz = AlbianClassLoader.getInstance().loadClass(sImplClzz);
-                IAlbianServiceAttribute attr = AlbianServiceRantParser.scanAlbianService(implClzz);
+                IAlbianBundleServiceAttribute attr = AlbianServiceRantParser.scanAlbianService(implClzz);
+//                attr.setBundleContext(bundleContext);
                 bltSrvAttrs.put(id,attr);
             }catch (Exception e){
                 if(bltSerAttr.isRequired()) {
