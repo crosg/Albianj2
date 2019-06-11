@@ -37,32 +37,50 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.service;
 
-import org.albianj.localmap.ILocalMap;
-import org.albianj.localmap.LocalSortMap;
+import org.albianj.aop.IAlbianServiceAopAttribute;
+import org.albianj.aop.IAlbianServiceMethodAttribute;
+import org.albianj.loader.IAlbianModuleConf;
 
-public final class ServiceAttributeMap {
-    private static ILocalMap cached = new LocalSortMap();
+import java.util.Map;
 
-    public synchronized static boolean exist(String key)
-            throws IllegalArgumentException {
-        return cached.exist(key);
-    }
+public interface IAlbianServiceAttribute extends IAlbianModuleConf {
+    public String getId();
 
-    public static Object get(String key) throws IllegalArgumentException {
-        return cached.get(key);
-    }
+    public void setId(String id) throws IllegalArgumentException;
 
-    public synchronized static void insert(String key, Object value)
-            throws IllegalArgumentException {
-        cached.insert(key, value);
-    }
+    public String getType();
 
-    public synchronized static void remove(String key)
-            throws IllegalArgumentException {
-        cached.remove(key);
-    }
+    public void setType(String type) throws IllegalArgumentException;
 
-    public synchronized static void clear() {
-        cached.clear();
-    }
+    public String getInterface();
+
+    public void setInterface(String itf);
+
+    Map<String, IAlbianServiceFieldAttribute> getServiceFields();
+
+    void setServiceFields(Map<String, IAlbianServiceFieldAttribute> ps);
+
+    Map<String, IAlbianServiceAopAttribute> getAopAttributes();
+
+    void setAopAttributes(Map<String, IAlbianServiceAopAttribute> aopAttributes);
+
+    Class<? extends IAlbianService> getServiceClass();
+
+    void setServiceClass(Class<? extends IAlbianService> clazz);
+
+    public boolean getEnable();
+
+    public void setEnable(boolean enable);
+
+    public void setUseProxy(boolean isProxy);
+
+    public boolean isUseProxy();
+
+    public void setMethodsAttribute(Map<String, IAlbianServiceMethodAttribute> methodsAttribute);
+
+    public Map<String, IAlbianServiceMethodAttribute> getMethodsAttribute();
+
+//    public boolean getModifyIdWhenLoading();
+
+//    void setModifyIdWhenLoading(boolean modifyIdWhenLoading);
 }

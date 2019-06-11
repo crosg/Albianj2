@@ -35,53 +35,118 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 偶发性、特殊性、惩罚性或任何结果的损害（包括但不限于替代商品或劳务之购用、使用损失、资料损失、利益损失、业务中断等等），
 不负任何责任，即在该种使用已获事前告知可能会造成此类损害的情形下亦然。
 */
-package org.albianj.service;
+package org.albianj.service.impl;
 
+import org.albianj.aop.IAlbianServiceAopAttribute;
+import org.albianj.aop.IAlbianServiceMethodAttribute;
+import org.albianj.aop.IAlbianServiceMethodRetryAttribute;
+import org.albianj.loader.FreeAlbianModuleConf;
+import org.albianj.service.IAlbianService;
+import org.albianj.service.IAlbianServiceAttribute;
+import org.albianj.service.IAlbianServiceFieldAttribute;
+import org.albianj.verify.Validate;
 
-import org.albianj.logger.IAlbianLoggerService;
+import java.util.Map;
 
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+public class AlbianServiceAttribute extends FreeAlbianModuleConf implements IAlbianServiceAttribute {
 
+    Map<String, IAlbianServiceFieldAttribute> ps;
+    Map<String, IAlbianServiceAopAttribute> aopAttributes = null;
+    private String id = "";
+    private String type = "";
+    private String itf;
+    private Class<? extends IAlbianService> clzz = null;
+    private boolean enable = true;
+    private boolean isUseProxy = false;
+    private Map<String, IAlbianServiceMethodAttribute> methodsAttribute;
 
-public class ServiceContainer {
-
-    private static ConcurrentHashMap<String, IAlbianService> _container = new ConcurrentHashMap<String, IAlbianService>();
-
-    public static boolean existService(String id)
-            throws IllegalArgumentException {
-        return _container.contains(id);
+    public String getId() {
+        return this.id;
     }
 
-    // no synchronized
-    public static IAlbianService getService(String id) throws IllegalArgumentException {
-        return _container.get(id);
-    }
-
-    public synchronized static void addService(String id, IAlbianService value)
-            throws IllegalArgumentException {
-        if (null == id || null == value)
-            throw new IllegalArgumentException("argument is null.");
-        if (_container.containsKey(id)) {
-            _container.replace(id, value);
-        } else {
-            _container.put(id, value);
+    public void setId(String id) throws IllegalArgumentException {
+        if (Validate.isNullOrEmptyOrAllSpace(id)) {
+            throw new IllegalArgumentException("id");
         }
+        this.id = id;
     }
 
-    public static void removeService(String id)
-            throws IllegalArgumentException {
-        //can not remove logger
-        if (IAlbianLoggerService.Name.equals(id))
-            return;
-        _container.remove(id);
+    public String getType() {
+        return this.type;
     }
 
-    public static void clear() {
-        _container.clear();
+    public void setType(String type) throws IllegalArgumentException {
+        if (Validate.isNullOrEmptyOrAllSpace(type)) {
+            throw new IllegalArgumentException("type");
+        }
+        this.type = type;
+
     }
 
-    public static Set<String> getAllServiceNames() {
-        return _container.keySet();
+    public String getInterface() {
+        return this.itf;
     }
+
+    public void setInterface(String itf) {
+        this.itf = itf;
+    }
+
+    @Override
+    public Map<String, IAlbianServiceFieldAttribute> getServiceFields() {
+        return this.ps;
+    }
+
+    @Override
+    public void setServiceFields(Map<String, IAlbianServiceFieldAttribute> ps) {
+        this.ps = ps;
+    }
+
+    public Map<String, IAlbianServiceAopAttribute> getAopAttributes() {
+        return this.aopAttributes;
+    }
+
+    public void setAopAttributes(Map<String, IAlbianServiceAopAttribute> aopAttributes) {
+        this.aopAttributes = aopAttributes;
+    }
+
+    @Override
+    public Class<? extends IAlbianService> getServiceClass() {
+        return clzz;
+    }
+
+    @Override
+    public void setServiceClass(Class<? extends IAlbianService> clazz) {
+        clzz = clazz;
+    }
+
+    @Override
+    public boolean getEnable() {
+        return enable;
+    }
+
+    @Override
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    @Override
+    public void setUseProxy(boolean isProxy) {
+        this.isUseProxy = isProxy;
+    }
+
+    @Override
+    public boolean isUseProxy() {
+        return this.isUseProxy;
+    }
+
+    @Override
+    public void setMethodsAttribute(Map<String, IAlbianServiceMethodAttribute> methodsAttribute) {
+        this.methodsAttribute = methodsAttribute;
+    }
+
+    @Override
+    public Map<String, IAlbianServiceMethodAttribute> getMethodsAttribute() {
+        return methodsAttribute;
+    }
+
 }
