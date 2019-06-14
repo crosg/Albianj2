@@ -46,6 +46,7 @@ import org.albianj.persistence.object.*;
 import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.persistence.service.IAlbianDataRouterParserService;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.parser.AlbianParserException;
@@ -61,15 +62,15 @@ import java.util.Map;
 @AlbianServiceRant(Id = IAlbianDataRouterParserService.Name, Interface = IAlbianDataRouterParserService.class)
 public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserService {
 
-    public static final String DEFAULT_ROUTING_NAME = "!@#$%Albianj_Default_DataRouter%$#@!";
+    public static final String DEFAULT_ROUTING_NAME = "!AlbianDataRouterDefault";
 
-    private static IDataRoutersAttribute getRoutingsAttribute(Element elt) throws AlbianParserException {
+    private void parserRoutingsAttribute(Element elt) throws AlbianParserException {
         String inter = XmlParser.getAttributeValue(elt, "Interface");
         if (Validate.isNullOrEmptyOrAllSpace(inter)) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,
                     "The albianObject's interface is empty or null.");
-            return null;
+            return ;
         }
         String type = XmlParser.getAttributeValue(elt, "Type");
 
@@ -78,15 +79,15 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,
                     "The albianObject's type is empty or null.");
 
-            return null;
+            return ;
         }
-
-        IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(inter);
+        AlbianEntityMetadata entityMetadata = this.getBundleContext().getModuleConfAndNewIfNotExist(AlbianBuiltinNames.Conf.Persistence,AlbianEntityMetadata.class);
+        IAlbianObjectAttribute objAttr = entityMetadata.getEntityMetadata(inter);
         if (null == objAttr) {
             objAttr = new AlbianObjectAttribute();
             objAttr.setType(type);
             objAttr.setInterface(inter);
-            AlbianEntityMetadata.put(inter, objAttr);
+            entityMetadata.put(inter, objAttr);
         }
         IDataRoutersAttribute routing = objAttr.getDataRouters();
         if (null == routing) {
@@ -156,19 +157,19 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e,
                     "fail in find class for %s.", type);
-            return null;
+            return ;
 
         } catch (InstantiationException e) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e,
                     "init the hash mapping for the %s is error.", type);
-            return null;
+            return ;
         } catch (IllegalAccessException e) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e,
                     "There is no access for %s with init the instance.",
                     type);
-            return null;
+            return ;
         }
 
 
@@ -215,14 +216,14 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
                 }
             }
         }
-        return routing;
+        return ;
     }
 
-    private static Map<String, IDataRouterAttribute> parserRouting(
+    private Map<String, IDataRouterAttribute> parserRouting(
             @SuppressWarnings("rawtypes") List nodes) {
         Map<String, IDataRouterAttribute> map = new HashMap<String, IDataRouterAttribute>();
         for (Object node : nodes) {
-            IDataRouterAttribute routingAttribute = getroutingAttribute((Element) node);
+            IDataRouterAttribute routingAttribute = getRoutingAttribute((Element) node);
             if (null == routingAttribute)
                 return null;
             map.put(routingAttribute.getName(), routingAttribute);
@@ -230,7 +231,7 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
         return map;
     }
 
-    private static IDataRouterAttribute getroutingAttribute(Element elt) {
+    private IDataRouterAttribute getRoutingAttribute(Element elt) {
         String name = XmlParser.getAttributeValue(elt, "Name");
         if (Validate.isNullOrEmptyOrAllSpace(name)) {
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -271,14 +272,11 @@ public class AlbianDataRouterParserService extends FreeAlbianDataRouterParserSer
         return Name;
     }
 
-    protected Map<String, IDataRouterAttribute> parserRoutings(
+    protected void parserRoutings(
             @SuppressWarnings("rawtypes") List nodes) throws AlbianParserException {
         for (Object node : nodes) {
-            IDataRoutersAttribute routingsAttribute = getRoutingsAttribute((Element) node);
-            if (null == routingsAttribute)
-                return null;
+             parserRoutingsAttribute((Element) node);
         }
-        return null;
     }
 
 }

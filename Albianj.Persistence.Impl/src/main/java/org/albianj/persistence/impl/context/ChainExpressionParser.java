@@ -37,6 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.context;
 
+import org.albianj.loader.AlbianBundleContext;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.db.AlbianDataServiceException;
@@ -49,6 +50,7 @@ import org.albianj.persistence.object.filter.IChainExpression;
 import org.albianj.persistence.object.filter.IFilterExpression;
 import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
 
@@ -88,7 +90,7 @@ public class ChainExpressionParser {
         }
     }
 
-    public static void toConditionText(String sessionId, Class<?> cls, IAlbianObjectAttribute albianObject,
+    public static void toConditionText(String sessionId, AlbianBundleContext bundleContext,Class<?> cls, IAlbianObjectAttribute albianObject,
                                        IStorageAttribute storage, IChainExpression f, StringBuilder sb, Map<String, ISqlParameter> paras)
             throws AlbianDataServiceException {
         if (null == f) return;
@@ -108,7 +110,7 @@ public class ChainExpressionParser {
                     }
                 }
                 sb.append(" (");
-                toConditionText(sessionId, cls, albianObject, storage, ce, sb, paras);
+                toConditionText(sessionId, bundleContext,cls, albianObject, storage, ce, sb, paras);
                 sb.append(" )");
             } else {
                 IFilterExpression fe = (IFilterExpression) ce;
@@ -122,7 +124,8 @@ public class ChainExpressionParser {
                 }
 
                 String className = cls.getName();
-                IAlbianEntityFieldAttribute fieldAttr = albianObject.getFields().get(AlbianEntityMetadata.makeFieldsKey(fe.getFieldName().toLowerCase()));
+                AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(AlbianBuiltinNames.Conf.Persistence);
+                IAlbianEntityFieldAttribute fieldAttr = albianObject.getFields().get(entityMetadata.makeFieldsKey(fe.getFieldName().toLowerCase()));
 
                 if (null == fieldAttr) {
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,

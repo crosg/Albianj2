@@ -1,6 +1,6 @@
 package org.albianj.aop;
 
-import org.albianj.except.AlbianExterException;
+import org.albianj.loader.except.AlbianExterException;
 
 public class AlbianRetryException extends AlbianExterException {
     /**

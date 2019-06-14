@@ -1,5 +1,7 @@
 package org.albianj.persistence.impl.context.dactx;
 
+import org.albianj.loader.AlbianBootContext;
+import org.albianj.loader.AlbianBundleContext;
 import org.albianj.persistence.context.IPersistenceCompensateNotify;
 import org.albianj.persistence.context.IPersistenceNotify;
 import org.albianj.persistence.context.IWriterJob;
@@ -18,18 +20,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataAccessContext implements IDataAccessContext {
-    List<IAlbianObjectWarp> entitis = null;
+    private List<IAlbianObjectWarp> entitis = null;
     private boolean isSetQueryIdentity = false;
     private IPersistenceNotify notifyCallback;
     private Object notifyCallbackObject;
     private IPersistenceCompensateNotify compensateCallback;
     private Object compensateCallbackObject;
     private boolean rbkOnErr = false;
+    private AlbianBundleContext bundleContext = null;
 
     public DataAccessContext() {
+        this(AlbianBootContext.Instance.getCurrentBundleContext());
+    }
+    public DataAccessContext(AlbianBundleContext bundleContext) {
+        this.bundleContext = bundleContext;
         entitis = new ArrayList<>();
     }
-
 
     @Override
     public IDataAccessContext add(int opt, IAlbianObject entity) {
@@ -93,7 +99,7 @@ public class DataAccessContext implements IDataAccessContext {
     @Override
     public boolean commit(String sessionId) {
         IWriterJobAdapter jobAdp = new WriterJobAdapter();
-        IWriterJob job = jobAdp.buildWriterJob(sessionId, this.entitis, this.rbkOnErr);
+        IWriterJob job = jobAdp.buildWriterJob(sessionId,this.bundleContext, this.entitis, this.rbkOnErr);
         IPersistenceTransactionClusterScope tcs = new PersistenceTransactionClusterScope();
         return tcs.execute(job);
     }

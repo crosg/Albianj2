@@ -33,8 +33,8 @@ public class FinalAlbianBootStartupService {
 //                AlbianBundleServiceConf
 //                        .get(FreeAlbianServiceParser.AlbianServiceModuleName);
 
-        IAlbianBundleModuleConf serviceFromConf =  bundleContext.getModuleConf(AlbianBuiltinNames.Conf.Service);
-        AlbianBundleModuleKeyValueConf bnsSrvAttrs = (AlbianBundleModuleKeyValueConf) serviceFromConf;
+        AlbianBundleModuleKeyValueConf bnsSrvAttrs =  bundleContext.getModuleConf(AlbianBuiltinNames.Conf.Service);
+//        AlbianBundleModuleKeyValueConf bnsSrvAttrs = (AlbianBundleModuleKeyValueConf) serviceFromConf;
 
         Map<String, IAlbianBundleServiceAttribute> mapAttr = new HashMap<>();
         mapAttr.putAll(bnsSrvAttrs); // copy it for field setter
@@ -109,18 +109,10 @@ public class FinalAlbianBootStartupService {
         // merger kernel service and bussines service
         // then update the all service attribute
 
-        IAlbianBundleModuleConf moduleConf =  bundleContext.getModuleConf(AlbianBuiltinNames.Conf.Service);
-        if(null == moduleConf){
-            moduleConf = new AlbianBundleModuleKeyValueConf();
-            bundleContext.addModuleConf(AlbianBuiltinNames.Conf.Service,moduleConf);
-        }
-        AlbianBundleModuleKeyValueConf conf = (AlbianBundleModuleKeyValueConf) moduleConf;
-        conf.putAll(bnsSrvAttrs);
-        conf.putAll(bltSrvAttrs);
+        AlbianBundleModuleKeyValueConf moduleConf =  bundleContext.getModuleConfAndNewIfNotExist(AlbianBuiltinNames.Conf.Service,AlbianBundleModuleKeyValueConf.class);
 
-//        bundleContext.addModuleConf(FreeAlbianServiceParser.AlbianServiceModuleName,bnsSrvAttrs);
-//        bltSrvAttrs.putAll(bnsSrvAttrs);
-//        AlbianBundleServiceConf.insert(FreeAlbianServiceParser.AlbianServiceModuleName, bltSrvAttrs);
+        moduleConf.putAll(bnsSrvAttrs);
+        moduleConf.putAll(bltSrvAttrs);
 
         state = AlbianState.Running;
         AlbianServiceRouter.getLogger2().log(IAlbianLoggerService.AlbianRunningLoggerName,

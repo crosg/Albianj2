@@ -1,7 +1,4 @@
-package org.albianj.except;
-
-import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.verify.Validate;
+package org.albianj.loader.except;
 
 import java.io.File;
 
@@ -31,25 +28,25 @@ public class ExceptionUtil {
 
     public static StringBuilder makeMessage(String  brief,String msg,String secret,Exception self,Throwable origin){
         StringBuilder sb = new StringBuilder();
-        sb.append("brief -> ").append(Validate.isNullOrEmptyOrAllSpace(brief) ? "EMPTY" : brief)
-                .append(" msg -> ").append(Validate.isNullOrEmptyOrAllSpace(msg) ? "EMPTY" : msg);
-        if(!Validate.isNullOrEmptyOrAllSpace(secret)) {
+        sb.append("brief -> ").append(((null == brief) || (0 == brief.trim().length()))? "EMPTY" : brief)
+                .append(" msg -> ").append(((null == msg) || (0 == msg.trim().length())) ? "EMPTY" : msg);
+        if(!((null == secret) || (0 == secret.trim().length()))) {
             sb.append(" Secret -> ").append(secret);
         }
         sb.append(" SelfStacks -> ").append(makeStackBuffer(self.getStackTrace()));
         if(null != origin) {
             if(!origin.getClass().isAssignableFrom(self.getClass())) {
                 String orgMsg = origin.getMessage();
-                sb.append(" OriginMessage -> ").append(Validate.isNullOrEmptyOrAllSpace(orgMsg) ? "EMPTY" : orgMsg);
+                sb.append(" OriginMessage -> ").append(((null == orgMsg) || (0 == orgMsg.trim().length())) ? "EMPTY" : orgMsg);
             }
             sb.append(" OriginStacks ->").append(makeStackBuffer(origin.getStackTrace()));
         }
         return sb;
     }
 
-    public static  int logLevel2Code(AlbianLoggerLevel level){
-        return level.getLevel()  * 10;
-    }
+//    public static  int logLevel2Code(AlbianLoggerLevel level){
+//        return level.getLevel()  * 10;
+//    }
 
 
     private static StringBuilder makeStackBuffer(StackTraceElement[] stacks) {
@@ -69,5 +66,16 @@ public class ExceptionUtil {
         }
         sb.append("} ");
         return sb;
+    }
+
+        static String join(Object... args){
+        if(null == args || 0 == args.length) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for(Object arg : args){
+            sb.append(arg);
+        }
+        return sb.toString();
     }
 }

@@ -37,6 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.storage;
 
+import org.albianj.loader.AlbianBundleContext;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.db.IDataBasePool;
@@ -65,9 +66,9 @@ import static org.albianj.persistence.object.DatabasePoolStyle.valueOf;
 @AlbianServiceRant(Id = IAlbianStorageParserService.Name, Interface = IAlbianStorageParserService.class)
 public class AlbianStorageParserService extends FreeAlbianStorageParserService {
 
-    public final static String DEFAULT_STORAGE_NAME = "!@#$%Albianj_Default_Storage%$#@!";
+    public final static String DEFAULT_STORAGE_NAME = "!AlbianStorageDefault";
 
-    private ConcurrentMap<String, IDataBasePool> pools = null;
+//    private ConcurrentMap<String, IDataBasePool> pools = null;
 
     // <Storage>
     // <Name>1thStorage</Name>
@@ -91,7 +92,7 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
 
     @Override
     public void init() throws AlbianParserException {
-        pools = new ConcurrentHashMap<>(64);
+//        pools = new ConcurrentHashMap<>(64);
         super.init();
     }
 
@@ -247,15 +248,16 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
 
     public IDataBasePool getDatabasePool(String sessionId, IRunningStorageAttribute rsa) {
         final IStorageAttribute sa = rsa.getStorageAttribute();
+        AlbianBundleContext bundleCtx = this.getBundleContext();
         String key = sa.getName();
-        IDataBasePool dbp = pools.get(key);
+        IDataBasePool dbp = (IDataBasePool) bundleCtx.findDatabasePool(key);
         if (dbp != null) {
             return dbp;
         }
         try {
             synchronized (rsa.getStorageAttribute()) {
                 //double check
-                dbp = pools.get(key);
+                dbp = (IDataBasePool) bundleCtx.findDatabasePool(key);
                 if (dbp != null) {
                     return dbp;
                 }
@@ -287,7 +289,7 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
                 if (connectionMonitorService != null) {
                     dbp = new MonitorWrapper(dbp, connectionMonitorService);
                 }
-                pools.putIfAbsent(key, dbp);
+                bundleCtx.addDatabasePoolIfNotExist(key, dbp);
             }
 
             return dbp;

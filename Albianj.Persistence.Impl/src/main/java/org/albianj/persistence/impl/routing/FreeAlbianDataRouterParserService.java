@@ -59,7 +59,7 @@ import java.util.Map;
 public abstract class FreeAlbianDataRouterParserService extends FreeAlbianParserService implements IAlbianDataRouterParserService {
     private final static String tagName = "AlbianObjects/AlbianObject";
     private String file = "drouter.xml";
-    private HashMap<String, IDataRoutersAttribute> _cached = null;
+//    private HashMap<String, IDataRoutersAttribute> _cached = null;
 
     public void setConfigFileName(String fileName) {
         this.file = fileName;
@@ -67,7 +67,7 @@ public abstract class FreeAlbianDataRouterParserService extends FreeAlbianParser
 
     @Override
     public void init() throws AlbianParserException {
-        _cached = new HashMap<>();
+//        _cached = new HashMap<>();
         try {
             parserFile(file);
         } catch (Exception e) {
@@ -124,7 +124,7 @@ public abstract class FreeAlbianDataRouterParserService extends FreeAlbianParser
         parserRoutings(objNodes);
     }
 
-    protected abstract Map<String, IDataRouterAttribute> parserRoutings(
+    protected abstract void parserRoutings(
             @SuppressWarnings("rawtypes") List nodes) throws AlbianParserException;
 
 }

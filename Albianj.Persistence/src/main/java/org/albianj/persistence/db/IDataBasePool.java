@@ -1,5 +1,6 @@
 package org.albianj.persistence.db;
 
+import org.albianj.loader.entry.IAlbianBundlePooling;
 import org.albianj.persistence.object.IRunningStorageAttribute;
 
 import java.sql.Connection;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Created by xuhaifeng on 17/2/26.
  */
-public interface IDataBasePool {
+public interface IDataBasePool extends IAlbianBundlePooling {
 
     /**
      * 从链接池中得到一个连接

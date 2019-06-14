@@ -1,40 +1,42 @@
 package org.albianj.persistence.service;
 
+import org.albianj.loader.entry.IAlbianBundleModuleConf;
 import org.albianj.persistence.object.IAlbianObjectAttribute;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public final class AlbianEntityMetadata {
-    private static Map<String, Object> entityMetadata = new HashMap<>();
-    private static Map<String, String> type2itf = new HashMap<>();
+public class AlbianEntityMetadata implements IAlbianBundleModuleConf {
 
-    public static IAlbianObjectAttribute getEntityMetadata(String itf) {
+    private  Map<String, Object> entityMetadata = new HashMap<>();
+    private  Map<String, String> type2itf = new HashMap<>();
+
+    public  IAlbianObjectAttribute getEntityMetadata(String itf) {
         return (IAlbianObjectAttribute) entityMetadata.get(itf);
     }
 
-    public static IAlbianObjectAttribute getEntityMetadata(Class<?> itfClzz) {
+    public  IAlbianObjectAttribute getEntityMetadata(Class<?> itfClzz) {
         return (IAlbianObjectAttribute) entityMetadata.get(itfClzz.getName());
     }
 
-    public static boolean exist(String itf) {
+    public  boolean exist(String itf) {
         return entityMetadata.containsKey(itf);
     }
 
-    public static boolean exist(Class<?> itfClzz) {
+    public  boolean exist(Class<?> itfClzz) {
         return entityMetadata.containsKey(itfClzz.getName());
     }
 
-    public static void put(String itf, IAlbianObjectAttribute attr) {
+    public  void put(String itf, IAlbianObjectAttribute attr) {
         type2itf.put(attr.getType(), itf);
         entityMetadata.put(itf, attr);
     }
 
-    public static void put(Class<?> itf, IAlbianObjectAttribute attr) {
+    public  void put(Class<?> itf, IAlbianObjectAttribute attr) {
         put(itf.getName(), attr);
     }
 
-    public static void putAll(Map<String, Object> map) {
+    public  void putAll(Map<String, Object> map) {
         //can not use putAll
         for (Object entry : map.values()) {
             IAlbianObjectAttribute objAttr = (IAlbianObjectAttribute) entry;
@@ -42,20 +44,20 @@ public final class AlbianEntityMetadata {
         }
     }
 
-    public static IAlbianObjectAttribute getEntityMetadataByType(String type) {
+    public  IAlbianObjectAttribute getEntityMetadataByType(String type) {
         return (IAlbianObjectAttribute) entityMetadata.get(type2Interface(type));
     }
 
-    public static IAlbianObjectAttribute getEntityMetadataByType(Class<?> implClzz) {
+    public  IAlbianObjectAttribute getEntityMetadataByType(Class<?> implClzz) {
         return getEntityMetadataByType(implClzz.getName());
     }
 
 
-    public static String makeFieldsKey(String propertyName) {
+    public  String makeFieldsKey(String propertyName) {
         return propertyName.toLowerCase();
     }
 
-    public static String type2Interface(String type) {
+    public  String type2Interface(String type) {
         return type2itf.get(type);
     }
 }

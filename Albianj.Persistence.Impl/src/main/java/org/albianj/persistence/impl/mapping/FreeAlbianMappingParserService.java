@@ -43,6 +43,7 @@ import org.albianj.persistence.impl.rant.AlbianEntityRantScaner;
 import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.persistence.service.IAlbianMappingParserService;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.parser.AlbianParserException;
 import org.albianj.service.parser.FreeAlbianParserService;
@@ -59,8 +60,6 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
 
     private final static String tagName = "AlbianObjects/AlbianObject";
     private String file = "persistence.xml";
-    //    private HashMap<String, IAlbianObjectAttribute> _objAttrs = null;
-//    private HashMap<String, String> _class2Inter = null;
     private HashMap<String, PropertyDescriptor[]> _bpd = null;
 
     public void setConfigFileName(String fileName) {
@@ -68,8 +67,6 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
     }
 
     public void init() throws AlbianParserException {
-//        _objAttrs = new HashMap<>();
-//        _class2Inter = new HashMap<>();
         _bpd = new HashMap<>();
 
 
@@ -145,9 +142,10 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
                             "loading the persistence.xml is error. 'Path' attribute in  Package config-item is null or empty.");
                 } else {
                     try {
-                        HashMap<String, Object> pkgMap = AlbianEntityRantScaner.scanPackage(pkg);
+                        AlbianEntityMetadata entityMetadata = this.getBundleContext().getModuleConfAndNewIfNotExist(AlbianBuiltinNames.Conf.Persistence,AlbianEntityMetadata.class);
+                        HashMap<String, Object> pkgMap = AlbianEntityRantScaner.scanPackage(this.getBundleContext(),pkg);
                         if (null != pkgMap) {
-                            AlbianEntityMetadata.putAll(pkgMap);//merger the metedata
+                            entityMetadata.putAll(pkgMap);//merger the metedata
                         }
                     } catch (Exception e) {
                         AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -163,12 +161,6 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
         List objNodes = XmlParser.selectNodes(doc, tagName);
         if (!Validate.isNullOrEmpty(objNodes)) {
             parserAlbianObjects(objNodes);
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-//                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
-//                    AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "parser the node tags:%s in the persisten.xml is error. the node of the tags is null or empty.",
-//                    tagName);
         }
 
         return;

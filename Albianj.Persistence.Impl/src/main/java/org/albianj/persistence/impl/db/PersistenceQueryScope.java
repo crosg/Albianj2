@@ -37,6 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.db;
 
+import org.albianj.loader.AlbianBundleContext;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
@@ -51,6 +52,7 @@ import org.albianj.persistence.object.IRunningStorageAttribute;
 import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.persistence.service.IAlbianStorageParserService;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
 
@@ -149,11 +151,11 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
         job.setResult(result);
     }
 
-    protected <T extends IAlbianObject> List<T> executed(Class<T> cls, IReaderJob job)
+    protected <T extends IAlbianObject> List<T> executed(AlbianBundleContext bundleContext,Class<T> cls, IReaderJob job)
             throws AlbianDataServiceException {
         long begin1 = System.currentTimeMillis();
         String sessionId = job.getId();
-        List<T> list = executed(cls, job.getId(), job.getResult());
+        List<T> list = executed(bundleContext,cls, job.getId(), job.getResult());
         if (!Validate.isNullOrEmptyOrAllSpace(sessionId) && sessionId.endsWith("_SPX_LOG")) {
             long end1 = System.currentTimeMillis();
             AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
@@ -197,11 +199,11 @@ public class PersistenceQueryScope extends FreePersistenceQueryScope implements 
         return null;
     }
 
-    protected <T extends IAlbianObject> List<T> executed(Class<T> cli, String sessionId, ResultSet result)
+    protected <T extends IAlbianObject> List<T> executed(AlbianBundleContext bundleContext,Class<T> cli, String sessionId, ResultSet result)
             throws AlbianDataServiceException {
         String inter = cli.getName();
-
-        IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(inter);
+        AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(AlbianBuiltinNames.Conf.Persistence);
+        IAlbianObjectAttribute objAttr = entityMetadata.getEntityMetadata(inter);
         String className = objAttr.getType();
         Map<String, IAlbianEntityFieldAttribute> member = objAttr.getFields();
 

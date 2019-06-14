@@ -37,6 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.context;
 
+import org.albianj.loader.AlbianBundleContext;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.context.IWriterJob;
@@ -48,6 +49,7 @@ import org.albianj.persistence.object.*;
 import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.persistence.service.IAlbianStorageParserService;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
 
@@ -231,12 +233,13 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
     }
 
 
-    protected void buildWriterJob(IWriterJob job, IAlbianObject entity,
+    protected void buildWriterJob(AlbianBundleContext bundleContext, IWriterJob job, IAlbianObject entity,
                                   String storageAlias, String tableAlias,
                                   IPersistenceUpdateCommand cmd) {
         Class<?> cls = entity.getClass();
         String className = cls.getName();
-        IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadataByType(cls);
+        AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(AlbianBuiltinNames.Conf.Persistence);
+        IAlbianObjectAttribute objAttr = entityMetadata.getEntityMetadataByType(cls);
 
         Map<String, IAlbianEntityFieldAttribute> fieldsAttr = objAttr.getFields();
         if (Validate.isNullOrEmpty(fieldsAttr)) {

@@ -1,9 +1,6 @@
 package org.albianj.persistence.impl.rant;
 
-import org.albianj.loader.AlbianClassLoader;
-import org.albianj.loader.AlbianClassScanner;
-import org.albianj.loader.IAlbianClassExcavator;
-import org.albianj.loader.IAlbianClassFilter;
+import org.albianj.loader.*;
 import org.albianj.persistence.impl.object.AlbianEntityFieldAttribute;
 import org.albianj.persistence.impl.object.AlbianObjectAttribute;
 import org.albianj.persistence.impl.object.DataRouterAttribute;
@@ -17,6 +14,7 @@ import org.albianj.persistence.object.rants.AlbianObjectDataRoutersRant;
 import org.albianj.persistence.object.rants.AlbianObjectRant;
 import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.reflection.AlbianReflect;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.text.StringHelper;
 import org.albianj.verify.Validate;
 
@@ -30,8 +28,8 @@ import java.util.*;
 
 public class AlbianEntityRantScaner {
 
-    public static HashMap<String, Object> scanPackage(final String pkgName) throws IOException, ClassNotFoundException {
-        return AlbianClassScanner.filter(AlbianClassLoader.getInstance(),
+    public static HashMap<String, Object> scanPackage(final AlbianBundleContext bundleContext,final String pkgName) throws IOException, ClassNotFoundException {
+        return AlbianClassScanner.filter(bundleContext.getClassLoader(),
                 pkgName,
 
                 new IAlbianClassFilter() {
@@ -57,15 +55,14 @@ public class AlbianEntityRantScaner {
 
                         Class<?> itfClzz = or.Interface();
                         String sItf = itfClzz.getName();
-
-                        if (AlbianEntityMetadata.exist(sItf)) {
-                            objAttr = AlbianEntityMetadata.getEntityMetadata(sItf);
+                        AlbianEntityMetadata entityMetadata = bundleContext.getModuleConfAndNewIfNotExist(AlbianBuiltinNames.Conf.Persistence,AlbianEntityMetadata.class);
+                        if (entityMetadata.exist(sItf)) {
+                            objAttr = entityMetadata.getEntityMetadata(sItf);
                         } else {
                             objAttr = new AlbianObjectAttribute();
                             objAttr.setType(clzz.getName());
                             objAttr.setInterface(sItf);
-                            AlbianEntityMetadata.put(sItf, objAttr);
-
+                            entityMetadata.put(sItf, objAttr);
                         }
 
                         objAttr.setImplClzz(clzz);

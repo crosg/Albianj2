@@ -53,6 +53,7 @@ import org.albianj.persistence.service.IAlbianMappingParserService;
 import org.albianj.persistence.service.MappingAttributeException;
 import org.albianj.reflection.AlbianReflect;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.parser.AlbianParserException;
@@ -269,7 +270,6 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
         }
         String inter = null;
         for (Object node : nodes) {
-//            IAlbianObjectAttribute albianObjectAttribute = null;
             Element ele = (Element) node;
             try {
                 parserAlbianObject(ele);
@@ -279,15 +279,6 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "parser persisten node is fail,xml:%s", ele.asXML());
             }
-//            if (null == albianObjectAttribute) {
-//                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-//                        IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-//                        AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                        "parser persisten node is fail,the node attribute is null,xml:%s", ele.asXML());
-//            }
-//            inter = albianObjectAttribute.getInterface();
-
-//            addAlbianObjectAttribute(inter, albianObjectAttribute);
         }
 
     }
@@ -312,14 +303,15 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
         }
 
         IAlbianObjectAttribute pkgEntityAttr = null;
-        if (AlbianEntityMetadata.exist(inter)) {
-            pkgEntityAttr = AlbianEntityMetadata.getEntityMetadata(inter);
+        AlbianEntityMetadata entityMetadata = this.getBundleContext().getModuleConfAndNewIfNotExist(AlbianBuiltinNames.Conf.Persistence,AlbianEntityMetadata.class);
+        if (entityMetadata.exist(inter)) {
+            pkgEntityAttr = entityMetadata.getEntityMetadata(inter);
             pkgEntityAttr.setType(type);
         } else {
             pkgEntityAttr = new AlbianObjectAttribute();
             pkgEntityAttr.setInterface(inter);
             pkgEntityAttr.setType(type);
-            AlbianEntityMetadata.put(inter, pkgEntityAttr);
+            entityMetadata.put(inter, pkgEntityAttr);
         }
 
         Class<?> implClzz = null;

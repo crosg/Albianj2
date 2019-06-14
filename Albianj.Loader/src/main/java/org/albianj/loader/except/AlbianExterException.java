@@ -1,6 +1,4 @@
-package org.albianj.except;
-
-import org.albianj.text.StringHelper;
+package org.albianj.loader.except;
 
 /**
  *
@@ -22,7 +20,7 @@ public class AlbianExterException extends RuntimeException {
      */
     public AlbianExterException(int code, String brief, Object... msg){
         this.brief = brief;
-        this.msg = StringHelper.join(msg);
+        this.msg = ExceptionUtil.join(msg);
         this.code= code;
     }
 
@@ -34,7 +32,7 @@ public class AlbianExterException extends RuntimeException {
      */
     public AlbianExterException(int code, Throwable origin, String brief, Object... msg){
         this.brief = brief;
-        this.msg = StringHelper.join(msg);;
+        this.msg = ExceptionUtil.join(msg);;
         this.origin = origin;
         this.code = code;
     }

@@ -1,7 +1,4 @@
-package org.albianj.except;
-
-
-import org.albianj.text.StringHelper;
+package org.albianj.loader.except;
 
 /**
  * 对内的异常 具有私密属性的异常,和AlbianDisplayException正好是互补类型
@@ -26,7 +23,7 @@ public class AlbianInterException extends RuntimeException{
      */
     public AlbianInterException(int code, String interMsg, String brief, Object... msg){
         this.brief = brief;
-        this.msg = StringHelper.join(msg);
+        this.msg = ExceptionUtil.join(msg);
         this.interMsg = interMsg;
         this.code = code;
     }
@@ -40,7 +37,7 @@ public class AlbianInterException extends RuntimeException{
      */
     public AlbianInterException(int code, Throwable origin, String interMsg, String brief, Object... msg){
         this.brief = brief;
-        this.msg = StringHelper.join(msg);
+        this.msg = ExceptionUtil.join(msg);
         this.origin = origin;
         this.interMsg = interMsg;
         this.code = code;

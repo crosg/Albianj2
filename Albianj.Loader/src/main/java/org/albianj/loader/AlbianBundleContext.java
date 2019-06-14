@@ -1,6 +1,9 @@
 package org.albianj.loader;
 
 import org.albianj.loader.entry.IAlbianBundleModuleConf;
+import org.albianj.loader.entry.IAlbianBundlePooling;
+import org.albianj.loader.except.AlbianExterException;
+import org.albianj.loader.except.ExceptionUtil;
 
 import java.io.File;
 import java.util.HashMap;
@@ -26,6 +29,7 @@ public class AlbianBundleContext {
      */
     private Map<String, IAlbianBundleService> bundleServiceMap;
     private Map<String,IAlbianBundleModuleConf> bundleConf;
+    private Map<String, IAlbianBundlePooling> bundleDbPool;
 
     /**
      * 当前bundle的目录,肯定以File.separator结尾
@@ -42,6 +46,7 @@ public class AlbianBundleContext {
         }
         bundleServiceMap = new HashMap<>();
         bundleConf = new HashMap<>();
+        bundleDbPool = new HashMap<>();
     }
 
     public static AlbianBundleContext makeInstance(String bundleName, String workPath, ClassLoader loader){
@@ -52,8 +57,28 @@ public class AlbianBundleContext {
         bundleConf.put(moduleName,conf);
     }
 
-    public IAlbianBundleModuleConf getModuleConf(String moduleName) {
-        return bundleConf.containsKey(moduleName) ? bundleConf.get(moduleName) : null;
+    public <T extends IAlbianBundleModuleConf> T getModuleConf(String moduleName) {
+        if( bundleConf.containsKey(moduleName) ) {
+            return (T) bundleConf.get(moduleName);
+        }
+        throw new AlbianExterException(ExceptionUtil.ExceptForError,
+                "Module Conf not Exist.","moduleName -> ", moduleName," not exist.");
+    }
+
+    public <T extends IAlbianBundleModuleConf> T getModuleConfAndNewIfNotExist(String moduleName,Class<T> clzz) {
+        if(bundleConf.containsKey(moduleName)) {
+            return (T) bundleConf.get(moduleName);
+        }else {
+            T inst = null;
+            try {
+                inst = clzz.newInstance();
+            } catch (Exception e) {
+                throw new AlbianExterException(ExceptionUtil.ExceptForError,e,
+                        "New Instance Eoor.","moduleName -> ", moduleName," new class -> ",clzz.getCanonicalName()," instance is fail.");
+            }
+            bundleConf.put(moduleName,inst);
+            return inst;
+        }
     }
 
     public ClassLoader getClassLoader(){
@@ -105,5 +130,17 @@ public class AlbianBundleContext {
 
     public String getBundleName(){
         return this.bundleName;
+    }
+
+    public IAlbianBundlePooling findDatabasePool(String name){
+        return bundleDbPool.get(name);
+    }
+
+    public void addDatabasePoolIfNotExist(String name,IAlbianBundlePooling pool){
+        synchronized (bundleDbPool) {
+            if(!bundleDbPool.containsKey(name)) {
+                bundleDbPool.put(name, pool);
+            }
+        }
     }
 }

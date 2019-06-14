@@ -69,7 +69,7 @@ import java.util.List;
 public class AlbianPersistenceService extends FreeAlbianService implements IAlbianPersistenceService {
 
     @Deprecated
-    protected static <T extends IAlbianObject> T doLoadObject(String sessionId,
+    protected <T extends IAlbianObject> T doLoadObject(String sessionId,
                                                               Class<T> cls, boolean isExact,
                                                               String routingName, LinkedList<IFilterCondition> wheres)
             throws AlbianDataServiceException {
@@ -80,28 +80,28 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
     }
 
     @Deprecated
-    protected static <T extends IAlbianObject> List<T> doLoadObjects(String sessionId,
+    protected <T extends IAlbianObject> List<T> doLoadObjects(String sessionId,
                                                                      Class<T> cls, boolean isExact, String routingName, int start, int step,
                                                                      LinkedList<IFilterCondition> wheres,
                                                                      LinkedList<IOrderByCondition> orderbys, String idxName)
             throws AlbianDataServiceException {
         IReaderJobAdapter ad = new ReaderJobAdapter();
         List<T> list = null;
-        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact, routingName, start, step,
+        IReaderJob job = ad.buildReaderJob(sessionId,this.getBundleContext(), cls, isExact, routingName, start, step,
                 wheres, orderbys, idxName);
         IPersistenceQueryScope scope = new PersistenceQueryScope();
-        list = scope.execute(cls, job);
+        list = scope.execute(this.getBundleContext(),cls, job);
         return list;
     }
 
     @Deprecated
-    protected static <T extends IAlbianObject> long doLoadPageingCount(String sessionId,
+    protected <T extends IAlbianObject> long doLoadPageingCount(String sessionId,
                                                                        Class<T> cls, boolean isExact, String routingName,
                                                                        LinkedList<IFilterCondition> wheres,
                                                                        LinkedList<IOrderByCondition> orderbys, String idxName)
             throws AlbianDataServiceException {
         IReaderJobAdapter ad = new ReaderJobAdapter();
-        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact, routingName,
+        IReaderJob job = ad.buildReaderJob(sessionId, this.getBundleContext(),cls, isExact, routingName,
                 wheres, orderbys, idxName);
         IPersistenceQueryScope scope = new PersistenceQueryScope();
         Object o = scope.execute(job);
@@ -126,7 +126,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
                           Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
                           Object compensateCallbackObject) throws AlbianDataServiceException {
         IWriterJobAdapter ja = new WriterJobAdapter();
-        IWriterJob job = ja.buildCreation(sessionId, object);
+        IWriterJob job = ja.buildCreation(sessionId, this.getBundleContext(),object);
         if (null != notifyCallback)
             job.setNotifyCallback(notifyCallback);
         if (null != notifyCallbackObject)
@@ -149,7 +149,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
                           Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
                           Object compensateCallbackObject) throws AlbianDataServiceException {
         IWriterJobAdapter ja = new WriterJobAdapter();
-        IWriterJob job = ja.buildCreation(sessionId, objects);
+        IWriterJob job = ja.buildCreation(sessionId,this.getBundleContext(), objects);
         if (null != notifyCallback)
             job.setNotifyCallback(notifyCallback);
         if (null != notifyCallbackObject)
@@ -172,7 +172,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
                           Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
                           Object compensateCallbackObject) throws AlbianDataServiceException {
         IWriterJobAdapter ja = new WriterJobAdapter();
-        IWriterJob job = ja.buildModification(sessionId, object);
+        IWriterJob job = ja.buildModification(sessionId,this.getBundleContext(), object);
         if (null != notifyCallback)
             job.setNotifyCallback(notifyCallback);
         if (null != notifyCallbackObject)
@@ -196,7 +196,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
                           Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
                           Object compensateCallbackObject) throws AlbianDataServiceException {
         IWriterJobAdapter ja = new WriterJobAdapter();
-        IWriterJob job = ja.buildModification(sessionId, objects);
+        IWriterJob job = ja.buildModification(sessionId,this.getBundleContext(), objects);
         if (null != notifyCallback)
             job.setNotifyCallback(notifyCallback);
         if (null != notifyCallbackObject)
@@ -217,7 +217,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
                           Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
                           Object compensateCallbackObject) throws AlbianDataServiceException {
         IWriterJobAdapter ja = new WriterJobAdapter();
-        IWriterJob job = ja.buildRemoved(sessionId, object);
+        IWriterJob job = ja.buildRemoved(sessionId, this.getBundleContext(),object);
         if (null != notifyCallback)
             job.setNotifyCallback(notifyCallback);
         if (null != notifyCallbackObject)
@@ -238,7 +238,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
                           Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
                           Object compensateCallbackObject) throws AlbianDataServiceException {
         IWriterJobAdapter ja = new WriterJobAdapter();
-        IWriterJob job = ja.buildRemoved(sessionId, objects);
+        IWriterJob job = ja.buildRemoved(sessionId, this.getBundleContext(),objects);
         if (null != notifyCallback)
             job.setNotifyCallback(notifyCallback);
         if (null != notifyCallbackObject)
@@ -260,7 +260,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
                         IPersistenceCompensateNotify compensateCallback, Object compensateCallbackObject)
             throws AlbianDataServiceException {
         IWriterJobAdapter ja = new WriterJobAdapter();
-        IWriterJob job = ja.buildSaving(sessionId, object);
+        IWriterJob job = ja.buildSaving(sessionId, this.getBundleContext(),object);
         if (null != notifyCallback)
             job.setNotifyCallback(notifyCallback);
         if (null != notifyCallbackObject)
@@ -281,7 +281,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
                         Object notifyCallbackObject, IPersistenceCompensateNotify compensateCallback,
                         Object compensateCallbackObject) throws AlbianDataServiceException {
         IWriterJobAdapter ja = new WriterJobAdapter();
-        IWriterJob job = ja.buildSaving(sessionId, objects);
+        IWriterJob job = ja.buildSaving(sessionId,this.getBundleContext(), objects);
         if (null != notifyCallback)
             job.setNotifyCallback(notifyCallback);
         if (null != notifyCallbackObject)
@@ -306,7 +306,6 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             List<T> list = doLoadObjects(sessionId, cls, true, rountingName, 0, 0, wheres, null, null);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObject(cls, wheres, null, list.get(0));
             return list.get(0);
         }
 
@@ -314,18 +313,12 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             List<T> list = doLoadObjects(sessionId, cls, false, rountingName, 0, 0, wheres, null, null);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObject(cls, wheres, null, list.get(0));
             return list.get(0);
         }
-
-//        T obj = AlbianPersistenceCache.findObject(cls, wheres, null);
-//        if (null != obj)
-//            return obj;
 
         T newObj = doLoadObject(sessionId, cls, false, rountingName, wheres, null);
         if (null == newObj)
             return null;
-//        AlbianPersistenceCache.setObject(cls, wheres, null, newObj);
         return newObj;
     }
 
@@ -365,25 +358,18 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             List<T> list = doLoadObjects(sessionId, cls, true, rountingName, start, step, wheres, orderbys, null);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObjects(cls, start, step, wheres, orderbys, list);
             return list;
         }
         if (LoadType.dirty == loadType) {
             List<T> list = doLoadObjects(sessionId, cls, false, rountingName, start, step, wheres, orderbys, null);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObjects(cls, start, step, wheres, orderbys, list);
             return list;
         }
-
-//        List<T> objs = AlbianPersistenceCache.findObjects(cls, start, step, wheres, orderbys);
-//        if (null != objs)
-//            return objs;
 
         List<T> objs = doLoadObjects(sessionId, cls, false, rountingName, start, step, wheres, orderbys, null);
         if (null == objs)
             return null;
-//        AlbianPersistenceCache.setObjects(cls, start, step, wheres, orderbys, objs);
         return objs;
     }
 
@@ -399,18 +385,11 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
         long count = 0;
         if (LoadType.exact == loadType) {
             count = doLoadPageingCount(sessionId, cls, true, rountingName, wheres, null, null);
-//            AlbianPersistenceCache.setPagesize(cls, wheres, null, count);
         } else {
             if (LoadType.dirty == loadType) {
                 count = doLoadPageingCount(sessionId, cls, false, rountingName, wheres, null, null);
-//                AlbianPersistenceCache.setPagesize(cls, wheres, null, count);
             } else {
-//                count = AlbianPersistenceCache.findPagesize(cls, wheres, null);
-//                if (0 <= count) {
-//                    return count;
-//                }
                 count = doLoadPageingCount(sessionId, cls, false, rountingName, wheres, null, null);
-//                AlbianPersistenceCache.setPagesize(cls, wheres, null, count);
             }
 
         }
@@ -432,7 +411,6 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             List<T> list = doLoadObjects(sessionId, cls, true, rountingName, 0, 0, wheres, null, null);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObject(cls, wheres, null, list.get(0));
             return list.get(0);
         }
 
@@ -440,18 +418,12 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             List<T> list = doLoadObjects(sessionId, cls, false, rountingName, 0, 0, wheres, null, null);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObject(cls, wheres, null, list.get(0));
             return list.get(0);
         }
-
-//        T obj = AlbianPersistenceCache.findObject(cls, wheres, null);
-//        if (null != obj)
-//            return obj;
 
         T newObj = doLoadObject(sessionId, cls, false, rountingName, wheres);
         if (null == newObj)
             return null;
-//        AlbianPersistenceCache.setObject(cls, wheres, null, newObj);
         return newObj;
     }
 
@@ -513,25 +485,18 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             List<T> list = doLoadObjects(sessionId, cls, true, rountingName, start, step, wheres, orderbys, null);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObjects(cls, start, step, wheres, orderbys, list);
             return list;
         }
         if (LoadType.dirty == loadType) {
             List<T> list = doLoadObjects(sessionId, cls, false, rountingName, start, step, wheres, orderbys, null);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObjects(cls, start, step, wheres, orderbys, list);
             return list;
         }
-
-//        List<T> objs = AlbianPersistenceCache.findObjects(cls, start, step, wheres, orderbys);
-//        if (null != objs)
-//            return objs;
 
         List<T> objs = doLoadObjects(sessionId, cls, false, rountingName, start, step, wheres, orderbys, null);
         if (null == objs)
             return null;
-//        AlbianPersistenceCache.setObjects(cls, start, step, wheres, orderbys, objs);
         return objs;
     }
 
@@ -555,13 +520,8 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             return count;
         }
 
-//        long count = AlbianPersistenceCache.findPagesize(cls, wheres, null);
-//        if (0 <= count) {
-//            return count;
-//        }
         long count = doLoadPageingCount(sessionId, cls, false, rountingName, wheres, null, null);
 
-//        AlbianPersistenceCache.setPagesize(cls, wheres, null, count);
         return count;
     }
 
@@ -571,7 +531,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             throws AlbianDataServiceException {
         IPersistenceQueryScope scope = new PersistenceQueryScope();
         List<T> list = null;
-        list = scope.execute(sessionId, cls, cmdType, statement);
+        list = scope.execute(sessionId,this.getBundleContext(), cls, cmdType, statement);
         return list;
     }
 
@@ -601,10 +561,10 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             throws AlbianDataServiceException {
         IReaderJobAdapter ad = new ReaderJobAdapter();
         List<T> list = null;
-        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact, null, null, routingName, start, step,
+        IReaderJob job = ad.buildReaderJob(sessionId,this.getBundleContext(), cls, isExact, null, null, routingName, start, step,
                 wheres, orderbys, idxName);
         IPersistenceQueryScope scope = new PersistenceQueryScope();
-        list = scope.execute(cls, job);
+        list = scope.execute(this.getBundleContext(),cls, job);
         return list;
     }
 
@@ -614,7 +574,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
                                                                 LinkedList<IOrderByCondition> orderbys, String idxName)
             throws AlbianDataServiceException {
         IReaderJobAdapter ad = new ReaderJobAdapter();
-        IReaderJob job = ad.buildReaderJob(sessionId, cls, isExact, null, null, routingName,
+        IReaderJob job = ad.buildReaderJob(sessionId,this.getBundleContext(), cls, isExact, null, null, routingName,
                 wheres, orderbys, idxName);
         IPersistenceQueryScope scope = new PersistenceQueryScope();
         Object o = scope.execute(job);
@@ -636,7 +596,6 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             List<T> list = doLoadObjects(sessionId, cls, true, rountingName, 0, 0, wheres, null, idxName);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObject(cls, wheres, null, list.get(0));
             return list.get(0);
         }
 
@@ -644,18 +603,12 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             List<T> list = doLoadObjects(sessionId, cls, false, rountingName, 0, 0, wheres, null, idxName);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObject(cls, wheres, null, list.get(0));
             return list.get(0);
         }
-
-//        T obj = AlbianPersistenceCache.findObject(cls, wheres, null);
-//        if (null != obj)
-//            return obj;
 
         T newObj = doLoadObject(sessionId, cls, false, rountingName, wheres, idxName);
         if (null == newObj)
             return null;
-//        AlbianPersistenceCache.setObject(cls, wheres, null, newObj);
         return newObj;
     }
 
@@ -695,25 +648,18 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             List<T> list = doLoadObjects(sessionId, cls, true, rountingName, start, step, wheres, orderbys, idxName);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObjects(cls, start, step, wheres, orderbys, list);
             return list;
         }
         if (LoadType.dirty == loadType) {
             List<T> list = doLoadObjects(sessionId, cls, false, rountingName, start, step, wheres, orderbys, idxName);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObjects(cls, start, step, wheres, orderbys, list);
             return list;
         }
-
-//        List<T> objs = AlbianPersistenceCache.findObjects(cls, start, step, wheres, orderbys);
-//        if (null != objs)
-//            return objs;
 
         List<T> objs = doLoadObjects(sessionId, cls, false, rountingName, start, step, wheres, orderbys, idxName);
         if (null == objs)
             return null;
-//        AlbianPersistenceCache.setObjects(cls, start, step, wheres, orderbys, objs);
         return objs;
     }
 
@@ -729,18 +675,11 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
         long count = 0;
         if (LoadType.exact == loadType) {
             count = doLoadPageingCount(sessionId, cls, true, rountingName, wheres, null, idxName);
-//            AlbianPersistenceCache.setPagesize(cls, wheres, null, count);
         } else {
             if (LoadType.dirty == loadType) {
                 count = doLoadPageingCount(sessionId, cls, false, rountingName, wheres, null, idxName);
-//                AlbianPersistenceCache.setPagesize(cls, wheres, null, count);
             } else {
-//                count = AlbianPersistenceCache.findPagesize(cls, wheres, null);
-//                if (0 <= count) {
-//                    return count;
-//                }
                 count = doLoadPageingCount(sessionId, cls, false, rountingName, wheres, null, idxName);
-//                AlbianPersistenceCache.setPagesize(cls, wheres, null, count);
             }
 
         }
@@ -762,7 +701,6 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             List<T> list = doLoadObjects(sessionId, cls, true, rountingName, 0, 0, wheres, null, idxName);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObject(cls, wheres, null, list.get(0));
             return list.get(0);
         }
 
@@ -770,18 +708,12 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             List<T> list = doLoadObjects(sessionId, cls, false, rountingName, 0, 0, wheres, null, idxName);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObject(cls, wheres, null, list.get(0));
             return list.get(0);
         }
-
-//        T obj = AlbianPersistenceCache.findObject(cls, wheres, null);
-//        if (null != obj)
-//            return obj;
 
         T newObj = doLoadObject(sessionId, cls, false, rountingName, wheres);
         if (null == newObj)
             return null;
-//        AlbianPersistenceCache.setObject(cls, wheres, null, newObj);
         return newObj;
     }
 
@@ -828,25 +760,18 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             List<T> list = doLoadObjects(sessionId, cls, true, rountingName, start, step, wheres, orderbys, idxName);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObjects(cls, start, step, wheres, orderbys, list);
             return list;
         }
         if (LoadType.dirty == loadType) {
             List<T> list = doLoadObjects(sessionId, cls, false, rountingName, start, step, wheres, orderbys, idxName);
             if (Validate.isNullOrEmpty(list))
                 return null;
-//            AlbianPersistenceCache.setObjects(cls, start, step, wheres, orderbys, list);
             return list;
         }
-
-//        List<T> objs = AlbianPersistenceCache.findObjects(cls, start, step, wheres, orderbys);
-//        if (null != objs)
-//            return objs;
 
         List<T> objs = doLoadObjects(sessionId, cls, false, rountingName, start, step, wheres, orderbys, idxName);
         if (null == objs)
             return null;
-//        AlbianPersistenceCache.setObjects(cls, start, step, wheres, orderbys, objs);
         return objs;
     }
 
@@ -869,14 +794,7 @@ public class AlbianPersistenceService extends FreeAlbianService implements IAlbi
             long count = doLoadPageingCount(sessionId, cls, false, rountingName, wheres, null, idxName);
             return count;
         }
-
-//        long count = AlbianPersistenceCache.findPagesize(cls, wheres, null);
-//        if (0 <= count) {
-//            return count;
-//        }
         long count = doLoadPageingCount(sessionId, cls, false, rountingName, wheres, null, idxName);
-
-//        AlbianPersistenceCache.setPagesize(cls, wheres, null, count);
         return count;
     }
 }

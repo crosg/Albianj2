@@ -8,11 +8,8 @@ public class AlbianBuiltinNames {
     public class Conf{
         public final static String Service = "Service";
         public final static String Logger = "Logger";
-        public final static String DataRouter = "DataRouter";
         public final static String Storage = "Storage";
         public final static String Persistence = "Persistence";
-        public final static String WebMvf = "WebMvf";
-        public final static String RemoteId = "RemoteId";
     }
 
 

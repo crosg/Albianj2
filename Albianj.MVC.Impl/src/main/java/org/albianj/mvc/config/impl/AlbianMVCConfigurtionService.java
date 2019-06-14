@@ -42,11 +42,8 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
         return Name;
     }
 
-
     private String configFilename = "mvf.xml";
     protected AlbianHttpConfigurtion c = null;
-
-
 
     @Override
     public void init() throws AlbianParserException {
@@ -93,7 +90,6 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
         if(!rootPath.endsWith(File.separator)){
             rootPath += File.separator;
         }
-//        Path.relativeToAbsolute();
         c.setRootPath(rootPath);
 
         String suffix = XmlParser.getAttributeValue(doc,"Mvf/Suffix","Value");
@@ -101,13 +97,6 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             suffix = ".shtm";
         }
         c.setSuffix(suffix);
-
-//        String welcomePath = XmlParser.getAttributeValue(doc,"Mvf/WelcomePage","Path");
-//        if(Validate.isNullOrEmptyOrAllSpace(welcomePath)){
-//            welcomePath = "/index.shtm";
-//        }
-//        c.setWelcomePage(welcomePath);
-
 
         String context = XmlParser.getAttributeValue(doc,"Mvf/Context","Value");
         if(!Validate.isNullOrEmptyOrAllSpace(context)){

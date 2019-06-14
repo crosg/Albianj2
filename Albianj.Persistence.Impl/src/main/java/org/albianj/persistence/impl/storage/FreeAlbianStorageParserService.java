@@ -37,6 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.storage;
 
+import org.albianj.loader.entry.AlbianBundleModuleKeyValueConf;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.object.IRunningStorageAttribute;
@@ -44,6 +45,7 @@ import org.albianj.persistence.object.IStorageAttribute;
 import org.albianj.persistence.object.PersistenceDatabaseStyle;
 import org.albianj.persistence.service.IAlbianStorageParserService;
 import org.albianj.runtime.AlbianModuleType;
+import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.parser.AlbianParserException;
 import org.albianj.service.parser.FreeAlbianParserService;
@@ -52,13 +54,12 @@ import org.albianj.xml.XmlParser;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
-import java.util.HashMap;
 import java.util.List;
 
 public abstract class FreeAlbianStorageParserService extends FreeAlbianParserService implements IAlbianStorageParserService {
     private final static String tagName = "Storages/Storage";
     private String file = "storage.xml";
-    private HashMap<String, IStorageAttribute> cached = null;
+    private AlbianBundleModuleKeyValueConf<IStorageAttribute> stgAttrs = null;
 
     public static String generateConnectionUrl(
             IRunningStorageAttribute rsa) {
@@ -119,10 +120,9 @@ public abstract class FreeAlbianStorageParserService extends FreeAlbianParserSer
 
     @Override
     public void init() throws AlbianParserException {
-        Document doc = null;
-        cached = new HashMap<String, IStorageAttribute>();
         try {
             parserFile(file);
+            this.getBundleContext().addModuleConf(AlbianBuiltinNames.Conf.Storage,stgAttrs);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
@@ -135,7 +135,7 @@ public abstract class FreeAlbianStorageParserService extends FreeAlbianParserSer
 
     private void parserFile(String filename) throws AlbianParserException {
         Document doc = null;
-        cached = new HashMap<String, IStorageAttribute>();
+        stgAttrs = new AlbianBundleModuleKeyValueConf<>();
         try {
             String fname = findConfigFile(filename);
             doc = XmlParser.load(fname);
@@ -183,10 +183,10 @@ public abstract class FreeAlbianStorageParserService extends FreeAlbianParserSer
     protected abstract IStorageAttribute parserStorage(Element node);
 
     public void addStorageAttribute(String name, IStorageAttribute sa) {
-        cached.put(name, sa);
+        stgAttrs.put(name, sa);
     }
 
     public IStorageAttribute getStorageAttribute(String name) {
-        return cached.get(name);
+        return stgAttrs.get(name);
     }
 }

@@ -37,12 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.loader;
 
-import org.albianj.kernel.AlbianState;
-import org.albianj.kernel.IAlbianTransmitterService;
 import org.albianj.loader.entry.AlbianBootAttribute;
-import org.albianj.net.MemoryToIOStream;
-import org.albianj.verify.Validate;
-import org.apache.commons.codec.binary.Base64;
 
 import java.io.FileInputStream;
 import java.lang.reflect.Method;
@@ -57,19 +52,19 @@ public class AlbianBootService {
         ArrayList<byte[]> list = null;
         try {
             list = new ArrayList<byte[]>();
-            byte[] bsize = new byte[4];
-            fis.read(bsize);
-            long size = MemoryToIOStream.netStreamToInt(bsize, 0);
-            for (int i = 0; i < size; i++) {
-                byte[] blength = new byte[8];
-                fis.read(blength);
-                long length = MemoryToIOStream.netStreamToLong(blength, 0);
-                byte[] ebytes = new byte[(int) length];
-                fis.read(ebytes);
-                Base64 b64 = new Base64();
-                byte[] stream = b64.decode(ebytes);
-                list.add(stream);
-            }
+//            byte[] bsize = new byte[4];
+//            fis.read(bsize);
+//            long size = MemoryToIOStream.netStreamToInt(bsize, 0);
+//            for (int i = 0; i < size; i++) {
+//                byte[] blength = new byte[8];
+//                fis.read(blength);
+//                long length = MemoryToIOStream.netStreamToLong(blength, 0);
+//                byte[] ebytes = new byte[(int) length];
+//                fis.read(ebytes);
+//                Base64 b64 = new Base64();
+//                byte[] stream = b64.decode(ebytes);
+//                list.add(stream);
+//            }
             return list;
         } catch (Exception e) {
             e.printStackTrace();
@@ -148,25 +143,25 @@ public class AlbianBootService {
 //        }
 
         try {
-            Class<?> clss = AlbianClassLoader.getInstance()
-                    .loadClass("org.albianj.kernel.impl.AlbianTransmitterService");
-            IAlbianTransmitterService abs = (IAlbianTransmitterService) clss.newInstance();
-            if (!Validate.isNullOrEmptyOrAllSpace(kernelPath) && !Validate.isNullOrEmptyOrAllSpace(configPath)) {
-                abs.start(kernelPath, configPath);
-            } else if (Validate.isNullOrEmptyOrAllSpace(kernelPath) && !Validate.isNullOrEmptyOrAllSpace(configPath)) {
-                abs.start(configPath);
-            } else {
-                abs.start();
-            }
-            if (AlbianState.Running != abs.getLifeState()) {
+//            Class<?> clss = AlbianClassLoader.getInstance()
+//                    .loadClass("org.albianj.kernel.impl.AlbianTransmitterService");
+//            IAlbianTransmitterService abs = (IAlbianTransmitterService) clss.newInstance();
+//            if (!Validate.isNullOrEmptyOrAllSpace(kernelPath) && !Validate.isNullOrEmptyOrAllSpace(configPath)) {
+//                abs.start(kernelPath, configPath);
+//            } else if (Validate.isNullOrEmptyOrAllSpace(kernelPath) && !Validate.isNullOrEmptyOrAllSpace(configPath)) {
+//                abs.start(configPath);
+//            } else {
+//                abs.start();
+//            }
+//            if (AlbianState.Running != abs.getLifeState()) {
                 return false;
-            }
+//            }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return false;
         }
-        return true;
+//        return true;
     }
 
     public static boolean start(String classpath, String configPath) {

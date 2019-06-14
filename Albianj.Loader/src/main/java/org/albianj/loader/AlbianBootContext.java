@@ -63,6 +63,7 @@ public class AlbianBootContext {
         Thread.currentThread().setContextClassLoader(classLoader);
         AlbianBundleContext bundleContainer = AlbianBundleContext.makeInstance(bundleName,workPath,classLoader);
         addBundle(bundleName,bundleContainer);
+        classLoader.loadAllClass(bundleContainer.getBinPath(),bundleContainer.getClassesPath(),bundleContainer.getLibPath());
         return bundleContainer;
     }
 
