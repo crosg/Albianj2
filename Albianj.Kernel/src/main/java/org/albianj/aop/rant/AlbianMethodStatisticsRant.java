@@ -1,6 +1,6 @@
 package org.albianj.aop.rant;
 
-import org.albianj.comment.Comments;
+import org.albianj.boot.tags.Comments;
 
 import java.lang.annotation.*;
 

@@ -16,8 +16,8 @@ public class AlbianLoggerOpt {
         Instance = new AlbianLoggerOpt();
     }
 
-    private static String logFmtV2 = "{time} {level} Bundle:{bundleName} SessionId:{sessionId} Thread:{tid} Brief:{brief} CallChain:[{chain}] Except:[Type:{type} Msg:{msg}] Ctx:[{ctx}]";
-    private static String logInterFmtV2 = "{time} {level} Bundle:{bundleName} SessionId:{sessionId} Thread:{tid} Brief:{brief} CallChain:[{chain}] Except:[Type:{type} InterMsg:[{intermsg}] Msg:{msg}] Ctx:[{ctx}]";
+    private static String logFmtV2 = "{time} {level} Bundle:{bundleName} SessionId:{sessionId} Thread:{tid} Brief:{brief} CallChain:[{chain}] Except:[Type:{type} Msg:{showMsg}] Ctx:[{ctx}]";
+    private static String logInterFmtV2 = "{time} {level} Bundle:{bundleName} SessionId:{sessionId} Thread:{tid} Brief:{brief} CallChain:[{chain}] Except:[Type:{type} InterMsg:[{intermsg}] Msg:{showMsg}] Ctx:[{ctx}]";
 
     public void logMsg(String logName, AlbianLoggerLevel level, Throwable excp, String msg) {
         IAlbianLoggerService2 log = AlbianServiceRouter.getSingletonService(IAlbianLoggerService2.class, IAlbianLoggerService2.Name, false);

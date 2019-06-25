@@ -37,7 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.object.filter;
 
-import org.albianj.comment.Comments;
+import org.albianj.boot.tags.Comments;
 import org.albianj.persistence.object.LogicalOperation;
 import org.albianj.persistence.object.RelationalOperator;
 

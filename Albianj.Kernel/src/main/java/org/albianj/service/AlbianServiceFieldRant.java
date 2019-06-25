@@ -4,8 +4,8 @@ import javax.swing.*;
 import java.lang.annotation.*;
 
 /**
- * service field setter rant
- * if you use this rant to field,the field must have value,
+ * service field setter tags
+ * if you use this tags to field,the field must have value,
  * and not allow the field set to NULL.
  */
 @Retention(RetentionPolicy.RUNTIME)

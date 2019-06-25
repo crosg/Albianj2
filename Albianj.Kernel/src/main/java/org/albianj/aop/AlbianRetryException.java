@@ -1,8 +1,8 @@
 package org.albianj.aop;
 
-import org.albianj.loader.except.AlbianExterException;
+import org.albianj.boot.except.AlbianDisplayException;
 
-public class AlbianRetryException extends AlbianExterException {
+public class AlbianRetryException extends AlbianDisplayException {
     /**
      * 创建一个新异常
      * @param brief : 简短的异常描述,通常可以包括异常的id,唯一性指标,业务/模块名称等等

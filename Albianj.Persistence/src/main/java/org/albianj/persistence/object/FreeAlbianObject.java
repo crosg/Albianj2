@@ -37,7 +37,8 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.object;
 
-import org.albianj.loader.AlbianBundleContext;
+import org.albianj.boot.AlbianBundleContext;
+import org.albianj.boot.tags.SpecialWarning;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.context.dactx.IAlbianObjectWarp;
@@ -125,13 +126,13 @@ public abstract class FreeAlbianObject implements IAlbianObject {
 
 
     @Deprecated
-    @org.albianj.comment.SpecialWarning("不推荐使用，推荐使用带sessionid参数的同名函数")
+    @SpecialWarning("不推荐使用，推荐使用带sessionid参数的同名函数")
     public boolean needUpdate() throws AlbianDataServiceException {
         return needUpdate(IAlbianLoggerService2.InnerThreadName);
     }
 
     @Deprecated
-    @org.albianj.comment.SpecialWarning("不推荐使用，推荐使用带sessionid,itf的同名函数")
+    @SpecialWarning("不推荐使用，推荐使用带sessionid,itf的同名函数")
     public boolean needUpdate(String sessionId, AlbianBundleContext bundleContext) throws AlbianDataServiceException {
         String className = this.getClass().getName();
         AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(AlbianBuiltinNames.Conf.Persistence);

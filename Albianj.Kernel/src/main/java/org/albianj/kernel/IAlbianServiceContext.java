@@ -1,6 +1,6 @@
 package org.albianj.kernel;
 
-import org.albianj.comment.Comments;
+import org.albianj.boot.tags.Comments;
 
 /**
  * Created by xuhaifeng on 17/2/19.

@@ -1,6 +1,6 @@
 package org.albianj.logger;
 
-import org.albianj.comment.Comments;
+import org.albianj.boot.tags.Comments;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianBuiltinNames;
 import org.albianj.service.IAlbianService;
@@ -9,7 +9,7 @@ import org.albianj.service.IAlbianService;
 /**
  * Created by xuhaifeng on 17/2/9.
  */
-@org.albianj.comment.Comments("logger service的v2版本，解决log-v1中无法正确标识文件位置问题")
+@Comments("logger service的v2版本，解决log-v1中无法正确标识文件位置问题")
 public interface IAlbianLoggerService2 extends IAlbianService {
 
     @Comments("Albianj Logger Service2在server.xml中的标识")

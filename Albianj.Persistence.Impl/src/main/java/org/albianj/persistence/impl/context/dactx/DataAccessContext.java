@@ -1,7 +1,7 @@
 package org.albianj.persistence.impl.context.dactx;
 
 import org.albianj.loader.AlbianBootContext;
-import org.albianj.loader.AlbianBundleContext;
+import org.albianj.boot.AlbianBundleContext;
 import org.albianj.persistence.context.IPersistenceCompensateNotify;
 import org.albianj.persistence.context.IPersistenceNotify;
 import org.albianj.persistence.context.IWriterJob;

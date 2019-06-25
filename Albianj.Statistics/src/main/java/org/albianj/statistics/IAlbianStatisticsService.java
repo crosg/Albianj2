@@ -1,6 +1,6 @@
 package org.albianj.statistics;
 
-import org.albianj.comment.Comments;
+import org.albianj.boot.tags.Comments;
 import org.albianj.service.IAlbianService;
 
 public interface IAlbianStatisticsService extends IAlbianService {

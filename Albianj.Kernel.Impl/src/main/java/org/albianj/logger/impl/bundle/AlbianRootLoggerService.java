@@ -1,7 +1,7 @@
 package org.albianj.logger.impl.bundle;
 
 import org.albianj.loader.AlbianBootContext;
-import org.albianj.loader.entry.AlbianBootAttribute;
+import org.albianj.boot.entry.AlbianBootAttribute;
 import org.albianj.loader.entry.IAlbianBundleLoggerAttribute;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.FinalAlbianBundleRootLoggerService;

@@ -2,7 +2,7 @@ package org.albianj.mvc.service.impl;
 
 import org.albianj.io.Path;
 import org.albianj.kernel.KernelSetting;
-import org.albianj.loader.AlbianClassLoader;
+import org.albianj.boot.loader.AlbianClassLoader;
 import org.albianj.mvc.service.IAlbianMimeTypeService;
 import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.parser.AlbianParserException;

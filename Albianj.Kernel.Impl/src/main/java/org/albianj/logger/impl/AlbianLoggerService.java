@@ -39,7 +39,7 @@ package org.albianj.logger.impl;
 
 import org.albianj.io.Path;
 import org.albianj.kernel.KernelSetting;
-import org.albianj.loader.AlbianClassLoader;
+import org.albianj.boot.loader.AlbianClassLoader;
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.reflection.AlbianReflect;
 import org.albianj.runtime.IStackTrace;

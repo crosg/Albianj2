@@ -1,7 +1,7 @@
 package org.albianj.kernel.impl;
 
-import org.albianj.loader.AlbianBundleContext;
-import org.albianj.loader.AlbianClassLoader;
+import org.albianj.boot.AlbianBundleContext;
+import org.albianj.boot.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.service.*;

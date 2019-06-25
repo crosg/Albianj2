@@ -44,7 +44,7 @@ import org.albianj.cached.impl.attribute.AlbianCachedAttribute;
 import org.albianj.cached.impl.attribute.AlbianCachedServerAttribute;
 import org.albianj.cached.service.AlbianCachedAttributeException;
 import org.albianj.cached.service.IAlbianCachedService;
-import org.albianj.loader.AlbianClassLoader;
+import org.albianj.boot.loader.AlbianClassLoader;
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;

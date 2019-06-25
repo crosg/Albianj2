@@ -1,5 +1,6 @@
 package org.albianj.keyword.filter.impl;
 
+import org.albianj.boot.tags.Comments;
 import org.albianj.keyword.filter.IAlbianWordCounterService;
 import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.FreeAlbianService;
@@ -16,7 +17,7 @@ public class AlbianWordCounterService extends FreeAlbianService implements IAlbi
         return Name;
     }
 
-    @org.albianj.comment.Comments("未经测试")
+    @Comments("未经测试")
     public int countWithoutBlankOnlyWithEnglish(String value) {
         String[] sections = value.split("\\s");
         int count = 0;

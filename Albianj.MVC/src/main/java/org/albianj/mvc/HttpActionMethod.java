@@ -1,6 +1,6 @@
 package org.albianj.mvc;
 
-import org.albianj.comment.Comments;
+import org.albianj.boot.tags.Comments;
 
 /**
  * Created by xuhaifeng on 16/12/11.

@@ -37,15 +37,17 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.service;
 
-import org.albianj.comment.Comments;
+import org.albianj.boot.loader.AlbianBundleClassLoader;
+import org.albianj.boot.AlbianBundleContext;
+import org.albianj.boot.tags.Comments;
 import org.albianj.datetime.AlbianDateTime;
-import org.albianj.loader.except.AlbianExceptionServant;
-import org.albianj.loader.except.AlbianExterException;
-import org.albianj.loader.except.AlbianInterException;
+import org.albianj.boot.except.AlbianDisplayException;
+import org.albianj.boot.except.AlbianExceptionServant;
+import org.albianj.boot.except.AlbianHiddenException;
 import org.albianj.except.AlbianRuntimeException;
 import org.albianj.kernel.IAlbianLogicIdService;
 import org.albianj.loader.*;
-import org.albianj.loader.IAlbianBundleService;
+import org.albianj.boot.IAlbianBundleService;
 import org.albianj.logger.*;
 import org.albianj.verify.Validate;
 
@@ -92,7 +94,7 @@ public class AlbianServiceRouter {
 
     // 时间 级别 call-chain fmt -args
     private static String logFmt = "%s %s SessionId:%s Thread:%d CallChain:[%s] ctx:[%s]";
-    private static String logExceptionFmt = "%s %s SessionId:%s Thread:%d CallChain:[%s] except:[type:%s msg:%s] ctx:[%s]";
+    private static String logExceptionFmt = "%s %s SessionId:%s Thread:%d CallChain:[%s] except:[type:%s showMsg:%s] ctx:[%s]";
 
     @Deprecated
     public static IAlbianLoggerService getLogger() {
@@ -253,7 +255,7 @@ public class AlbianServiceRouter {
         }
         AlbianRuntimeException thw = new AlbianRuntimeException(throwable);
         addLog(sessionId, logName, AlbianLoggerLevel.Warn, throwable,
-                "brief-> %s warp excetion -> %s with msg ->%s to new AlbianRuntimeException.",
+                "brief-> %s warp excetion -> %s with showMsg ->%s to new AlbianRuntimeException.",
                 brief, throwable.getClass().getName(), throwable.getMessage());
         if (throwsOut) {
             throw thw;
@@ -264,7 +266,7 @@ public class AlbianServiceRouter {
         StackTraceElement[] stacks = Thread.currentThread().getStackTrace();
         AlbianRuntimeException thw = new AlbianRuntimeException(stacks[2].getClassName(), stacks[2].getMethodName(), stacks[2].getLineNumber(), msg);
         addLog(sessionId, logName, AlbianLoggerLevel.Warn,
-                "brief-> %s new excetion with msg ->%s to AlbianRuntimeException.",
+                "brief-> %s new excetion with showMsg ->%s to AlbianRuntimeException.",
                 brief, msg);
         throw thw;
     }
@@ -273,7 +275,7 @@ public class AlbianServiceRouter {
         StackTraceElement[] stacks = Thread.currentThread().getStackTrace();
         AlbianRuntimeException thw = new AlbianRuntimeException(stacks[2].getClassName(), stacks[2].getMethodName(), stacks[2].getLineNumber(), msg);
         addLog(sessionId, logName, AlbianLoggerLevel.Warn,
-                "new excetion with msg ->%s to AlbianRuntimeException.",
+                "new excetion with showMsg ->%s to AlbianRuntimeException.",
                 msg);
         throw thw;
     }
@@ -371,30 +373,30 @@ public class AlbianServiceRouter {
     public static void throwEnterExceptionV2(String sessionId, String logName, AlbianLoggerLevel level,
                                              Throwable excp, String brief, Object... info){
         addLogV2(sessionId,AlbianBootContext.Instance.getCurrentBundleContext().getBundleName(),logName,level,excp, brief,info);
-        if (AlbianExterException.class.isAssignableFrom(excp.getClass())) {
-            throw (AlbianExterException) excp;
+        if (AlbianDisplayException.class.isAssignableFrom(excp.getClass())) {
+            throw (AlbianDisplayException) excp;
         }
 
         if(null == excp) {
-            throw new AlbianExterException(AlbianExceptionServant.logLevel2Code(level), brief, info);
+            throw new AlbianDisplayException(AlbianExceptionServant.logLevel2Code(level), brief, info);
         }
 
-        throw new AlbianExterException(AlbianExceptionServant.logLevel2Code(level), excp,brief, info);
+        throw new AlbianDisplayException(AlbianExceptionServant.logLevel2Code(level), excp,brief, info);
     }
 
     @Comments("统一的日志处理方法")
     public static void throwInterExceptionV2(String sessionId,String logName,AlbianLoggerLevel level,
                                              Throwable excp,String interMsg,String brief,Object... info){
         addLogV2(sessionId,AlbianBootContext.Instance.getCurrentBundleContext().getBundleName(),logName,level,excp,interMsg, brief,info);
-        if (AlbianInterException.class.isAssignableFrom(excp.getClass())) {
-            throw (AlbianInterException) excp;
+        if (AlbianHiddenException.class.isAssignableFrom(excp.getClass())) {
+            throw (AlbianHiddenException) excp;
         }
 
         if(null == excp) {
-            throw new AlbianInterException(AlbianExceptionServant.logLevel2Code(level),interMsg, brief, info);
+            throw new AlbianHiddenException(AlbianExceptionServant.logLevel2Code(level),interMsg, brief, info);
         }
 
-        throw new AlbianInterException(AlbianExceptionServant.logLevel2Code(level), excp,interMsg,brief, info);
+        throw new AlbianHiddenException(AlbianExceptionServant.logLevel2Code(level), excp,interMsg,brief, info);
     }
 
     @Comments("统一的日志处理方法,记录非敏感日志")
@@ -437,29 +439,29 @@ public class AlbianServiceRouter {
     public static void throwEnterExceptionV2(String sessionId, String bundleName,String logName, AlbianLoggerLevel level,
                                              Throwable excp, String brief, Object... info){
         addLogV2(sessionId,bundleName,logName,level,excp, brief,info);
-        if (AlbianExterException.class.isAssignableFrom(excp.getClass())) {
-            throw (AlbianExterException) excp;
+        if (AlbianDisplayException.class.isAssignableFrom(excp.getClass())) {
+            throw (AlbianDisplayException) excp;
         }
 
         if(null == excp) {
-            throw new AlbianExterException(AlbianExceptionServant.logLevel2Code(level), brief, info);
+            throw new AlbianDisplayException(AlbianExceptionServant.logLevel2Code(level), brief, info);
         }
 
-        throw new AlbianExterException(AlbianExceptionServant.logLevel2Code(level), excp,brief, info);
+        throw new AlbianDisplayException(AlbianExceptionServant.logLevel2Code(level), excp,brief, info);
     }
 
     @Comments("统一的日志处理方法")
     public static void throwInterExceptionV2(String sessionId,String bundleName,String logName,AlbianLoggerLevel level,
                                              Throwable excp,String interMsg,String brief,Object... info){
         addLogV2(sessionId,bundleName,logName,level,excp,interMsg, brief,info);
-        if (AlbianInterException.class.isAssignableFrom(excp.getClass())) {
-            throw (AlbianInterException) excp;
+        if (AlbianHiddenException.class.isAssignableFrom(excp.getClass())) {
+            throw (AlbianHiddenException) excp;
         }
 
         if(null == excp) {
-            throw new AlbianInterException(AlbianExceptionServant.logLevel2Code(level),interMsg, brief, info);
+            throw new AlbianHiddenException(AlbianExceptionServant.logLevel2Code(level),interMsg, brief, info);
         }
 
-        throw new AlbianInterException(AlbianExceptionServant.logLevel2Code(level), excp,interMsg,brief, info);
+        throw new AlbianHiddenException(AlbianExceptionServant.logLevel2Code(level), excp,interMsg,brief, info);
     }
 }

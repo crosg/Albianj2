@@ -38,9 +38,9 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.service;
 
 import org.albianj.aop.AlbianAopAttribute;
-import org.albianj.comment.Comments;
+import org.albianj.boot.tags.Comments;
 import org.albianj.kernel.AlbianKernel;
-import org.albianj.loader.IAlbianBundleService;
+import org.albianj.boot.IAlbianBundleService;
 
 /**
  * ??????albianj???service??????????????????????????????FreeAlbianService???????

@@ -38,7 +38,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.persistence.impl.context;
 
 import org.albianj.argument.RefArg;
-import org.albianj.loader.AlbianBundleContext;
+import org.albianj.boot.AlbianBundleContext;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.context.IReaderJob;

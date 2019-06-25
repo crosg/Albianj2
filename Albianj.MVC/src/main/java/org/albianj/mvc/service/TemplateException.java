@@ -50,20 +50,20 @@ public class TemplateException extends Exception {
     // Constructors -----------------------------------------------------------
 
     /**
-     * Create a template service exception with the given cause.
+     * Create a template service exception with the given interThrow.
      *
-     * @param cause the underlying cause of the template service error
+     * @param cause the underlying interThrow of the template service error
      */
     public TemplateException(Exception cause) {
         super(cause);
     }
 
     /**
-     * Create a template service exception with the given cause, template name,
+     * Create a template service exception with the given interThrow, template name,
      * line number and column number.
      *
-     * @param cause        the underlying cause of the template service error
-     * @param templateName the name of the template which cause the error
+     * @param cause        the underlying interThrow of the template service error
+     * @param templateName the name of the template which interThrow the error
      * @param lineNumber   the template error line number
      * @param columnNumber the template error column number
      */
@@ -116,7 +116,7 @@ public class TemplateException extends Exception {
     }
 
     /**
-     * Prints the cause and its backtrace to the specified print stream.
+     * Prints the interThrow and its backtrace to the specified print stream.
      *
      * @param printStream the printStream to print the stack trace to
      */
@@ -132,7 +132,7 @@ public class TemplateException extends Exception {
     }
 
     /**
-     * Prints the cause and its backtrace to the specified print writer.
+     * Prints the interThrow and its backtrace to the specified print writer.
      *
      * @param printWriter the printWriter to writer the stack trace to
      */

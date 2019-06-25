@@ -114,7 +114,7 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
             }
         }
 
-        // add rant scaner
+        // add tags scaner
         List pkgNodes = XmlParser.selectNodes(doc, "AlbianObjects/Packages/Package");
         if (!Validate.isNullOrEmpty(pkgNodes)) {
             for (Object node : pkgNodes) {

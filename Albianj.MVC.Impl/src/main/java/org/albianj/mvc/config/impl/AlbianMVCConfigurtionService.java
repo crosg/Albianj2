@@ -3,7 +3,7 @@ package org.albianj.mvc.config.impl;
 
 import org.albianj.io.Path;
 import org.albianj.kernel.KernelSetting;
-import org.albianj.loader.AlbianClassLoader;
+import org.albianj.boot.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.mvc.*;

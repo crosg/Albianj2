@@ -3,7 +3,7 @@ package org.albianj.service;
 import java.lang.annotation.*;
 
 /**
- * albian service rant
+ * albian service tags
  * the same as service section in service.xml
  * it use to class when it as albian service
  */

@@ -2,8 +2,8 @@ package org.albianj.aop.impl;
 
 import net.sf.cglib.proxy.MethodProxy;
 import org.albianj.aop.AlbianRetryException;
-import org.albianj.loader.except.AlbianExterException;
-import org.albianj.loader.except.AlbianInterException;
+import org.albianj.boot.except.AlbianDisplayException;
+import org.albianj.boot.except.AlbianHiddenException;
 import org.albianj.service.AlbianServiceRouter;
 
 import java.util.concurrent.*;
@@ -26,7 +26,7 @@ public class AlbianMethodTimeoutProxyExecutor {
                     return rc;
                 }catch (AlbianRetryException e){
                     throw e;
-                }catch (AlbianExterException | AlbianInterException e){
+                }catch (AlbianDisplayException | AlbianHiddenException e){
 
                 }catch (Throwable e){
 

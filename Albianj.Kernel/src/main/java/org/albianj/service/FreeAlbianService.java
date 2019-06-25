@@ -38,11 +38,11 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.service;
 
 import org.albianj.aop.AlbianAopAttribute;
-import org.albianj.comment.Comments;
+import org.albianj.boot.tags.Comments;
 import org.albianj.io.Path;
 import org.albianj.kernel.AlbianKernel;
 import org.albianj.kernel.KernelSetting;
-import org.albianj.loader.AlbianBundleContext;
+import org.albianj.boot.AlbianBundleContext;
 import org.albianj.service.parser.AlbianParserException;
 
 import java.io.File;

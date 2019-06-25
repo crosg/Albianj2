@@ -1,5 +1,6 @@
 package org.albianj.logger.impl;
 
+import org.albianj.boot.tags.Comments;
 import org.albianj.except.AlbianRuntimeException;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
@@ -11,12 +12,11 @@ import org.albianj.verify.Validate;
 import org.slf4j.Logger;
 
 import java.util.Formatter;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by xuhaifeng on 17/2/9.
  */
-@org.albianj.comment.Comments("新的logger日志类，解决log-v1中无法正确标识文件位置问题")
+@Comments("新的logger日志类，解决log-v1中无法正确标识文件位置问题")
 @AlbianServiceRant(Id = IAlbianLoggerService2.Name, Interface = IAlbianLoggerService2.class)
 public class AlbianLoggerService2 extends FreeAlbianService implements
         IAlbianLoggerService2 {

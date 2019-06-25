@@ -2,8 +2,7 @@ package org.albianj.kernel.impl;
 
 import ognl.Ognl;
 import org.albianj.aop.impl.AlbianServiceProxyExecutor;
-import org.albianj.loader.AlbianBundleContext;
-import org.albianj.loader.AlbianClassLoader;
+import org.albianj.boot.AlbianBundleContext;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.reflection.AlbianTypeConvert;
 import org.albianj.service.*;

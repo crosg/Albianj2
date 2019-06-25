@@ -1,6 +1,6 @@
 package org.albianj.mvc.service.impl;
 
-import org.albianj.loader.AlbianClassLoader;
+import org.albianj.boot.loader.AlbianClassLoader;
 import org.albianj.mvc.view.View;
 import org.albianj.mvc.config.AlbianHttpConfigurtion;
 import org.albianj.mvc.config.CustomTagConfigurtion;

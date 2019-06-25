@@ -66,7 +66,7 @@ public abstract class FreePersistenceTransactionClusterScope implements IPersist
                     writerJob.getId(), AlbianLoggerLevel.Error, e,
                     "Execute the job is fail.");
             sbMsg.append("Execute job is error.Job lifetime is:").append(writerJob.getWriterJobLifeTime())
-                    .append(",exception msg:").append(e.getMessage()).append(",Current task:")
+                    .append(",exception showMsg:").append(e.getMessage()).append(",Current task:")
                     .append(writerJob.getCurrentStorage()).append(",job id:").append(writerJob.getId());
 
             try {

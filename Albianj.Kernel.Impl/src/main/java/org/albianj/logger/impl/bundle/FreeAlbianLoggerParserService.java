@@ -1,6 +1,6 @@
 package org.albianj.logger.impl.bundle;
 
-import org.albianj.loader.entry.AlbianBootAttribute;
+import org.albianj.boot.entry.AlbianBootAttribute;
 import org.albianj.loader.entry.AlbianBundleModuleKeyValueConf;
 import org.albianj.loader.entry.IAlbianBundleLoggerAttribute;
 import org.albianj.service.AlbianServiceRouter;

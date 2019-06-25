@@ -3,7 +3,7 @@ package org.albianj.aop;
 import java.lang.annotation.*;
 
 /**
- * Aop rant for service
+ * Aop tags for service
  * all condition will be &&
  */
 @Retention(RetentionPolicy.RUNTIME)
