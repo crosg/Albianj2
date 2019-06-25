@@ -1,13 +1,11 @@
 package org.albianj.loader;
 
-import org.albianj.loader.entry.IAlbianBundleModuleConf;
-import org.albianj.loader.entry.IAlbianBundlePooling;
-import org.albianj.loader.except.AlbianExterException;
-import org.albianj.loader.except.ExceptionUtil;
+import org.albianj.loader.logging.AlbianLogServant;
+import org.albianj.loader.logging.AlbianLoggerLevel;
+import org.albianj.loader.logging.IAlbianLogger;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Method;
 
 /**
  * albianj bundle的上下文
@@ -24,123 +22,156 @@ public class AlbianBundleContext {
      */
     private ClassLoader classLoader;
 
+    private ThreadGroup threadGroup;
+
+
     /**
-     * 该bundle的配置文件项
+     * bundle的启动器
+     *
      */
-    private Map<String, IAlbianBundleService> bundleServiceMap;
-    private Map<String,IAlbianBundleModuleConf> bundleConf;
-    private Map<String, IAlbianBundlePooling> bundleDbPool;
+    private String launcher;
+
+    private IAlbianLogger rtLogger;
 
     /**
      * 当前bundle的目录,肯定以File.separator结尾
      */
     private String workPath;
 
-    private AlbianBundleContext(String bundleName, String workPath, ClassLoader loader){
+    private String binFolder;
+    private String classesFolder;
+    private String libFolder;
+    private String confFolder;
+    private String appsFolder;
+
+    private AlbianBundleContext(String sessionId,String bundleName, String workPath, ClassLoader loader,String launcher) {
         this.bundleName = bundleName;
-        this.classLoader = loader;
-        if(workPath.endsWith(File.separator)) {
+        if(null == loader) {
+            AlbianBundleClassLoader classLoader = AlbianBundleClassLoader.makeInstance(bundleName);
+            this.classLoader = classLoader;
+        }
+        if (workPath.endsWith(File.separator)) {
             this.workPath = workPath;
         } else {
             this.workPath = workPath + File.separator;
         }
-        bundleServiceMap = new HashMap<>();
-        bundleConf = new HashMap<>();
-        bundleDbPool = new HashMap<>();
+        threadGroup = new ThreadGroup(bundleName);
+        threadGroup.setDaemon(true);
+        this.launcher = launcher;
+        this.binFolder = this.workPath + "bin" + File.separator;
+        this.libFolder = this.workPath + "lib" + File.separator;
+        this.classesFolder = this.workPath + "classes" + File.separator;
+        this.confFolder = this.workPath + "conf" + File.separator;
+        this.appsFolder = this.workPath + "apps" + File.separator;
+
+        AlbianLogServant.Instance.addRuntimeLog(sessionId, AlbianLoggerLevel.Info,this.getClass(),
+                null,"Bundle Runtime Settings.",null,
+                "Application startup at bin folder -> {0},lib folder -> {1},classes folder -> {2},conf folder -> {3},apps folder -> {4}.",
+                this.binFolder,this,libFolder,this.classesFolder,this.confFolder,this.appsFolder);
+
     }
 
-    public static AlbianBundleContext makeInstance(String bundleName, String workPath, ClassLoader loader){
-        return new AlbianBundleContext(bundleName,workPath,loader);
+    public static AlbianBundleContext newInstance(String sessionid,String bundleName, String workPath, ClassLoader loader, String launcher) {
+        return new AlbianBundleContext(sessionid,bundleName, workPath, loader,launcher);
     }
 
-    public void addModuleConf(String moduleName, IAlbianBundleModuleConf conf){
-        bundleConf.put(moduleName,conf);
-    }
-
-    public <T extends IAlbianBundleModuleConf> T getModuleConf(String moduleName) {
-        if( bundleConf.containsKey(moduleName) ) {
-            return (T) bundleConf.get(moduleName);
-        }
-        throw new AlbianExterException(ExceptionUtil.ExceptForError,
-                "Module Conf not Exist.","moduleName -> ", moduleName," not exist.");
-    }
-
-    public <T extends IAlbianBundleModuleConf> T getModuleConfAndNewIfNotExist(String moduleName,Class<T> clzz) {
-        if(bundleConf.containsKey(moduleName)) {
-            return (T) bundleConf.get(moduleName);
-        }else {
-            T inst = null;
-            try {
-                inst = clzz.newInstance();
-            } catch (Exception e) {
-                throw new AlbianExterException(ExceptionUtil.ExceptForError,e,
-                        "New Instance Eoor.","moduleName -> ", moduleName," new class -> ",clzz.getCanonicalName()," instance is fail.");
-            }
-            bundleConf.put(moduleName,inst);
-            return inst;
-        }
-    }
-
-    public ClassLoader getClassLoader(){
+    public ClassLoader getClassLoader() {
         return this.classLoader;
     }
 
-    public IAlbianBundleService getBundleService(String serviceId){
-        if (bundleServiceMap.containsKey(serviceId)) {
-            return null;
-        }
-        return bundleServiceMap.get(serviceId);
-    }
-
-    public void addBundleService(String serviceId,IAlbianBundleService bundleService){
-        bundleServiceMap.put(serviceId,bundleService);
-    }
-
-    public void cleanupBundleServices(){
-        bundleServiceMap.clear();;
-    }
-
-    public boolean isExistConf(String moduleName){
-        return bundleConf.containsKey(moduleName);
-    }
-
-    public String getWorkPath(){
+    public String getWorkPath() {
         return this.workPath;
     }
 
-    public String getBinPath(){
-        return workPath + "bin" + File.pathSeparator ;
+    public String getBinPath() {
+        return workPath + "bin" + File.pathSeparator;
     }
 
-    public String getLibPath(){
-        return workPath + "lib" + File.pathSeparator ;
+    public String getLibPath() {
+        return workPath + "lib" + File.pathSeparator;
     }
 
-    public String getClassesPath(){
-        return workPath + "classes" + File.pathSeparator ;
+    public String getClassesPath() {
+        return workPath + "classes" + File.pathSeparator;
     }
 
-    public String getConfPath(){
-        return workPath + "conf" + File.pathSeparator ;
+    public String getConfPath() {
+        return workPath + "conf" + File.pathSeparator;
     }
 
-    public String getAppsPath(){
-        return workPath + "apps" + File.pathSeparator ;
+    public String getAppsPath() {
+        return workPath + "apps" + File.pathSeparator;
     }
 
-    public String getBundleName(){
+    public String getBundleName() {
         return this.bundleName;
     }
 
-    public IAlbianBundlePooling findDatabasePool(String name){
-        return bundleDbPool.get(name);
+
+    public ThreadGroup getThreadGroup(){
+        return this.threadGroup;
     }
 
-    public void addDatabasePoolIfNotExist(String name,IAlbianBundlePooling pool){
-        synchronized (bundleDbPool) {
-            if(!bundleDbPool.containsKey(name)) {
-                bundleDbPool.put(name, pool);
-            }
+
+    public AlbianBundleThread newThread(String name,Runnable func){
+        return new AlbianBundleThread(this,name,func);
+    }
+
+    public IAlbianLogger getRuntimeLogger() {
+        return rtLogger;
+    }
+
+    public void setRuntimeLogger(IAlbianLogger rtLogger) {
+        this.rtLogger = rtLogger;
+    }
+
+    public String findConfigFile(String simpleFileName){
+        return this.confFolder + simpleFileName;
+    }
+
+    public String getLauncherClass() {
+        return launcher;
+    }
+
+    public void launchBundle(final String[] args){
+        AlbianBundleThread thread = null;
+        try {
+            thread = newThread(this.bundleName, new Runnable() {
+                @Override
+                public void run() {
+                    AlbianBundleContext ctx = AlbianApplicationServant.Instance.findBundleContext(bundleName, true);
+                    String clzzName = ctx.getLauncherClass();
+                    try {
+                        Class<?> clzz = ctx.getClassLoader().loadClass(clzzName);
+                        Object launcher =  clzz.newInstance();
+                        Method startup = null;
+                        startup = clzz.getMethod("startup",String[].class);
+                        startup.invoke(launcher,args);
+                        AlbianLogServant.Instance.addRuntimeLogAndThrow("LaunchThread",AlbianLoggerLevel.Info,
+                                this.getClass(),null,"Bundle launcher.",null,
+                                "Startup bundle -> {0} with class -> {1} success.",
+                                bundleName, clzzName);
+
+                    } catch (Exception e) {
+                        AlbianLogServant.Instance.addRuntimeLogAndThrow("LaunchThread",AlbianLoggerLevel.Info,
+                                this.getClass(),e,"Bundle launcher error.",null,
+                                "Startup bundle -> {0} with class -> {1} is error.",
+                                bundleName, clzzName);
+                    }
+                }
+            });
+        }catch (Exception e){
+            AlbianLogServant.Instance.addRuntimeLogAndThrow("LaunchThread",AlbianLoggerLevel.Info,
+                    this.getClass(),e,"Bundle launcher error.",null,
+                    "Open bundle thread to startup bundle -> {0} is error.",
+                    bundleName);
+            return;
+        }
+        if(null != thread) {
+            AlbianLogServant.Instance.addRuntimeLogAndThrow("LaunchThread",AlbianLoggerLevel.Info,
+                    this.getClass(),null,"Bundle launcher.",null,
+                    "Startup thread of bundle -> {0}....", bundleName);
+            thread.start();
         }
     }
 }

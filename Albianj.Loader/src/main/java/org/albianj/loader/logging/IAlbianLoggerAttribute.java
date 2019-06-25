@@ -1,6 +1,6 @@
-package org.albianj.loader.entry;
+package org.albianj.loader.logging;
 
-public interface IAlbianBundleLoggerAttribute {
+public interface IAlbianLoggerAttribute {
     String getLoggerName();
 
     void setLoggerName(String loggerName);
@@ -21,3 +21,4 @@ public interface IAlbianBundleLoggerAttribute {
 
     void setMaxFilesize(String maxFilesize);
 }
+

@@ -1,5 +1,7 @@
 package org.albianj.loader.entry;
 
+import org.albianj.loader.logging.IAlbianLoggerAttribute;
+
 import java.util.Map;
 
 public class AlbianBootAttribute {
@@ -7,9 +9,15 @@ public class AlbianBootAttribute {
     private String machineId;
     private String machineKey = "wefet45y56gd&^%&$($$fbf943sf98^&*&*%$@%$34tksdjfvh823r2=sdfssdfsdp[sfshfwwefwffwe";
     private String runtimeLevel = "DEBUG";
-    private boolean isWindows = true;
 
-    private Map<String , IAlbianBundleLoggerAttribute> loggerAttrs;
+    /**
+     * 根logger的配置信息
+     */
+    private IAlbianLoggerAttribute rootLoggerAttr;
+
+    private Map<String, IAlbianLoggerAttribute> loggerAttrs;
+
+    private Map<String,AlbianBundleAttribute> bundles;
 
     public String getAppName() {
         return appName;
@@ -43,19 +51,27 @@ public class AlbianBootAttribute {
         this.runtimeLevel = runtimeLevel;
     }
 
-    public Map<String, IAlbianBundleLoggerAttribute> getLoggerAttrs() {
+    public Map<String, IAlbianLoggerAttribute> getLoggerAttrs() {
         return loggerAttrs;
     }
 
-    public void setLoggerAttrs(Map<String, IAlbianBundleLoggerAttribute> loggerAttrs) {
+    public void setLoggerAttrs(Map<String, IAlbianLoggerAttribute> loggerAttrs) {
         this.loggerAttrs = loggerAttrs;
     }
 
-    public boolean isWindows() {
-        return isWindows;
+    public IAlbianLoggerAttribute getRootLoggerAttr() {
+        return rootLoggerAttr;
     }
 
-    public void setWindows(boolean isWindows) {
-        isWindows = isWindows;
+    public void setRootLoggerAttr(IAlbianLoggerAttribute rootLoggerAttr) {
+        this.rootLoggerAttr = rootLoggerAttr;
+    }
+
+    public Map<String, AlbianBundleAttribute> getBundleAttrs() {
+        return bundles;
+    }
+
+    public void setBundleAttrs(Map<String, AlbianBundleAttribute> bundles) {
+        this.bundles = bundles;
     }
 }

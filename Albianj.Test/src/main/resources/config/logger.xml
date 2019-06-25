@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Loggers Path="" Level="Debug" Console="true"> <!-- 一直想要sys和业务的日志分开，这次终于分开了 -->
-    <Logger Name="bun1" Path="" Level="Debug" Console="true"></Logger>
-</Loggers>

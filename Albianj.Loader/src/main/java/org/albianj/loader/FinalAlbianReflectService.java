@@ -3,13 +3,34 @@ package org.albianj.loader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ReflectPermission;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class FinalAlbianReflectService {
 
     public static FinalAlbianReflectService Instance = null;
+
     static {
-            Instance = new FinalAlbianReflectService();
+        Instance = new FinalAlbianReflectService();
+    }
+
+    /**
+     * Checks whether can control member accessible.
+     *
+     * @return If can control member accessible, it return {@literal true}
+     * @since 3.5.0
+     */
+    public static boolean canControlMemberAccessible() {
+        try {
+            SecurityManager securityManager = System.getSecurityManager();
+            if (null != securityManager) {
+                securityManager.checkPermission(new ReflectPermission("suppressAccessChecks"));
+            }
+        } catch (SecurityException e) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -59,6 +80,7 @@ public final class FinalAlbianReflectService {
     /**
      * 对于方法签名
      * 签名：返回值类型#方法名称:参数类型列表
+     *
      * @param method
      * @return
      */
@@ -82,33 +104,16 @@ public final class FinalAlbianReflectService {
     }
 
     /**
-     * Checks whether can control member accessible.
-     *
-     * @return If can control member accessible, it return {@literal true}
-     * @since 3.5.0
-     */
-    public static boolean canControlMemberAccessible() {
-        try {
-            SecurityManager securityManager = System.getSecurityManager();
-            if (null != securityManager) {
-                securityManager.checkPermission(new ReflectPermission("suppressAccessChecks"));
-            }
-        } catch (SecurityException e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * get all field,include parent class or interface
+     *
      * @param cls
      * @return
      */
-    public Map<String, Field> getAllField(Class<?> cls){
+    public Map<String, Field> getAllField(Class<?> cls) {
         Class tempClass = cls;
         Map<String, Field> uniqueFields = new HashMap<>();
-        while (null != tempClass && !tempClass.getName().toLowerCase().equals("java.lang.object") ) {//当父类为null的时候说明到达了最上层的父类(Object类).
-            addUniqueFields(uniqueFields, tempClass .getDeclaredFields());
+        while (null != tempClass && !tempClass.getName().toLowerCase().equals("java.lang.object")) {//当父类为null的时候说明到达了最上层的父类(Object类).
+            addUniqueFields(uniqueFields, tempClass.getDeclaredFields());
             tempClass = tempClass.getSuperclass();
         }
         return uniqueFields;

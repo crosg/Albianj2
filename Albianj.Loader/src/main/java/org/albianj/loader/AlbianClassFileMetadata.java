@@ -45,6 +45,51 @@ public class AlbianClassFileMetadata {
      */
     private String fullFileName;
 
+    /**
+     * @param fullFileName     带有.class后缀名和命名空间的完全文件名,文件系统格式
+     * @param fileContentBytes 文件内容
+     * @param parentFileName   class归属的parent名字 可能为目录名或者是jar
+     * @param isParentJar      归属是目录还是jar
+     * @return
+     */
+    public static AlbianClassFileMetadata makeClassFileMetadata(String fullFileName, byte[] fileContentBytes, String parentFileName, boolean isParentJar) {
+        AlbianClassFileMetadata cfm = new AlbianClassFileMetadata();
+        cfm.setFileContentBytes(fileContentBytes);
+        cfm.setParentJar(isParentJar);
+        cfm.setParentFileName(parentFileName);
+        if (fullFileName.endsWith(".class")) {
+            cfm.setFullFileName(fullFileName);
+            String ffn = fullFileName.replace(File.separator, ".");
+            cfm.setFullClassName(ffn);
+            cfm.setFullClassNameWithoutSuffix(ffn.substring(0, fullFileName.lastIndexOf(".class")));
+        } else {
+            cfm.setFullFileName(fullFileName.concat(".class"));
+            String ffn = fullFileName.replace(File.separator, ".");
+            cfm.setFullClassName(ffn.concat(".class"));
+            cfm.setFullClassNameWithoutSuffix(ffn);
+        }
+        String md5 = md5(fileContentBytes);
+        cfm.setMd5(md5);
+        return cfm;
+    }
+
+    public static String md5(byte[] bytes) {
+        byte[] secretBytes = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(bytes);
+            secretBytes = md.digest();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("没有md5这个算法！");
+        }
+        String padStr = "00000000000000000000000000000000";
+        String md5code = new BigInteger(1, secretBytes).toString(16);// 16进制数字
+        int len = 32 - md5code.length();
+        padStr = padStr.substring(0, len);
+        md5code = padStr + md5code;
+        return md5code;
+    }
+
     public byte[] getFileContentBytes() {
         return fileContentBytes;
     }
@@ -107,52 +152,5 @@ public class AlbianClassFileMetadata {
 
     public void setFullClassNameWithoutSuffix(String fullClassNameWithoutSuffix) {
         this.fullClassNameWithoutSuffix = fullClassNameWithoutSuffix;
-    }
-
-
-    /**
-     *
-     * @param fullFileName 带有.class后缀名和命名空间的完全文件名,文件系统格式
-     * @param fileContentBytes 文件内容
-     * @param parentFileName class归属的parent名字 可能为目录名或者是jar
-     * @param isParentJar 归属是目录还是jar
-     * @return
-     */
-    public static AlbianClassFileMetadata makeClassFileMetadata(String fullFileName, byte[] fileContentBytes, String parentFileName, boolean isParentJar){
-        AlbianClassFileMetadata cfm = new AlbianClassFileMetadata();
-        cfm.setFileContentBytes(fileContentBytes);
-        cfm.setParentJar(isParentJar);
-        cfm.setParentFileName(parentFileName);
-        if(fullFileName.endsWith(".class")){
-            cfm.setFullFileName(fullFileName);
-            String ffn = fullFileName.replace(File.separator,".");
-            cfm.setFullClassName(ffn);
-            cfm.setFullClassNameWithoutSuffix(ffn.substring(0,fullFileName.lastIndexOf(".class")));
-        } else {
-            cfm.setFullFileName(fullFileName.concat(".class"));
-            String ffn = fullFileName.replace(File.separator,".");
-            cfm.setFullClassName(ffn.concat(".class"));
-            cfm.setFullClassNameWithoutSuffix(ffn);
-        }
-        String md5 = md5(fileContentBytes);
-        cfm.setMd5(md5);
-        return cfm;
-    }
-
-    public static String md5(byte[] bytes) {
-        byte[] secretBytes = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(bytes);
-            secretBytes = md.digest();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("没有md5这个算法！");
-        }
-        String padStr = "00000000000000000000000000000000";
-        String md5code = new BigInteger(1, secretBytes).toString(16);// 16进制数字
-        int len = 32 - md5code.length();
-        padStr = padStr.substring(0,len);
-        md5code = padStr + md5code;
-        return md5code;
     }
 }
