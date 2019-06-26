@@ -14,7 +14,7 @@
         <module>Albianj.Security.Impl</module>
         <module>Albianj.Kernel</module>
         <module>Albianj.Kernel.Impl</module>
-        <module>Albianj.Loader</module>
+        <module>Albianj.Boot</module>
         <!--<module>Albianj.Cached</module>-->
         <!--<module>Albianj.Cached.Impl</module>-->
         <module>Albianj.Persistence</module>

@@ -1,8 +1,8 @@
 参数：
 key-pool
 pool参数：最大数量，最小数量，游离态conn的最大数
-    连接timeout时间（connectTimeoutMs），socket timeout，
-    statement timeout用来限制statement的执行时长，socket timeout的值必须要高于statement timeout，
+    连接timeout时间（connectTimeoutMs），socket IAlbianTimeoutEntry，
+    statement timeout用来限制statement的执行时长，socket timeout的值必须要高于statement IAlbianTimeoutEntry，
         否则，socket timeout将会先生效，这样statement timeout就变得毫无意义，也无法生效。
     获取conn等待的时间，是否不等待，直接new一个新连接，
     每个连接存活的最大时间（mysql的wait-timeout设置）

@@ -35,6 +35,7 @@ import java.util.Map;
  */
 public class AlbianApplicationServant {
     public static AlbianApplicationServant Instance = null;
+    private Thread currentThread = null;
 
     public  final String BootBundleName = "BootBundle";
 
@@ -52,7 +53,7 @@ public class AlbianApplicationServant {
     private Map<String,AlbianBundleContext> bundleContextMap = new HashMap<>();
 
     protected AlbianApplicationServant() {
-
+        currentThread = Thread.currentThread();
     }
 
     public AlbianApplicationServant setAppStartupClass(Class<?> startupClass){
@@ -205,5 +206,21 @@ public class AlbianApplicationServant {
             bundleCtx.launchBundle(args);
         }
         return true;
+    }
+
+    private boolean isWindows = false;
+    public boolean isWindows(){
+        return this.isWindows;
+    }
+
+    public void exitSystem(int st){
+        try {
+//            Runtime.getRuntime().getRuntime
+            Thread.sleep(5000); //wait io flush
+            currentThread.interrupt();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.exit(st);
     }
 }

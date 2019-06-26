@@ -53,6 +53,11 @@ public class AlbianClassServant {
         return name.substring(name.lastIndexOf(".") + 1);
     }
 
+    public String getSimpleClassName(Class<?> clzz){
+        String name = clzz.getSimpleName();
+        return name;
+    }
+
     public byte[] readJarBytes(JarInputStream jis) throws IOException {
         int len = 0;
         byte[] bytes = new byte[8192];
