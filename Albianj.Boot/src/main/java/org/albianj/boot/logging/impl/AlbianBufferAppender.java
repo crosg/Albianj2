@@ -35,6 +35,7 @@ public class AlbianBufferAppender implements IAlbianLoggerAppender {
     @Override
     public void close() {
           logFile.close();
+          logFile  = null;
     }
 
     public String getMaxFilesize() {

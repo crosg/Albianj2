@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AlbianLoggerFile implements Closeable {
     private long maxFilesizeB;
@@ -18,6 +19,8 @@ public class AlbianLoggerFile implements Closeable {
     private ByteBuffer buf;
     private FileOutputStream fos;
     private FileChannel fc;
+
+    private AtomicReference<ByteBuffer> currBuf = new AtomicReference<>();
 
     public AlbianLoggerFile(String logName, String path, String maxFilesize) {
         if (!path.endsWith(File.separator)) {
@@ -34,7 +37,7 @@ public class AlbianLoggerFile implements Closeable {
         logfileTimestampOfZero = AlbianDailyServant.Instance.todayTimestampOfZero();
         String filename = AlbianStringServant.Instance.join(path, logName, "_", AlbianDailyServant.Instance.dateStringWithoutSep(), ".log");
         try {
-            fos = new FileOutputStream(filename);
+            fos = new FileOutputStream(filename,true);
         } catch (FileNotFoundException e) {
 
         }
@@ -54,10 +57,11 @@ public class AlbianLoggerFile implements Closeable {
     }
 
     public void flush() {
+//        currBuf.compareAndSet(buf,buf);
         try {
+            buf.flip();
             fc.write(buf);
         } catch (IOException e) {
-            return;
         }
         try {
             fc.force(true);
