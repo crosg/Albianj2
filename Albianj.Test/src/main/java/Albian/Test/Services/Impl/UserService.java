@@ -6,7 +6,7 @@ import Albian.Test.Model.ISingleUser;
 import Albian.Test.Services.IUserService;
 import Albian.Test.Services.Metadata.StorageInfo;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.IAlbianLoggerService;
+import org.albianj.logger.ILoggerService;
 import org.albianj.persistence.context.dactx.AlbianDataAccessOpt;
 import org.albianj.persistence.context.dactx.IDataAccessContext;
 import org.albianj.persistence.context.dactx.IQueryContext;
@@ -15,26 +15,25 @@ import org.albianj.persistence.object.filter.FilterExpression;
 import org.albianj.persistence.object.filter.FilterGroupExpression;
 import org.albianj.persistence.object.filter.IChainExpression;
 import org.albianj.persistence.object.filter.IFilterGroupExpression;
-import org.albianj.persistence.service.IAlbianDataAccessService;
+import org.albianj.persistence.service.IDataAccessService;
 import org.albianj.persistence.service.LoadType;
-import org.albianj.service.AlbianServiceFieldRant;
-import org.albianj.service.AlbianServiceFieldType;
-import org.albianj.service.AlbianServiceRant;
-import org.albianj.service.FreeAlbianService;
+import org.albianj.service.ServiceFieldTag;
+import org.albianj.service.ServiceFieldType;
+import org.albianj.service.ServiceTag;
+import org.albianj.service.FreeService;
 
 import java.math.BigInteger;
-import java.nio.channels.IllegalChannelGroupException;
 
 // service必须使用此特性进行标注，否则albianj不对其进行解析
-@AlbianServiceRant(Id = "UserService", Interface = IUserService.class)
-public class UserService extends FreeAlbianService implements IUserService {
+@ServiceTag(Id = "UserService", Interface = IUserService.class)
+public class UserService extends FreeService implements IUserService {
 
     int idx = 0;
     //在没有确认与把握的情况下，慎用之慎用之慎用之（重要的话说三遍）
     //使用albianj的ioc直接对其属性进行赋值
     // 注意，所有使用AlbianServiceFieldRant赋值的值都是单利模式，故在albianj中会自动提升为静态变量状态
-    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianDataAccessService")
-    private IAlbianDataAccessService da;
+    @ServiceFieldTag(Type = ServiceFieldType.Ref, Value = "DataAccessService")
+    private IDataAccessService da;
 
     @Override
     public boolean login(String uname, String pwd) {
@@ -55,11 +54,11 @@ public class UserService extends FreeAlbianService implements IUserService {
 
     @Override
     public boolean addUser(String uname, String pwd) {
-        AlbianServiceHub.addLog("Sessionid", IAlbianLoggerService.AlbianRunningLoggerName,
+        AlbianServiceHub.addLog("Sessionid", ILoggerService.AlbianRunningLoggerName,
                 AlbianLoggerLevel.Info, "i am %s", "addLog");
 
         NullPointerException exc = new NullPointerException();
-        AlbianServiceHub.addLog("Sessionid", IAlbianLoggerService.AlbianRunningLoggerName,
+        AlbianServiceHub.addLog("Sessionid", ILoggerService.AlbianRunningLoggerName,
                 AlbianLoggerLevel.Info, exc, "i am %s", "addLog");
 
         //创建对象请使用此方法

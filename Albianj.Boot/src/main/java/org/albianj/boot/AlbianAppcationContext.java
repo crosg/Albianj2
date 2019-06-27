@@ -1,7 +1,7 @@
 package org.albianj.boot;
 
-import org.albianj.boot.entry.AlbianBootAttribute;
-import org.albianj.boot.entry.AlbianBundleAttribute;
+import org.albianj.boot.except.entry.BootAttribute;
+import org.albianj.boot.except.entry.BundleAttribute;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,11 +12,11 @@ public class AlbianAppcationContext {
     private String workFolder = null;
     private String logsPath = null;
     private boolean isOpenConsole = false;
-    private Map<String, AlbianBundleAttribute> attAttrs = new HashMap<>();
-    private Map<String,AlbianBundleContext> bundleContextMap = new HashMap<>();
+    private Map<String, BundleAttribute> attAttrs = new HashMap<>();
+    private Map<String, BundleContext> bundleContextMap = new HashMap<>();
 
-    private AlbianBundleContext bootCtx;
-    AlbianBootAttribute bootAttr;
+    private BundleContext bootCtx;
+    BootAttribute bootAttr;
 
 
 }

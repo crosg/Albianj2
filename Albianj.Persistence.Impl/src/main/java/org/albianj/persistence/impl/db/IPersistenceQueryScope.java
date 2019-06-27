@@ -37,7 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.db;
 
-import org.albianj.boot.AlbianBundleContext;
+import org.albianj.boot.BundleContext;
 import org.albianj.persistence.context.IReaderJob;
 import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.PersistenceCommandType;
@@ -47,10 +47,10 @@ import java.sql.Statement;
 import java.util.List;
 
 public interface IPersistenceQueryScope {
-    public <T extends IAlbianObject> List<T> execute(AlbianBundleContext bundleContext,Class<T> cls,
+    public <T extends IAlbianObject> List<T> execute(BundleContext bundleContext, Class<T> cls,
                                                      IReaderJob job) throws AlbianDataServiceException;
 
-    public <T extends IAlbianObject> List<T> execute(String sessionId, AlbianBundleContext bundleContext, Class<T> cls,
+    public <T extends IAlbianObject> List<T> execute(String sessionId, BundleContext bundleContext, Class<T> cls,
                                                      PersistenceCommandType cmdType, Statement statement) throws AlbianDataServiceException;
 
     public Object execute(

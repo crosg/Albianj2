@@ -2,7 +2,6 @@
 <Boot>
     <MachineId>001</MachineId>
     <MachineKey>key</MachineKey>
-    <AppName>AppName</AppName>
     <RuntimeLevel>Debug</RuntimeLevel>
     <Logger Name="Runtime" Level="Debug" Console="true"> <!-- 一直想要sys和业务的日志分开，这次终于分开了 -->
         <!--<Logger Name="Runtime" Path=""  Level="Debug" Console="true"></Logger>-->

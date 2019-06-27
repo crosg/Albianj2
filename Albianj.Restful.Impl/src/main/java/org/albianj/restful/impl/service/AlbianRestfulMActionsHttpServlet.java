@@ -51,7 +51,7 @@ import org.albianj.restful.object.AlbianRestfulResultStyle;
 import org.albianj.restful.object.IAlbianRestfulActionContext;
 import org.albianj.restful.object.IAlbianRestfulResult;
 import org.albianj.restful.service.IAlbianRestfulLogger;
-import org.albianj.restful.service.IAlbianRestfulMActionsService;
+import org.albianj.restful.service.IRestfulMActionsService;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
 
@@ -128,8 +128,8 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.setContentType("application/" + format + "; charset=UTF-8");
 
-        IAlbianRestfulMActionsService service = AlbianServiceRouter.getSingletonService(
-                IAlbianRestfulMActionsService.class, serviceName, false);
+        IRestfulMActionsService service = AlbianServiceRouter.getSingletonService(
+                IRestfulMActionsService.class, serviceName, false);
         if (null == service) {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId, AlbianLoggerLevel.Error,
@@ -181,7 +181,7 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
 
         long begin = Calendar.getInstance().getTimeInMillis();
 
-        IAlbianRestfulMActionsService rs = (IAlbianRestfulMActionsService) service.getRealService();
+        IRestfulMActionsService rs = (IRestfulMActionsService) service.getRealService();
         Method m = rs.getAction(action);
         if (null == m) {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
@@ -411,8 +411,8 @@ public class AlbianRestfulMActionsHttpServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.setContentType("application/" + format + "; charset=UTF-8");
 
-        IAlbianRestfulMActionsService service = AlbianServiceRouter.getSingletonService(
-                IAlbianRestfulMActionsService.class, serviceName, false);
+        IRestfulMActionsService service = AlbianServiceRouter.getSingletonService(
+                IRestfulMActionsService.class, serviceName, false);
         if (null == service) {
             AlbianServiceRouter.getLogger2().log(IAlbianRestfulLogger.Name,
                     sessionId, AlbianLoggerLevel.Error,

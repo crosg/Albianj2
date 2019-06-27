@@ -37,7 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.context;
 
-import org.albianj.boot.AlbianBundleContext;
+import org.albianj.boot.BundleContext;
 import org.albianj.persistence.context.IWriterJob;
 import org.albianj.persistence.context.dactx.IAlbianObjectWarp;
 import org.albianj.persistence.db.AlbianDataServiceException;
@@ -46,34 +46,34 @@ import org.albianj.persistence.object.IAlbianObject;
 import java.util.List;
 
 public interface IWriterJobAdapter {
-    public IWriterJob buildCreation(String sessionId, AlbianBundleContext bundleContext, IAlbianObject object)
+    public IWriterJob buildCreation(String sessionId, BundleContext bundleContext, IAlbianObject object)
             throws AlbianDataServiceException;
 
-    public IWriterJob buildCreation(String sessionId, AlbianBundleContext bundleContext,List<? extends IAlbianObject> objects)
+    public IWriterJob buildCreation(String sessionId, BundleContext bundleContext, List<? extends IAlbianObject> objects)
             throws AlbianDataServiceException;
 
-    public IWriterJob buildModification(String sessionId, AlbianBundleContext bundleContext,IAlbianObject object)
+    public IWriterJob buildModification(String sessionId, BundleContext bundleContext, IAlbianObject object)
             throws AlbianDataServiceException;
 
 //    public IWriterJob buildModification(String sessionId, IAlbianObject object, String[] members)
 //            throws AlbianDataServiceException;
 
-    public IWriterJob buildModification(String sessionId,AlbianBundleContext bundleContext, List<? extends IAlbianObject> objects)
+    public IWriterJob buildModification(String sessionId, BundleContext bundleContext, List<? extends IAlbianObject> objects)
             throws AlbianDataServiceException;
 
-    public IWriterJob buildRemoved(String sessionId,AlbianBundleContext bundleContext, IAlbianObject object)
+    public IWriterJob buildRemoved(String sessionId, BundleContext bundleContext, IAlbianObject object)
             throws AlbianDataServiceException;
 
-    public IWriterJob buildRemoved(String sessionId,AlbianBundleContext bundleContext, List<? extends IAlbianObject> objects)
+    public IWriterJob buildRemoved(String sessionId, BundleContext bundleContext, List<? extends IAlbianObject> objects)
             throws AlbianDataServiceException;
 
-    public IWriterJob buildSaving(String sessionId,AlbianBundleContext bundleContext, IAlbianObject object)
+    public IWriterJob buildSaving(String sessionId, BundleContext bundleContext, IAlbianObject object)
             throws AlbianDataServiceException;
 
-    public IWriterJob buildSaving(String sessionId,AlbianBundleContext bundleContext, List<? extends IAlbianObject> objects)
+    public IWriterJob buildSaving(String sessionId, BundleContext bundleContext, List<? extends IAlbianObject> objects)
             throws AlbianDataServiceException;
 
-    IWriterJob buildWriterJob(String sessionId, AlbianBundleContext bundleContext,List<IAlbianObjectWarp> entities, boolean rollbackOnError)
+    IWriterJob buildWriterJob(String sessionId, BundleContext bundleContext, List<IAlbianObjectWarp> entities, boolean rollbackOnError)
             throws AlbianDataServiceException;
 
 }

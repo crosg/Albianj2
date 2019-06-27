@@ -1,7 +1,7 @@
 package org.albianj.mvc.view;
 
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.logger.ILoggerService2;
 import org.albianj.mvc.HttpContext;
 import org.albianj.mvc.NotHttpActionAttribute;
 import org.albianj.service.AlbianServiceRouter;
@@ -51,7 +51,7 @@ public class CView extends View {
 
         StringBuffer html = ctx.getMasterViewHtml();
         if (null == html) {
-            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
                     ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                     "can not get the master-view html,maybe you need add MasterViewTag in the content-view."
             );

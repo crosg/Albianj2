@@ -37,15 +37,15 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.service;
 
-import org.albianj.boot.loader.AlbianBundleClassLoader;
-import org.albianj.boot.AlbianBundleContext;
-import org.albianj.boot.tags.Comments;
+import org.albianj.boot.BundleContext;
+import org.albianj.boot.except.ThrowableServant;
+import org.albianj.boot.loader.BundleClassLoader;
+import org.albianj.boot.tags.CommentsTag;
 import org.albianj.datetime.AlbianDateTime;
-import org.albianj.boot.except.AlbianDisplayException;
-import org.albianj.boot.except.AlbianExceptionServant;
-import org.albianj.boot.except.AlbianHiddenException;
+import org.albianj.boot.except.DisplayException;
+import org.albianj.boot.except.HiddenException;
 import org.albianj.except.AlbianRuntimeException;
-import org.albianj.kernel.IAlbianLogicIdService;
+import org.albianj.kernel.ILogicIdService;
 import org.albianj.loader.*;
 import org.albianj.boot.IAlbianBundleService;
 import org.albianj.logger.*;
@@ -59,11 +59,11 @@ public class AlbianServiceRouter {
     /**
      * 运行时logger，记录日志的loggerName
      */
-    public final static String LoggerRunning = IAlbianLoggerService2.AlbianRunningLoggerName;
+    public final static String LoggerRunning = ILoggerService2.AlbianRunningLoggerName;
     /**
      * 数据库语句logger 记录日志的loggerName
      */
-    public final static String LoggerSql = IAlbianLoggerService2.AlbianSqlLoggerName;
+    public final static String LoggerSql = ILoggerService2.AlbianSqlLoggerName;
 
     /**
      *  日志的级别
@@ -77,19 +77,19 @@ public class AlbianServiceRouter {
     /**
      * 异常级别,表示正常的异常,可能只是一个过程的需要,或者用来控制一个程序的流程
      */
-    public final static int ExceptForNormal = AlbianExceptionServant.ExceptForNormal;
+    public final static int ExceptForNormal = ThrowableServant.ExceptForNormal;
     /**
      * 警告的异常,通常对程序无实质性影响,一把会使用默认值等处理掉或者容错机制处理掉
      */
-    public final static int ExceptForWarn = AlbianExceptionServant.ExceptForWarn;
+    public final static int ExceptForWarn = ThrowableServant.ExceptForWarn;
     /**
      * 错误的异常,程序无法对该异常做出任何可修正的措施,程序必须中断或者停止
      */
-    public final static int ExceptForError = AlbianExceptionServant.ExceptForError;
+    public final static int ExceptForError = ThrowableServant.ExceptForError;
     /**
      * 无比重要的异常,比刑爷还要重要的异常,必须引起所有人的注意,不管什么程序都需要12w分警惕
      */
-    public final static int ExceptForMark = AlbianExceptionServant.ExceptForMark;
+    public final static int ExceptForMark = ThrowableServant.ExceptForMark;
 
 
     // 时间 级别 call-chain fmt -args
@@ -97,12 +97,12 @@ public class AlbianServiceRouter {
     private static String logExceptionFmt = "%s %s SessionId:%s Thread:%d CallChain:[%s] except:[type:%s showMsg:%s] ctx:[%s]";
 
     @Deprecated
-    public static IAlbianLoggerService getLogger() {
-        return getSingletonService(IAlbianLoggerService.class, IAlbianLoggerService.Name, false);
+    public static ILoggerService getLogger() {
+        return getSingletonService(ILoggerService.class, ILoggerService.Name, false);
     }
 
-    public static IAlbianLogicIdService getLogIdService() {
-        return getSingletonService(IAlbianLogicIdService.class, IAlbianLogicIdService.Name, false);
+    public static ILogicIdService getLogIdService() {
+        return getSingletonService(ILogicIdService.class, ILogicIdService.Name, false);
     }
 
     /**
@@ -116,11 +116,11 @@ public class AlbianServiceRouter {
      * @return 返回获取的service
      * @throws IllegalArgumentException id在service.xml中找不到或者是获取的service不能转换陈cla提供的class信息，将抛出遗产
      */
-    public static <T extends IAlbianService> T getSingletonService(Class<T> cla, String id, boolean isThrowIfException)
+    public static <T extends IService> T getSingletonService(Class<T> cla, String id, boolean isThrowIfException)
             throws IllegalArgumentException {
         if (Validate.isNullOrEmptyOrAllSpace(id)) {
 
-            getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName, IllegalArgumentException.class,
+            getLogger().errorAndThrow(ILoggerService.AlbianRunningLoggerName, IllegalArgumentException.class,
                     "Kernel is error.", "service id is null or empty,and can not found.");
         }
         String currBundleName = AlbianBootContext.Instance.getCurrentBundleContext().getBundleName();
@@ -139,7 +139,7 @@ public class AlbianServiceRouter {
      * @return 返回获取的service，在获取service出错或者没有获取service时候抛出异常
      * @throws IllegalArgumentException id在service.xml中找不到或者是获取的service不能转换陈cla提供的class信息，将抛出遗产
      */
-    public static <T extends IAlbianService> T getSingletonService(Class<T> cla, String id) {
+    public static <T extends IService> T getSingletonService(Class<T> cla, String id) {
         return getSingletonService(cla, id, false);
     }
 
@@ -156,11 +156,11 @@ public class AlbianServiceRouter {
      * @throws IllegalArgumentException id在service.xml中找不到或者是获取的service不能转换陈cla提供的class信息，将抛出遗产
      */
     @Deprecated
-    public static <T extends IAlbianService> T getService(Class<T> cla, String id, boolean isThrowIfException)
+    public static <T extends IService> T getService(Class<T> cla, String id, boolean isThrowIfException)
             throws IllegalArgumentException {
         if (Validate.isNullOrEmptyOrAllSpace(id)) {
 
-            getLogger().errorAndThrow(IAlbianLoggerService.AlbianRunningLoggerName, IllegalArgumentException.class,
+            getLogger().errorAndThrow(ILoggerService.AlbianRunningLoggerName, IllegalArgumentException.class,
                     "Kernel is error.", "service id is null or empty,and can not found.");
         }
         return getSingletonService(cla,id,isThrowIfException);
@@ -178,13 +178,13 @@ public class AlbianServiceRouter {
      * @throws IllegalArgumentException id在service.xml中找不到或者是获取的service不能转换陈cla提供的class信息，将抛出遗产
      */
     @Deprecated
-    public static <T extends IAlbianService> T getService(Class<T> cla, String id) {
+    public static <T extends IService> T getService(Class<T> cla, String id) {
         return getService(cla, id, false);
     }
 
     @Deprecated
-    public static IAlbianLoggerService2 getLogger2() {
-        return getSingletonService(IAlbianLoggerService2.class, IAlbianLoggerService2.Name, false);
+    public static ILoggerService2 getLogger2() {
+        return getSingletonService(ILoggerService2.class, ILoggerService2.Name, false);
     }
 
     @Deprecated
@@ -204,7 +204,7 @@ public class AlbianServiceRouter {
         }
 
 
-        IAlbianLoggerService2 log = getSingletonService(IAlbianLoggerService2.class, IAlbianLoggerService2.Name, false);
+        ILoggerService2 log = getSingletonService(ILoggerService2.class, ILoggerService2.Name, false);
         if (null != log) {
             String msg = String.format(logFmt, AlbianDateTime.fmtCurrentLongDatetime(), logLevel.getTag(), sessionId,
                     Thread.currentThread().getId(), sb, String.format(fmt, args));
@@ -228,7 +228,7 @@ public class AlbianServiceRouter {
             sb.delete(sb.length() - 4, sb.length() - 1);
         }
 
-        IAlbianLoggerService2 log = getSingletonService(IAlbianLoggerService2.class, IAlbianLoggerService2.Name, false);
+        ILoggerService2 log = getSingletonService(ILoggerService2.class, ILoggerService2.Name, false);
         if (null != log) {
             String msg = String.format(logExceptionFmt, AlbianDateTime.fmtCurrentLongDatetime(), logLevel.getTag(), sessionId,
                     Thread.currentThread().getId(), sb, t.getClass().getName(), t.getMessage(), String.format(fmt, args));
@@ -283,19 +283,19 @@ public class AlbianServiceRouter {
     /**
      * 异常级别,表示正常的异常,可能只是一个过程的需要,或者用来控制一个程序的流程
      */
-    public final static int ExceptCodeForNormal = AlbianExceptionServant.ExceptForNormal;
+    public final static int ExceptCodeForNormal = ThrowableServant.ExceptForNormal;
     /**
      * 警告的异常,通常对程序无实质性影响,一把会使用默认值等处理掉或者容错机制处理掉
      */
-    public final static int ExceptCodeForWarn = AlbianExceptionServant.ExceptForWarn;
+    public final static int ExceptCodeForWarn = ThrowableServant.ExceptForWarn;
     /**
      * 错误的异常,程序无法对该异常做出任何可修正的措施,程序必须中断或者停止
      */
-    public final static int ExceptCodeForError = AlbianExceptionServant.ExceptForError;
+    public final static int ExceptCodeForError = ThrowableServant.ExceptForError;
     /**
      * 无比重要的异常,比刑爷还要重要的异常,必须引起所有人的注意,不管什么程序都需要12w分警惕
      */
-    public final static int ExceptCodeForMark = AlbianExceptionServant.ExceptForMark;
+    public final static int ExceptCodeForMark = ThrowableServant.ExceptForMark;
 
     /**
      * 找到bundle模式下的bundle名
@@ -310,16 +310,16 @@ public class AlbianServiceRouter {
         }
 
         ClassLoader loader =  Thread.currentThread().getContextClassLoader();
-        if(!loader.getClass().isAssignableFrom(AlbianBundleClassLoader.class)) {
+        if(!loader.getClass().isAssignableFrom(BundleClassLoader.class)) {
             return AlbianBootService.RootBundleName;
         }
 
-        AlbianBundleClassLoader bundleClassLoader = (AlbianBundleClassLoader) loader;
+        BundleClassLoader bundleClassLoader = (BundleClassLoader) loader;
         return bundleClassLoader.getBundleName();
     }
 
-    public static <T extends  IAlbianService> T getSingletonService(String bundleName,Class<T> clzz,String serviceId,boolean isThrowIfServiceNotExist){
-        AlbianBundleContext bundleContext = AlbianBootContext.Instance.findBundleContext(bundleName,isThrowIfServiceNotExist);
+    public static <T extends IService> T getSingletonService(String bundleName, Class<T> clzz, String serviceId, boolean isThrowIfServiceNotExist){
+        BundleContext bundleContext = AlbianBootContext.Instance.findBundleContext(bundleName,isThrowIfServiceNotExist);
         IAlbianBundleService bundleService =  bundleContext.getBundleService(serviceId);
         if((null == bundleContext) && isThrowIfServiceNotExist){
 
@@ -327,15 +327,15 @@ public class AlbianServiceRouter {
         return clzz.cast(bundleService);
     }
 
-    public static <T extends  IAlbianService> T getSingletonService(String bundleName,Class<T> clzz,String serviceId){
+    public static <T extends IService> T getSingletonService(String bundleName, Class<T> clzz, String serviceId){
         return getSingletonService(bundleName,clzz,serviceId,false);
     }
 
-    public static String LogRoot4Runtime = IAlbianBundleLoggerService.LogName4Runtime;
-    public static String LogRoot4State = IAlbianBundleLoggerService.LogName4State;
-    public static String LogRoot4Monitor = IAlbianBundleLoggerService.LogName4Monitor;
+    public static String LogRoot4Runtime = IBundleLoggerService.LogName4Runtime;
+    public static String LogRoot4State = IBundleLoggerService.LogName4State;
+    public static String LogRoot4Monitor = IBundleLoggerService.LogName4Monitor;
 
-    @Comments("统一的日志处理方法,记录非敏感日志")
+    @CommentsTag("统一的日志处理方法,记录非敏感日志")
     public static void addLogV2(String sessionId,String logName,AlbianLoggerLevel level,
                                 Throwable excp,String brief,Object... info){
         try {
@@ -352,7 +352,7 @@ public class AlbianServiceRouter {
             System.out.println("logger in fail and ignore the exception -> " + t.getMessage());
         }
     }
-    @Comments("统一的日志处理方法,记录非敏感日志")
+    @CommentsTag("统一的日志处理方法,记录非敏感日志")
     public static void addLogV2(String sessionId,String logName,AlbianLoggerLevel level,
                                 Throwable excp,String interMsg,String brief,Object... info){
         try {
@@ -369,37 +369,37 @@ public class AlbianServiceRouter {
             System.out.println("logger in fail and ignore the exception -> " + t.getMessage());
         }
     }
-    @Comments("统一的日志处理方法")
+    @CommentsTag("统一的日志处理方法")
     public static void throwEnterExceptionV2(String sessionId, String logName, AlbianLoggerLevel level,
                                              Throwable excp, String brief, Object... info){
         addLogV2(sessionId,AlbianBootContext.Instance.getCurrentBundleContext().getBundleName(),logName,level,excp, brief,info);
-        if (AlbianDisplayException.class.isAssignableFrom(excp.getClass())) {
-            throw (AlbianDisplayException) excp;
+        if (DisplayException.class.isAssignableFrom(excp.getClass())) {
+            throw (DisplayException) excp;
         }
 
         if(null == excp) {
-            throw new AlbianDisplayException(AlbianExceptionServant.logLevel2Code(level), brief, info);
+            throw new DisplayException(ThrowableServant.logLevel2Code(level), brief, info);
         }
 
-        throw new AlbianDisplayException(AlbianExceptionServant.logLevel2Code(level), excp,brief, info);
+        throw new DisplayException(ThrowableServant.logLevel2Code(level), excp,brief, info);
     }
 
-    @Comments("统一的日志处理方法")
+    @CommentsTag("统一的日志处理方法")
     public static void throwInterExceptionV2(String sessionId,String logName,AlbianLoggerLevel level,
                                              Throwable excp,String interMsg,String brief,Object... info){
         addLogV2(sessionId,AlbianBootContext.Instance.getCurrentBundleContext().getBundleName(),logName,level,excp,interMsg, brief,info);
-        if (AlbianHiddenException.class.isAssignableFrom(excp.getClass())) {
-            throw (AlbianHiddenException) excp;
+        if (HiddenException.class.isAssignableFrom(excp.getClass())) {
+            throw (HiddenException) excp;
         }
 
         if(null == excp) {
-            throw new AlbianHiddenException(AlbianExceptionServant.logLevel2Code(level),interMsg, brief, info);
+            throw new HiddenException(ThrowableServant.logLevel2Code(level),interMsg, brief, info);
         }
 
-        throw new AlbianHiddenException(AlbianExceptionServant.logLevel2Code(level), excp,interMsg,brief, info);
+        throw new HiddenException(ThrowableServant.logLevel2Code(level), excp,interMsg,brief, info);
     }
 
-    @Comments("统一的日志处理方法,记录非敏感日志")
+    @CommentsTag("统一的日志处理方法,记录非敏感日志")
     public static void addLogV2(String sessionId,String bundleName,String logName,AlbianLoggerLevel level,
                                 Throwable excp,String brief,Object... info){
         try {
@@ -417,7 +417,7 @@ public class AlbianServiceRouter {
         }
     }
 
-    @Comments("统一的日志处理方法,记录非敏感日志")
+    @CommentsTag("统一的日志处理方法,记录非敏感日志")
     public static void addLogV2(String sessionId,String bundleName,String logName,AlbianLoggerLevel level,
                                 Throwable excp,String interMsg,String brief,Object... info){
         try {
@@ -435,33 +435,33 @@ public class AlbianServiceRouter {
     }
 
 
-    @Comments("统一的日志处理方法")
+    @CommentsTag("统一的日志处理方法")
     public static void throwEnterExceptionV2(String sessionId, String bundleName,String logName, AlbianLoggerLevel level,
                                              Throwable excp, String brief, Object... info){
         addLogV2(sessionId,bundleName,logName,level,excp, brief,info);
-        if (AlbianDisplayException.class.isAssignableFrom(excp.getClass())) {
-            throw (AlbianDisplayException) excp;
+        if (DisplayException.class.isAssignableFrom(excp.getClass())) {
+            throw (DisplayException) excp;
         }
 
         if(null == excp) {
-            throw new AlbianDisplayException(AlbianExceptionServant.logLevel2Code(level), brief, info);
+            throw new DisplayException(ThrowableServant.logLevel2Code(level), brief, info);
         }
 
-        throw new AlbianDisplayException(AlbianExceptionServant.logLevel2Code(level), excp,brief, info);
+        throw new DisplayException(ThrowableServant.logLevel2Code(level), excp,brief, info);
     }
 
-    @Comments("统一的日志处理方法")
+    @CommentsTag("统一的日志处理方法")
     public static void throwInterExceptionV2(String sessionId,String bundleName,String logName,AlbianLoggerLevel level,
                                              Throwable excp,String interMsg,String brief,Object... info){
         addLogV2(sessionId,bundleName,logName,level,excp,interMsg, brief,info);
-        if (AlbianHiddenException.class.isAssignableFrom(excp.getClass())) {
-            throw (AlbianHiddenException) excp;
+        if (HiddenException.class.isAssignableFrom(excp.getClass())) {
+            throw (HiddenException) excp;
         }
 
         if(null == excp) {
-            throw new AlbianHiddenException(AlbianExceptionServant.logLevel2Code(level),interMsg, brief, info);
+            throw new HiddenException(ThrowableServant.logLevel2Code(level),interMsg, brief, info);
         }
 
-        throw new AlbianHiddenException(AlbianExceptionServant.logLevel2Code(level), excp,interMsg,brief, info);
+        throw new HiddenException(ThrowableServant.logLevel2Code(level), excp,interMsg,brief, info);
     }
 }

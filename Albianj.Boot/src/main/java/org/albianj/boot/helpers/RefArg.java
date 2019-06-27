@@ -37,6 +37,9 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.boot.helpers;
 
+import org.albianj.boot.tags.BundleSharingTag;
+
+@BundleSharingTag
 public class RefArg<T> {
     private T _t = null;
 

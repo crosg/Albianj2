@@ -1,7 +1,7 @@
 package org.albianj.persistence.impl.context.dactx;
 
+import org.albianj.boot.BundleContext;
 import org.albianj.loader.AlbianBootContext;
-import org.albianj.boot.AlbianBundleContext;
 import org.albianj.persistence.context.IReaderJob;
 import org.albianj.persistence.context.dactx.IQueryContext;
 import org.albianj.persistence.db.AlbianDataServiceException;
@@ -30,12 +30,12 @@ public class QueryContext implements IQueryContext {
     private Class<? extends IAlbianObject> itfClzz = null;
     private LoadType loadType = LoadType.quickly;
     private IChainExpression wheres = null;
-    private AlbianBundleContext bundleContext = null;
+    private BundleContext bundleContext = null;
 
     public QueryContext(){
         this(AlbianBootContext.Instance.getCurrentBundleContext());
     }
-    public QueryContext(AlbianBundleContext bundleContext){
+    public QueryContext(BundleContext bundleContext){
         this.bundleContext = bundleContext;
     }
 

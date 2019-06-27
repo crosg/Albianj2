@@ -20,12 +20,12 @@ public class AlbianLoggerOpt {
     private static String logInterFmtV2 = "{time} {level} Bundle:{bundleName} SessionId:{sessionId} Thread:{tid} Brief:{brief} CallChain:[{chain}] Except:[Type:{type} InterMsg:[{intermsg}] Msg:{showMsg}] Ctx:[{ctx}]";
 
     public void logMsg(String logName, AlbianLoggerLevel level, Throwable excp, String msg) {
-        IAlbianLoggerService2 log = AlbianServiceRouter.getSingletonService(IAlbianLoggerService2.class, IAlbianLoggerService2.Name, false);
-        IAlbianBundleLoggerService rlogServ = AlbianServiceRouter.getSingletonService(IAlbianBundleLoggerService.class, IAlbianBundleLoggerService.Name, false);
+        ILoggerService2 log = AlbianServiceRouter.getSingletonService(ILoggerService2.class, ILoggerService2.Name, false);
+        IBundleLoggerService rlogServ = AlbianServiceRouter.getSingletonService(IBundleLoggerService.class, IBundleLoggerService.Name, false);
         if((null != log) && log.isExistLogger(logName)) {
             log.log3(logName, level, msg);
         } else if(null != rlogServ) { // 业务log不在的话，直接记录到root的 runtime日志
-            rlogServ.addLog(IAlbianBundleLoggerService.LogName4Runtime,level,excp,msg);
+            rlogServ.addLog(IBundleLoggerService.LogName4Runtime,level,excp,msg);
         } else { //业务和root的log都没有实例化，那么只有console日志了
             FinalAlbianBundleRootLoggerService.Instance.addLog(logName,level,excp,msg);
         }

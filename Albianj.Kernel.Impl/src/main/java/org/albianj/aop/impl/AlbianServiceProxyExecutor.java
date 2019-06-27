@@ -7,8 +7,8 @@ import org.albianj.aop.*;
 import org.albianj.boot.FinalAlbianReflectService;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.service.AlbianServiceRouter;
-import org.albianj.service.IAlbianService;
-import org.albianj.service.IAlbianBundleServiceAttribute;
+import org.albianj.service.IService;
+import org.albianj.service.IServiceAttribute;
 import org.albianj.verify.Validate;
 
 import java.lang.reflect.Method;
@@ -25,7 +25,7 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
         Instance = new AlbianServiceProxyExecutor();
     }
 
-    public Object newProxyService(ClassLoader loader,IAlbianService service, Map<String, IAlbianServiceAopAttribute> aopAttributes) {
+    public Object newProxyService(ClassLoader loader, IService service, Map<String, IServiceAspectAttribute> aopAttributes) {
         try {
             Enhancer enhancer = new Enhancer();  //增强类
             //不同于JDK的动态代理。它不能在创建代理时传obj对 象，obj对象必须被CGLIB包来创建
@@ -55,8 +55,8 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
         }
         Class<?> cls = method.getDeclaringClass();
         Method func = cls.getMethod(mName, method.getParameterTypes());
-        IAlbianService proxyServ = (IAlbianService) proxy;
-        IAlbianService realServ = proxyServ.getRealService();
+        IService proxyServ = (IService) proxy;
+        IService realServ = proxyServ.getRealService();
 
         boolean isIgnore = false;
         if (func.isAnnotationPresent(AlbianAopAttribute.class)) {
@@ -66,15 +66,15 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
             }
         }
 
-        IAlbianBundleServiceAttribute attr = proxyServ.getServiceAttribute();
-        Map<String, IAlbianServiceMethodAttribute> funcsAttr = attr.getMethodsAttribute();
+        IServiceAttribute attr = proxyServ.getServiceAttribute();
+        Map<String, IMethodAttribute> funcsAttr = attr.getMethodsAttribute();
         String sigFuncName = FinalAlbianReflectService.Instance.getMethodSignature(func);
-        IAlbianServiceMethodAttribute sma = funcsAttr.get(sigFuncName);
+        IMethodAttribute sma = funcsAttr.get(sigFuncName);
         if (null != sma && sma.isIgnore()) {
             isIgnore = true;
         }
 
-        Map<String, IAlbianServiceAopAttribute> saa = attr.getAopAttributes();
+        Map<String, IServiceAspectAttribute> saa = attr.getAopAttributes();
 
         if (Validate.isNullOrEmpty(saa)) {
             Object rc = AlbianMethodExecutor.Instance.call(proxy, method, args, methodProxy, isIgnore, sma);
@@ -82,12 +82,12 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
             return rc;
         }
 
-        IAlbianAopContext ctx = new AlbianAopContext();
+        IAspectContext ctx = new AspectContext();
 
         Object rc = null;
-        for (IAlbianServiceAopAttribute asaa : saa.values()) {
-            IAlbianAopService aas = AlbianServiceRouter.getSingletonService(
-                    IAlbianAopService.class, asaa.getServiceName(), false);
+        for (IServiceAspectAttribute asaa : saa.values()) {
+            IAspectService aas = AlbianServiceRouter.getSingletonService(
+                    IAspectService.class, asaa.getServiceName(), false);
             if (null == aas) continue;
 
             if (asaa.matches(mName)) {
@@ -112,9 +112,9 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
                     realServ.getServiceId(), mName);
         }
 
-        for (IAlbianServiceAopAttribute asaa : saa.values()) {
-            IAlbianAopService aas = AlbianServiceRouter.getSingletonService(
-                    IAlbianAopService.class, asaa.getServiceName(), false);
+        for (IServiceAspectAttribute asaa : saa.values()) {
+            IAspectService aas = AlbianServiceRouter.getSingletonService(
+                    IAspectService.class, asaa.getServiceName(), false);
             if (null == aas) continue;
 
             if (asaa.matches(mName)) {

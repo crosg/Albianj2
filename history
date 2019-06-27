@@ -157,7 +157,7 @@ deploy:2018111601
 
  2019-05-31
     增加统计功能（但是目前flush到log只在add中才可以），没有flush的线程一并flush
-    在AOP中增加对于method的重试，IAlbianTimeoutEntry，统计等aop功能。
+    在AOP中增加对于method的重试，ITimeoutEntry，统计等aop功能。
 
 2019-6-4
     去掉albianj中的并行service，即线程池AlbianThreadPoolService，该功能无人用

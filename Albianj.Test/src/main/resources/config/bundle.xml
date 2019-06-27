@@ -3,10 +3,5 @@
     <Name>BundleName</Name>
     <MachineKey>key</MachineKey>
     <RuntimeLevel>Debug</RuntimeLevel>
-    <Loggers Path="" Level="Debug" Console="true"> <!-- 一直想要sys和业务的日志分开，这次终于分开了 -->
-        <Logger Name="Runtime" Path="" Level="Debug" Console="true"></Logger>
-        <Logger Name="DataBase" Path="" Level=""></Logger>
-        <Logger Name="State" Path=""></Logger>
-        <Logger Name="Monitor" Path=""></Logger>
-    </Loggers>
+    <Logger Name="Runtime" Path="" Level="Debug" Console="true"/>
 </Bundle>

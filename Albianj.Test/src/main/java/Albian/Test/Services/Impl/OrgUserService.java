@@ -12,15 +12,15 @@ import org.albianj.persistence.context.dactx.IQueryContext;
 import org.albianj.persistence.object.LogicalOperation;
 import org.albianj.persistence.object.filter.FilterExpression;
 import org.albianj.persistence.object.filter.IChainExpression;
-import org.albianj.persistence.service.IAlbianDataAccessService;
+import org.albianj.persistence.service.IDataAccessService;
 import org.albianj.persistence.service.LoadType;
-import org.albianj.service.FreeAlbianService;
+import org.albianj.service.FreeService;
 
 import java.math.BigInteger;
 
-public class OrgUserService extends FreeAlbianService implements IOrgUserService {
+public class OrgUserService extends FreeService implements IOrgUserService {
     int idx = 0;
-    private IAlbianDataAccessService da;
+    private IDataAccessService da;
 
     @Override
     public boolean login(String uname, String pwd) {

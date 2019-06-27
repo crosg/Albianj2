@@ -39,13 +39,13 @@ package org.albianj.persistence.impl.context;
 
 import org.albianj.argument.RefArg;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.logger.ILoggerService2;
 import org.albianj.persistence.db.ISqlParameter;
 import org.albianj.persistence.impl.db.SqlParameter;
 import org.albianj.persistence.impl.toolkit.Convert;
 import org.albianj.persistence.impl.toolkit.EnumMapping;
 import org.albianj.persistence.object.*;
-import org.albianj.persistence.service.IAlbianStorageParserService;
+import org.albianj.persistence.service.IStorageParserService;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
@@ -66,7 +66,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
                                                        RefArg<String> tableName
     ) {
         IStorageAttribute stgAttr = null;
-        IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
+        IStorageParserService asps = AlbianServiceRouter.getSingletonService(IStorageParserService.class, IStorageParserService.Name);
         if (Validate.isNullOrEmptyOrAllSpace(drouterAlias)) { // not exist fix-drouterAlias
             if (Validate.isNullOrEmptyOrAllSpace(storageAlias)) { // use drouer callback
                 IDataRoutersAttribute drsAttr = objAttr.getDataRouters();
@@ -107,7 +107,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
         for (String key : objAttr.getFields().keySet()) {
             IAlbianEntityFieldAttribute member = objAttr.getFields().get(key);
             if (null == member) {
-                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
                         sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "albian-object:%s member:%s is not found.", objAttr.getType(), key);
@@ -160,7 +160,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
                 IMemberAttribute member = objAttr.getFields().get(
                         orderby.getFieldName().toLowerCase());
                 if (null == member) {
-                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
                             sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                             AlbianModuleType.AlbianPersistence.getThrowInfo(),
                             "albian-object:%s member:%s is not found.",
@@ -225,7 +225,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
                         where.getFieldName().toLowerCase());
 
                 if (null == member) {
-                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
                             sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                             AlbianModuleType.AlbianPersistence.getThrowInfo(),
                             "albian-object:%s member:%s is not found.", implType, where.getFieldName());

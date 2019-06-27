@@ -1,8 +1,8 @@
 package Albian.Test.Services;
 
-import org.albianj.service.IAlbianService;
+import org.albianj.service.IService;
 
-public interface IUserService extends IAlbianService {
+public interface IUserService extends IService {
     final String Name = "UserService";
 
     boolean login(String uname, String pwd);

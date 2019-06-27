@@ -37,7 +37,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.context;
 
-import org.albianj.boot.AlbianBundleContext;
+import org.albianj.boot.BundleContext;
 import org.albianj.persistence.context.IWriterJob;
 import org.albianj.persistence.context.dactx.AlbianDataAccessOpt;
 import org.albianj.persistence.context.dactx.IAlbianObjectWarp;
@@ -51,14 +51,14 @@ import org.albianj.persistence.object.IAlbianObject;
 import java.util.List;
 
 public abstract class FreeWriterJobAdapter implements IWriterJobAdapter {
-    public IWriterJob buildCreation(String sessionId,AlbianBundleContext bundleContext, IAlbianObject object) throws AlbianDataServiceException {
+    public IWriterJob buildCreation(String sessionId, BundleContext bundleContext, IAlbianObject object) throws AlbianDataServiceException {
         IWriterJob job = new WriterJob(sessionId);
         IPersistenceUpdateCommand cca = new CreateCommandAdapter();
         buildWriterJob(bundleContext,job, object, null, null, cca);
         return job;
     }
 
-    public IWriterJob buildCreation(String sessionId,AlbianBundleContext bundleContext, List<? extends IAlbianObject> objects) throws AlbianDataServiceException {
+    public IWriterJob buildCreation(String sessionId, BundleContext bundleContext, List<? extends IAlbianObject> objects) throws AlbianDataServiceException {
         IWriterJob job = new WriterJob(sessionId);
         IPersistenceUpdateCommand cca = new CreateCommandAdapter();
         for (IAlbianObject object : objects) {
@@ -67,14 +67,14 @@ public abstract class FreeWriterJobAdapter implements IWriterJobAdapter {
         return job;
     }
 
-    public IWriterJob buildModification(String sessionId,AlbianBundleContext bundleContext, IAlbianObject object) throws AlbianDataServiceException {
+    public IWriterJob buildModification(String sessionId, BundleContext bundleContext, IAlbianObject object) throws AlbianDataServiceException {
         IWriterJob job = new WriterJob(sessionId);
         IPersistenceUpdateCommand mca = new ModifyCommandAdapter();
         buildWriterJob(bundleContext,job, object, null, null, mca);
         return job;
     }
 
-    public IWriterJob buildModification(String sessionId,AlbianBundleContext bundleContext, List<? extends IAlbianObject> objects) throws AlbianDataServiceException {
+    public IWriterJob buildModification(String sessionId, BundleContext bundleContext, List<? extends IAlbianObject> objects) throws AlbianDataServiceException {
         IWriterJob job = new WriterJob(sessionId);
         IPersistenceUpdateCommand mca = new ModifyCommandAdapter();
         for (IAlbianObject object : objects) {
@@ -84,7 +84,7 @@ public abstract class FreeWriterJobAdapter implements IWriterJobAdapter {
         return job;
     }
 
-    public IWriterJob buildRemoved(String sessionId,AlbianBundleContext bundleContext, IAlbianObject object) throws AlbianDataServiceException {
+    public IWriterJob buildRemoved(String sessionId, BundleContext bundleContext, IAlbianObject object) throws AlbianDataServiceException {
         IWriterJob job = new WriterJob(sessionId);
         IPersistenceUpdateCommand rca = new RemoveCommandAdapter();
         buildWriterJob(bundleContext,job, object, null, null, rca);
@@ -92,7 +92,7 @@ public abstract class FreeWriterJobAdapter implements IWriterJobAdapter {
         return job;
     }
 
-    public IWriterJob buildRemoved(String sessionId,AlbianBundleContext bundleContext, List<? extends IAlbianObject> objects) throws AlbianDataServiceException {
+    public IWriterJob buildRemoved(String sessionId, BundleContext bundleContext, List<? extends IAlbianObject> objects) throws AlbianDataServiceException {
         IWriterJob job = new WriterJob(sessionId);
         IPersistenceUpdateCommand rca = new RemoveCommandAdapter();
         for (IAlbianObject object : objects) {
@@ -101,7 +101,7 @@ public abstract class FreeWriterJobAdapter implements IWriterJobAdapter {
         return job;
     }
 
-    public IWriterJob buildSaving(String sessionId,AlbianBundleContext bundleContext, IAlbianObject object) throws AlbianDataServiceException {
+    public IWriterJob buildSaving(String sessionId, BundleContext bundleContext, IAlbianObject object) throws AlbianDataServiceException {
         IWriterJob job = new WriterJob(sessionId);
         IPersistenceUpdateCommand iuc;
         if (object.getIsAlbianNew()) {
@@ -114,7 +114,7 @@ public abstract class FreeWriterJobAdapter implements IWriterJobAdapter {
         return job;
     }
 
-    public IWriterJob buildSaving(String sessionId,AlbianBundleContext bundleContext, List<? extends IAlbianObject> objects) throws AlbianDataServiceException {
+    public IWriterJob buildSaving(String sessionId, BundleContext bundleContext, List<? extends IAlbianObject> objects) throws AlbianDataServiceException {
         IWriterJob job = new WriterJob(sessionId);
         IPersistenceUpdateCommand cca = new CreateCommandAdapter();
         IPersistenceUpdateCommand mca = new ModifyCommandAdapter();
@@ -128,7 +128,7 @@ public abstract class FreeWriterJobAdapter implements IWriterJobAdapter {
         return job;
     }
 
-    public IWriterJob buildWriterJob(String sessionId,AlbianBundleContext bundleContext, List<IAlbianObjectWarp> entities, boolean rollbackOnError)
+    public IWriterJob buildWriterJob(String sessionId, BundleContext bundleContext, List<IAlbianObjectWarp> entities, boolean rollbackOnError)
             throws AlbianDataServiceException {
         IWriterJob job = new WriterJob(sessionId);
         job.setRollbackOnError(rollbackOnError);
@@ -164,7 +164,7 @@ public abstract class FreeWriterJobAdapter implements IWriterJobAdapter {
         return job;
     }
 
-    protected abstract void buildWriterJob(AlbianBundleContext bundleContext, IWriterJob job, IAlbianObject entity,
+    protected abstract void buildWriterJob(BundleContext bundleContext, IWriterJob job, IAlbianObject entity,
                                            String storageAlias, String tableAlias,
                                            IPersistenceUpdateCommand cmd);
 

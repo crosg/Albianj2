@@ -98,7 +98,7 @@ public class WebappResourceLoader extends ResourceLoader {
             log.error("WebappResourceLoader: unable to retrieve ServletContext");
         }
 
-        /* init the template paths map */
+        /* loadConf the template paths map */
         templatePaths = new HashMap();
 
         log.trace("WebappResourceLoader: initialization complete.");

@@ -37,9 +37,9 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.context;
 
-import org.albianj.boot.AlbianBundleContext;
+import org.albianj.boot.BundleContext;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.logger.ILoggerService2;
 import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.ISqlParameter;
 import org.albianj.persistence.impl.db.SqlParameter;
@@ -50,7 +50,7 @@ import org.albianj.persistence.object.filter.IChainExpression;
 import org.albianj.persistence.object.filter.IFilterExpression;
 import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.runtime.AlbianModuleType;
-import org.albianj.service.AlbianBuiltinNames;
+import org.albianj.service.BuiltinNames;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
 
@@ -90,7 +90,7 @@ public class ChainExpressionParser {
         }
     }
 
-    public static void toConditionText(String sessionId, AlbianBundleContext bundleContext,Class<?> cls, IAlbianObjectAttribute albianObject,
+    public static void toConditionText(String sessionId, BundleContext bundleContext, Class<?> cls, IAlbianObjectAttribute albianObject,
                                        IStorageAttribute storage, IChainExpression f, StringBuilder sb, Map<String, ISqlParameter> paras)
             throws AlbianDataServiceException {
         if (null == f) return;
@@ -124,11 +124,11 @@ public class ChainExpressionParser {
                 }
 
                 String className = cls.getName();
-                AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(AlbianBuiltinNames.Conf.Persistence);
+                AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(BuiltinNames.Conf.Persistence);
                 IAlbianEntityFieldAttribute fieldAttr = albianObject.getFields().get(entityMetadata.makeFieldsKey(fe.getFieldName().toLowerCase()));
 
                 if (null == fieldAttr) {
-                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
                             sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                             "PersistenceService is error.", "albian-object:%s member:%s is not found.", className, fe.getFieldName());
                 }

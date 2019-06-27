@@ -1,9 +1,9 @@
 package org.albianj.mvc.lang;
 
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.logger.ILoggerService2;
 import org.albianj.runtime.AlbianModuleType;
-import org.albianj.security.IAlbianSecurityService;
+import org.albianj.security.ISecurityService;
 import org.albianj.service.AlbianServiceRouter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,16 +62,16 @@ public class ServerHelper {
         try {
             String id = session.getId();
             String sCurrSeconds = String.valueOf(System.currentTimeMillis());
-            IAlbianSecurityService ass = AlbianServiceRouter.getSingletonService(IAlbianSecurityService.class, IAlbianSecurityService.Name);
+            ISecurityService ass = AlbianServiceRouter.getSingletonService(ISecurityService.class, ISecurityService.Name);
             if (null == ass) {
-                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+                AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianRunningLoggerName,
                         sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianMvf,
                         AlbianModuleType.AlbianMvf.getThrowInfo(),
                         "not found the SecurityService for form token.");
             }
             return ass.encryptSHA(id + sCurrSeconds);
         } catch (Exception e) {
-            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianRunningLoggerName,
                     sessionId, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianMvf,
                     AlbianModuleType.AlbianMvf.getThrowInfo(),
                     "make the form token is fail.");

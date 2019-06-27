@@ -1,9 +1,9 @@
 package org.albianj.aop.impl;
 
 import net.sf.cglib.proxy.MethodProxy;
-import org.albianj.aop.AlbianRetryException;
-import org.albianj.boot.except.AlbianDisplayException;
-import org.albianj.boot.except.AlbianHiddenException;
+import org.albianj.aop.RetryException;
+import org.albianj.boot.except.DisplayException;
+import org.albianj.boot.except.HiddenException;
 import org.albianj.service.AlbianServiceRouter;
 
 import java.util.concurrent.*;
@@ -24,9 +24,9 @@ public class AlbianMethodTimeoutProxyExecutor {
                 try {
                     Object rc = methodProxy.invokeSuper(proxy, args);
                     return rc;
-                }catch (AlbianRetryException e){
+                }catch (RetryException e){
                     throw e;
-                }catch (AlbianDisplayException | AlbianHiddenException e){
+                }catch (DisplayException | HiddenException e){
 
                 }catch (Throwable e){
 
@@ -40,7 +40,7 @@ public class AlbianMethodTimeoutProxyExecutor {
         try {
             rc = futureTask.get(timeoutMs, TimeUnit.MILLISECONDS);
         }catch (TimeoutException e) {
-            throw new AlbianRetryException(AlbianServiceRouter.ExceptForError,e,"timeout");
+            throw new RetryException(AlbianServiceRouter.ExceptForError,e,"timeout");
         } catch (InterruptedException | ExecutionException e) {
             futureTask.cancel(true);
         }

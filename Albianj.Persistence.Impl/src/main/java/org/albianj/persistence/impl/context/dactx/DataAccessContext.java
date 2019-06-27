@@ -1,7 +1,7 @@
 package org.albianj.persistence.impl.context.dactx;
 
+import org.albianj.boot.BundleContext;
 import org.albianj.loader.AlbianBootContext;
-import org.albianj.boot.AlbianBundleContext;
 import org.albianj.persistence.context.IPersistenceCompensateNotify;
 import org.albianj.persistence.context.IPersistenceNotify;
 import org.albianj.persistence.context.IWriterJob;
@@ -27,12 +27,12 @@ public class DataAccessContext implements IDataAccessContext {
     private IPersistenceCompensateNotify compensateCallback;
     private Object compensateCallbackObject;
     private boolean rbkOnErr = false;
-    private AlbianBundleContext bundleContext = null;
+    private BundleContext bundleContext = null;
 
     public DataAccessContext() {
         this(AlbianBootContext.Instance.getCurrentBundleContext());
     }
-    public DataAccessContext(AlbianBundleContext bundleContext) {
+    public DataAccessContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
         entitis = new ArrayList<>();
     }

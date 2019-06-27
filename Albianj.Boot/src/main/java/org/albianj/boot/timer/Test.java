@@ -1,9 +1,9 @@
 package org.albianj.boot.timer;
 
-import java.util.concurrent.TimeUnit;
+import org.albianj.boot.timer.impl.TimerWheel;
 
 public class Test {
-    final static IAlbianTimer I_ALBIAN_TIMER = new AlbianTimerWheel();
+    final static ITimer I_ALBIAN_TIMER = new TimerWheel();
 
 
     public static void main(String[] args) {
@@ -43,10 +43,10 @@ public class Test {
 //        System.out.println();
 
 
-//        IAlbianTimerTask timerTask = new main();
+//        ITimerTask timerTask = new main();
 
-//        java.util.IAlbianTimer timer1 = new  java.util.IAlbianTimer();
-//        timer1.schedule(new java.util.IAlbianTimerTask() {
+//        java.util.ITimer timer1 = new  java.util.ITimer();
+//        timer1.schedule(new java.util.ITimerTask() {
 //            @Override
 //            public void run() {
 //                System.out.println("Synchro data to other servers.");
@@ -56,11 +56,11 @@ public class Test {
 
 //        final long begin = System.currentTimeMillis();
 //        for (int i = 0; i < 10; i++) {
-//            I_ALBIAN_TIMER.addTimeout(new IAlbianTimerTask() {
+//            I_ALBIAN_TIMER.addTimeout(new ITimerTask() {
 //                @Override
-//                public void run(IAlbianTimeoutEntry IAlbianTimeoutEntry, String argv) throws Exception {
+//                public void run(ITimeoutEntry ITimeoutEntry, String argv) throws Exception {
 //                    long end = System.currentTimeMillis();
-//                    System.out.println("IAlbianTimeoutEntry, argv = " + argv + " IAlbianTimeoutEntry = " +(end - begin) + "Thread = " +Thread.currentThread().getId());
+//                    System.out.println("ITimeoutEntry, argv = " + argv + " ITimeoutEntry = " +(end - begin) + "Thread = " +Thread.currentThread().getId());
 //                }
 //            }, 5, TimeUnit.SECONDS, "" + i);
 //        }
@@ -68,7 +68,7 @@ public class Test {
 //        I_ALBIAN_TIMER.stop();
     }
 //    @Override
-//    public void run(IAlbianTimeoutEntry timeout, String argv) throws Exception {
+//    public void run(ITimeoutEntry timeout, String argv) throws Exception {
 //        System.out.println("timeout, argv = " + argv );
 //    }
 }

@@ -1,13 +1,13 @@
 package org.albianj.boot;
 
+import org.albianj.boot.except.ThrowableServant;
 import org.albianj.boot.helpers.*;
-import org.albianj.boot.loader.AlbianBundleClassLoader;
-import org.albianj.boot.logging.AlbianLogServant;
-import org.albianj.boot.logging.AlbianLoggerLevel;
-import org.albianj.boot.logging.IAlbianLoggerAttribute;
-import org.albianj.boot.entry.AlbianBootAttribute;
-import org.albianj.boot.entry.AlbianBundleAttribute;
-import org.albianj.boot.except.AlbianExceptionServant;
+import org.albianj.boot.loader.BundleClassLoader;
+import org.albianj.boot.logging.ILoggerAttribute;
+import org.albianj.boot.logging.LogServant;
+import org.albianj.boot.logging.LoggerLevel;
+import org.albianj.boot.except.entry.BootAttribute;
+import org.albianj.boot.except.entry.BundleAttribute;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,8 +49,8 @@ public class AlbianApplicationServant {
     private String workFolder = null;
     private String logsPath = null;
     private boolean isOpenConsole = false;
-    private Map<String,AlbianBundleAttribute> attAttrs = new HashMap<>();
-    private Map<String,AlbianBundleContext> bundleContextMap = new HashMap<>();
+    private Map<String, BundleAttribute> attAttrs = new HashMap<>();
+    private Map<String, BundleContext> bundleContextMap = new HashMap<>();
 
     protected AlbianApplicationServant() {
         currentThread = Thread.currentThread();
@@ -73,7 +73,7 @@ public class AlbianApplicationServant {
     }
 
     public AlbianApplicationServant addBundle(String name,String workFolder,Class<? extends  IAlbianBundleLauncher> launcherClzz){
-        AlbianBundleAttribute bundleAttr = new AlbianBundleAttribute(name,workFolder,launcherClzz);
+        BundleAttribute bundleAttr = new BundleAttribute(name,workFolder,launcherClzz);
         attAttrs.put(name,bundleAttr);
         return this;
     }
@@ -84,11 +84,11 @@ public class AlbianApplicationServant {
      *
      * @return
      */
-    public AlbianBundleContext getCurrentBundleContext() {
+    public BundleContext getCurrentBundleContext() {
         String bundleName = null;
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        if (loader.getClass().isAssignableFrom(AlbianBundleClassLoader.class)) {
-            bundleName = ((AlbianBundleClassLoader) loader).getBundleName();
+        if (loader.getClass().isAssignableFrom(BundleClassLoader.class)) {
+            bundleName = ((BundleClassLoader) loader).getBundleName();
         } else {
             bundleName = BootBundleName;
         }
@@ -100,7 +100,7 @@ public class AlbianApplicationServant {
      *
      * @return
      */
-    public AlbianBundleContext getBootBundleContext() {
+    public BundleContext getBootBundleContext() {
         return findBundleContext(BootBundleName, false);
     }
 
@@ -112,9 +112,9 @@ public class AlbianApplicationServant {
      * @param isThrowIfBundleNotExit
      * @return
      */
-    public AlbianBundleContext findBundleContext(String bundleName, boolean isThrowIfBundleNotExit) {
+    public BundleContext findBundleContext(String bundleName, boolean isThrowIfBundleNotExit) {
         if (isThrowIfBundleNotExit && (!isBundleExist(bundleName))) {
-            AlbianExceptionServant.Instance.throwDisplayException(AlbianExceptionServant.Code.Error,this.getClass(),null,
+            ThrowableServant.Instance.throwDisplayException(ThrowableServant.Code.Error,this.getClass(),null,
                     "Not Found Bundle","Bundle -> {0} is not found.",bundleName);
         }
         return bundleContextMap.get(bundleName);
@@ -129,7 +129,7 @@ public class AlbianApplicationServant {
      * @param name
      */
     public void detachBundle(String name){
-//        throw new AlbianDisplayException(AlbianExceptionServant.Code.Error,"Function not implement.",
+//        throw new DisplayException(ThrowableServant.Code.Error,"Function not implement.",
 //                "detach bundle is not implement.");
     }
 
@@ -143,8 +143,8 @@ public class AlbianApplicationServant {
     }
 
     private boolean buildApplicationRuntime(String[] args){
-        if(AlbianStringServant.Instance.isNullOrEmptyOrAllSpace(logsPath)){
-            AlbianExceptionServant.Instance.throwDisplayException(AlbianExceptionServant.Code.Error,this.getClass(),null,
+        if(StringServant.Instance.isNullOrEmptyOrAllSpace(logsPath)){
+            ThrowableServant.Instance.throwDisplayException(ThrowableServant.Code.Error,this.getClass(),null,
                     "Startup Argument Error.",
                     "Argument 'logsPath' is not setting and OPS(Yes,Have and only have caicai.) not allow use default value,so must setting it.");
         }
@@ -152,56 +152,49 @@ public class AlbianApplicationServant {
         /**
          * first init initLogger，but named Runtime and replace it when init end.
          */
-        AlbianLogServant.Instance.newRuntimeLogger("Runtime",logsPath,"DEBUG",isOpenConsole);
+        LogServant.Instance.newRuntimeLogger("Runtime",logsPath,"DEBUG",isOpenConsole);
 
-        AlbianLogServant.Instance.addRuntimeLog("StartupThread", AlbianLoggerLevel.Info,
+        LogServant.Instance.addRuntimeLog("StartupThread", LoggerLevel.Info,
                 this.getClass(),null,"Albianj Application Startup",null,
                 "Albianj application startuping by using RuntimeLogger with folder -> {0} and {1} open ConsoleLogger.",
                 logsPath, isOpenConsole ? "" : "not");
 
-        if(AlbianStringServant.Instance.isNullOrEmptyOrAllSpace(workFolder)){
+        if(StringServant.Instance.isNullOrEmptyOrAllSpace(workFolder)){
             if(null == startupClass){
-                AlbianLogServant.Instance.addRuntimeLogAndThrow("StartupThread", AlbianLoggerLevel.Error,
+                LogServant.Instance.addRuntimeLogAndThrow("StartupThread", LoggerLevel.Error,
                         this.getClass(),null,"Run Argument Error.",null,
                         "Application's workfolder or Class of main() function must set one.And we recommend set workfolder." );
             }
 
-            String workFolder = AlbianClassServant.Instance.classResourcePathToFileSystemWorkFolder(startupClass);
-            if(!AlbianFileServant.Instance.isFileOrPathExist(workFolder)){
-                AlbianLogServant.Instance.addRuntimeLogAndThrow("StartupThread", AlbianLoggerLevel.Error,
+            String workFolder = TypeServant.Instance.classResourcePathToFileSystemWorkFolder(startupClass);
+            if(!FileServant.Instance.isFileOrPathExist(workFolder)){
+                LogServant.Instance.addRuntimeLogAndThrow("StartupThread", LoggerLevel.Error,
                         this.getClass(),null,"Run Argument Error.",null,
                        "Application's workfolder is not exist,then workpath -> {0} is setting by class -> {1}.",
                                 workFolder,startupClass.getName());
             }
             this.workFolder = workFolder;
-            AlbianLogServant.Instance.addRuntimeLog("StartupThread",AlbianLoggerLevel.Info,
+            LogServant.Instance.addRuntimeLog("StartupThread", LoggerLevel.Info,
                     this.getClass(),null,"Runtime Argument Defaulter.",null,
                     "Setting workFolder to -> {0} by class -> {1} default.",workFolder,startupClass.getName());
         } else {
-            AlbianLogServant.Instance.addRuntimeLog("StartupThread",AlbianLoggerLevel.Info,
+            LogServant.Instance.addRuntimeLog("StartupThread", LoggerLevel.Info,
                     this.getClass(),null,"Runtime Settings.",null,
                     "Application startup at workFolder -> {0}.",workFolder);
         }
 
-        this.workFolder = AlbianFileServant.Instance.makeFolderWithSuffixSep(this.workFolder);
+        this.workFolder = FileServant.Instance.makeFolderWithSuffixSep(this.workFolder);
 
         /**
          * special deal boot bundle
          */
-        AlbianBundleContext bootCtx = AlbianBundleContext.newInstance("StartupThread", BootBundleName,workFolder,ClassLoader.getSystemClassLoader(),null);
+        BundleContext bootCtx = BundleContext.newInstance("StartupThread", BootBundleName,workFolder,ClassLoader.getSystemClassLoader(),null);
         bundleContextMap.put(BootBundleName,bootCtx);
-        AlbianXmlParserContext bootConfCtx =  AlbianBootServant.Instance.loadBootConf("StartupThread",bootCtx);
-        AlbianBootAttribute bootAttr = AlbianBootServant.Instance.parserBootBundleConf(bootConfCtx,logsPath);
-        IAlbianLoggerAttribute logAttr = bootAttr.getRootLoggerAttr();
-        AlbianLogServant.Instance.updateRuntimeLogger(logAttr.getLevel(),logAttr.isOpenConsole(),logAttr.getMaxFilesize());
-        Map<String, AlbianBundleAttribute>  confBundlesAttr = bootAttr.getBundleAttrs();
-        if(AlbianCollectServant.Instance.isNullOrEmpty(confBundlesAttr)) {
-            attAttrs.putAll(confBundlesAttr);
-        }
+        BootServant.Instance.repair("StartupThread",bootCtx,logsPath,attAttrs);
 
-        for(Map.Entry<String,AlbianBundleAttribute> entry : attAttrs.entrySet()) {
-            AlbianBundleAttribute attr = entry.getValue();
-            AlbianBundleContext bundleCtx = AlbianBundleContext.newInstance("StartupThread",attr.getName() ,attr.getWorkFolder(),null,attr.getStartupClassname());
+        for(Map.Entry<String, BundleAttribute> entry : attAttrs.entrySet()) {
+            BundleAttribute attr = entry.getValue();
+            BundleContext bundleCtx = BundleContext.newInstance("StartupThread",attr.getName() ,attr.getWorkFolder(),null,attr.getStartupClassname());
             bundleContextMap.put(BootBundleName,bundleCtx);
             bundleCtx.launchBundle(args);
         }

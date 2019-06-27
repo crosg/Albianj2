@@ -3,11 +3,11 @@ package org.albianj.persistence.impl.storage;
 import org.albianj.kernel.AlbianLevel;
 import org.albianj.kernel.KernelSetting;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.logger.ILoggerService2;
 import org.albianj.persistence.object.IRunningStorageAttribute;
 import org.albianj.persistence.object.IStorageAttribute;
 import org.albianj.runtime.AlbianModuleType;
-import org.albianj.security.IAlbianSecurityService;
+import org.albianj.security.ISecurityService;
 import org.albianj.service.AlbianServiceRouter;
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -33,7 +33,7 @@ public class DBCPWapper extends FreeDataBasePool {
         IStorageAttribute sa = rsa.getStorageAttribute();
         String key = sa.getName() + rsa.getDatabase();
         DataSource ds = getDatasource(key, rsa);
-        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+        AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
                 sessionId, AlbianLoggerLevel.Info,
                 "Get the connection from storage:%s and database:%s by connection pool.",
                 sa.getName(), rsa.getDatabase());
@@ -47,7 +47,7 @@ public class DBCPWapper extends FreeDataBasePool {
             conn.setAutoCommit(isAutoCommit);
             return conn;
         } catch (SQLException e) {
-            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
                     sessionId, AlbianLoggerLevel.Error, e,
                     "Get the connection with storage:%s and database:%s form connection pool is error.",
                     sa.getName(), rsa.getDatabase());
@@ -61,14 +61,14 @@ public class DBCPWapper extends FreeDataBasePool {
         try {
             ds = new BasicDataSource();
         } catch (Exception e) {
-            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
+            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianRunningLoggerName,
+                    ILoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "create dabasepool for storage:%s is fail.", key);
         }
         try {
             IStorageAttribute storageAttribute = rsa.getStorageAttribute();
-            String url = FreeAlbianStorageParserService
+            String url = FreeStorageParserService
                     .generateConnectionUrl(rsa);
             ds.setDriverClassName(DRIVER_CLASSNAME);
             ds.setUrl(url);
@@ -77,13 +77,13 @@ public class DBCPWapper extends FreeDataBasePool {
                 ds.setUsername(storageAttribute.getUser());
                 ds.setPassword(storageAttribute.getPassword());
             } else {
-                IAlbianSecurityService ass = AlbianServiceRouter.getSingletonService(IAlbianSecurityService.class, IAlbianSecurityService.Name, false);
+                ISecurityService ass = AlbianServiceRouter.getSingletonService(ISecurityService.class, ISecurityService.Name, false);
                 if (null != ass) {
                     ds.setUsername(ass.decryptDES(storageAttribute.getUser()));
                     ds.setPassword(ass.decryptDES(storageAttribute.getPassword()));
                 } else {
-                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
+                    AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianRunningLoggerName,
+                            ILoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                             AlbianModuleType.AlbianPersistence.getThrowInfo(),
                             "the run level is release in the kernel config but security is null,so not use security service.");
 
@@ -135,8 +135,8 @@ public class DBCPWapper extends FreeDataBasePool {
 
 
         } catch (Exception e) {
-            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
+            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianRunningLoggerName,
+                    ILoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "startup database connection pools is fail.");
             return null;

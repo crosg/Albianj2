@@ -1,10 +1,8 @@
 package org.albianj.statistics.impl;
 
 import org.albianj.service.AlbianServiceRouter;
-import org.albianj.statistics.IAlbianStatisticsService;
-import sun.management.snmp.jvmmib.JvmThreadInstanceTableMeta;
+import org.albianj.statistics.IStatisticsService;
 
-import javax.swing.*;
 import java.util.HashMap;
 
 
@@ -26,7 +24,7 @@ public class AlbianSummary {
             }
 
             item = map.get(tagName);
-            if (item.getBeginClock() + IAlbianStatisticsService.UnitMs >= now) {
+            if (item.getBeginClock() + IStatisticsService.UnitMs >= now) {
                 item.add(now, figure);
                 return;
             }

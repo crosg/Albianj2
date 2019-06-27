@@ -1,6 +1,6 @@
 package org.albianj.boot;
 
 public interface IAlbianBundleService {
-    AlbianBundleContext getBundleContext();
-    void setBundleContext(AlbianBundleContext bundleContext);
+    BundleContext getBundleContext();
+    void setBundleContext(BundleContext bundleContext);
 }
