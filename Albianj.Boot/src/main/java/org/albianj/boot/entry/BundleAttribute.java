@@ -1,4 +1,4 @@
-package org.albianj.boot.except.entry;
+package org.albianj.boot.entry;
 
 import org.albianj.boot.IAlbianBundleLauncher;
 

@@ -3,11 +3,9 @@ package org.albianj.boot;
 import org.albianj.boot.except.ThrowableServant;
 import org.albianj.boot.helpers.*;
 import org.albianj.boot.loader.BundleClassLoader;
-import org.albianj.boot.logging.ILoggerAttribute;
 import org.albianj.boot.logging.LogServant;
 import org.albianj.boot.logging.LoggerLevel;
-import org.albianj.boot.except.entry.BootAttribute;
-import org.albianj.boot.except.entry.BundleAttribute;
+import org.albianj.boot.entry.BundleAttribute;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -114,7 +112,7 @@ public class AlbianApplicationServant {
      */
     public BundleContext findBundleContext(String bundleName, boolean isThrowIfBundleNotExit) {
         if (isThrowIfBundleNotExit && (!isBundleExist(bundleName))) {
-            ThrowableServant.Instance.throwDisplayException(ThrowableServant.Code.Error,this.getClass(),null,
+            ThrowableServant.Instance.throwDisplayException(this.getClass(),null,
                     "Not Found Bundle","Bundle -> {0} is not found.",bundleName);
         }
         return bundleContextMap.get(bundleName);
@@ -144,7 +142,7 @@ public class AlbianApplicationServant {
 
     private boolean buildApplicationRuntime(String[] args){
         if(StringServant.Instance.isNullOrEmptyOrAllSpace(logsPath)){
-            ThrowableServant.Instance.throwDisplayException(ThrowableServant.Code.Error,this.getClass(),null,
+            ThrowableServant.Instance.throwDisplayException(this.getClass(),null,
                     "Startup Argument Error.",
                     "Argument 'logsPath' is not setting and OPS(Yes,Have and only have caicai.) not allow use default value,so must setting it.");
         }

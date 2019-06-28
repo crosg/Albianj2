@@ -120,4 +120,7 @@ public class TypeServant {
         int mod = type.getModifiers();
         return (!Modifier.isAbstract(mod)) && (!Modifier.isInterface(mod));
     }
+
+
+
 }

@@ -267,19 +267,36 @@ public class BundleClassLoader extends ClassLoader {
 
     /**
      * 根据指定的Anno来获取所有的class，不包括抽象类与接口
-     * @param ctx
      * @param markAnno 被标记的Tag
      * @param unmarkAnno 未被标记的Tag
      * @return
      */
-    public Map<String,TypeFileMetadata> findNormalTypeWithAnno(BundleContext ctx, Class<? extends Annotation> markAnno,Class<? extends Annotation> unmarkAnno){
+    public Map<String,TypeFileMetadata> findNormalTypeWithAnno(Class<? extends Annotation> markAnno,Class<? extends Annotation> unmarkAnno){
         Map<String,TypeFileMetadata> map = new HashMap<>();
-        findTypeFromFileMetadatasByAnno(markAnno,unmarkAnno,clzzFileMetadatasInBin,map);
-        findTypeFromFileMetadatasByAnno(markAnno,unmarkAnno,clzzFileMetadatasInCls,map);
-        findTypeFromFileMetadatasByAnno(markAnno,unmarkAnno,clzzFileMetadatasInLib,map);
+        findNormalTypeWithParentAndAnno(null,markAnno,unmarkAnno,clzzFileMetadatasInBin,map);
+        findNormalTypeWithParentAndAnno(null,markAnno,unmarkAnno,clzzFileMetadatasInCls,map);
+        findNormalTypeWithParentAndAnno(null,markAnno,unmarkAnno,clzzFileMetadatasInLib,map);
         return map;
     }
-    private void findTypeFromFileMetadatasByAnno(Class<? extends Annotation> markAnno,Class<? extends Annotation> unmarkAnno,Map<String,TypeFileMetadata> from,Map<String,TypeFileMetadata> to){
+
+    /**
+     * 根据指定的parent类/接口获取所有的普通class，不包括抽象子类与子接口
+     * @param parent
+     * @return
+     */
+    public Map<String,TypeFileMetadata> findNormalTypeWithParent(Class<?> parent){
+        Map<String,TypeFileMetadata> map = new HashMap<>();
+        findNormalTypeWithParentAndAnno(parent,null,null,clzzFileMetadatasInBin,map);
+        findNormalTypeWithParentAndAnno(parent,null,null,clzzFileMetadatasInCls,map);
+        findNormalTypeWithParentAndAnno(parent,null,null,clzzFileMetadatasInLib,map);
+        return map;
+    }
+
+    public void findNormalTypeWithParentAndAnno(Class<?> parent,
+                                             Class<? extends Annotation> markAnno,
+                                             Class<? extends Annotation> unmarkAnno,
+                                             Map<String,TypeFileMetadata> from,
+                                             Map<String,TypeFileMetadata> to) {
         for(Map.Entry<String,TypeFileMetadata> entry : from.entrySet()){
             TypeFileMetadata tfm = entry.getValue();
             Class<?> clzz = tfm.getType();
@@ -291,36 +308,12 @@ public class BundleClassLoader extends ClassLoader {
              * and not in result
              */
             boolean isConform = TypeServant.Instance.isNormalClass(clzz)
-                    && ((null != markAnno) && clzz.isAnnotationPresent(markAnno))
-                    && ((null != unmarkAnno) && !clzz.isAnnotationPresent(unmarkAnno))
+                    && ((null == parent) ? true :  tfm.getType().isAssignableFrom(parent))
+                    && ((null == markAnno) ? true : clzz.isAnnotationPresent(markAnno))
+                    && ((null == unmarkAnno) ? true :  !clzz.isAnnotationPresent(unmarkAnno))
                     && (!to.containsKey(tfm.getFullClassNameWithoutSuffix()));
             if(isConform){
                 to.put(tfm.getFullClassNameWithoutSuffix(), tfm);
-            }
-        }
-    }
-
-    /**
-     * 根据指定的parent类/接口获取所有的普通class，不包括抽象子类与子接口
-     * @param ctx
-     * @param parent
-     * @return
-     */
-    public Map<String,TypeFileMetadata> findNormalTypeWithParent(BundleContext ctx, Class<?> parent){
-        Map<String,TypeFileMetadata> map = new HashMap<>();
-        findTypeFromFileMetadatasByParent(parent,clzzFileMetadatasInBin,map);
-        findTypeFromFileMetadatasByParent(parent,clzzFileMetadatasInCls,map);
-        findTypeFromFileMetadatasByParent(parent,clzzFileMetadatasInLib,map);
-        return map;
-    }
-    private void findTypeFromFileMetadatasByParent(Class<?> parent,Map<String,TypeFileMetadata> from,Map<String,TypeFileMetadata> to){
-        for(Map.Entry<String,TypeFileMetadata> entry : from.entrySet()){
-            TypeFileMetadata tfm = entry.getValue();
-            Class<?> clzz = tfm.getType();
-            if(tfm.getType().isAssignableFrom(parent) && TypeServant.Instance.isNormalClass(clzz)){
-                if(!to.containsKey(tfm.getFullClassNameWithoutSuffix())) {
-                    to.put(tfm.getFullClassNameWithoutSuffix(),tfm);
-                }
             }
         }
     }

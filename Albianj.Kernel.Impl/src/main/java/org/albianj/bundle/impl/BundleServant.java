@@ -1,7 +1,7 @@
 package org.albianj.bundle.impl;
 
 import org.albianj.boot.BundleContext;
-import org.albianj.boot.except.entry.BootAttribute;
+import org.albianj.boot.entry.BootAttribute;
 import org.albianj.boot.helpers.OptConvertServant;
 import org.albianj.boot.helpers.StringServant;
 import org.albianj.boot.helpers.XmlParserContext;

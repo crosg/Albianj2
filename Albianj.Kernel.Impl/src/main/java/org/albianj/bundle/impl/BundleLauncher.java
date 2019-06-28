@@ -2,7 +2,6 @@ package org.albianj.bundle.impl;
 
 import org.albianj.boot.BundleContext;
 import org.albianj.boot.loader.BundleClassLoader;
-import org.albianj.boot.tags.BundleSharingTag;
 
 /**
  * bundle的启动类
@@ -49,10 +48,10 @@ public class BundleLauncher {
     }
 
     /**
-     * 懒惰的加载bundle，又叫快速的加载，适用于job等一次加载，短时间运行的应用类型
+     * 快速加载bundle，适用于job等一次加载，短时间运行的应用类型
      * @param bctx
      */
-    private void lazyLoadBundle(BundleContext bctx){
+    private void fastLoadBundle(BundleContext bctx){
         /**
          * 0th : parser bundle.xml conf
          * 1th : parser service.xml conf
@@ -60,6 +59,8 @@ public class BundleLauncher {
          * 5th : find customer service and parser their xml conf,merger their config
          * 6th : load customer service
          */
+
+
     }
 
 }

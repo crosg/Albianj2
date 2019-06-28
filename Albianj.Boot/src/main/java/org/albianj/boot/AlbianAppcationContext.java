@@ -1,7 +1,7 @@
 package org.albianj.boot;
 
-import org.albianj.boot.except.entry.BootAttribute;
-import org.albianj.boot.except.entry.BundleAttribute;
+import org.albianj.boot.entry.BootAttribute;
+import org.albianj.boot.entry.BundleAttribute;
 
 import java.util.HashMap;
 import java.util.Map;

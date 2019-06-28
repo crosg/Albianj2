@@ -1,6 +1,6 @@
 package org.albianj.boot;
 
-import org.albianj.boot.except.entry.BootAttribute;
+import org.albianj.boot.entry.BootAttribute;
 import org.albianj.boot.loader.BundleClassLoader;
 import org.albianj.boot.logging.LogServant;
 import org.albianj.boot.logging.LoggerLevel;

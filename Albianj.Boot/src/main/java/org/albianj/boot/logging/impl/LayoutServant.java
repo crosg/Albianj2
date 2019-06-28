@@ -35,54 +35,15 @@ public class LayoutServant {
     public String makeLayoutBuffer(String sessionId, String bundleName, LoggerLevel level, LocationInfo localInfo, String breif, String secretMsg, String msg){
         StringBuilder sb = new StringBuilder();
         sb.append(DailyServant.Instance.datetimeLongString()).append(" ").append(level.getTag())
-                .append(" Session=").append(sessionId)
-                .append(" Bundle=").append(bundleName)
-                .append(" Thread=").append(Thread.currentThread().getId())
-                .append(" Breif=").append(breif)
-                .append(" Secert=").append(StringServant.Instance.isNullOrEmptyOrAllSpace(secretMsg) ? "" : secretMsg)
-                .append(" Msg=").append(msg).append(" Exception=");
-        Throwable e = localInfo.getThrowable();
-        if(e instanceof HiddenException) {
-            buildDisplayExceptionMsg( sb ,e,localInfo.getRefType());
-        }else if(e instanceof DisplayException){
-            buildHiddenExceptionMsg(sb,e,localInfo.getRefType());
-        } else{
-            buildInterExceptionMsg(e,localInfo.getRefType(),sb);
-        }
+                .append(" Session:").append(sessionId)
+                .append(" Bundle:").append(bundleName)
+                .append(" Thread:").append(Thread.currentThread().getId())
+                .append(" Breif:").append(breif)
+                .append(" Secert:").append(StringServant.Instance.isNullOrEmptyOrAllSpace(secretMsg) ? "" : secretMsg)
+                .append(" Msg:").append(msg);
+
+        StringBuilder excMsg = ThrowableServant.Instance.buildThrowBuffer(localInfo.getThrowable(),localInfo.getRefType());
+        sb.append(excMsg);
         return sb.toString();
-    }
-
-    private void buildDisplayExceptionMsg(StringBuilder sb ,Throwable e,Class<?> refType){
-        HiddenException ie = (HiddenException) e;
-        StringBuilder eStackBuffer = ThrowableServant.Instance.makeStackChainBuffer(e,refType);
-        sb.append("DisplayException:{ Msg:").append(ie.getMessageWithHide())
-                .append(" Stack:").append(eStackBuffer)
-                .append(" ");
-        if(ie.hasInterThrow()) {
-            buildInterExceptionMsg(ie.getCause(), refType,sb);
-        }
-        sb.append(" }").append(System.lineSeparator());
-    }
-
-    private void buildHiddenExceptionMsg(StringBuilder sb ,Throwable e,Class<?> refType){
-        DisplayException ee = (DisplayException) e;
-        StringBuilder eStackBuffer = ThrowableServant.Instance.makeStackChainBuffer(e,refType);
-
-        sb.append("HiddenException:{ Msg:").append(ee.getMessage())
-                .append(" ").append(eStackBuffer)
-                .append(" ");
-
-        if(ee.hasInterThrow()) {
-            buildInterExceptionMsg(ee.getCause(), refType,sb);
-        }
-        sb.append(" }").append(System.lineSeparator());
-    }
-
-    private void buildInterExceptionMsg(Throwable interExcption,Class<?> refType, StringBuilder sb) {
-//        Throwable t = origin;
-        StringBuilder originCauseBuffer = ThrowableServant.Instance.makeCauseChainBuffer(interExcption);
-        StringBuilder originStackBuffer = ThrowableServant.Instance.makeStackChainBuffer(interExcption, refType);
-        sb.append("SystemException:[Cause:").append(originCauseBuffer)
-                .append(" Stack:").append(originStackBuffer).append(" ]");
     }
 }

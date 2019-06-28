@@ -1,5 +1,6 @@
 package org.albianj.boot.except;
 
+import org.albianj.boot.helpers.StringServant;
 import org.albianj.boot.tags.BundleSharingTag;
 
 /**
@@ -13,8 +14,7 @@ public class DisplayException extends RuntimeException {
     protected String showMsg = null;
     protected String brief;
     protected boolean hasInterThrow = false;
-    protected Class<?> local = null;
-    protected int code = ThrowableServant.Code.Normal;
+    protected Class<?> refType = null;
 
     /**
      * 创建一个新异常
@@ -22,8 +22,8 @@ public class DisplayException extends RuntimeException {
      * @param brief : 简短的异常描述,通常可以包括异常的id,唯一性指标,业务/模块名称等等
      * @param showMsg   : 异常的详细信息,注意:不能包括敏感信息,包括但不限于密码,用户名,手机,身份证号,数据库信息等等
      */
-    public DisplayException(int code, Class<?> local, String brief, String showMsg) {
-        this(code,local, null,brief,showMsg);
+    public DisplayException( Class<?> refType, String brief, String showMsg) {
+        this(refType, null,brief,showMsg);
     }
 
     /**
@@ -33,39 +33,38 @@ public class DisplayException extends RuntimeException {
      * @param showMsg    : 异常的详细信息,注意:不能包括敏感信息,包括但不限于密码,用户名,手机,身份证号,数据库信息等等
      * @param interThrow : 原先程序抛出的异常
      */
-    public DisplayException(int code, Class<?> local, Throwable interThrow, String brief, String showMsg) {
+    public DisplayException(Class<?> refType, Throwable interThrow, String brief, String showMsg) {
         this.brief = brief;
         this.showMsg = showMsg;
         if(null != interThrow) {
             this.hasInterThrow = true;
             this.interThrow = interThrow;
         }
-        this.local = local;
-        this.code = code;
+        this.refType = refType;
     }
 
 
 
-    public int getCode() {
-        return code;
+    public String getShowMsg(){
+        return this.showMsg;
     }
-
     @Override
     public String toString() {
-        return ThrowableServant.Instance.makeMessage(this.brief, this.showMsg, this, this.interThrow).toString();
+        return StringServant.Instance.format("Brief:{0},ShowMsg:{1}",brief,showMsg);
     }
 
     public String getMessage() {
-        return ThrowableServant.Instance.makeMessage(this.brief, this.showMsg, this, this.interThrow).toString();
+        return toString();
     }
 
     public String getLocalizedMessage() {
-        return ThrowableServant.Instance.makeMessage(this.brief, this.showMsg, this, this.interThrow).toString();
+        return toString();
     }
 
     public Throwable getInterThrow(){
         return this.interThrow;
     }
+
     public boolean hasInterThrow(){
         return this.hasInterThrow;
     }

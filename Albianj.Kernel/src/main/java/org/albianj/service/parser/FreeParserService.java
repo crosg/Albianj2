@@ -39,8 +39,9 @@ package org.albianj.service.parser;
 
 import org.albianj.aop.tags.MethodIgnoreProxyTag;
 import org.albianj.service.FreeService;
+import org.albianj.service.IService;
 
-public abstract class FreeParserService extends FreeService implements IParserService {
+public abstract class FreeParserService extends FreeService implements IParserService, IService {
 
     @Override
     @MethodIgnoreProxyTag()

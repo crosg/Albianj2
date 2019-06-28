@@ -67,7 +67,7 @@ public interface IService {
      void afterUnload();
 
     @MethodIgnoreProxyTag()
-     boolean enableProxy();
+     boolean isNeedProxy();
 
     @MethodIgnoreProxyTag()
      IService getRealService();
@@ -100,6 +100,4 @@ public interface IService {
 
     @MethodIgnoreProxyTag()
     void setBundleContext(BundleContext bundleContext);
-
-
 }

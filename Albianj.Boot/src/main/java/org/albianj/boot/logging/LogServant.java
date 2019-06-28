@@ -124,9 +124,9 @@ public class LogServant {
         }
         String msg = StringServant.Instance.format(fmt,objs);
         if(!StringServant.Instance.isNullOrEmptyOrAllSpace(secretMsg)){
-            ThrowableServant.Instance.throwHiddenException(ThrowableServant.Code.Error,refType,e,secretMsg, brief, msg);
+            ThrowableServant.Instance.throwHiddenException(refType,e,secretMsg, brief, msg);
         }
-        ThrowableServant.Instance.throwDisplayException(ThrowableServant.Code.Error,refType,e, brief, msg);
+        ThrowableServant.Instance.throwDisplayException(refType,e, brief, msg);
     }
 
 //    public void addMonitorLog(String sessionId, LoggerLevel level, Class<?> calledClzz, Throwable e,String brief, String fmt, Object... objs) {

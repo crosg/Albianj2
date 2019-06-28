@@ -40,7 +40,7 @@ package org.albianj.service.parser;
 import org.albianj.aop.tags.MethodIgnoreProxyTag;
 import org.albianj.service.IService;
 
-public interface IParserService extends IService {
+public interface IParserService {
     @MethodIgnoreProxyTag()
     void loadConf();
 

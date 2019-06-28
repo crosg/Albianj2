@@ -1,6 +1,6 @@
 package org.albianj.boot;
 
-import org.albianj.boot.except.entry.BootAttribute;
+import org.albianj.boot.entry.BootAttribute;
 import org.albianj.boot.helpers.CollectServant;
 import org.albianj.boot.helpers.OptConvertServant;
 import org.albianj.boot.helpers.StringServant;
@@ -8,7 +8,7 @@ import org.albianj.boot.helpers.XmlParserContext;
 import org.albianj.boot.logging.ILoggerAttribute;
 import org.albianj.boot.logging.LogServant;
 import org.albianj.boot.logging.impl.LoggerAttribute;
-import org.albianj.boot.except.entry.BundleAttribute;
+import org.albianj.boot.entry.BundleAttribute;
 import org.w3c.dom.Node;
 
 import java.util.HashMap;
