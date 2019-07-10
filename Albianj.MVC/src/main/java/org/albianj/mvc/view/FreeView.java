@@ -1,11 +1,11 @@
 package org.albianj.mvc.view;
 
-import org.albianj.boot.except.ThrowableServant;
 import org.albianj.datetime.AlbianDateTimeHelper;
-import org.albianj.boot.except.DisplayException;
+import org.albianj.except.AlbianExternalException;
+import org.albianj.except.ExceptionUtil;
 import org.albianj.io.Path;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.mvc.*;
 import org.albianj.mvc.config.AlbianHttpConfigurtion;
 import org.albianj.mvc.config.FileUploadConfigurtion;
@@ -80,14 +80,14 @@ public abstract class FreeView implements IView {
                 __AlbianSubmitClientToken = getAttributeValue("__AlbianSumbitToken");
                 Object oToken = getSession("__AlbianSumbitToken");
                 if (Validate.isNullOrEmptyOrAllSpace(__AlbianSubmitClientToken) || null == oToken) {
-                    AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianRunningLoggerName,
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianMvf,
                             AlbianModuleType.AlbianMvf.getThrowInfo(),
                             "the same form submit again.server token:%s,submit token:%s.",
                             oToken, __AlbianSubmitClientToken);
                 }
                 if (!__AlbianSubmitClientToken.equals(oToken.toString())) {
-                    AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianRunningLoggerName,
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianMvf,
                             AlbianModuleType.AlbianMvf.getThrowInfo(),
                             "the same form submit again.server token:%s,submit token:%s.",
@@ -286,7 +286,7 @@ public abstract class FreeView implements IView {
         } else if(cls.equals(java.sql.Timestamp.class)) {
             long ts = AlbianDateTimeHelper.toTimeMillis(o.toString());
             if(0 == ts) {
-                throw new DisplayException(ThrowableServant.ExceptForError,
+                throw new AlbianExternalException(ExceptionUtil.ExceptForError,
                         "Cast fail.",
                         "cast string -> ",o.toString()," to sql.Timestamp fail.");
             }

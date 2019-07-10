@@ -10,18 +10,18 @@ import org.albianj.persistence.context.dactx.IQueryContext;
 import org.albianj.persistence.object.LogicalOperation;
 import org.albianj.persistence.object.filter.FilterExpression;
 import org.albianj.persistence.object.filter.IChainExpression;
-import org.albianj.persistence.service.IDataAccessService;
+import org.albianj.persistence.service.IAlbianDataAccessService;
 import org.albianj.persistence.service.LoadType;
-import org.albianj.service.ServiceFieldTag;
-import org.albianj.service.ServiceFieldType;
-import org.albianj.service.ServiceTag;
-import org.albianj.service.FreeService;
+import org.albianj.service.AlbianServiceFieldRant;
+import org.albianj.service.AlbianServiceFieldType;
+import org.albianj.service.AlbianServiceRant;
+import org.albianj.service.FreeAlbianService;
 
-@ServiceTag(Id = "UTF8M64Service")
-public class UTF8M64Service extends FreeService implements IUTF8M64Service {
+@AlbianServiceRant(Id = "UTF8M64Service")
+public class UTF8M64Service extends FreeAlbianService implements IUTF8M64Service {
 
-    @ServiceFieldTag(Type = ServiceFieldType.Ref, Value = "DataAccessService")
-    private IDataAccessService da;
+    @AlbianServiceFieldRant(Type = AlbianServiceFieldType.Ref, Value = "AlbianDataAccessService")
+    private IAlbianDataAccessService da;
 
     @Override
     public boolean saveUtf8M64(int id, String v) {

@@ -38,7 +38,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.persistence.impl.db;
 
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.context.IPersistenceCompensateNotify;
 import org.albianj.persistence.context.IWriterJob;
 import org.albianj.persistence.context.WriterJobLifeTime;
@@ -62,11 +62,11 @@ public abstract class FreePersistenceTransactionClusterScope implements IPersist
             writerJob.setWriterJobLifeTime(WriterJobLifeTime.Commited);
         } catch (Exception e) {
             isSuccess = false;
-            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                     writerJob.getId(), AlbianLoggerLevel.Error, e,
                     "Execute the job is fail.");
             sbMsg.append("Execute job is error.Job lifetime is:").append(writerJob.getWriterJobLifeTime())
-                    .append(",exception showMsg:").append(e.getMessage()).append(",Current task:")
+                    .append(",exception msg:").append(e.getMessage()).append(",Current task:")
                     .append(writerJob.getCurrentStorage()).append(",job id:").append(writerJob.getId());
 
             try {
@@ -86,7 +86,7 @@ public abstract class FreePersistenceTransactionClusterScope implements IPersist
                             this.exceptionHandler(writerJob);
                         } catch (Exception exc) {
                             isAutoRollbackSuccess = false;
-                            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                                     writerJob.getId(), AlbianLoggerLevel.Error, exc,
                                     "auto rollback  the job is fail.");
                         }
@@ -96,7 +96,7 @@ public abstract class FreePersistenceTransactionClusterScope implements IPersist
                                 isManualRollbackSuccess = this.exceptionManualRollback(writerJob);
                             } catch (Exception exc) {
                                 isManualRollbackSuccess = false;
-                                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                                         writerJob.getId(), AlbianLoggerLevel.Error, exc,
                                         "manual rollback the job is fail.");
                             }
@@ -110,7 +110,7 @@ public abstract class FreePersistenceTransactionClusterScope implements IPersist
                 }
 
             } catch (Exception exc) {
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, exc,
                         "rollback the query the job is fail.");
             }
@@ -128,7 +128,7 @@ public abstract class FreePersistenceTransactionClusterScope implements IPersist
                     }
                 }
             } catch (Exception exc) {
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, exc,
                         "Execute the compensate callback of job job is fail.");
             }
@@ -137,7 +137,7 @@ public abstract class FreePersistenceTransactionClusterScope implements IPersist
             try {
                 unLoadExecute(writerJob);
             } catch (Exception exc) {
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, exc,
                         "unload the job is fail.");
             }
@@ -147,7 +147,7 @@ public abstract class FreePersistenceTransactionClusterScope implements IPersist
                     writerJob.getNotifyCallback().notice(isSuccess, sbMsg.toString(),
                             writerJob.getNotifyCallbackObject());
                 } catch (Exception exc) {
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                             writerJob.getId(), AlbianLoggerLevel.Error, exc,
                             "Execute the notice of job is fail.");
                 }

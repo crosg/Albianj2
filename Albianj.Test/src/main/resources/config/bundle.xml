@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Bundle>
-    <Name>BundleName</Name>
-    <MachineKey>key</MachineKey>
-    <RuntimeLevel>Debug</RuntimeLevel>
-    <Logger Name="Runtime" Path="" Level="Debug" Console="true"/>
-</Bundle>

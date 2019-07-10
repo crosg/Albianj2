@@ -38,7 +38,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.persistence.impl.db;
 
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.context.IPersistenceCompensateNotify;
 import org.albianj.persistence.context.IWriterJob;
 import org.albianj.persistence.context.IWriterTask;
@@ -71,11 +71,11 @@ public class PersistenceCompensateNotify implements IPersistenceCompensateNotify
         try {
             sb = writerJobCommandToString(job);
         } catch (AlbianDataServiceException e) {
-            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                     job.getId(), AlbianLoggerLevel.Error, e,
                     "send persistence notify is fail.");
         }
-        AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                 job.getId(), AlbianLoggerLevel.Error,
                 "the job is not compensate then the all sql is:%s", sb.toString());
     }

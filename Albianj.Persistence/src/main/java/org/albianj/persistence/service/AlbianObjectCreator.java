@@ -1,17 +1,16 @@
 package org.albianj.persistence.service;
 
-import org.albianj.boot.BundleContext;
-import org.albianj.boot.loader.AlbianClassLoader;
+import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.object.IAlbianEntityFieldAttribute;
 import org.albianj.persistence.object.IAlbianObject;
 import org.albianj.persistence.object.IAlbianObjectAttribute;
 import org.albianj.runtime.AlbianModuleType;
-import org.albianj.service.BuiltinNames;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -24,18 +23,17 @@ import java.util.Set;
 public class AlbianObjectCreator {
 
 
-    public static IAlbianObject newInstance(String sessionId, BundleContext bundleContext, String itf) {
-    AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(BuiltinNames.Conf.Persistence);
-    IAlbianObjectAttribute attr = entityMetadata.getEntityMetadata(itf);
+    public static IAlbianObject newInstance(String sessionId, String itf) {
+        IAlbianObjectAttribute attr = AlbianEntityMetadata.getEntityMetadata(itf);
         if (null == attr) {
-            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error,
                     "can not found interface:%s attribute,please lookup persistence config.", itf);
             throw new RuntimeException("no found interface attribute.");
         }
         String className = attr.getType();
         if (Validate.isNullOrEmptyOrAllSpace(className)) {
-            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error,
                     " can not found impl-class for interface:%s,please lookup persistence config.", itf);
             throw new RuntimeException("no implements class.");
@@ -44,33 +42,33 @@ public class AlbianObjectCreator {
         try {
             Class<?> itfs = AlbianClassLoader.getInstance().loadClass(itf);
             if (!itfs.isInterface()) {
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         sessionId, AlbianLoggerLevel.Error,
                         "%s in not a interface.", itf);
                 throw new RuntimeException("no found interface.");
             }
             if (!IAlbianObject.class.isAssignableFrom(itfs)) {
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         sessionId, AlbianLoggerLevel.Error,
                         "%s in not a interface.", itf);
                 throw new RuntimeException("interface inherit error.");
             }
             cls = AlbianClassLoader.getInstance().loadClass(className);
             if (null == cls) {
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         sessionId, AlbianLoggerLevel.Error,
                         "class:%s is not found.", className);
                 throw new RuntimeException("not found class.");
 
             }
             if (!IAlbianObject.class.isAssignableFrom(cls)) {
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         sessionId, AlbianLoggerLevel.Error,
                         "class:%s is not extends from IAlbianObject.", className);
                 throw new RuntimeException("class inherit error.");
             }
             if (!itfs.isAssignableFrom(cls)) {
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         sessionId, AlbianLoggerLevel.Error,
                         "class:%s is not extends from interface:%s.", className, itf);
                 throw new RuntimeException("class inherit error.");
@@ -78,7 +76,7 @@ public class AlbianObjectCreator {
             IAlbianObject obj = (IAlbianObject) cls.newInstance();
             return obj;
         } catch (Exception e) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "class:%s is not found.", className);
@@ -87,8 +85,8 @@ public class AlbianObjectCreator {
         return null;
     }
 
-    public static IAlbianObject newInstance(String sessionId, BundleContext bundleContext, Class<? extends IAlbianObject> clazz) {
-        return newInstance(sessionId,bundleContext, clazz.getName());
+    public static IAlbianObject newInstance(String sessionId, Class<? extends IAlbianObject> clazz) {
+        return newInstance(sessionId, clazz.getName());
     }
 
     public static void copyObject(IAlbianObject dest,IAlbianObject src){
@@ -103,7 +101,7 @@ public class AlbianObjectCreator {
      *                      1. !fielename，field前加!,表示此字段不被复制
      *                      2. destFieldName=secFieldName，表示src中的field和dest中的对应复制
      */
-    public static void copyObject(BundleContext bundleContext, IAlbianObject dest, IAlbianObject src, String[] ctrlFields){
+    public static void copyObject(IAlbianObject dest,IAlbianObject src,String[] ctrlFields){
 
         Set<String> ignoreFields = new HashSet();
         Map<String,String>  rltFields = new HashMap<>();
@@ -121,9 +119,8 @@ public class AlbianObjectCreator {
 
         Class destClzz = dest.getClass();
         Class srcClzz = src.getClass();
-        AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(BuiltinNames.Conf.Persistence);
-        IAlbianObjectAttribute destObjAttr = entityMetadata.getEntityMetadataByType(destClzz);
-        IAlbianObjectAttribute srcObjAttr = entityMetadata.getEntityMetadataByType(srcClzz);
+        IAlbianObjectAttribute destObjAttr = AlbianEntityMetadata.getEntityMetadataByType(destClzz);
+        IAlbianObjectAttribute srcObjAttr = AlbianEntityMetadata.getEntityMetadataByType(srcClzz);
         Map<String , IAlbianEntityFieldAttribute> destFieldAttrs = destObjAttr.getFields();
         Map<String , IAlbianEntityFieldAttribute> srcFieldAttrs = srcObjAttr.getFields();
 

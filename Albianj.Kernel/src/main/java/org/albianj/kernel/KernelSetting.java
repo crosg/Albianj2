@@ -49,7 +49,7 @@ public class KernelSetting {
     private static String appName = null;
     private static int threadPoolCoreSize = 5;
     private static int threadPoolMaxSize = 20;
-    private static AlbianLevel level = AlbianLevel.Debug;
+    private static AlbianLevel level = AlbianLevel.Release;
     private static AlbianStartupMode mode = AlbianStartupMode.Normal;
     private static String fpath = "../config/";
     private static String kernelpath = "../config/";

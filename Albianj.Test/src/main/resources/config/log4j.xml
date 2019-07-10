@@ -24,7 +24,7 @@
     <!--&lt;!&ndash; 请配置你的业务名称&ndash;&gt;-->
     <!--<param name="prefix" value="prefix" />-->
     <!--<param name="Format" value="HHmmss" />   -->
-    <!--<param name="Suffix" value="running.addLog" />-->
+    <!--<param name="Suffix" value="running.log" />-->
     <!--<param name="encoding" value="UTF-8" />-->
     <!--&lt;!&ndash; 请配置你的log存放的文件夹路径，和上面的File保持一致&ndash;&gt;-->
     <!--<param name="path" value="logs" />-->
@@ -82,7 +82,7 @@
     <!--&lt;!&ndash; 请配置你的业务名称&ndash;&gt;-->
     <!--<param name="prefix" value="prefix" />-->
     <!--<param name="Format" value="HHmmss" />-->
-    <!--<param name="Suffix" value="sql.addLog" />-->
+    <!--<param name="Suffix" value="sql.log" />-->
     <!--<param name="encoding" value="UTF-8" />-->
     <!--&lt;!&ndash; 请配置你的log存放的文件夹路径，和上面的File保持一致&ndash;&gt;-->
     <!--<param name="path" value="logs" />-->

@@ -1,7 +1,7 @@
 package org.albianj.persistence.impl.db;
 
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.context.IInternalManualCommand;
 import org.albianj.persistence.context.IManualCommand;
 import org.albianj.persistence.context.IManualContext;
@@ -11,7 +11,7 @@ import org.albianj.persistence.impl.toolkit.ListConvert;
 import org.albianj.persistence.object.IRunningStorageAttribute;
 import org.albianj.persistence.object.IStorageAttribute;
 import org.albianj.persistence.object.RunningStorageAttribute;
-import org.albianj.persistence.service.IStorageParserService;
+import org.albianj.persistence.service.IAlbianStorageParserService;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
@@ -32,7 +32,7 @@ public class ManualTransactionScope extends FreeManualTransactionScope {
     protected void preExecute(IManualContext mctx) throws AlbianDataServiceException {
         List<IManualCommand> mcs = mctx.getCommands();
         List<IInternalManualCommand> imcs = mctx.getInternalCommands();
-        IStorageParserService asps = AlbianServiceRouter.getSingletonService(IStorageParserService.class, IStorageParserService.Name);
+        IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
         IStorageAttribute storage = asps.getStorageAttribute(mctx.getStorageName());
         if (Validate.isNullOrEmptyOrAllSpace(mctx.getDatabaseName())) {
             mctx.setDatabaseName(storage.getDatabase());
@@ -65,7 +65,7 @@ public class ManualTransactionScope extends FreeManualTransactionScope {
                 statements.add(prepareStatement);
             }
         } catch (SQLException e) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     mctx.getSessionId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "make manual sql command with mctx and the command is empty or null");
@@ -83,7 +83,7 @@ public class ManualTransactionScope extends FreeManualTransactionScope {
             for (int i = 0; i < statements.size(); i++) {
                 try {
                     IManualCommand cmd = cmds.get(i);
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                             mctx.getSessionId(), AlbianLoggerLevel.Info,
                             "storage:%s,sqltext:%s,parars:%s.",
                             mctx.getStorageName(), cmd.getCommandText(), ListConvert.toString(cmd.getCommandParameters()));
@@ -91,7 +91,7 @@ public class ManualTransactionScope extends FreeManualTransactionScope {
                     rcs.add(rc);
                 } catch (SQLException e) {
 
-                    AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                             mctx.getSessionId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                             AlbianModuleType.AlbianPersistence.getThrowInfo(),
                             "execute manual command to storage:%s dtabase:%s is fail.",
@@ -111,7 +111,7 @@ public class ManualTransactionScope extends FreeManualTransactionScope {
         try {
             mctx.getConnection().commit();
         } catch (SQLException e) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     mctx.getSessionId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "commit manual command to storage:%s database:%s is fail.",
@@ -124,7 +124,7 @@ public class ManualTransactionScope extends FreeManualTransactionScope {
         try {
             mctx.getConnection().rollback();
         } catch (SQLException e) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     mctx.getSessionId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "rollback manual command to storage:%s database:%s is fail.",
@@ -143,7 +143,7 @@ public class ManualTransactionScope extends FreeManualTransactionScope {
                     statement.close();
                 } catch (Exception e) {
                     isThrow = true;
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                             mctx.getSessionId(), AlbianLoggerLevel.Error, e,
                             "clear the statement to storage:%s database:%s is fail.",
                             mctx.getStorageName(), mctx.getDatabaseName());
@@ -152,7 +152,7 @@ public class ManualTransactionScope extends FreeManualTransactionScope {
             mctx.getConnection().close();
         } catch (Exception exc) {
             isThrow = true;
-            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                     mctx.getSessionId(), AlbianLoggerLevel.Error, exc,
                     "close the connect to storage:%s database:%s is fail.",
                     mctx.getStorageName(), mctx.getDatabaseName());

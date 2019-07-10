@@ -5,18 +5,18 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.albianj.datetime.AlbianDateTime;
 import org.albianj.io.Path;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.mvc.ActionResult;
 import org.albianj.mvc.HttpActionMethod;
 import org.albianj.mvc.HttpContext;
-import org.albianj.mvc.service.IMVCConfigurtionService;
-import org.albianj.mvc.service.IResourceService;
 import org.albianj.mvc.view.View;
 import org.albianj.mvc.config.AlbianHttpConfigurtion;
 import org.albianj.mvc.config.ViewActionConfigurtion;
 import org.albianj.mvc.config.ViewConfigurtion;
 import org.albianj.mvc.server.IServerLifeCycle;
-import org.albianj.mvc.service.IBrushingService;
+import org.albianj.mvc.service.IAlbianBrushingService;
+import org.albianj.mvc.service.IAlbianMVCConfigurtionService;
+import org.albianj.mvc.service.IAlbianResourceService;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.text.StringHelper;
 import org.albianj.verify.Validate;
@@ -42,14 +42,14 @@ public class AlbianWebServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         try {
-            IMVCConfigurtionService albianMVCConfigurtionService = AlbianServiceRouter.getSingletonService(IMVCConfigurtionService.class,
-                    IMVCConfigurtionService.Name);
+            IAlbianMVCConfigurtionService albianMVCConfigurtionService = AlbianServiceRouter.getSingletonService(IAlbianMVCConfigurtionService.class,
+                    IAlbianMVCConfigurtionService.Name);
             IServerLifeCycle server = albianMVCConfigurtionService.getHttpConfigurtion().getServerLifeCycle();
             if(null != server){
                 server.ServerStartup(albianMVCConfigurtionService.getHttpConfigurtion());
             }
         }catch (Exception e){
-            AlbianServiceRouter.throwException("WebStartup", ILoggerService2.AlbianRunningLoggerName,
+            AlbianServiceRouter.throwException("WebStartup",IAlbianLoggerService2.AlbianRunningLoggerName,
                     "Startup web server fail.",e);
         }
         super.init();
@@ -78,8 +78,8 @@ public class AlbianWebServlet extends HttpServlet {
         AlbianHttpConfigurtion c = null;
         do {
             try {
-                IMVCConfigurtionService albianMVCConfigurtionService = AlbianServiceRouter.getSingletonService(IMVCConfigurtionService.class,
-                        IMVCConfigurtionService.Name);
+                IAlbianMVCConfigurtionService albianMVCConfigurtionService = AlbianServiceRouter.getSingletonService(IAlbianMVCConfigurtionService.class,
+                        IAlbianMVCConfigurtionService.Name);
 
                 c = albianMVCConfigurtionService.getHttpConfigurtion();
                 resp.setCharacterEncoding(c.getCharset());
@@ -90,22 +90,22 @@ public class AlbianWebServlet extends HttpServlet {
                         c);
                 sessionId = ctx.getHttpSessionId();
 
-                IBrushingService abs = AlbianServiceRouter.getSingletonService(IBrushingService.class, IBrushingService.Name);
+                IAlbianBrushingService abs = AlbianServiceRouter.getSingletonService(IAlbianBrushingService.class, IAlbianBrushingService.Name);
                 if (null != abs && !abs.consume(req)) {
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                             "client is flushing the web service.so donot back data to client.");
                     isError = true;
                     break;
                 }
 
-                IResourceService ars = AlbianServiceRouter.getSingletonService(IResourceService.class, IResourceService.Name);
+                IAlbianResourceService ars = AlbianServiceRouter.getSingletonService(IAlbianResourceService.class, IAlbianResourceService.Name);
                 if (ars.isResourceRequest(ctx)) {
                     try {
                         ars.renderResource(ctx);
                         return;
                     } catch (IOException e) {
-                        AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                                 ctx.getHttpSessionId(), AlbianLoggerLevel.Error, e,
                                 "render resource is fail.");
                         isError = true;
@@ -113,7 +113,7 @@ public class AlbianWebServlet extends HttpServlet {
                     }
                 }
 
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                         ctx.getHttpSessionId(), AlbianLoggerLevel.Info,
                         "%s request=%s|IP=%s|time=%s|paras=%s",
                         isPost ? "POST" : "GET",
@@ -132,7 +132,7 @@ public class AlbianWebServlet extends HttpServlet {
 
                 Map<String, ViewConfigurtion> templates = c.getTemplates();
                 if (null == templates) {
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                             "there is not template in the webapps.");
                     isNotFound = true;
@@ -146,7 +146,7 @@ public class AlbianWebServlet extends HttpServlet {
                     pc = templates.get(ctx.getTemplateFullName());
                 }
                 if (null == pc) {
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                             "not found the mapping class by template:%s.",
                             ctx.getTemplateFullName());
@@ -156,7 +156,7 @@ public class AlbianWebServlet extends HttpServlet {
                 ctx.setPageConfigurtion(pc);
                 Class<?> cla = pc.getRealClass();
                 if (!View.class.isAssignableFrom(cla)) {
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                             "the mapping class:%s is not base-on View,template -> %s.",
                             pc.getFullClassName(), ctx.getTemplateFullName());
@@ -169,7 +169,7 @@ public class AlbianWebServlet extends HttpServlet {
                     page = pc.getRealClass().newInstance();
                     page.kinit(ctx);
                 } catch (InstantiationException | IllegalAccessException e) {
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error, e,
                             "new instance by the mapping class:%s is fail.template -> %s.",
                             pc.getFullClassName(), ctx.getTemplateFullName());
@@ -180,7 +180,7 @@ public class AlbianWebServlet extends HttpServlet {
                 if (page.isMultiActions()) {
                     String actionName = page.getCurrentActionName();
                     if (Validate.isNullOrEmptyOrAllSpace(actionName)) {
-                        AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                                 ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                                 "not get the actionof mulit-actions of view class:%s is fail.template -> %s.then use default:execute.",
                                 pc.getFullClassName(), ctx.getTemplateFullName());
@@ -206,7 +206,7 @@ public class AlbianWebServlet extends HttpServlet {
                     case ActionResult.InnerError: {
                         isError = true;
                         Object rc = ar.getResult();
-                        AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                                 ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                                 "inner error:%s in the action:%s from instance of class:%s is fail.template -> %s.",
                                 rc, ctx.getActionName(), pc.getFullClassName(), ctx.getTemplateFullName());
@@ -215,7 +215,7 @@ public class AlbianWebServlet extends HttpServlet {
                     case ActionResult.Json: {
                         if (!isAjaxRequest) {
                             isError = true;
-                            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                                     ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                                     "the result json is error not in ajax-action:%s from instance of class:%s.template -> %s.",
                                     ctx.getActionName(), pc.getFullClassName(), ctx.getTemplateFullName());
@@ -250,7 +250,7 @@ public class AlbianWebServlet extends HttpServlet {
 
                 Map<String, ViewActionConfigurtion> actions = pc.getActions();
                 if (null == actions) {
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                             "there is not actions by class -> %s for template -> %s in the webapps.",
                             pc.getFullClassName(), ctx.getTemplateFullName());
@@ -259,7 +259,7 @@ public class AlbianWebServlet extends HttpServlet {
                 }
                 ViewActionConfigurtion pac = actions.get(ctx.getActionName());
                 if (null == pac) {
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                             "there is not action attribute by class -> %s for template -> %s in the webapps.",
                             pc.getFullClassName(), ctx.getTemplateFullName());
@@ -267,7 +267,7 @@ public class AlbianWebServlet extends HttpServlet {
                     break;
                 }
                 if (pac.getHttpActionMethod() != ham) {
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
 
                             "http request action method is not require."
@@ -279,7 +279,7 @@ public class AlbianWebServlet extends HttpServlet {
                 }
                 Method m = pac.getMethod();
                 if (null == m) {
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                             "there is not action by class -> %s for template -> %s in the webapps.",
                             pc.getFullClassName(), ctx.getTemplateFullName());
@@ -292,7 +292,7 @@ public class AlbianWebServlet extends HttpServlet {
                     result = (ActionResult) m.invoke(page, ctx);
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     // TODO Auto-generated catch block
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                             ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
 
                             e, "call action:%s from instance of class:%s is fail.template -> %s.",
@@ -316,7 +316,7 @@ public class AlbianWebServlet extends HttpServlet {
                     case ActionResult.InnerError: {
                         isError = true;
                         Object rc = result.getResult();
-                        AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                                 ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
 
                                 "inner error:%s in the action:%s from instance of class:%s is fail.template -> %s.",
@@ -326,7 +326,7 @@ public class AlbianWebServlet extends HttpServlet {
                     case ActionResult.Json: {
                         if (!isAjaxRequest) {
                             isError = true;
-                            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                                     ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
 
                                     "the result json is error not in ajax-action:%s from instance of class:%s.template -> %s.",
@@ -372,7 +372,7 @@ public class AlbianWebServlet extends HttpServlet {
 
             } catch (Exception t) {
                 String path = req.getRequestURI();
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                         sessionId, AlbianLoggerLevel.Error,
                         t, "request to url->%s with method:%s is fail.",
                         path, isPost ? "POST" : "GET");

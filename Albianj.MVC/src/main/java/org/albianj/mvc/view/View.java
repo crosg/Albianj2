@@ -2,15 +2,15 @@ package org.albianj.mvc.view;
 
 import org.albianj.io.Path;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.mvc.HttpContext;
 import org.albianj.mvc.NotHttpActionAttribute;
 import org.albianj.mvc.NotHttpFieldAttribute;
 import org.albianj.mvc.config.ViewConfigurtion;
 import org.albianj.mvc.config.ViewFieldConfigurtion;
 import org.albianj.mvc.lang.HttpHelper;
-import org.albianj.mvc.service.IFileUploadService;
-import org.albianj.mvc.service.ITemplateService;
+import org.albianj.mvc.service.IAlbianFileUploadService;
+import org.albianj.mvc.service.IAlbianTemplateService;
 import org.albianj.mvc.service.TemplateException;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.text.StringHelper;
@@ -36,15 +36,15 @@ public abstract class View extends FreeView {
     @NotHttpActionAttribute()
     public void kBeforeAction(ViewConfigurtion pc) {
         if (ctx.isMultipartRequest()) {
-            IFileUploadService fus = AlbianServiceRouter.getSingletonService(
-                    IFileUploadService.class,
-                    IFileUploadService.Name);
+            IAlbianFileUploadService fus = AlbianServiceRouter.getSingletonService(
+                    IAlbianFileUploadService.class,
+                    IAlbianFileUploadService.Name);
             try {
                 fus.parseRequest(ctx);
                 this.setFileItems(ctx.getFileItems());// for cleanup
             } catch (FileUploadException | IOException e) {
                 // TODO Auto-generated catch block
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                         ctx.getHttpSessionId(), AlbianLoggerLevel.Error, e,
                         "new instance by the mapping class:%s is fail.template -> %s.",
                         pc.getFullClassName(), ctx.getTemplateFullName());
@@ -64,7 +64,7 @@ public abstract class View extends FreeView {
                         try {
                             realValue = toBoxValue(type, value);
                         }catch (Exception e){
-                            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                                     ctx.getHttpSessionId(), AlbianLoggerLevel.Error, e,
                                     "set field -> %s in mapping class:%s is fail.template -> %s.",
                                     f.getBindingName(),pc.getFullClassName(), ctx.getTemplateFullName());
@@ -79,7 +79,7 @@ public abstract class View extends FreeView {
                 }
             }
         } catch (Exception e) {
-            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     ctx.getHttpSessionId(), AlbianLoggerLevel.Error, e,
                     "box value from request to Object and then for class:%s is fail.template -> %s.",
                     pc.getFullClassName(), ctx.getTemplateFullName());
@@ -102,7 +102,7 @@ public abstract class View extends FreeView {
                 }
             }
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     ctx.getHttpSessionId(), AlbianLoggerLevel.Error, e,
                     "auto mapping fields to response by class  -> %s is fail.from template -> %s.",
                     pc.getFullClassName(), ctx.getTemplateFullName());
@@ -127,8 +127,8 @@ public abstract class View extends FreeView {
     @NotHttpActionAttribute()
     public StringBuffer render() {
 
-        ITemplateService ats = AlbianServiceRouter.getSingletonService(ITemplateService.class,
-                ITemplateService.Name);
+        IAlbianTemplateService ats = AlbianServiceRouter.getSingletonService(IAlbianTemplateService.class,
+                IAlbianTemplateService.Name);
         Map<String, Object> model = getModel();
         this.fbinding("HttpHelper", HttpHelper.class);
         model.put("CurrentContext", ctx);
@@ -137,7 +137,7 @@ public abstract class View extends FreeView {
         try {
             String templateFullname = Path.joinWithFilename(ctx.getTemplateFullName(), ctx.getHttpConfigurtion().getRootPath());
             if (!Path.isExist(templateFullname)) {
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                         ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                         "not found the template -> %s.",
                         ctx.getTemplateFullName());
@@ -145,7 +145,7 @@ public abstract class View extends FreeView {
             }
             ats.renderTemplate(ctx.getTemplateFullName(), model, this.getFunctions(), sw);
         } catch (IOException | TemplateException e) {
-            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianRunningLoggerName,
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
                     ctx.getHttpSessionId(), AlbianLoggerLevel.Error,
                     "render the template -> %s is fail.",
                     ctx.getTemplateFullName());

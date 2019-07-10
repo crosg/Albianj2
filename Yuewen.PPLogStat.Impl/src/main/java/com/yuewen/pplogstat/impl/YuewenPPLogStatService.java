@@ -2,12 +2,12 @@ package com.yuewen.pplogstat.impl;
 
 import com.qq.monitor.logstat.PPLogStatApi;
 import org.albianj.kernel.KernelSetting;
-import org.albianj.service.ServiceTag;
-import org.albianj.service.FreeService;
+import org.albianj.service.AlbianServiceRant;
+import org.albianj.service.FreeAlbianService;
 import org.albianj.service.parser.AlbianParserException;
 
-@ServiceTag(Id = IYuewenPPLogStatService.Name, Interface = IYuewenPPLogStatService.class)
-public class YuewenPPLogStatService extends FreeService implements IYuewenPPLogStatService {
+@AlbianServiceRant(Id = IYuewenPPLogStatService.Name, Interface = IYuewenPPLogStatService.class)
+public class YuewenPPLogStatService extends FreeAlbianService implements IYuewenPPLogStatService {
 
     public String getServiceName() {
         return Name;
@@ -17,7 +17,7 @@ public class YuewenPPLogStatService extends FreeService implements IYuewenPPLogS
     public void init() throws AlbianParserException {
         // TODO Auto-generated method stub
         PPLogStatApi.setAppName(KernelSetting.getAppName());
-        super.loadConf();
+        super.init();
     }
 
     @Override

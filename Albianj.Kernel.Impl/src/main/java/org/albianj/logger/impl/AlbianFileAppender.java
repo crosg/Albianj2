@@ -4,7 +4,6 @@ import org.albianj.datetime.AlbianDateTime;
 import org.albianj.kernel.KernelSetting;
 import org.apache.log4j.FileAppender;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -12,7 +11,7 @@ import java.io.IOException;
  */
 public class AlbianFileAppender extends FileAppender {
     protected String format = "yyyyMMddHHmmss";
-    protected String suffix = "addLog";
+    protected String suffix = "log";
     protected String prefix = "albianj";
     protected String path = "logs";
 
@@ -52,10 +51,10 @@ public class AlbianFileAppender extends FileAppender {
     public synchronized void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize)
             throws IOException {
         fileName = path;
-        if (fileName.endsWith(File.separator)) {
-            fileName += AlbianDateTime.getDateString() + File.separator;
+        if (fileName.endsWith(KernelSetting.getPathSep())) {
+            fileName += AlbianDateTime.getDateString() + KernelSetting.getPathSep();
         } else {
-            fileName += File.separator + AlbianDateTime.getDateString() + KernelSetting.getPathSep();
+            fileName += KernelSetting.getPathSep() + AlbianDateTime.getDateString() + KernelSetting.getPathSep();
         }
 
         if (fileName.endsWith(this.suffix)) {

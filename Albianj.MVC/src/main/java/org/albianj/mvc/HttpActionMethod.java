@@ -1,6 +1,6 @@
 package org.albianj.mvc;
 
-import org.albianj.boot.tags.CommentsTag;
+import org.albianj.comment.Comments;
 
 /**
  * Created by xuhaifeng on 16/12/11.
@@ -8,6 +8,6 @@ import org.albianj.boot.tags.CommentsTag;
 public enum HttpActionMethod {
     Get,
     Post,
-    @CommentsTag("一般只会用在查询翻页，表单保存提交禁止使用")
+    @Comments("一般只会用在查询翻页，表单保存提交禁止使用")
     All,
 }

@@ -39,7 +39,7 @@ package org.albianj.kernel.impl;
 
 import org.albianj.kernel.IAlbianTransmitterService;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
 
@@ -59,8 +59,8 @@ public class ServiceThread extends Thread {
                 abs.doStart();
             }
         } catch (Exception e) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianRunningLoggerName,
-                    ILoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianKernel,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
+                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianKernel,
                     "Transmitter service is error.", "sync startup service is fail.");
 
         }

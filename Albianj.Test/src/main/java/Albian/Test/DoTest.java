@@ -1,26 +1,32 @@
 package Albian.Test;
 
+import Albian.Core.Service.AlbianServiceHub;
 import Albian.Test.Services.IOrgUserService;
+import Albian.Test.Services.IUTF8M64Service;
 import Albian.Test.Services.IUserService;
+import com.mysql.jdbc.interceptors.SessionAssociationInterceptor;
 import org.albianj.loader.AlbianBootService;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.AlbianLoggerLevel;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.logger.monitor.AlbianMonitorData;
-import org.albianj.logger.monitor.IMonitorLoggerService;
+import org.albianj.logger.monitor.IAlbianMonitorLoggerService;
 import org.albianj.service.AlbianServiceRouter;
+
+import java.util.Date;
 
 public class DoTest {
     public static void main(String[] argv) {
         try {
             AlbianBootService.start(argv[0]);
 
-            ILoggerService2 logServ = AlbianServiceRouter.getLogger2();
-//            logServ.addLog("AlbianMonitorLogger","session", LoggerLevel.Debug,
+            IAlbianLoggerService2 logServ = AlbianServiceRouter.getLogger2();
+//            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
 //                    "wolaile");
 //            Thread.sleep(65* 1000);
-//            logServ.addLog("AlbianMonitorLogger","session", LoggerLevel.Debug,
+//            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
 //                    "wolaile2");
 
-            IMonitorLoggerService mlogServ = AlbianServiceRouter.getSingletonService(IMonitorLoggerService.class, IMonitorLoggerService.Name);
+            IAlbianMonitorLoggerService mlogServ = AlbianServiceRouter.getSingletonService(IAlbianMonitorLoggerService.class,IAlbianMonitorLoggerService.Name);
             mlogServ.addMonitorLog("session",
                     AlbianMonitorData.build()
                             .setAppName("appname").setBizExtend("bizExtend")
@@ -40,7 +46,7 @@ public class DoTest {
 //            System.out.println(v1);
 
 
-//            final IStorageParserService stgService = AlbianServiceRouter.getSingletonService(IStorageParserService.class,IStorageParserService.Name);
+//            final IAlbianStorageParserService stgService = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class,IAlbianStorageParserService.Name);
 //            for( int i = 0; i < 1200; i++){
 //                new Thread(new Runnable(){
 //                    @Override
@@ -60,8 +66,8 @@ public class DoTest {
 //                            e.printStackTrace();
 //                        }
 //                        if(null == conn){
-//                            AlbianServiceRouter.getLogger2().addLog(ILoggerService2.AlbianSqlLoggerName,
-//                                    "DBPOOLMAIN", LoggerLevel.Info,
+//                            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+//                                    "DBPOOLMAIN", AlbianLoggerLevel.Info,
 //                                    "get conn is null.");
 //                        } else {
 //                            stgService.returnConnection("ses", runStgAttr, conn);

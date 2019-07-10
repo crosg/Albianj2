@@ -38,9 +38,8 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.persistence.impl.context;
 
 import org.albianj.argument.RefArg;
-import org.albianj.boot.BundleContext;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.context.IReaderJob;
 import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.IPersistenceCommand;
@@ -52,7 +51,6 @@ import org.albianj.persistence.object.*;
 import org.albianj.persistence.object.filter.IChainExpression;
 import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.runtime.AlbianModuleType;
-import org.albianj.service.BuiltinNames;
 import org.albianj.service.AlbianServiceRouter;
 
 import java.util.HashMap;
@@ -89,14 +87,13 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
     protected abstract StringBuilder makeSltCmdCount(int dbStyle);
 
     @Deprecated
-    public IReaderJob buildReaderJob(String sessionId, BundleContext bundleContext, Class<?> itf, boolean isExact, String drouterAlias,
+    public IReaderJob buildReaderJob(String sessionId, Class<?> itf, boolean isExact, String drouterAlias,
                                      int start, int step, LinkedList<IFilterCondition> wheres,
                                      LinkedList<IOrderByCondition> orderbys, String idxName) throws AlbianDataServiceException {
         IReaderJob job = new ReaderJob(sessionId);
-        AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(BuiltinNames.Conf.Persistence);
-        IAlbianObjectAttribute objAttr = entityMetadata.getEntityMetadata(itf);
+        IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(itf);
         if (null == objAttr) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "albian-object:%s attribute is not found.maybe not exist mapping.", itf.getName());
@@ -136,15 +133,14 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
     }
 
     @Deprecated
-    public IReaderJob buildReaderJob(String sessionId, BundleContext bundleContext, Class<?> itf, boolean isExact, String drouterAlias,
+    public IReaderJob buildReaderJob(String sessionId, Class<?> itf, boolean isExact, String drouterAlias,
                                      LinkedList<IFilterCondition> wheres, LinkedList<IOrderByCondition> orderbys,
                                      String idxName) throws AlbianDataServiceException {
 
         IReaderJob job = new ReaderJob(sessionId);
-        AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(BuiltinNames.Conf.Persistence);
-        IAlbianObjectAttribute objAttr = entityMetadata.getEntityMetadata(itf);
+        IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(itf);
         if (null == objAttr) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "albian-object:%s attribute is not found.maybe not exist mapping.", itf.getName());
@@ -183,16 +179,15 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
         return job;
     }
 
-    public IReaderJob buildReaderJob(String sessionId, BundleContext bundleContext, Class<?> itf, boolean isExact,
+    public IReaderJob buildReaderJob(String sessionId, Class<?> itf, boolean isExact,
                                      String storageAlias, String tableAlias, String drouterAlias,
                                      int start, int step, IChainExpression f,
                                      LinkedList<IOrderByCondition> orderbys, String idxName) throws AlbianDataServiceException {
 
         IReaderJob job = new ReaderJob(sessionId);
-        AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(BuiltinNames.Conf.Persistence);
-        IAlbianObjectAttribute objAttr = entityMetadata.getEntityMetadata(itf);
+        IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(itf);
         if (null == objAttr) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "albian-object:%s attribute is not found.maybe not exist mapping.", itf.getName());
@@ -216,7 +211,7 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
         StringBuilder sbCols = makeSltCmdCols(sessionId, objAttr, stgAttr.getDatabaseStyle());
 
         StringBuilder sbWhere = new StringBuilder();
-        ChainExpressionParser.toConditionText(sessionId,bundleContext, implClzz, objAttr, stgAttr, f, sbWhere, paras);
+        ChainExpressionParser.toConditionText(sessionId, implClzz, objAttr, stgAttr, f, sbWhere, paras);
         StringBuilder sbOdrs = makeSltCmdOdrs(sessionId, objAttr, orderbys, stgAttr.getDatabaseStyle());
 
         StringBuilder sbCmdTxt = makeSltCmdTxt(stgAttr.getDatabaseStyle(), sbCols, tableName.getValue(),
@@ -232,14 +227,13 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
     }
 
 
-    public IReaderJob buildReaderJob(String sessionId, BundleContext bundleContext, Class<?> itf, boolean isExact, String storageAlias, String tableAlias, String drouterAlias,
+    public IReaderJob buildReaderJob(String sessionId, Class<?> itf, boolean isExact, String storageAlias, String tableAlias, String drouterAlias,
                                      IChainExpression f,
                                      LinkedList<IOrderByCondition> orderbys, String idxName) throws AlbianDataServiceException {
         IReaderJob job = new ReaderJob(sessionId);
-        AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(BuiltinNames.Conf.Persistence);
-        IAlbianObjectAttribute objAttr = entityMetadata.getEntityMetadata(itf);
+        IAlbianObjectAttribute objAttr = AlbianEntityMetadata.getEntityMetadata(itf);
         if (null == objAttr) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "albian-object:%s attribute is not found.maybe not exist mapping.", itf.getName());
@@ -263,7 +257,7 @@ public abstract class FreeReaderJobAdapter implements IReaderJobAdapter {
         StringBuilder sbCols = makeSltCmdCount(stgAttr.getDatabaseStyle());
 
         StringBuilder sbWhere = new StringBuilder();
-        ChainExpressionParser.toConditionText(sessionId, bundleContext,implClzz, objAttr, stgAttr, f, sbWhere, paras);
+        ChainExpressionParser.toConditionText(sessionId, implClzz, objAttr, stgAttr, f, sbWhere, paras);
         StringBuilder sbOdrs = makeSltCmdOdrs(sessionId, objAttr, orderbys, stgAttr.getDatabaseStyle());
 
         StringBuilder sbCmdTxt = makeSltCmdTxt(stgAttr.getDatabaseStyle(), sbCols, tableName.getValue(),

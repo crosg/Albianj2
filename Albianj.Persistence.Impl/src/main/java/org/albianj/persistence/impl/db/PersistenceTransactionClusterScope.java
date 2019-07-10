@@ -38,7 +38,7 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 package org.albianj.persistence.impl.db;
 
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.context.IWriterJob;
 import org.albianj.persistence.context.IWriterTask;
 import org.albianj.persistence.context.WriterJobLifeTime;
@@ -49,7 +49,7 @@ import org.albianj.persistence.db.ISqlParameter;
 import org.albianj.persistence.impl.toolkit.ListConvert;
 import org.albianj.persistence.object.IRunningStorageAttribute;
 import org.albianj.persistence.object.IStorageAttribute;
-import org.albianj.persistence.service.IStorageParserService;
+import org.albianj.persistence.service.IAlbianStorageParserService;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
@@ -67,7 +67,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
         writerJob.setWriterJobLifeTime(WriterJobLifeTime.Opening);
         Map<String, IWriterTask> tasks = writerJob.getWriterTasks();
         if (Validate.isNullOrEmpty(tasks)) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     writerJob.getId(), AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "the task for the job is null or empty.");
@@ -79,18 +79,18 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
             IRunningStorageAttribute rsa = t.getStorage();
             IStorageAttribute storage = rsa.getStorageAttribute();
             if (null == storage) {
-                AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "The storage for task is null.");
             }
             try {
-                IStorageParserService asps = AlbianServiceRouter.getSingletonService(IStorageParserService.class, IStorageParserService.Name);
+                IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
                 IDataBasePool dbp = asps.getDatabasePool(writerJob.getId(), rsa);
                 t.setDatabasePool(dbp);
                 t.setConnection(asps.getConnection(writerJob.getId(), dbp, rsa,false));
             } catch (Exception e) {
-                AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "get the connect to storage:%s is error.",
@@ -98,7 +98,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
             }
             List<IPersistenceCommand> cmds = t.getCommands();
             if (Validate.isNullOrEmpty(cmds)) {
-                AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "The commands for task is empty or null");
@@ -126,7 +126,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
                     statements.add(prepareStatement);
                 }
             } catch (SQLException e) {
-                AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "make sql command for task is empty or null");
@@ -150,14 +150,14 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
             for (int i = 0; i < statements.size(); i++) {
                 try {
                     IPersistenceCommand cmd = cmds.get(i);
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                             writerJob.getId(), AlbianLoggerLevel.Info,
                             "storage:%s,sqltext:%s,parars:%s.",
                             task.getKey(), cmd.getCommandText(), ListConvert.toString(cmd.getParameters()));
                     ((PreparedStatement) statements.get(i)).executeUpdate();
                 } catch (SQLException e) {
                     IRunningStorageAttribute rsa = t.getStorage();
-                    AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                             writerJob.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                             AlbianModuleType.AlbianPersistence.getThrowInfo(),
                             "execute to storage:%s dtabase:%s is fail.",
@@ -182,7 +182,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
                 writerJob.setNeedManualRollbackIfException(true);
             } catch (SQLException e) {
                 IRunningStorageAttribute rsa = t.getStorage();
-                AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "commit to storage:%s database:%s is fail.",
@@ -205,7 +205,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
                 }
             } catch (Exception e) {
                 IRunningStorageAttribute rsa = t.getStorage();
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, e,
                         "rollback to storage:%s database:%s is error.",
                         rsa.getStorageAttribute().getName(), rsa.getDatabase());
@@ -223,7 +223,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
             manualRollbackCommit(writerJob);
             return true;
         } catch (Exception e) {
-            AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                     writerJob.getId(), AlbianLoggerLevel.Error, e,
                     "manual rollback is fail.");
             return false;
@@ -248,7 +248,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
             }catch (Exception e){
                 isThrow = true;
                 IRunningStorageAttribute rsa = t.getStorage();
-                AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error,e,
                         "close the connect to storage:%s database:%s is fail.",
                         rsa.getStorageAttribute().getName(), rsa.getDatabase());
@@ -264,8 +264,8 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
 //                    } catch (Exception e) {
 //                        isThrow = true;
 //                        IRunningStorageAttribute rsa = t.getStorage();
-//                        AlbianServiceRouter.getLogger2().addLog(ILoggerService2.AlbianSqlLoggerName,
-//                                writerJob.getId(), LoggerLevel.Error,e,
+//                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+//                                writerJob.getId(), AlbianLoggerLevel.Error,e,
 //                                "clear the statement to storage:%s database:%s is fail.",
 //                                rsa.getStorageAttribute().getName(), rsa.getDatabase());
 //                    }
@@ -274,8 +274,8 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
 //            } catch (Exception exc) {
 //                isThrow = true;
 //                IRunningStorageAttribute rsa = t.getStorage();
-//                AlbianServiceRouter.getLogger2().addLog(ILoggerService2.AlbianSqlLoggerName,
-//                        writerJob.getId(), LoggerLevel.Error,exc,
+//                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+//                        writerJob.getId(), AlbianLoggerLevel.Error,exc,
 //                        "close the connect to storage:%s database:%s is fail.",
 //                        rsa.getStorageAttribute().getName(), rsa.getDatabase());
 //            }
@@ -289,7 +289,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
     private void manualRollbackPreExecute(IWriterJob writerJob) throws AlbianDataServiceException {
         Map<String, IWriterTask> tasks = writerJob.getWriterTasks();
         if (Validate.isNullOrEmpty(tasks)) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     writerJob.getId(), AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "the task for the job is null or empty when manual rollbacking.");
@@ -301,7 +301,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
 
             List<IPersistenceCommand> cmds = t.getCommands();
             if (Validate.isNullOrEmpty(cmds)) {
-                AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "The commands for task is empty or null when manual rollbacking.");
@@ -332,7 +332,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
                     rbkCmds.add(cmd);
                 }
             } catch (SQLException e) {
-                AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "make sql command for task is empty or null when maunal rollbacking.");
@@ -363,7 +363,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
             for (int i = 0; i < statements.size(); i++) {
                 try {
                     IPersistenceCommand cmd = cmds.get(i);
-                    AlbianServiceRouter.getLogger2().log(ILoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                             writerJob.getId(), AlbianLoggerLevel.Info,
                             "manual-rollback job,storage:%s,sqltext:%s,parars:%s.",
                             task.getKey(), cmd.getRollbackCommandText(),
@@ -371,7 +371,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
                     ((PreparedStatement) statements.get(i)).executeUpdate();
                 } catch (SQLException e) {
                     IRunningStorageAttribute rsa = t.getStorage();
-                    AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                             writerJob.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                             AlbianModuleType.AlbianPersistence.getThrowInfo(),
                             "execute to storage:%s database:%s is error when manual rollbacking.",
@@ -395,7 +395,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
                 }
             } catch (SQLException e) {
                 IRunningStorageAttribute rsa = t.getStorage();
-                AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "commit to storage:%s database:%s is error when manual rollbacking.",

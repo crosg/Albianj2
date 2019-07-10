@@ -1,7 +1,5 @@
 package org.albianj.persistence.impl.context.dactx;
 
-import org.albianj.boot.BundleContext;
-import org.albianj.loader.AlbianBootContext;
 import org.albianj.persistence.context.IReaderJob;
 import org.albianj.persistence.context.dactx.IQueryContext;
 import org.albianj.persistence.db.AlbianDataServiceException;
@@ -30,14 +28,6 @@ public class QueryContext implements IQueryContext {
     private Class<? extends IAlbianObject> itfClzz = null;
     private LoadType loadType = LoadType.quickly;
     private IChainExpression wheres = null;
-    private BundleContext bundleContext = null;
-
-    public QueryContext(){
-        this(AlbianBootContext.Instance.getCurrentBundleContext());
-    }
-    public QueryContext(BundleContext bundleContext){
-        this.bundleContext = bundleContext;
-    }
 
     @Override
     public IQueryContext paging(int start, int pagesize) {
@@ -103,7 +93,7 @@ public class QueryContext implements IQueryContext {
         IReaderJob job = ad.buildReaderJob(sessionId, itfClzz, loadType == LoadType.exact, this.storageAlias, this.tableAlias, this.drouterAlias, start, pagesize,
                 wheres, orderbys, idxName);
         IPersistenceQueryScope scope = new PersistenceQueryScope();
-        list = scope.execute(this.bundleContext,itfClzz, job);
+        list = scope.execute(itfClzz, job);
         return list;
     }
 

@@ -2,7 +2,7 @@ package org.albianj.persistence.impl.storage;
 
 import org.albianj.persistence.db.IDataBasePool;
 import org.albianj.persistence.object.IRunningStorageAttribute;
-import org.albianj.persistence.service.IConnectionMonitorService;
+import org.albianj.persistence.service.IAlbianConnectionMonitorService;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -17,9 +17,9 @@ import java.util.List;
 public class MonitorWrapper implements IDataBasePool {
 
     private IDataBasePool delegatePool;
-    private IConnectionMonitorService connectionMonitorService;
+    private IAlbianConnectionMonitorService connectionMonitorService;
 
-    public MonitorWrapper(IDataBasePool delegatePool, IConnectionMonitorService connectionMonitorService) {
+    public MonitorWrapper(IDataBasePool delegatePool, IAlbianConnectionMonitorService connectionMonitorService) {
         this.delegatePool = delegatePool;
         this.connectionMonitorService = connectionMonitorService;
     }
@@ -33,7 +33,7 @@ public class MonitorWrapper implements IDataBasePool {
             return connection;
         } finally {
             connectionMonitorService.monitorConnectionCost(rsa.getStorageAttribute().getName(), rsa.getDatabase(),
-                    IConnectionMonitorService.MonitorMethod.GetConnection, System.currentTimeMillis() - start,
+                    IAlbianConnectionMonitorService.MonitorMethod.GetConnection, System.currentTimeMillis() - start,
                     connection != null);
         }
 
@@ -47,7 +47,7 @@ public class MonitorWrapper implements IDataBasePool {
             delegatePool.returnConnection(sessionId, storageName, databaseName, conn, pst, rs);
         } finally {
             connectionMonitorService.monitorConnectionCost(storageName, databaseName,
-                    IConnectionMonitorService.MonitorMethod.ReturnConnection, System.currentTimeMillis() - start,
+                    IAlbianConnectionMonitorService.MonitorMethod.ReturnConnection, System.currentTimeMillis() - start,
                     true);
         }
 
@@ -61,7 +61,7 @@ public class MonitorWrapper implements IDataBasePool {
             delegatePool.returnConnection(sessionId, storageName, databaseName, conn, pst);
         } finally {
             connectionMonitorService.monitorConnectionCost(storageName, databaseName,
-                    IConnectionMonitorService.MonitorMethod.ReturnConnection, System.currentTimeMillis() - start,
+                    IAlbianConnectionMonitorService.MonitorMethod.ReturnConnection, System.currentTimeMillis() - start,
                     true);
         }
 
@@ -74,7 +74,7 @@ public class MonitorWrapper implements IDataBasePool {
             delegatePool.returnConnection(sessionId, storageName, databaseName, conn);
         } finally {
             connectionMonitorService.monitorConnectionCost(storageName, databaseName,
-                    IConnectionMonitorService.MonitorMethod.ReturnConnection, System.currentTimeMillis() - start,
+                    IAlbianConnectionMonitorService.MonitorMethod.ReturnConnection, System.currentTimeMillis() - start,
                     true);
         }
     }

@@ -2,9 +2,9 @@ package org.albianj.logger.impl;
 
 import org.albianj.logger.IRuntimeLogService;
 import org.albianj.logger.RuntimeLogType;
-import org.albianj.service.FreeService;
+import org.albianj.service.FreeAlbianService;
 
-public class RuntimeLogService extends FreeService implements IRuntimeLogService {
+public class RuntimeLogService extends FreeAlbianService implements IRuntimeLogService {
     @Override
     public void addLog(String sessionId, RuntimeLogType logType, Class<?> type, String fmt, Object[]... args) {
         StackTraceElement[] stes = Thread.currentThread().getStackTrace();

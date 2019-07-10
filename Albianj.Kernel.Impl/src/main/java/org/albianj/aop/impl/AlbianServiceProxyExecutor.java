@@ -4,11 +4,12 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import org.albianj.aop.*;
-import org.albianj.boot.FinalAlbianReflectService;
+import org.albianj.loader.AlbianClassLoader;
+import org.albianj.loader.FinalAlbianReflectService;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.service.AlbianServiceRouter;
-import org.albianj.service.IService;
-import org.albianj.service.IServiceAttribute;
+import org.albianj.service.IAlbianService;
+import org.albianj.service.IAlbianServiceAttribute;
 import org.albianj.verify.Validate;
 
 import java.lang.reflect.Method;
@@ -25,11 +26,11 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
         Instance = new AlbianServiceProxyExecutor();
     }
 
-    public Object newProxyService(ClassLoader loader, IService service, Map<String, IServiceAspectAttribute> aopAttributes) {
+    public Object newProxyService(IAlbianService service, Map<String, IAlbianServiceAopAttribute> aopAttributes) {
         try {
             Enhancer enhancer = new Enhancer();  //增强类
             //不同于JDK的动态代理。它不能在创建代理时传obj对 象，obj对象必须被CGLIB包来创建
-            enhancer.setClassLoader(loader);
+            enhancer.setClassLoader(AlbianClassLoader.getInstance());
 
             enhancer.setSuperclass(service.getClass()); //设置被代理类字节码（obj将被代理类设置成父类；作为产生的代理的父类传进来的）。CGLIB依据字节码生成被代理类的子类
             enhancer.setCallback(this);    //设置回调函数，即一个方法拦截
@@ -55,8 +56,8 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
         }
         Class<?> cls = method.getDeclaringClass();
         Method func = cls.getMethod(mName, method.getParameterTypes());
-        IService proxyServ = (IService) proxy;
-        IService realServ = proxyServ.getRealService();
+        IAlbianService proxyServ = (IAlbianService) proxy;
+        IAlbianService realServ = proxyServ.getRealService();
 
         boolean isIgnore = false;
         if (func.isAnnotationPresent(AlbianAopAttribute.class)) {
@@ -66,15 +67,15 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
             }
         }
 
-        IServiceAttribute attr = proxyServ.getServiceAttribute();
-        Map<String, IMethodAttribute> funcsAttr = attr.getMethodsAttribute();
+        IAlbianServiceAttribute attr = proxyServ.getServiceAttribute();
+        Map<String, IAlbianServiceMethodAttribute> funcsAttr = attr.getMethodsAttribute();
         String sigFuncName = FinalAlbianReflectService.Instance.getMethodSignature(func);
-        IMethodAttribute sma = funcsAttr.get(sigFuncName);
+        IAlbianServiceMethodAttribute sma = funcsAttr.get(sigFuncName);
         if (null != sma && sma.isIgnore()) {
             isIgnore = true;
         }
 
-        Map<String, IServiceAspectAttribute> saa = attr.getAopAttributes();
+        Map<String, IAlbianServiceAopAttribute> saa = attr.getAopAttributes();
 
         if (Validate.isNullOrEmpty(saa)) {
             Object rc = AlbianMethodExecutor.Instance.call(proxy, method, args, methodProxy, isIgnore, sma);
@@ -82,12 +83,12 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
             return rc;
         }
 
-        IAspectContext ctx = new AspectContext();
+        IAlbianAopContext ctx = new AlbianAopContext();
 
         Object rc = null;
-        for (IServiceAspectAttribute asaa : saa.values()) {
-            IAspectService aas = AlbianServiceRouter.getSingletonService(
-                    IAspectService.class, asaa.getServiceName(), false);
+        for (IAlbianServiceAopAttribute asaa : saa.values()) {
+            IAlbianAopService aas = AlbianServiceRouter.getSingletonService(
+                    IAlbianAopService.class, asaa.getServiceName(), false);
             if (null == aas) continue;
 
             if (asaa.matches(mName)) {
@@ -112,9 +113,9 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
                     realServ.getServiceId(), mName);
         }
 
-        for (IServiceAspectAttribute asaa : saa.values()) {
-            IAspectService aas = AlbianServiceRouter.getSingletonService(
-                    IAspectService.class, asaa.getServiceName(), false);
+        for (IAlbianServiceAopAttribute asaa : saa.values()) {
+            IAlbianAopService aas = AlbianServiceRouter.getSingletonService(
+                    IAlbianAopService.class, asaa.getServiceName(), false);
             if (null == aas) continue;
 
             if (asaa.matches(mName)) {

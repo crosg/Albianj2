@@ -39,13 +39,13 @@ package org.albianj.persistence.impl.context;
 
 import org.albianj.argument.RefArg;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.db.ISqlParameter;
 import org.albianj.persistence.impl.db.SqlParameter;
 import org.albianj.persistence.impl.toolkit.Convert;
 import org.albianj.persistence.impl.toolkit.EnumMapping;
 import org.albianj.persistence.object.*;
-import org.albianj.persistence.service.IStorageParserService;
+import org.albianj.persistence.service.IAlbianStorageParserService;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
@@ -66,7 +66,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
                                                        RefArg<String> tableName
     ) {
         IStorageAttribute stgAttr = null;
-        IStorageParserService asps = AlbianServiceRouter.getSingletonService(IStorageParserService.class, IStorageParserService.Name);
+        IAlbianStorageParserService asps = AlbianServiceRouter.getSingletonService(IAlbianStorageParserService.class, IAlbianStorageParserService.Name);
         if (Validate.isNullOrEmptyOrAllSpace(drouterAlias)) { // not exist fix-drouterAlias
             if (Validate.isNullOrEmptyOrAllSpace(storageAlias)) { // use drouer callback
                 IDataRoutersAttribute drsAttr = objAttr.getDataRouters();
@@ -107,7 +107,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
         for (String key : objAttr.getFields().keySet()) {
             IAlbianEntityFieldAttribute member = objAttr.getFields().get(key);
             if (null == member) {
-                AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                         sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "albian-object:%s member:%s is not found.", objAttr.getType(), key);
@@ -160,7 +160,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
                 IMemberAttribute member = objAttr.getFields().get(
                         orderby.getFieldName().toLowerCase());
                 if (null == member) {
-                    AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                             sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                             AlbianModuleType.AlbianPersistence.getThrowInfo(),
                             "albian-object:%s member:%s is not found.",
@@ -225,7 +225,7 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
                         where.getFieldName().toLowerCase());
 
                 if (null == member) {
-                    AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                             sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                             AlbianModuleType.AlbianPersistence.getThrowInfo(),
                             "albian-object:%s member:%s is not found.", implType, where.getFieldName());
@@ -262,4 +262,177 @@ public class ReaderJobAdapter extends FreeReaderJobAdapter implements IReaderJob
         }
         return sbWhrs;
     }
+
+
+
+    /*
+
+    protected IDataRouterAttribute parserReaderRouting(Class<?> itf, String sessionId, boolean isExact, String routingName,
+                                                       Map<String, IFilterCondition> hashWheres, Map<String, IOrderByCondition> hashOrderbys)
+            throws AlbianDataServiceException {
+        IAlbianObjectAttribute albianObject = AlbianEntityMetadata.getEntityMetadataByType(cls);
+        String className = cls.getName();
+        IDataRoutersAttribute routings = albianObject.getDataRouters();
+//        IAlbianDataRouterParserService adrps = AlbianServiceRouter.getSingletonService(IAlbianDataRouterParserService.class, IAlbianDataRouterParserService.Name);
+//        IDataRoutersAttribute routings = adrps.getDataRouterAttribute(className);
+//
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        IAlbianObjectAttribute albianObject = amps.getAlbianObjectAttribute(className);
+
+        if (null == albianObject) {
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
+                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                    "albian-object:%s attribute is not found.", className);
+        }
+
+        Map<String, IDataRouterAttribute> routers = null;
+        if(null == routings) {
+            routers = null;
+        } else {
+            routers = isExact ? routings.getWriterRouters() : routings.getReaderRouters();
+        }
+
+        if (null == routings || Validate.isNullOrEmpty(routers)) {
+            IDataRouterAttribute dra = albianObject.getDefaultRouting();
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    sessionId, AlbianLoggerLevel.Warn,
+                    "albian-object:%s reader-data-router is null or empty and use default:%s.",
+                    className, dra.getName());
+            return dra;
+        }
+
+        if (Validate.isNullOrEmptyOrAllSpace(routingName)) {
+            if (isExact) {
+                if (!routings.getWriterRouterEnable()) {
+                    IDataRouterAttribute dra = albianObject.getDefaultRouting();
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                            sessionId, AlbianLoggerLevel.Warn,
+                            "the reader-date-router is not appoint and the object:%s all reader router are disable. then use defaut:%s.",
+                            className, dra.getName());
+                    return dra;
+                }
+            } else {
+                if (!routings.getReaderRouterEnable()) {
+                    IDataRouterAttribute dra = albianObject.getDefaultRouting();
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                            sessionId, AlbianLoggerLevel.Warn,
+                            "the reader-date-router is not appoint and the object:%s all reader router are disable. then use defaut:%s.",
+                            className, dra.getName());
+                    return dra;
+                }
+            }
+            IAlbianObjectDataRouter hashMapping = routings.getDataRouter();
+            if (null != hashMapping) {
+                IDataRouterAttribute routing = null;
+                if (isExact) {
+                    routing = hashMapping.mappingExactReaderRouting(routings.getWriterRouters(), hashWheres,
+                            hashOrderbys);
+                } else {
+                    routing = hashMapping.mappingReaderRouting(routings.getReaderRouters(), hashWheres, hashOrderbys);
+                }
+                if (null == routing) {
+                    IDataRouterAttribute dra = albianObject.getDefaultRouting();
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                            sessionId, AlbianLoggerLevel.Warn,
+                            "the reader-date-router is not appoint and the object:%s not found router. then use defaut:%s.",
+                            className, dra.getName());
+                    return dra;
+                }
+                if (!routing.getEnable()) {
+                    IDataRouterAttribute dra = albianObject.getDefaultRouting();
+                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                            sessionId, AlbianLoggerLevel.Warn,
+                            "the reader-date-router is not appoint and the object:%s found router:%s but it disable. then use defaut:%s.",
+                            className, routing.getName(), dra.getName());
+                    return dra;
+                }
+                return routing;
+            }
+            IDataRouterAttribute dra = albianObject.getDefaultRouting();
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    sessionId, AlbianLoggerLevel.Warn,
+                    "the reader-date-router is not appoint and the object:%s reader-date-router arithmetic is null. then use defaut:%s.",
+                    className, dra.getName());
+            return dra;
+        }
+
+        IDataRouterAttribute routing = routers.get(routingName);
+
+        if (null == routing) {
+            IDataRouterAttribute dra = albianObject.getDefaultRouting();
+
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    sessionId, AlbianLoggerLevel.Warn,
+                    "albian-object:%s reader-data-router is not found and use default:%s.",
+                    className, dra.getName());
+            return dra;
+        }
+        if (!routing.getEnable()) {
+            IDataRouterAttribute dra = albianObject.getDefaultRouting();
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    sessionId, AlbianLoggerLevel.Warn,
+                    "the reader-date-router is not appoint and the object:%s found router:%s but it disable. then use defaut:%s.",
+                    className, routing.getName(), dra.getName());
+            return dra;
+        }
+        return routing;
+    }
+
+    protected String parserRoutingStorage(Class<?> cls, String sessionId, boolean isExact, IDataRouterAttribute readerRouting,
+                                          Map<String, IFilterCondition> hashWheres, Map<String, IOrderByCondition> hashOrderbys)
+            throws AlbianDataServiceException {
+//        String className = cls.getName();
+        IAlbianObjectAttribute albianObject = AlbianEntityMetadata.getEntityMetadataByType(cls);
+        String className = cls.getName();
+        IDataRoutersAttribute routings = albianObject.getDataRouters();
+//
+//        IAlbianDataRouterParserService adrps = AlbianServiceRouter.getSingletonService(IAlbianDataRouterParserService.class, IAlbianDataRouterParserService.Name);
+//        IDataRoutersAttribute routings = adrps.getDataRouterAttribute(className);
+
+
+        if (null == readerRouting) {
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    sessionId, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
+                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                    "the reader data router of object:%s is null.", className);
+        }
+
+        if (null == routings) {
+            String name = readerRouting.getStorageName();
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    sessionId, AlbianLoggerLevel.Warn,
+                    "albian-object:%s reader-data-router is not found and use default storage:%s.",
+                    className, name);
+            return name;
+        }
+        IAlbianObjectDataRouter router = routings.getDataRouter();
+        if (null == router) {
+            String name = readerRouting.getStorageName();
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    sessionId, AlbianLoggerLevel.Warn,
+                    IAlbianLoggerService.AlbianSqlLoggerName,
+                    "albian-object:%s reader-data-router arithmetic is not found and use default storage:%s.",
+                    className, name);
+            return name;
+        }
+
+        String name = isExact ? router.mappingExactReaderRoutingStorage(readerRouting, hashWheres, hashOrderbys)
+                : router.mappingReaderRoutingStorage(readerRouting, hashWheres, hashOrderbys);
+        if (Validate.isNullOrEmpty(name)) {
+            String dname = readerRouting.getStorageName();
+            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                    sessionId, AlbianLoggerLevel.Warn,
+                    IAlbianLoggerService.AlbianSqlLoggerName,
+                    IAlbianLoggerService.AlbianSqlLoggerName,
+                    "albian-object:%s reader-data-router is not found by arithmetic and use default storage:%s.",
+                    className, dname);
+            return dname;
+        } else {
+            return name;
+        }
+    }
+
+    */
+
 }

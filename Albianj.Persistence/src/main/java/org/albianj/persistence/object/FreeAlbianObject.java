@@ -37,16 +37,13 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.object;
 
-import org.albianj.boot.BundleContext;
-import org.albianj.boot.tags.SpecialWarningTag;
 import org.albianj.logger.AlbianLoggerLevel;
-import org.albianj.logger.ILoggerService2;
+import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.context.dactx.IAlbianObjectWarp;
 import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.object.rants.AlbianObjectDataFieldRant;
 import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.runtime.AlbianModuleType;
-import org.albianj.service.BuiltinNames;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
 
@@ -126,30 +123,79 @@ public abstract class FreeAlbianObject implements IAlbianObject {
 
 
     @Deprecated
-    @SpecialWarningTag("不推荐使用，推荐使用带sessionid参数的同名函数")
+    @org.albianj.comment.SpecialWarning("不推荐使用，推荐使用带sessionid参数的同名函数")
     public boolean needUpdate() throws AlbianDataServiceException {
-        return needUpdate(ILoggerService2.InnerThreadName);
+        return needUpdate(IAlbianLoggerService2.InnerThreadName);
     }
 
     @Deprecated
-    @SpecialWarningTag("不推荐使用，推荐使用带sessionid,itf的同名函数")
-    public boolean needUpdate(String sessionId, BundleContext bundleContext) throws AlbianDataServiceException {
+    @org.albianj.comment.SpecialWarning("不推荐使用，推荐使用带sessionid,itf的同名函数")
+    public boolean needUpdate(String sessionId) throws AlbianDataServiceException {
         String className = this.getClass().getName();
-        AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(BuiltinNames.Conf.Persistence);
-        String itf = entityMetadata.type2Interface(className);
-        return needUpdate(sessionId,bundleContext, itf);
+        String itf = AlbianEntityMetadata.type2Interface(className);
+        return needUpdate(sessionId, itf);
+//        IAlbianMappingParserService amps = AlbianServiceRouter.getSingletonService(IAlbianMappingParserService.class, IAlbianMappingParserService.Name);
+//        String interName = amps.getAlbianObjectInterface(className);
+//        IAlbianObjectAttribute albianObject = amps.getAlbianObjectAttribute(interName);
+//        if (null == albianObject) {
+//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+//                    sessionId, AlbianLoggerLevel.Error,null,AlbianModuleType.AlbianPersistence,
+//                    "PersistenceService is error.",
+//                    "albian-object:%s attribute is not found.",
+//                    className);
+//        }
+//
+//        PropertyDescriptor[] propertyDesc = amps.getAlbianObjectPropertyDescriptor(className);
+//        if (null == propertyDesc) {
+//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+//                    sessionId,AlbianLoggerLevel.Error,null,
+//                    AlbianModuleType.AlbianPersistence,"PersistenceService is error.",
+//                    "albian-object:%s PropertyDescriptor is not found.",
+//                    className);
+//        }
+//
+//        Map<String, IMemberAttribute> mapMemberAttributes = albianObject.getMembers();
+//        try {
+//            for (PropertyDescriptor p : propertyDesc) {
+//                String name = p.getName();
+//                IMemberAttribute attr = mapMemberAttributes.get(name.toLowerCase());
+//                if (!attr.getIsSave())
+//                    continue;
+//                Object value = p.getReadMethod().invoke(this);
+//                Object oldValue = getOldAlbianObject(name);
+//
+//                if ((null == value && null == oldValue)) {
+//                    continue;
+//                }
+//                if (null != value && value.equals(oldValue)) {
+//                    continue;
+//                }
+//                if (null != oldValue && oldValue.equals(value)) {
+//                    continue;
+//                }
+//                return true;
+//            }
+//        } catch (Exception e) {
+//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+//                    sessionId,AlbianLoggerLevel.Error,e,
+//                    AlbianModuleType.AlbianPersistence,"PersistenceService is error.",
+//                    "invoke bean read method is error.the property is:%s.job id:%s.",
+//                    albianObject.getType());
+//        }
+//
+//        return false;
+
     }
 
-    public boolean needUpdate(String sessionId, BundleContext bundleContext, Class<? extends IAlbianObject> itf) throws AlbianDataServiceException {
-        return needUpdate(sessionId,bundleContext, itf.getName());
+    public boolean needUpdate(String sessionId, Class<? extends IAlbianObject> itf) throws AlbianDataServiceException {
+        return needUpdate(sessionId, itf.getName());
     }
 
-    private boolean needUpdate(String sessionId, BundleContext bundleContext, String itf) throws AlbianDataServiceException {
+    private boolean needUpdate(String sessionId, String itf) throws AlbianDataServiceException {
         String className = this.getClass().getName();
-        AlbianEntityMetadata entityMetadata = bundleContext.getModuleConf(BuiltinNames.Conf.Persistence);
-        IAlbianObjectAttribute entiryAttr = entityMetadata.getEntityMetadata(itf);
+        IAlbianObjectAttribute entiryAttr = AlbianEntityMetadata.getEntityMetadata(itf);
         if (null == entiryAttr) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
                     "PersistenceService is error.",
                     "albian-object:%s attribute is not found.",
@@ -159,7 +205,7 @@ public abstract class FreeAlbianObject implements IAlbianObject {
 
         Map<String, IAlbianEntityFieldAttribute> fields = entiryAttr.getFields();
         if (Validate.isNullOrEmpty(fields)) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error, null,
                     AlbianModuleType.AlbianPersistence, "PersistenceService is error.",
                     "albian-object:%s PropertyDescriptor is not found.",
@@ -170,7 +216,7 @@ public abstract class FreeAlbianObject implements IAlbianObject {
             for (IAlbianEntityFieldAttribute fieldAttr : fields.values()) {
                 if (!fieldAttr.getIsSave()) continue;
                 Object newVal = fieldAttr.getEntityField().get(this);
-                Object oldValue = getOldAlbianObject(entityMetadata.makeFieldsKey(fieldAttr.getPropertyName()));
+                Object oldValue = getOldAlbianObject(AlbianEntityMetadata.makeFieldsKey(fieldAttr.getPropertyName()));
 
                 if ((null == newVal && null == oldValue)) {
                     continue;
@@ -184,7 +230,7 @@ public abstract class FreeAlbianObject implements IAlbianObject {
                 return true;
             }
         } catch (Exception e) {
-            AlbianServiceRouter.getLogger2().logAndThrow(ILoggerService2.AlbianSqlLoggerName,
+            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                     sessionId, AlbianLoggerLevel.Error, e,
                     AlbianModuleType.AlbianPersistence, "PersistenceService is error.",
                     "invoke bean read method is error.the property is:%s.job id:%s.",

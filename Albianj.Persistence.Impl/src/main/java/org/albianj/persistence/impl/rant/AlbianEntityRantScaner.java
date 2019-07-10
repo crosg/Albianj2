@@ -1,14 +1,14 @@
 package org.albianj.persistence.impl.rant;
 
-import org.albianj.boot.BundleContext;
-import org.albianj.boot.AlbianClassScanner;
-import org.albianj.boot.IAlbianClassExcavator;
-import org.albianj.boot.IAlbianClassFilter;
+import org.albianj.loader.AlbianClassLoader;
+import org.albianj.loader.AlbianClassScanner;
+import org.albianj.loader.IAlbianClassExcavator;
+import org.albianj.loader.IAlbianClassFilter;
 import org.albianj.persistence.impl.object.AlbianEntityFieldAttribute;
 import org.albianj.persistence.impl.object.AlbianObjectAttribute;
 import org.albianj.persistence.impl.object.DataRouterAttribute;
-import org.albianj.persistence.impl.routing.DataRouterParserService;
-import org.albianj.persistence.impl.storage.StorageParserService;
+import org.albianj.persistence.impl.routing.AlbianDataRouterParserService;
+import org.albianj.persistence.impl.storage.AlbianStorageParserService;
 import org.albianj.persistence.impl.toolkit.Convert;
 import org.albianj.persistence.object.*;
 import org.albianj.persistence.object.rants.AlbianObjectDataFieldRant;
@@ -17,7 +17,6 @@ import org.albianj.persistence.object.rants.AlbianObjectDataRoutersRant;
 import org.albianj.persistence.object.rants.AlbianObjectRant;
 import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.reflection.AlbianReflect;
-import org.albianj.service.BuiltinNames;
 import org.albianj.text.StringHelper;
 import org.albianj.verify.Validate;
 
@@ -31,8 +30,8 @@ import java.util.*;
 
 public class AlbianEntityRantScaner {
 
-    public static HashMap<String, Object> scanPackage(final BundleContext bundleContext, final String pkgName) throws IOException, ClassNotFoundException {
-        return AlbianClassScanner.filter(bundleContext.getClassLoader(),
+    public static HashMap<String, Object> scanPackage(final String pkgName) throws IOException, ClassNotFoundException {
+        return AlbianClassScanner.filter(AlbianClassLoader.getInstance(),
                 pkgName,
 
                 new IAlbianClassFilter() {
@@ -58,14 +57,15 @@ public class AlbianEntityRantScaner {
 
                         Class<?> itfClzz = or.Interface();
                         String sItf = itfClzz.getName();
-                        AlbianEntityMetadata entityMetadata = bundleContext.getModuleConfAndNewIfNotExist(BuiltinNames.Conf.Persistence,AlbianEntityMetadata.class);
-                        if (entityMetadata.exist(sItf)) {
-                            objAttr = entityMetadata.getEntityMetadata(sItf);
+
+                        if (AlbianEntityMetadata.exist(sItf)) {
+                            objAttr = AlbianEntityMetadata.getEntityMetadata(sItf);
                         } else {
                             objAttr = new AlbianObjectAttribute();
                             objAttr.setType(clzz.getName());
                             objAttr.setInterface(sItf);
-                            entityMetadata.put(sItf, objAttr);
+                            AlbianEntityMetadata.put(sItf, objAttr);
+
                         }
 
                         objAttr.setImplClzz(clzz);
@@ -262,9 +262,9 @@ public class AlbianEntityRantScaner {
 
     private static IDataRouterAttribute makeDefaultDataRouter(Class<?> implClzz) {
         IDataRouterAttribute defaultRouting = new DataRouterAttribute();
-        defaultRouting.setName(DataRouterParserService.DEFAULT_ROUTING_NAME);
+        defaultRouting.setName(AlbianDataRouterParserService.DEFAULT_ROUTING_NAME);
         defaultRouting.setOwner("dbo");
-        defaultRouting.setStorageName(StorageParserService.DEFAULT_STORAGE_NAME);
+        defaultRouting.setStorageName(AlbianStorageParserService.DEFAULT_STORAGE_NAME);
         defaultRouting.setTableName(implClzz.getSimpleName());
         return defaultRouting;
     }

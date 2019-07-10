@@ -37,8 +37,8 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.restful.impl.util;
 
-import org.albianj.kernel.ILogicIdService;
-import org.albianj.logger.ILoggerService;
+import org.albianj.kernel.IAlbianLogicIdService;
+import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.restful.impl.object.AlbianRestfulActionContext;
 import org.albianj.restful.object.IAlbianRestfulActionContext;
 import org.albianj.service.AlbianServiceRouter;
@@ -66,7 +66,7 @@ public class AlbianRestfulUtils {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             AlbianServiceRouter.getLogger().error(
-                    ILoggerService.AlbianRunningLoggerName, e, "getData");
+                    IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
         }
         BufferedInputStream buf = new BufferedInputStream(in);
 //        byte[] buffer = new byte[1024];
@@ -90,10 +90,10 @@ public class AlbianRestfulUtils {
 //            }
         } catch (UnsupportedEncodingException e) {
             AlbianServiceRouter.getLogger().error(
-                    ILoggerService.AlbianRunningLoggerName, e, "getData");
+                    IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
         } catch (IOException e) {
             AlbianServiceRouter.getLogger().error(
-                    ILoggerService.AlbianRunningLoggerName, e, "getData");
+                    IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
         } finally {
             buf.close();
             in.close();
@@ -103,7 +103,7 @@ public class AlbianRestfulUtils {
             return new String(buffer, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             AlbianServiceRouter.getLogger().error(
-                    ILoggerService.AlbianRunningLoggerName, e, "getData");
+                    IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
         }
 
         return null;
@@ -112,7 +112,7 @@ public class AlbianRestfulUtils {
     public IAlbianRestfulActionContext AlbianRestfulActionContext(HttpServletRequest req,
                                                                   HttpServletResponse resp) {
         Map<String, String> param_pairs = splitQuery(req.getQueryString());
-        ILogicIdService lids = AlbianServiceRouter.getLogIdService();
+        IAlbianLogicIdService lids = AlbianServiceRouter.getLogIdService();
         return new AlbianRestfulActionContext(req, resp,
                 req.getServletContext(), param_pairs.get("service"),
                 param_pairs.get("action"), lids.makeStringUNID("session"),//req.getSession(true).getId(),内存持续增长
@@ -122,7 +122,7 @@ public class AlbianRestfulUtils {
     public IAlbianRestfulActionContext AlbianRestfulActionContext_Safe(HttpServletRequest req,
                                                                        HttpServletResponse resp) {
         Map<String, String> param_pairs = splitQuery(req.getQueryString());
-        ILogicIdService lids = AlbianServiceRouter.getLogIdService();
+        IAlbianLogicIdService lids = AlbianServiceRouter.getLogIdService();
         return new AlbianRestfulActionContext(req, resp,
                 req.getServletContext(), param_pairs.get("service"),
                 param_pairs.get("action"), lids.makeStringUNID("session"),//req.getSession(true).getId(),内存持续增长
@@ -142,7 +142,7 @@ public class AlbianRestfulUtils {
             } catch (UnsupportedEncodingException e) {
                 // TODO Auto-generated catch block
                 AlbianServiceRouter.getLogger().error(
-                        ILoggerService.AlbianRunningLoggerName, e,
+                        IAlbianLoggerService.AlbianRunningLoggerName, e,
                         "splitQuery UnsupportedEncodingException");
             }
         }
@@ -157,7 +157,7 @@ public class AlbianRestfulUtils {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             AlbianServiceRouter.getLogger().error(
-                    ILoggerService.AlbianRunningLoggerName, e, "getData");
+                    IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
         }
         BufferedInputStream buf = new BufferedInputStream(in);
 
@@ -173,17 +173,17 @@ public class AlbianRestfulUtils {
 //
 //        } catch (UnsupportedEncodingException e) {
 //            AlbianServiceRouter.getLogger().error(
-//                    ILoggerService.AlbianRunningLoggerName, e, "getData");
+//                    IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
 //        } catch (IOException e) {
 //            AlbianServiceRouter.getLogger().error(
-//                    ILoggerService.AlbianRunningLoggerName, e, "getData");
+//                    IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
 //        }
 //
 //        try {
 //            return new String(buffer, "UTF-8");
 //        } catch (UnsupportedEncodingException e) {
 //            AlbianServiceRouter.getLogger().error(
-//                    ILoggerService.AlbianRunningLoggerName, e, "getData");
+//                    IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
 //        }
 
 //        return null;
@@ -203,10 +203,10 @@ public class AlbianRestfulUtils {
 
         } catch (UnsupportedEncodingException e) {
             AlbianServiceRouter.getLogger().error(
-                    ILoggerService.AlbianRunningLoggerName, e, "getData");
+                    IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
         } catch (IOException e) {
             AlbianServiceRouter.getLogger().error(
-                    ILoggerService.AlbianRunningLoggerName, e, "getData");
+                    IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
         }
         return null;
 
@@ -222,10 +222,10 @@ public class AlbianRestfulUtils {
 //            }
 //       } catch (UnsupportedEncodingException e) {
 //             AlbianServiceRouter.getLogger().error(
-//                    ILoggerService.AlbianRunningLoggerName, e, "getData");
+//                    IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
 //        } catch (IOException e) {
 //            AlbianServiceRouter.getLogger().error(
-//                    ILoggerService.AlbianRunningLoggerName, e, "getData");
+//                    IAlbianLoggerService.AlbianRunningLoggerName, e, "getData");
 //        }
 
 //        return info.toString();

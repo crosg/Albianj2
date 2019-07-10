@@ -3,7 +3,7 @@ package org.albianj.aop.impl;
 import net.sf.cglib.proxy.MethodProxy;
 import org.albianj.aop.*;
 import org.albianj.service.AlbianServiceRouter;
-import org.albianj.statistics.IStatisticsService;
+import org.albianj.statistics.IAlbianStatisticsService;
 
 import java.lang.reflect.Method;
 
@@ -14,7 +14,7 @@ public class AlbianMethodExecutor {
     }
 
     public Object call(Object proxy, Method method, Object[] args, MethodProxy methodProxy,
-                           boolean isIgnoreProxy, IMethodAttribute funcAttr)throws Throwable{
+                           boolean isIgnoreProxy, IAlbianServiceMethodAttribute funcAttr)throws Throwable{
         if(isIgnoreProxy){
             Object rc = methodProxy.invokeSuper(proxy, args);
             return rc;
@@ -22,15 +22,15 @@ public class AlbianMethodExecutor {
 
         boolean isRetry = false;
         int retryTimes = 1;
-        IMethodRetryAttribute mra =  funcAttr.getRetryAttribute();
+        IAlbianServiceMethodRetryAttribute mra =  funcAttr.getRetryAttribute();
         if(null == mra){
             isRetry = false;
         } else {
             retryTimes += mra.getRetryTimes();
         }
         boolean isStatistics = false;
-        IMethodTimeoutAttribute mtoa = funcAttr.getTimeoutAttribute();
-        IMethodMonitorAttribute msa = funcAttr.getStatisticsAttribute();
+        IAlbianServiceMethodTimeoutAttribute mtoa = funcAttr.getTimeoutAttribute();
+        IAlbianServiceMethodStatisticsAttribute msa = funcAttr.getStatisticsAttribute();
         if(null != msa) {
             isStatistics = true;
         }
@@ -48,7 +48,7 @@ public class AlbianMethodExecutor {
                 } else {
                     rc = AlbianMethodTimeoutProxyExecutor.Instance.execute(proxy, args, methodProxy, mtoa.getTimetampMs());
                 }
-            }catch (RetryException e){
+            }catch (AlbianRetryException e){
                 isNeedRetry = true;
             }
         }while(isRetry && isNeedRetry && (0 < -- retryTimes));
@@ -57,7 +57,7 @@ public class AlbianMethodExecutor {
         if(isStatistics) {
             long end = System.currentTimeMillis();
             execTimeMs =  end - begin;
-            IStatisticsService ass = AlbianServiceRouter.getSingletonService(IStatisticsService.class, IStatisticsService.Name);
+            IAlbianStatisticsService ass = AlbianServiceRouter.getSingletonService(IAlbianStatisticsService.class,IAlbianStatisticsService.Name);
             ass.add(msa.getLogTagName(),end,execTimeMs);
         }
         return rc;
