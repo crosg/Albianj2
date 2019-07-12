@@ -37,6 +37,9 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.loader;
 
+import org.albianj.framework.boot.ApplicationContext;
+import org.albianj.framework.boot.BundleContext;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -45,110 +48,108 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-public class AlbianClassLoader extends ClassLoader {
-    private static Map<String, ByteBuffer> entryMap;
-    private static AlbianClassLoader _cl = null;
-    private JarInputStream jis;
-
-    public AlbianClassLoader() {
-        super();
-    }
-
-    public static synchronized AlbianClassLoader getInstance() {
-        if (null == _cl) {
-            _cl = new AlbianClassLoader();
-            entryMap = new HashMap<String, ByteBuffer>();
-        }
-        return _cl;
-    }
-
-    public boolean existClass(String name) {
-        String path = name.replace('.', '/').concat(".class");
-        return entryMap.containsKey(path);
-    }
-
-    public void regeditPlugin(String src) throws FileNotFoundException, IOException {
-        regeditPlugin(new FileInputStream(src));
-    }
-
-    public void regeditPlugin(File file) throws FileNotFoundException, IOException {
-        regeditPlugin(new FileInputStream(file));
-    }
-
-    public void regeditPlugin(InputStream is) throws IOException {
-        jis = new JarInputStream(is);
-        JarEntry entry = null;
-        while ((entry = jis.getNextJarEntry()) != null) {
-            String name = entry.getName();
-            if (name.endsWith(".class")) { // class�ļ����ܺ��ٻ���
-                byte[] bytes = getBytes(jis); // ��ȡclass�ļ�����
-                ByteBuffer buffer = ByteBuffer.wrap(bytes); // ����ݸ��Ƶ�ByteBuffer������
-                entryMap.put(name, buffer); // �������
-            } else { // �����ļ�ֱ�ӻ���
-                byte[] bytes = getBytes(jis);
-                ByteBuffer buffer = ByteBuffer.wrap(bytes);
-                entryMap.put(name, buffer);
-            }
-        }
-        jis.close();
-    }
-
-    public void regeditPlugin(byte[] b) throws IOException {
-        jis = new JarInputStream(new ByteArrayInputStream(b));
-        JarEntry entry = null;
-        while ((entry = jis.getNextJarEntry()) != null) {
-            String name = entry.getName();
-
-            if (name.endsWith(".class")) { // class�ļ����ܺ��ٻ���
-                byte[] bytes = getBytes(jis); // ��ȡclass�ļ�����
-                ByteBuffer buffer = ByteBuffer.wrap(bytes); // ����ݸ��Ƶ�ByteBuffer������
-                entryMap.put(name, buffer); // �������
-            } else { // �����ļ�ֱ�ӻ���
-                byte[] bytes = getBytes(jis);
-                ByteBuffer buffer = ByteBuffer.wrap(bytes);
-                entryMap.put(name, buffer);
-            }
-        }
-        jis.close();
-    }
-
-    @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
-        String path = name.replace('.', '/').concat(".class");
-        ByteBuffer buffer = entryMap.get(path);
-        if (buffer == null) {
-            Class<?> c = Class.forName(path); //when use web container such as jetty then use
-            if (null != c) {
-                return c;
-            }
-            return super.findClass(name);
-        } else {
-            byte[] bytes = buffer.array();
-            return defineClass(name, bytes, 0, bytes.length);
-        }
-    }
-
-    private byte[] getBytes(JarInputStream jis) throws IOException {
-        int len = 0;
-        byte[] bytes = new byte[8192];
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(2048);
-        while ((len = jis.read(bytes, 0, bytes.length)) != -1) {
-            baos.write(bytes, 0, len);
-        }
-        return baos.toByteArray();
-    }
-
-    /**
-     * �ر�Decoder
-     *
-     * @throws IOException
-     */
-    public void close() throws IOException {
-        Iterator<ByteBuffer> iterator = entryMap.values().iterator();
-        while (iterator.hasNext()) {
-            ByteBuffer buffer = iterator.next();
-            buffer.clear(); // ���ByteBuffer���󻺴�
-        }
-        entryMap.clear(); // ���HashMap
+public class AlbianClassLoader {
+    //    private static Map<String, ByteBuffer> entryMap;
+//    private static AlbianClassLoader _cl = null;
+//    private JarInputStream jis;
+//
+//    public AlbianClassLoader() {
+//        super();
+//    }
+//
+    public static ClassLoader getInstance() {
+        BundleContext bctx =  ApplicationContext.Instance.findCurrentBundleContext(AlbianBootService.class,true);
+        return  bctx.getClassLoader();
     }
 }
+//
+//    public boolean existClass(String name) {
+//        String path = name.replace('.', '/').concat(".class");
+//        return entryMap.containsKey(path);
+//    }
+//
+//    public void regeditPlugin(String src) throws FileNotFoundException, IOException {
+//        regeditPlugin(new FileInputStream(src));
+//    }
+//
+//    public void regeditPlugin(File file) throws FileNotFoundException, IOException {
+//        regeditPlugin(new FileInputStream(file));
+//    }
+//
+//    public void regeditPlugin(InputStream is) throws IOException {
+//        jis = new JarInputStream(is);
+//        JarEntry entry = null;
+//        while ((entry = jis.getNextJarEntry()) != null) {
+//            String name = entry.getName();
+//            if (name.endsWith(".class")) { // class�ļ����ܺ��ٻ���
+//                byte[] bytes = getBytes(jis); // ��ȡclass�ļ�����
+//                ByteBuffer buffer = ByteBuffer.wrap(bytes); // ����ݸ��Ƶ�ByteBuffer������
+//                entryMap.put(name, buffer); // �������
+//            } else { // �����ļ�ֱ�ӻ���
+//                byte[] bytes = getBytes(jis);
+//                ByteBuffer buffer = ByteBuffer.wrap(bytes);
+//                entryMap.put(name, buffer);
+//            }
+//        }
+//        jis.close();
+//    }
+//
+//    public void regeditPlugin(byte[] b) throws IOException {
+//        jis = new JarInputStream(new ByteArrayInputStream(b));
+//        JarEntry entry = null;
+//        while ((entry = jis.getNextJarEntry()) != null) {
+//            String name = entry.getName();
+//
+//            if (name.endsWith(".class")) { // class�ļ����ܺ��ٻ���
+//                byte[] bytes = getBytes(jis); // ��ȡclass�ļ�����
+//                ByteBuffer buffer = ByteBuffer.wrap(bytes); // ����ݸ��Ƶ�ByteBuffer������
+//                entryMap.put(name, buffer); // �������
+//            } else { // �����ļ�ֱ�ӻ���
+//                byte[] bytes = getBytes(jis);
+//                ByteBuffer buffer = ByteBuffer.wrap(bytes);
+//                entryMap.put(name, buffer);
+//            }
+//        }
+//        jis.close();
+//    }
+//
+//    @Override
+//    protected Class<?> findClass(String name) throws ClassNotFoundException {
+//        String path = name.replace('.', '/').concat(".class");
+//        ByteBuffer buffer = entryMap.get(path);
+//        if (buffer == null) {
+//            Class<?> c = Class.forName(path); //when use web container such as jetty then use
+//            if (null != c) {
+//                return c;
+//            }
+//            return super.findClass(name);
+//        } else {
+//            byte[] bytes = buffer.array();
+//            return defineClass(name, bytes, 0, bytes.length);
+//        }
+//    }
+//
+//    private byte[] getBytes(JarInputStream jis) throws IOException {
+//        int len = 0;
+//        byte[] bytes = new byte[8192];
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream(2048);
+//        while ((len = jis.read(bytes, 0, bytes.length)) != -1) {
+//            baos.write(bytes, 0, len);
+//        }
+//        return baos.toByteArray();
+//    }
+//
+//    /**
+//     * �ر�Decoder
+//     *
+//     * @throws IOException
+//     */
+//    public void close() throws IOException {
+//        Iterator<ByteBuffer> iterator = entryMap.values().iterator();
+//        while (iterator.hasNext()) {
+//            ByteBuffer buffer = iterator.next();
+//            buffer.clear(); // ���ByteBuffer���󻺴�
+//        }
+//        entryMap.clear(); // ���HashMap
+//    }
+//}

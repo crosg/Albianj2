@@ -4,13 +4,14 @@ package org.albianj.xml;
  * Created by xuhaifeng on 17/2/3.
  */
 public class Student implements IAlbianXml2ObjectSigning {
+    @XmlElementAttribute(Name = "name")
     private String name;
     private ClassRooms classRooms;
+    @XmlElementAttribute(Name = "age")
     private int age;
     public Student() {
     }
 
-    @XmlElementAttribute(Name = "name")
     public String getName() {
         return name;
     }
@@ -27,7 +28,6 @@ public class Student implements IAlbianXml2ObjectSigning {
         this.classRooms = classRooms;
     }
 
-    @XmlElementAttribute(Name = "age")
     public int getAge() {
         return age;
     }

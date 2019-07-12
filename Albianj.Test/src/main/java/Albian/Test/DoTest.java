@@ -1,23 +1,29 @@
 package Albian.Test;
 
-import Albian.Core.Service.AlbianServiceHub;
 import Albian.Test.Services.IOrgUserService;
-import Albian.Test.Services.IUTF8M64Service;
 import Albian.Test.Services.IUserService;
-import com.mysql.jdbc.interceptors.SessionAssociationInterceptor;
-import org.albianj.loader.AlbianBootService;
-import org.albianj.logger.AlbianLoggerLevel;
+import org.albianj.framework.boot.ApplicationContext;
+import org.albianj.framework.boot.BundleContext;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.logger.monitor.AlbianMonitorData;
 import org.albianj.logger.monitor.IAlbianMonitorLoggerService;
 import org.albianj.service.AlbianServiceRouter;
 
-import java.util.Date;
-
 public class DoTest {
-    public static void main(String[] argv) {
+    public static void main(String[] args) {
         try {
-            AlbianBootService.start(argv[0]);
+            ApplicationContext.Instance.setAppStartupType(DoTest.class)
+                    .setWorkFolder("D:\\work\\github\\albianj2\\Albianj.Test\\src\\main\\resources")
+                    .setLoggerAttr("D:\\work\\github\\albianj2\\Albianj.Test\\logs", true)
+                    .addBundle(DoTest.class,BundleContext.newInstance().setArgs(args)
+                                .setStartupClassName(TestBundleMain.class.getName())
+                                .setInstallSpxFile(false)
+                                .setConfFolder("D:\\work\\github\\albianj2\\Albianj.Test\\src\\main\\resources\\config")
+                                .setWorkFolder("D:\\work\\github\\albianj2\\Albianj.Test")
+                                .setBundleName("DoTest")
+                                .build());
+            ApplicationContext.Instance .run(args);
+
 
             IAlbianLoggerService2 logServ = AlbianServiceRouter.getLogger2();
 //            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,

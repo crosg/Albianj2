@@ -6,7 +6,7 @@
 
     <groupId>com.yuewen.nrzx.albianj</groupId>
     <artifactId>Albianj</artifactId>
-    <version>2019052304-SNAPSHOT</version>
+    <version>2019071201-SNAPSHOT</version>
     <modules>
         <module>Albianj.Comment</module>
         <module>Albianj.Commons</module>
@@ -15,8 +15,6 @@
         <module>Albianj.Kernel</module>
         <module>Albianj.Kernel.Impl</module>
         <module>Albianj.Loader</module>
-        <module>Albianj.Cached</module>
-        <module>Albianj.Cached.Impl</module>
         <module>Albianj.Persistence</module>
         <module>Albianj.Persistence.Impl</module>
         <module>Albianj.MVC</module>
@@ -25,21 +23,15 @@
         <module>Albianj.Restful.Impl</module>
         <module>Albianj.UNID</module>
         <module>Albianj.UNID.Impl</module>
-        <!--<module>Albianj.Http.Client</module>-->
-        <!--<module>Albianj.Http.Client.Impl</module>-->
         <module>Yuewen.PPLogStat</module>
         <module>Yuewen.PPLogStat.Impl</module>
         <module>Albianj.WordProcessor</module>
         <module>Albianj.WordProcessor.Impl</module>
         <module>Albianj.Core</module>
         <module>Albianj.Test</module>
-        <!--<module>Albianj.Monitor</module>-->
-        <!--<module>Albianj.Monitor.Impl</module>-->
         <module>Albianj.MVC.Ctags</module>
         <module>Albianj.Statistics</module>
         <module>Albianj.Statistics.Impl</module>
-        <!--<module>Albianj.Pooling</module>-->
-        <!--<module>Albianj.Pooling</module>-->
     </modules>
     <packaging>pom</packaging>
 

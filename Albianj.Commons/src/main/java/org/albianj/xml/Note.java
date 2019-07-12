@@ -4,10 +4,13 @@ package org.albianj.xml;
  * Created by xuhaifeng on 17/2/3.
  */
 public class Note implements IAlbianXml2ObjectSigning {
+    @XmlElementAttribute(Name = "name")
     private String name;
     private String to;
     private Student student;
+    @XmlElementAttribute(Name = "from")
     private String from;
+    @XmlElementAttribute(Name = "heading")
     private String heading;
     private String body;
 
@@ -19,7 +22,6 @@ public class Note implements IAlbianXml2ObjectSigning {
         return name;
     }
 
-    @XmlElementAttribute(Name = "name")
     public void setName(String name) {
         this.name = name;
     }
@@ -44,12 +46,10 @@ public class Note implements IAlbianXml2ObjectSigning {
         return from;
     }
 
-    @XmlElementAttribute(Name = "from")
     public void setFrom(String from) {
         this.from = from;
     }
 
-    @XmlElementAttribute(Name = "heading")
     public String getHeading() {
         return heading;
     }

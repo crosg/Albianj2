@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Application>
+    <MachineId>001</MachineId>
+    <AppName>001</AppName>
+    <MachineKey><![CDATA[wefet45y56gd&^%&$($$fbf943sf98^&*&*%$@%$34tksdjfvh823r2=sdfssdfsdp[sfshfwwefwffwe]]></MachineKey>
+    <RuntimeLevel>Debug</RuntimeLevel>
+    <Logger Name="Runtime" Level="Debug" Console="true"> <!-- 一直想要sys和业务的日志分开，这次终于分开了 -->
+        <!--<Logger Name="Runtime" Path=""  Level="Debug" Console="true"></Logger>-->
+        <!--<Logger Name="DataBase" Path="" Level=""></Logger>-->
+        <!--<Logger Name="State" Path=""></Logger>-->
+        <!--<Logger Name="Monitor" Path=""></Logger>-->
+    </Logger>
+    <!--<Bundles>-->
+        <!--<Bundle Name="Job" WorkPath="D:\work\github\Albianj.Boot\Albianj.Launcher.Test\src\main\resources" Startup="org.albianj.framework.boot.Test.JobStartup"></Bundle>-->
+        <!--<Bundle Name="Job2" WorkPath="D:\work\github\Albianj.Boot\Albianj.Launcher.Test\src\main\resources" Startup="org.albianj.framework.boot.Test.JobStartup"></Bundle>-->
+    <!--</Bundles>-->
+</Application>

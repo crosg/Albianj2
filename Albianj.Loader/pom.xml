@@ -5,7 +5,7 @@
     <parent>
         <artifactId>Albianj</artifactId>
         <groupId>com.yuewen.nrzx.albianj</groupId>
-        <version>2019052304-SNAPSHOT</version>
+        <version>2019071201-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -22,5 +22,11 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.yuewen.nrzx.albianj</groupId>
+            <artifactId>Albianj.Launcher</artifactId>
+            <version>2019071201-SNAPSHOT</version>
+        </dependency>
     </dependencies>
+
 </project>
