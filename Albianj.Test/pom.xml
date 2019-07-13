@@ -86,7 +86,7 @@
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>
             <artifactId>Albianj.Launcher</artifactId>
-            <version>2019071201-SNAPSHOT</version>
+            <version>2019071301-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

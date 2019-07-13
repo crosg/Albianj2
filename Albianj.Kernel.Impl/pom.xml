@@ -11,7 +11,6 @@
 
     <artifactId>Albianj.Kernel.Impl</artifactId>
 
-
     <dependencies>
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>
