@@ -3,7 +3,6 @@ package org.albianj.logger.impl.monitor;
 import org.albianj.datetime.AlbianDateTime;
 import org.albianj.kernel.KernelSetting;
 import org.apache.log4j.DailyRollingFileAppender;
-import org.apache.log4j.RollingFileAppender;
 
 import java.io.IOException;
 

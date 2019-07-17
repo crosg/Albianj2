@@ -39,13 +39,13 @@ package org.albianj.loader;
 
 import org.albianj.framework.boot.ApplicationContext;
 import org.albianj.framework.boot.BundleContext;
-import org.albianj.kernel.AlbianState;
-import org.albianj.kernel.IAlbianTransmitterService;
+import org.albianj.framework.boot.logging.LogServant;
+import org.albianj.framework.boot.logging.LoggerLevel;
 import org.albianj.net.MemoryToIOStream;
-import org.albianj.verify.Validate;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.FileInputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class AlbianBootService {
@@ -81,19 +81,32 @@ public class AlbianBootService {
                     .loadClass("org.albianj.kernel.impl.AlbianTransmitterService");
 //            Class<?> clss = AlbianClassLoader.getInstance()
 //                    .loadClass("org.albianj.kernel.impl.AlbianTransmitterService");
-            IAlbianTransmitterService abs = (IAlbianTransmitterService) clss.newInstance();
-            if (!Validate.isNullOrEmptyOrAllSpace(kernelPath) && !Validate.isNullOrEmptyOrAllSpace(configPath)) {
-                abs.start(kernelPath, configPath);
-            } else if (Validate.isNullOrEmptyOrAllSpace(kernelPath) && !Validate.isNullOrEmptyOrAllSpace(configPath)) {
-                abs.start(configPath);
-            } else {
-                abs.start();
+            Method m =  clss.getMethod("start",null);
+            if(null != m) {
+                m.invoke(clss.newInstance(),null);
             }
-            if (AlbianState.Running != abs.getLifeState()) {
-                return false;
-            }
+//            IAlbianTransmitterService abs = (IAlbianTransmitterService) clss.newInstance();
+//            if (!Validate.isNullOrEmptyOrAllSpace(kernelPath) && !Validate.isNullOrEmptyOrAllSpace(configPath)) {
+//                abs.start(kernelPath, configPath);
+//            } else if (Validate.isNullOrEmptyOrAllSpace(kernelPath) && !Validate.isNullOrEmptyOrAllSpace(configPath)) {
+//                abs.start(configPath);
+//            } else {
+//                abs.start();
+//            }
+//            if (AlbianState.Running != abs.getLifeState()) {
+//                return false;
+//            }
         } catch (Exception e) {
             // TODO Auto-generated catch block
+            LogServant.Instance.newLogPacketBuilder().addMessage("startup albianj was fail.")
+//                    .aroundBundle(this.bundleName)
+                    .atLevel(LoggerLevel.Error)
+                    .byCalled(AlbianBootService.class)
+                    .alwaysThrow(true)
+                    .withCause(e)
+                    .forSessionId("loadclass")
+                    .takeBrief("Albianj Satrtup")
+                    .build().toLogger();
             e.printStackTrace();
             return false;
         }

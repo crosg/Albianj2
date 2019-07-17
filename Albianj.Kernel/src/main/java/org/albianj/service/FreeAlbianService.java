@@ -39,6 +39,9 @@ package org.albianj.service;
 
 import org.albianj.aop.AlbianAopAttribute;
 import org.albianj.comment.Comments;
+import org.albianj.framework.boot.ApplicationContext;
+import org.albianj.framework.boot.BundleContext;
+import org.albianj.framework.boot.servants.FileServant;
 import org.albianj.io.Path;
 import org.albianj.kernel.AlbianKernel;
 import org.albianj.kernel.KernelSetting;
@@ -172,9 +175,18 @@ public abstract class FreeAlbianService implements IAlbianService {
     @AlbianAopAttribute(avoid = true)
     protected String findConfigFile(String filename) {
         try {
+            String fname = null;
+            BundleContext bctx = ApplicationContext.Instance.findCurrentBundleContext(this.getClass(),false);
+            if(null != bctx) {
+                fname = bctx.findConfigFile(filename);
+                if(FileServant.Instance.isFileOrPathExist(fname)) {
+                    return fname;
+                }
+            }
+
             File f = new File(filename);
             if (f.exists()) return filename;
-            String fname = Path.getExtendResourcePath(KernelSetting.getAlbianConfigFilePath() + filename);
+            fname = Path.getExtendResourcePath(KernelSetting.getAlbianConfigFilePath() + filename);
             f = new File(fname);
             if (f.exists()) return fname;
             throw new RuntimeException("not found the filename.");
@@ -189,7 +201,7 @@ public abstract class FreeAlbianService implements IAlbianService {
     protected String confirmConfigFile(String filename) {
         return findConfigFile(filename);
     }
-
+    @AlbianAopAttribute(avoid = true)
     public String getServiceName() {
         return this.getClass().getSimpleName();
     }
@@ -207,9 +219,11 @@ public abstract class FreeAlbianService implements IAlbianService {
     }
 
     private IAlbianServiceAttribute attr;
+    @AlbianAopAttribute(avoid = true)
     public void setServiceAttribute(IAlbianServiceAttribute attr){
         this.attr = attr;
     }
+    @AlbianAopAttribute(avoid = true)
     public IAlbianServiceAttribute getServiceAttribute(){
         return this.attr;
     }

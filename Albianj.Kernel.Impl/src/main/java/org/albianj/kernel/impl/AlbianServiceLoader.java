@@ -65,13 +65,13 @@ public class AlbianServiceLoader {
                 rtnService = service;
             } else {
 //                AlbianServiceProxyExecutor proxy = new AlbianServiceProxyExecutor();
-                IAlbianService serviceProxy = (IAlbianService) AlbianServiceProxyExecutor.Instance.newProxyService(service, serviceAttr.getAopAttributes());
-                serviceProxy.setRealService(service);
+                IAlbianService serviceProxy = (IAlbianService) AlbianServiceProxyExecutor.Instance.newProxyService(service, serviceAttr);
+//                serviceProxy.setRealService(service);
                 serviceProxy.beforeLoad();
                 serviceProxy.loading();
                 serviceProxy.afterLoading();
-                serviceProxy.setServiceId(id);
-                service.setServiceAttribute(serviceAttr);
+//                serviceProxy.setServiceId(id);
+//                service.setServiceAttribute(serviceAttr);
                 rtnService = serviceProxy;
             }
         } catch (Exception e) {

@@ -5,8 +5,6 @@ import Albian.Test.Services.IUserService;
 import org.albianj.framework.boot.ApplicationContext;
 import org.albianj.framework.boot.BundleContext;
 import org.albianj.logger.IAlbianLoggerService2;
-import org.albianj.logger.monitor.AlbianMonitorData;
-import org.albianj.logger.monitor.IAlbianMonitorLoggerService;
 import org.albianj.service.AlbianServiceRouter;
 
 public class DoTest {
@@ -19,6 +17,7 @@ public class DoTest {
                                 .setStartupClassName(TestBundleMain.class.getName())
                                 .setInstallSpxFile(false)
                                 .setConfFolder("D:\\work\\github\\albianj2\\Albianj.Test\\src\\main\\resources\\config")
+                                .setLibFolder("D:\\work\\github\\albianj2\\Albianj.Test\\target\\lib")
                                 .setWorkFolder("D:\\work\\github\\albianj2\\Albianj.Test")
                                 .setBundleName("DoTest")
                                 .build());
@@ -32,15 +31,15 @@ public class DoTest {
 //            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
 //                    "wolaile2");
 
-            IAlbianMonitorLoggerService mlogServ = AlbianServiceRouter.getSingletonService(IAlbianMonitorLoggerService.class,IAlbianMonitorLoggerService.Name);
-            mlogServ.addMonitorLog("session",
-                    AlbianMonitorData.build()
-                            .setAppName("appname").setBizExtend("bizExtend")
-                    .setBizId("bizid").setBizName("bizName").setDesIp("desip")
-                    .setDesPort(8080).setDetail("detail")
-                    .setLevel("debug").setSessionId("session")
-                    .setStatus(200).setTasktime(60)
-                    );
+//            IAlbianMonitorLoggerService mlogServ = AlbianServiceRouter.getSingletonService(IAlbianMonitorLoggerService.class,IAlbianMonitorLoggerService.Name);
+//            mlogServ.addMonitorLog("session",
+//                    AlbianMonitorData.build()
+//                            .setAppName("appname").setBizExtend("bizExtend")
+//                    .setBizId("bizid").setBizName("bizName").setDesIp("desip")
+//                    .setDesPort(8080).setDetail("detail")
+//                    .setLevel("debug").setSessionId("session")
+//                    .setStatus(200).setTasktime(60)
+//                    );
             return;
 
 

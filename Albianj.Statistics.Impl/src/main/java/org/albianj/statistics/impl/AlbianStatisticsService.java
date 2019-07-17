@@ -4,6 +4,7 @@ import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.FreeAlbianService;
 import org.albianj.service.parser.AlbianParserException;
 import org.albianj.statistics.IAlbianStatisticsService;
+
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @AlbianServiceRant(Id = IAlbianStatisticsService.Name, Interface = IAlbianStatisticsService.class)

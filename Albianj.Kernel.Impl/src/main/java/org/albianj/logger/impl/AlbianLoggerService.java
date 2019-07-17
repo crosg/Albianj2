@@ -37,7 +37,6 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.logger.impl;
 
-import org.albianj.io.Path;
 import org.albianj.kernel.KernelSetting;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.IAlbianLoggerService;
@@ -53,7 +52,6 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
 import java.util.Formatter;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -77,16 +75,18 @@ public class AlbianLoggerService extends FreeAlbianService implements
     public void loading() throws AlbianServiceException {
         try {
             Thread.currentThread().setContextClassLoader(AlbianClassLoader.getInstance());
-            if (KernelSetting.getAlbianConfigFilePath().startsWith("http://")) {
-                DOMConfigurator.configure(new URL(Path
-                        .getExtendResourcePath(KernelSetting
-                                .getAlbianConfigFilePath() + "log4j.xml")));
-            } else {
-
-                DOMConfigurator.configure(Path
-                        .getExtendResourcePath(KernelSetting
-                                .getAlbianConfigFilePath() + "log4j.xml"));
-            }
+            String fname = findConfigFile("log4j.xml");
+            DOMConfigurator.configure(fname);
+//            if (KernelSetting.getAlbianConfigFilePath().startsWith("http://")) {
+//                DOMConfigurator.configure(new URL(Path
+//                        .getExtendResourcePath(KernelSetting
+//                                .getAlbianConfigFilePath() + "log4j.xml")));
+//            } else {
+//
+//                DOMConfigurator.configure(Path
+//                        .getExtendResourcePath(KernelSetting
+//                                .getAlbianConfigFilePath() + "log4j.xml"));
+//            }
 
             super.loading();
             loggers = new ConcurrentHashMap<String, Logger>();

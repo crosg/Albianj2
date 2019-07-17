@@ -40,8 +40,6 @@ package org.albianj.service.impl;
 import org.albianj.aop.AlbianAopAttribute;
 import org.albianj.aop.IAlbianServiceAopAttribute;
 import org.albianj.aop.IAlbianServiceMethodAttribute;
-import org.albianj.io.Path;
-import org.albianj.kernel.KernelSetting;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.runtime.AlbianModuleType;
@@ -75,9 +73,11 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
 
         Map<String, IAlbianServiceAttribute> map = new LinkedHashMap<>();
         try {
-            parserFile(map,
-                    Path.getExtendResourcePath(KernelSetting.getAlbianConfigFilePath()
-                            + getConfigFileName()));
+            String fname = findConfigFile(file);
+            parserFile(map,fname);
+//            parserFile(map,
+//                    Path.getExtendResourcePath(KernelSetting.getAlbianConfigFilePath()
+//                            + getConfigFileName()));
 
 
         } catch (Exception e) {

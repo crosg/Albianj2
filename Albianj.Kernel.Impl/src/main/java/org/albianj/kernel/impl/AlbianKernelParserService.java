@@ -37,7 +37,6 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.kernel.impl;
 
-import org.albianj.io.Path;
 import org.albianj.kernel.AlbianLevel;
 import org.albianj.kernel.AlbianStartupMode;
 import org.albianj.kernel.KernelSetting;
@@ -69,9 +68,11 @@ public class AlbianKernelParserService extends FreeAlbianParserService {
 
     public void init() {
         try {
-            Properties props = PropertiesParser.load(Path
-                    .getExtendResourcePath(KernelSetting
-                            .getAlbianKernelConfigFilePath() + file));
+            String fname = findConfigFile(file);
+            Properties props = PropertiesParser.load(fname);
+//            Properties props = PropertiesParser.load(Path
+//                    .getExtendResourcePath(KernelSetting
+//                            .getAlbianKernelConfigFilePath() + file));
             parser(props);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName, IAlbianLoggerService2.InnerThreadName,

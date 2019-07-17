@@ -6,13 +6,12 @@ import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.logger.monitor.AlbianMonitorData;
 import org.albianj.logger.monitor.IAlbianMonitorLoggerService;
-import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.FreeAlbianService;
 import org.albianj.service.parser.AlbianParserException;
 import org.slf4j.Logger;
 
-@AlbianServiceRant(Id = IAlbianMonitorLoggerService.Name, Interface = IAlbianMonitorLoggerService.class)
+//@AlbianServiceRant(Id = IAlbianMonitorLoggerService.Name, Interface = IAlbianMonitorLoggerService.class)
 public class AlbianMonitorLoggerService extends FreeAlbianService implements IAlbianMonitorLoggerService {
 
     private Logger mlog = null;

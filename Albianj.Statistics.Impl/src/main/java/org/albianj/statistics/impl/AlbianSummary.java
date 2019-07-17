@@ -2,9 +2,7 @@ package org.albianj.statistics.impl;
 
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.statistics.IAlbianStatisticsService;
-import sun.management.snmp.jvmmib.JvmThreadInstanceTableMeta;
 
-import javax.swing.*;
 import java.util.HashMap;
 
 

@@ -39,7 +39,6 @@ package org.albianj.service.impl;
 
 import org.albianj.aop.IAlbianServiceAopAttribute;
 import org.albianj.aop.IAlbianServiceMethodAttribute;
-import org.albianj.aop.IAlbianServiceMethodRetryAttribute;
 import org.albianj.service.IAlbianService;
 import org.albianj.service.IAlbianServiceAttribute;
 import org.albianj.service.IAlbianServiceFieldAttribute;

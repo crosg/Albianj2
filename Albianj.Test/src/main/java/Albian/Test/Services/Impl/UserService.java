@@ -23,7 +23,6 @@ import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.FreeAlbianService;
 
 import java.math.BigInteger;
-import java.nio.channels.IllegalChannelGroupException;
 
 // service必须使用此特性进行标注，否则albianj不对其进行解析
 @AlbianServiceRant(Id = "UserService", Interface = IUserService.class)

@@ -33,7 +33,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.List;
 
 @AlbianServiceRant(Id = IAlbianMVCConfigurtionService.Name, Interface = IAlbianMVCConfigurtionService.class)
 public class AlbianMVCConfigurtionService extends FreeAlbianParserService implements IAlbianMVCConfigurtionService {
@@ -128,7 +127,7 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
         String formatClassname = XmlParser.getAttributeValue(doc,"Mvf/FormatService","ClassName");
         if(!Validate.isNullOrEmptyOrAllSpace(formatClassname)){
             try {
-                Class<?> format = AlbianClassLoader.getSystemClassLoader().loadClass(formatClassname);
+                Class<?> format = AlbianClassLoader.getInstance().loadClass(formatClassname);
                 c.setFormatServiceClass(format);
             } catch (ClassNotFoundException e) {
                 AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
@@ -541,7 +540,7 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             fuc.setFileUploadServiceClass(AlbianFileUploadService.class);
         } else{
             try {
-                Class<?> cla = AlbianClassLoader.getSystemClassLoader().loadClass(classname);
+                Class<?> cla = AlbianClassLoader.getInstance().loadClass(classname);
                 fuc.setFileUploadServiceClass(cla);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -721,7 +720,7 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
         template = Path.joinWithFilename(template,c.getRootPath());
         try {
             ViewConfigurtion pc = new ViewConfigurtion();
-            Class<? extends MView> cla = (Class<? extends MView>) AlbianClassLoader.getSystemClassLoader().loadClass(classname);
+            Class<? extends MView> cla = (Class<? extends MView>) AlbianClassLoader.getInstance().loadClass(classname);
             pc.setAutoBinding(isBinding);
             pc.setRealClass(cla);
             pc.setFullClassName(classname);
@@ -743,7 +742,7 @@ public class AlbianMVCConfigurtionService extends FreeAlbianParserService implem
             return null;
         }
         try {
-            Class<? extends IServerLifeCycle> cla = (Class<? extends IServerLifeCycle>) AlbianClassLoader.getSystemClassLoader().loadClass(className);
+            Class<? extends IServerLifeCycle> cla = (Class<? extends IServerLifeCycle>) AlbianClassLoader.getInstance().loadClass(className);
             if (null == cla) {
                 return null;
             }
