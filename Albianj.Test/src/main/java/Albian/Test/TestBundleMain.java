@@ -13,7 +13,10 @@ public class TestBundleMain {
             BundleContext bctx =  ApplicationContext.Instance.findCurrentBundleContext(this.getClass(),true);
             String[] args = bctx.getArgs();
             try {
-                AlbianBootService.start(args[0]);
+                boolean rc = AlbianBootService.start(args[0]);
+                if(!rc){
+                    System.out.println("Startup albianj is fail.");
+                }
             }catch (Exception e){
                 e.printStackTrace();
             }

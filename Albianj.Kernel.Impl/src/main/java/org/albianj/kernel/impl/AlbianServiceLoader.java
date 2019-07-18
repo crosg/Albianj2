@@ -52,26 +52,32 @@ public class AlbianServiceLoader {
                 }
             }
 
-            IAlbianService service = (IAlbianService) cla.newInstance();
-            setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.AfterNew, servAttrs);
-            service.beforeLoad();
-            setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.BeforeLoading, servAttrs);
-            service.loading();
-            setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.AfterLoading, servAttrs);
-            service.afterLoading();
-            service.setServiceId(id);
-            service.setServiceAttribute(serviceAttr);
+
             if (!serviceAttr.isUseProxy()) {
+                IAlbianService service = (IAlbianService) cla.newInstance();
+                setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.AfterNew, servAttrs);
+                service.beforeLoad();
+                setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.BeforeLoading, servAttrs);
+                service.loading();
+                setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.AfterLoading, servAttrs);
+                service.afterLoading();
+                service.setServiceId(id);
+                service.setServiceAttribute(serviceAttr);
                 rtnService = service;
             } else {
-//                AlbianServiceProxyExecutor proxy = new AlbianServiceProxyExecutor();
-                IAlbianService serviceProxy = (IAlbianService) AlbianServiceProxyExecutor.Instance.newProxyService(service, serviceAttr);
-//                serviceProxy.setRealService(service);
+                AlbianServiceProxyExecutor proxy = new AlbianServiceProxyExecutor();
+                IAlbianService service = (IAlbianService) cla.newInstance();
+//                IAlbianService serviceProxy = (IAlbianService) AlbianServiceProxyExecutor.Instance.newProxyService(service, serviceAttr);
+                IAlbianService serviceProxy = (IAlbianService)proxy.newInstance(service, serviceAttr);
+                serviceProxy.setRealService(service);
+                setServiceFields(serviceProxy, serviceAttr, AlbianServiceFieldSetterLifetime.AfterNew, servAttrs);
                 serviceProxy.beforeLoad();
+                setServiceFields(serviceProxy, serviceAttr, AlbianServiceFieldSetterLifetime.BeforeLoading, servAttrs);
                 serviceProxy.loading();
+                setServiceFields(serviceProxy, serviceAttr, AlbianServiceFieldSetterLifetime.AfterLoading, servAttrs);
                 serviceProxy.afterLoading();
-//                serviceProxy.setServiceId(id);
-//                service.setServiceAttribute(serviceAttr);
+                serviceProxy.setServiceId(id);
+                serviceProxy.setServiceAttribute(serviceAttr);
                 rtnService = serviceProxy;
             }
         } catch (Exception e) {

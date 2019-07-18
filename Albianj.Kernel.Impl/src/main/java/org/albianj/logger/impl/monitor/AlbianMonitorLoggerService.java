@@ -9,7 +9,8 @@ import org.albianj.logger.monitor.IAlbianMonitorLoggerService;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.FreeAlbianService;
 import org.albianj.service.parser.AlbianParserException;
-import org.slf4j.Logger;
+import org.apache.log4j.Logger;
+//import org.slf4j.Logger;
 
 //@AlbianServiceRant(Id = IAlbianMonitorLoggerService.Name, Interface = IAlbianMonitorLoggerService.class)
 public class AlbianMonitorLoggerService extends FreeAlbianService implements IAlbianMonitorLoggerService {

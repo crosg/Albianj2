@@ -8,7 +8,9 @@ import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.FreeAlbianService;
 import org.albianj.verify.Validate;
-import org.slf4j.Logger;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
+//import org.slf4j.Logger;
 
 import java.util.Formatter;
 import java.util.concurrent.ConcurrentHashMap;
@@ -145,13 +147,13 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
                     return info;
                 }
             case Warn:
-                if (logger.isWarnEnabled()) {
+                if (logger.isEnabledFor(Priority.WARN)) {
                     String info = makeLogInfo(filename, methodName, lineNumber, sessionId, level, e, format, values);
                     logger.warn(info);
                     return info;
                 }
             case Error:
-                if (logger.isErrorEnabled()) {
+                if (logger.isEnabledFor(Priority.ERROR)) {
                     String info = makeLogInfo(filename, methodName, lineNumber, sessionId, level, e, format, values);
                     logger.error(info);
                     return info;
@@ -190,12 +192,12 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
                     return;
                 }
             case Warn:
-                if (logger.isWarnEnabled()) {
+                if (logger.isEnabledFor(Priority.WARN)) {
                     logger.warn(ctx);
                     return;
                 }
             case Error:
-                if (logger.isErrorEnabled()) {
+                if (logger.isEnabledFor(Priority.ERROR)) {
                     logger.error(ctx);
                     return;
                 }

@@ -48,9 +48,12 @@ import org.albianj.service.AlbianServiceRant;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.service.FreeAlbianService;
 import org.albianj.verify.Validate;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import java.util.Formatter;
 import java.util.concurrent.ConcurrentHashMap;
@@ -104,7 +107,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
         if (loggers.containsKey(name)) {
             return loggers.get(name);
         } else {
-            Logger logger = LoggerFactory.getLogger(name);
+            Logger logger =  Logger.getLogger(name);
             loggers.put(name, logger);
             return logger;
         }
@@ -195,7 +198,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
         Logger logger = getLogger(loggerName);
         if (null == logger)
             return;
-        if (logger.isErrorEnabled()) {
+        if (logger.isEnabledFor(Priority.ERROR)) {
             logger.error(getErrorMsg(e, format, values));
             throw new RuntimeException(e);
         }
@@ -212,7 +215,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
         Logger logger = getLogger(loggerName);
         if (null == logger)
             return;
-        if (logger.isErrorEnabled()) {
+        if (logger.isEnabledFor(Priority.ERROR)) {
             String id = AlbianServiceRouter.getLogIdService().makeLoggerId();
             String msg = getErrorMsg(e, format, values);
             String tMsg = String.format("%s | %s.", id, msg);
@@ -240,7 +243,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
         Logger logger = getLogger(loggerName);
         if (null == logger)
             return;
-        if (logger.isErrorEnabled()) {
+        if (logger.isEnabledFor(Priority.ERROR)) {
             String id = AlbianServiceRouter.getLogIdService().makeLoggerId();
             String msg = getErrorMsg(format, values);
             String tMsg = String.format("%s | %s.", id, msg);
@@ -279,7 +282,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
         Logger logger = getLogger(loggerName);
         if (null == logger)
             return;
-        if (logger.isWarnEnabled()) {
+        if (logger.isEnabledFor(Priority.WARN)) {
             logger.warn(getWarnMsg(e, format, values));
             throw new RuntimeException(e);
         }
@@ -295,7 +298,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
         Logger logger = getLogger(loggerName);
         if (null == logger)
             return;
-        if (logger.isWarnEnabled()) {
+        if (logger.isEnabledFor(Priority.WARN)) {
             String id = AlbianServiceRouter.getLogIdService().makeLoggerId();
             String msg = getWarnMsg(e, format, values);
             String tMsg = String.format("%s | %s.", id, msg);
@@ -323,7 +326,7 @@ public class AlbianLoggerService extends FreeAlbianService implements
         Logger logger = getLogger(loggerName);
         if (null == logger)
             return;
-        if (logger.isWarnEnabled()) {
+        if (logger.isEnabledFor(Priority.WARN)) {
             String id = AlbianServiceRouter.getLogIdService().makeLoggerId();
             String msg = getWarnMsg(format, values);
             String tMsg = String.format("%s | %s.", id, msg);
