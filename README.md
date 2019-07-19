@@ -63,7 +63,7 @@ albianj2主要的适用范围是互联网企业。并不是那么的适合传统
 几乎适合做互联网所有的业务，不管你是想阿里一样的电商还是想腾讯一样的社交。几乎
 都可以选择使用albianj来作为基础框架。  
 
-#Albianj2 文档列表和qq群:  
+# Albianj2 文档列表和qq群:  
 [Albianj的设计思路文档] (http://www.94geek.com/2015/albianj.html "albianj设计思路文档")  
 [Albianj使用文档] (http://www.94geek.com/2016/albianj-user-manual.html "albianj使用文档")  
 qq群：514089546
