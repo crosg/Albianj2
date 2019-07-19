@@ -52,19 +52,18 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
                 || mName.equals("equals")
                 || mName.equals("clone")
                 || mName.equals("finalize")) {
-            Object rc = methodProxy.invokeSuper(proxy, args);
+            Object rc = method.invoke(_service, args);
             return rc;
         }
 
-//        Method rm = this._service.getClass().getDeclaredMethod(mName, method.getParameterTypes());
         AlbianAopAttribute attr = method.getAnnotation(AlbianAopAttribute.class);
         if (null != attr && attr.avoid()) {
-            Object rc = methodProxy.invokeSuper(proxy, args);
+            Object rc = method.invoke(_service, args);
             return rc;
         }
 
         if (Validate.isNullOrEmpty(_aopAttributes)) {
-            Object rc = methodProxy.invokeSuper(proxy, args);
+            Object rc = method.invoke(_service, args);
             return rc;
         }
 
@@ -115,6 +114,77 @@ public class AlbianServiceProxyExecutor implements MethodInterceptor {
 
         if(null != throwable) throw throwable;
         return rc;
+
+
+
+//        if (mName.equals("hashCode")
+//                || mName.equals("toString")
+//                || mName.equals("equals")
+//                || mName.equals("clone")
+//                || mName.equals("finalize")) {
+//            Object rc = methodProxy.invokeSuper(proxy, args);
+//            return rc;
+//        }
+
+//        Method rm = this._service.getClass().getDeclaredMethod(mName, method.getParameterTypes());
+//        AlbianAopAttribute attr = method.getAnnotation(AlbianAopAttribute.class);
+//        if (null != attr && attr.avoid()) {
+//            Object rc = methodProxy.invokeSuper(proxy, args);
+//            return rc;
+//        }
+//
+//        if (Validate.isNullOrEmpty(_aopAttributes)) {
+//            Object rc = methodProxy.invokeSuper(proxy, args);
+//            return rc;
+//        }
+//
+//        IAlbianAopContext ctx = new AlbianAopContext();
+//
+//        Object rc = null;
+//        for(IAlbianServiceAopAttribute asaa : _aopAttributes.values()) {
+//            IAlbianAopService aas = AlbianServiceRouter.getSingletonService(
+//                    IAlbianAopService.class, asaa.getServiceName(), false);
+//            if (null == aas) continue;
+//
+//            if (asaa.matches(mName)) {
+//                try {
+//                    aas.before(ctx, _service, method, args);
+//                } catch (Throwable e) {
+//                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+//                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e,
+//                            "execute the before method in the aop service:%s for real service:%s is fail.",asaa.getServiceName(),this._service.getServiceName());
+//                }
+//            }
+//        }
+//
+//        Throwable throwable = null;
+//        try {
+//            rc = methodProxy.invokeSuper(proxy, args);
+//        }catch (Throwable t){
+//            throwable = t;
+//            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+//                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,t,
+//                    "execute the proxy service:%s method:%s is fail.",this._service.getServiceName(),mName);
+//        }
+//
+//        for(IAlbianServiceAopAttribute asaa : _aopAttributes.values()) {
+//            IAlbianAopService aas = AlbianServiceRouter.getSingletonService(
+//                    IAlbianAopService.class, asaa.getServiceName(), false);
+//            if (null == aas) continue;
+//
+//            if (asaa.matches(mName)) {
+//                try {
+//                    aas.after(ctx, _service, method, rc, throwable,args);
+//                } catch (Throwable e) {
+//                    AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+//                            IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,e,
+//                            "execute the after method in the aop service:%s for real service:%s is fail.",asaa.getServiceName(),this._service.getServiceName());
+//                }
+//            }
+//        }
+//
+//        if(null != throwable) throw throwable;
+//        return rc;
 
     }
 

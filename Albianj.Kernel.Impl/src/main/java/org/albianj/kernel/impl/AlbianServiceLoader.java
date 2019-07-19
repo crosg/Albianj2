@@ -53,32 +53,35 @@ public class AlbianServiceLoader {
             }
 
 
-            if (!serviceAttr.isUseProxy()) {
-                IAlbianService service = (IAlbianService) cla.newInstance();
-                setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.AfterNew, servAttrs);
-                service.beforeLoad();
-                setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.BeforeLoading, servAttrs);
-                service.loading();
-                setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.AfterLoading, servAttrs);
-                service.afterLoading();
-                service.setServiceId(id);
-                service.setServiceAttribute(serviceAttr);
-                rtnService = service;
-            } else {
+            IAlbianService service = (IAlbianService) cla.newInstance();
+            service.setRealService(service);
+            setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.AfterNew, servAttrs);
+            service.beforeLoad();
+            setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.BeforeLoading, servAttrs);
+            service.loading();
+            setServiceFields(service, serviceAttr, AlbianServiceFieldSetterLifetime.AfterLoading, servAttrs);
+            service.afterLoading();
+            service.setServiceId(id);
+            service.setServiceAttribute(serviceAttr);
+            rtnService = service;
+            if (serviceAttr.isUseProxy()) {
                 AlbianServiceProxyExecutor proxy = new AlbianServiceProxyExecutor();
-                IAlbianService service = (IAlbianService) cla.newInstance();
-//                IAlbianService serviceProxy = (IAlbianService) AlbianServiceProxyExecutor.Instance.newProxyService(service, serviceAttr);
                 IAlbianService serviceProxy = (IAlbianService)proxy.newInstance(service, serviceAttr);
-                serviceProxy.setRealService(service);
-                setServiceFields(serviceProxy, serviceAttr, AlbianServiceFieldSetterLifetime.AfterNew, servAttrs);
-                serviceProxy.beforeLoad();
-                setServiceFields(serviceProxy, serviceAttr, AlbianServiceFieldSetterLifetime.BeforeLoading, servAttrs);
-                serviceProxy.loading();
-                setServiceFields(serviceProxy, serviceAttr, AlbianServiceFieldSetterLifetime.AfterLoading, servAttrs);
-                serviceProxy.afterLoading();
-                serviceProxy.setServiceId(id);
-                serviceProxy.setServiceAttribute(serviceAttr);
                 rtnService = serviceProxy;
+
+//            } else {
+
+//                IAlbianService serviceProxy = (IAlbianService) AlbianServiceProxyExecutor.Instance.newProxyService(service, serviceAttr);
+
+//                serviceProxy.setRealService(service);
+//                setServiceFields(serviceProxy, serviceAttr, AlbianServiceFieldSetterLifetime.AfterNew, servAttrs);
+//                serviceProxy.beforeLoad();
+//                setServiceFields(serviceProxy, serviceAttr, AlbianServiceFieldSetterLifetime.BeforeLoading, servAttrs);
+//                serviceProxy.loading();
+//                setServiceFields(serviceProxy, serviceAttr, AlbianServiceFieldSetterLifetime.AfterLoading, servAttrs);
+//                serviceProxy.afterLoading();
+//                serviceProxy.setServiceId(id);
+//                serviceProxy.setServiceAttribute(serviceAttr);
             }
         } catch (Exception e) {
             AlbianServiceRouter.throwException(sessionId,

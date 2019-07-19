@@ -75,7 +75,7 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
 
     @Override
     public void log(String loggerName, Object sessionId, AlbianLoggerLevel level, String format, Object... values) {
-        StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
+        StackTraceElement stack = Thread.currentThread().getStackTrace()[1];
         String filename = stack.getFileName();
         String method = stack.getMethodName();
         int line = stack.getLineNumber();

@@ -4,6 +4,7 @@ import org.albianj.framework.boot.ApplicationContext;
 import org.albianj.framework.boot.BundleContext;
 import org.albianj.framework.boot.except.ThrowableServant;
 import org.albianj.loader.AlbianBootService;
+import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.service.AlbianServiceRouter;
 
@@ -22,6 +23,8 @@ public class TestBundleMain {
             }
 
             IAlbianLoggerService2 logServ = AlbianServiceRouter.getLogger2();
+            logServ.log(AlbianServiceRouter.LoggerRunning,"Sessionid", AlbianLoggerLevel.Mark,
+            "Startup albianj...");
 //            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
 //                    "wolaile");
 //            Thread.sleep(65* 1000);
