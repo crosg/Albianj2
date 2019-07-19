@@ -80,17 +80,6 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
         }
     }
 
-//    private static ICacheAttribute parserAlbianObjectCache(Node node) {
-//        String enable = XmlParser.getAttributeValue(node, "Enable");
-//        String lifeTime = XmlParser.getAttributeValue(node, "LifeTime");
-//        String name = XmlParser.getAttributeValue(node, "Name");
-//        ICacheAttribute cache = new CacheAttribute();
-//        cache.setEnable(Validate.isNullOrEmptyOrAllSpace(enable) ? true : new Boolean(enable));
-//        cache.setLifeTime(Validate.isNullOrEmptyOrAllSpace(lifeTime) ? 300 : new Integer(lifeTime));
-//        cache.setName(Validate.isNullOrEmptyOrAllSpace(name) ? "Default" : name);
-//        return cache;
-//    }
-
     private static void parserEntityField(String type, Element elt, Map<String, IAlbianEntityFieldAttribute> map)
             throws AlbianParserException {
         String name = XmlParser.getAttributeValue(elt, "Name");
@@ -101,7 +90,6 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
                     "the persisten node name is null or empty.type:%s,node xml:%s.", type, elt.asXML());
         }
         IAlbianEntityFieldAttribute fieldAttr = map.get(name.toLowerCase());
-//        IMemberAttribute member = (IMemberAttribute) map.get(name.toLowerCase());
         if (null == fieldAttr) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
@@ -134,11 +122,6 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
         if (!Validate.isNullOrEmpty(isSave)) {
             fieldAttr.setIsSave(new Boolean(isSave));
         }
-//        if(Validate.isNullOrEmptyOrAllSpace(varField)){
-//            member.setVarField(StringHelper.lowercasingFirstLetter(name));
-//        } else {
-//            member.setVarField(varField);
-//        }
     }
 
     private static void parserAlbianObjectMembers(String type, @SuppressWarnings("rawtypes") List nodes,
@@ -279,15 +262,6 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "parser persisten node is fail,xml:%s", ele.asXML());
             }
-//            if (null == albianObjectAttribute) {
-//                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-//                        IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null, AlbianModuleType.AlbianPersistence,
-//                        AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                        "parser persisten node is fail,the node attribute is null,xml:%s", ele.asXML());
-//            }
-//            inter = albianObjectAttribute.getInterface();
-
-//            addAlbianObjectAttribute(inter, albianObjectAttribute);
         }
 
     }
@@ -359,18 +333,6 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
 
         pkgEntityAttr.setImplClzz(implClzz);
 
-//        addAlbianObjectClassToInterface(type, inter);
-//        Map<String, IMemberAttribute> map = reflexAlbianObjectMembers(type);
-//        Node cachedNode = node.selectSingleNode(cacheTagName);
-//        ICacheAttribute cached;
-//        if (null == cachedNode) {
-//            cached = new CacheAttribute();
-//            cached.setEnable(false);
-//            cached.setLifeTime(300);
-//        } else {
-//            cached = parserAlbianObjectCache(cachedNode);
-//        }
-
         IDataRouterAttribute defaultRouting = new DataRouterAttribute();
         defaultRouting.setName(AlbianDataRouterParserService.DEFAULT_ROUTING_NAME);
         defaultRouting.setOwner("dbo");
@@ -389,15 +351,6 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
             defaultRouting.setTableName(csn);
         }
 
-//        IAlbianObjectAttribute albianObjectAttribute = new AlbianObjectAttribute();
-//        Node tnode = node.selectSingleNode("Transaction");
-//        if (null != tnode) {
-//            String sCompensating = XmlParser.getAttributeValue(node, "Compensating");
-//            if (!Validate.isNullOrEmptyOrAllSpace(sCompensating)) {
-//                pkgEntityAttr.setCompensating(new Boolean(sCompensating));
-//            }
-//        }
-
         Map<String, IAlbianEntityFieldAttribute> entityFieldAttr = null;
         if (Validate.isNullOrEmpty(pkgEntityAttr.getFields())) {
             entityFieldAttr = AlbianEntityRantScaner.scanFields(implClzz);
@@ -408,12 +361,9 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
         @SuppressWarnings("rawtypes")
         List nodes = node.selectNodes(memberTagName);
         if (!Validate.isNullOrEmpty(nodes)) {
-//            parserAlbianObjectMembers(type, nodes, map);
             parserEntityFields(type, nodes, entityFieldAttr);
         }
 
-//        pkgEntityAttr.setCache(cached);
-//        pkgEntityAttr.setMembers(map);
         pkgEntityAttr.setDefaultRouting(defaultRouting);
         return;
     }
@@ -437,7 +387,6 @@ public class AlbianMappingParserService extends FreeAlbianMappingParserService {
                     AlbianModuleType.AlbianPersistence.getThrowInfo(),
                     "the type:%s is not found", type);
         }
-//        addAlbianObjectPropertyDescriptor(type, propertyDesc);
         for (PropertyDescriptor p : propertyDesc) {
             IMemberAttribute member = reflexAlbianObjectMember(type, p);
             if (null == member) {

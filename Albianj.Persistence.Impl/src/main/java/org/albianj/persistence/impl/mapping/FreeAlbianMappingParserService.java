@@ -59,8 +59,6 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
 
     private final static String tagName = "AlbianObjects/AlbianObject";
     private String file = "persistence.xml";
-    //    private HashMap<String, IAlbianObjectAttribute> _objAttrs = null;
-//    private HashMap<String, String> _class2Inter = null;
     private HashMap<String, PropertyDescriptor[]> _bpd = null;
 
     public void setConfigFileName(String fileName) {
@@ -68,8 +66,6 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
     }
 
     public void init() throws AlbianParserException {
-//        _objAttrs = new HashMap<>();
-//        _class2Inter = new HashMap<>();
         _bpd = new HashMap<>();
 
 
@@ -163,12 +159,6 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
         List objNodes = XmlParser.selectNodes(doc, tagName);
         if (!Validate.isNullOrEmpty(objNodes)) {
             parserAlbianObjects(objNodes);
-//            AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
-//                    IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error,null,
-//                    AlbianModuleType.AlbianPersistence,
-//                    AlbianModuleType.AlbianPersistence.getThrowInfo(),
-//                    "parser the node tags:%s in the persisten.xml is error. the node of the tags is null or empty.",
-//                    tagName);
         }
 
         return;
@@ -178,33 +168,4 @@ public abstract class FreeAlbianMappingParserService extends FreeAlbianParserSer
     protected abstract void parserAlbianObjects(
             @SuppressWarnings("rawtypes") List nodes)
             throws AlbianParserException;
-
-//    protected abstract IAlbianObjectAttribute parserAlbianObject(Element node)
-//            throws AlbianParserException;
-
-//    public void addAlbianObjectAttribute(String name, IAlbianObjectAttribute aba) {
-//        _objAttrs.put(name, aba);
-//    }
-//
-//    public IAlbianObjectAttribute getAlbianObjectAttribute(String name) {
-//        return _objAttrs.get(name);
-//    }
-//
-//    public void addAlbianObjectClassToInterface(String type, String inter) {
-//        _class2Inter.put(type, inter);
-//    }
-//
-//    public String getAlbianObjectInterface(String type) {
-//        return _class2Inter.get(type);
-//    }
-
-//    public void addAlbianObjectPropertyDescriptor(String type, PropertyDescriptor[] pds) {
-//        _bpd.put(type, pds);
-//    }
-//
-//    public PropertyDescriptor[] getAlbianObjectPropertyDescriptor(String type) {
-//        return _bpd.get(type);
-//    }
-
-
 }
