@@ -84,7 +84,7 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
 
     @Override
     public void log(String loggerName, Object sessionId, AlbianLoggerLevel level, Throwable e, String format, Object... values) {
-        StackTraceElement stack = e.getStackTrace()[1];
+        StackTraceElement stack = e.getStackTrace()[2];
         String filename = stack.getFileName();
         String method = stack.getMethodName();
         int line = stack.getLineNumber();
@@ -97,7 +97,7 @@ public class AlbianLoggerService2 extends FreeAlbianService implements
                             Throwable e, AlbianModuleType module, String throwInfo,
                             String format, Object... values) throws AlbianRuntimeException {
 //        StackTraceElement stack = Thread.currentThread().getStackTrace()[2];
-        StackTraceElement stack = e.getStackTrace()[1];
+        StackTraceElement stack = e.getStackTrace()[2];
         String filename = stack.getFileName();
         String method = stack.getMethodName();
         int line = stack.getLineNumber();

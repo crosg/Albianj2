@@ -1,18 +1,17 @@
 package org.albianj.persistence.impl.dbpool.impl;
 
 import com.mysql.jdbc.NotImplemented;
+import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.impl.dbpool.IPoolingConnection;
 import org.albianj.persistence.impl.dbpool.ISpxDBPool;
 import org.albianj.persistence.impl.dbpool.ISpxDBPoolConfig;
+import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
 
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
@@ -44,18 +43,35 @@ public class SpxDBPool implements ISpxDBPool {
         SpxDBPool pool = new SpxDBPool();
         pool.cf = cf;
         pool.setPoolName(cf.getPoolName());
+        try {
+            Driver driver = (Driver) Class.forName(cf.getDriverName(), true, AlbianClassLoader.getInstance()).newInstance();
+            DriverManager.registerDriver(new JDBCDriverWapper(driver));
+        } catch (Exception e) {
+            AlbianServiceRouter.getLogger2()
+                    .logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName, IAlbianLoggerService2.InnerThreadName,
+                            AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
+                            AlbianModuleType.AlbianPersistence.getThrowInfo(), "regedit JDBC Driver classname:%s is fail.",
+                            cf.getDriverName());
+        }
+
+        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                "DBPOOL", AlbianLoggerLevel.Mark,
+                "regedit MyDriver for mysql success.");
 
         for (int i = 0; i < pool.cf.getMinConnections(); i++) {
             try {
                 IPoolingConnection conn = pool.newConnection(true);
                 pool.freeConnections.add(conn);
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         "DBPOOL", AlbianLoggerLevel.Error, e,
-                        "create dbpool -> %s is fail.", cf.getPoolName());
+                        " new connection dbpool -> %s is fail.", cf.getPoolName());
                 return null;
             }
         }
+        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                "DBPOOL", AlbianLoggerLevel.Mark,
+                " new connection dbpool -> %s is success.", cf.getPoolName());
 
         pool.isActive = true;
         pool.regeditCleanupTask();

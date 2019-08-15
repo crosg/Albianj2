@@ -1,5 +1,6 @@
 package Albian.Test.Services;
 
+import org.albianj.argument.RefArg;
 import org.albianj.service.IAlbianService;
 
 public interface IUserService extends IAlbianService {
@@ -11,9 +12,9 @@ public interface IUserService extends IAlbianService {
 
     boolean modifyPwd(String uname, String orgPwd, String newPwd);
 
-    boolean batchAddUser();
+    boolean batchAddUser(RefArg<String> id1,RefArg<String> id2);
 
-    void queryMulitUserById();
+    void queryMulitUserById(String idl, String idr);
 
     boolean tranOptUser();
 }

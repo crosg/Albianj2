@@ -95,17 +95,19 @@ public class AlbianEntityRantScaner {
                                     if (null != cfgRRouter) {
                                         //exist pkg datarouter and cfg datarouter,merger them base cfg datarouter
                                         pkgRRouter.putAll(cfgRRouter);
+                                    } else {
+                                        //if not exist cfg drouter or memgered drouter,set to total drouter
+                                        cfgDataRouterAttr.setReaderRouters(pkgRRouter);
                                     }
-                                    //if not exist cfg drouter or memgered drouter,set to total drouter
-                                    cfgDataRouterAttr.setReaderRouters(pkgRRouter);
 
                                 }
 
                                 if (null != pkgWRouter) {
                                     if (null != cfgWRouter) {
                                         pkgWRouter.putAll(cfgWRouter);
+                                    } else {
+                                        cfgDataRouterAttr.setWriterRouters(pkgRRouter);
                                     }
-                                    cfgDataRouterAttr.setWriterRouters(pkgRRouter);
                                 }
                             }
                         }

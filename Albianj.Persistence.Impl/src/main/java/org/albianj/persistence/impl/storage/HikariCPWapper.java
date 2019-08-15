@@ -4,8 +4,10 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.albianj.kernel.AlbianLevel;
 import org.albianj.kernel.KernelSetting;
+import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.persistence.impl.dbpool.impl.JDBCDriverWapper;
 import org.albianj.persistence.object.IRunningStorageAttribute;
 import org.albianj.persistence.object.IStorageAttribute;
 import org.albianj.runtime.AlbianModuleType;
@@ -14,6 +16,8 @@ import org.albianj.service.AlbianServiceRouter;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
@@ -62,6 +66,16 @@ public class HikariCPWapper extends FreeDataBasePool {
             String url = FreeAlbianStorageParserService
                     .generateConnectionUrl(rsa);
             config.setDriverClassName(DRIVER_CLASSNAME);
+            try {
+                Driver driver = (Driver) Class.forName(DRIVER_CLASSNAME, true, AlbianClassLoader.getInstance()).newInstance();
+                DriverManager.registerDriver(new JDBCDriverWapper(driver));
+            } catch (ClassNotFoundException e) {
+                AlbianServiceRouter.getLogger2()
+                        .logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName, IAlbianLoggerService2.InnerThreadName,
+                                AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
+                                AlbianModuleType.AlbianPersistence.getThrowInfo(), "regedit JDBC Driver classname:%s is fail.",
+                                DRIVER_CLASSNAME);
+            }
             config.setJdbcUrl(url);
             if (AlbianLevel.Debug == KernelSetting.getAlbianLevel()) {
                 config.setUsername(storageAttribute.getUser());

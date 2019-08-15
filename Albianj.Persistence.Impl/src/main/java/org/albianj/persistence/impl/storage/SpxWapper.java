@@ -2,6 +2,7 @@ package org.albianj.persistence.impl.storage;
 
 import org.albianj.kernel.AlbianLevel;
 import org.albianj.kernel.KernelSetting;
+import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.impl.dbpool.ISpxDBPool;
@@ -15,14 +16,17 @@ import org.albianj.security.IAlbianSecurityService;
 import org.albianj.service.AlbianServiceRouter;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 public class SpxWapper extends FreeDataBasePool {
     public final static String DRIVER_CLASSNAME = "com.mysql.jdbc.Driver";
+//    public final static String DRIVER_CLASSNAME = "com.mysql.cj.jdbc.Driver";
+
+    public SpxWapper() {
+        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianRunningLoggerName,
+                IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Mark, "use SpxDBCP connection pool.");
+    }
 
     public Connection getConnection(String sessionid, IRunningStorageAttribute rsa,boolean isAutoCommit) {
         IStorageAttribute sa = rsa.getStorageAttribute();
@@ -68,6 +72,16 @@ public class SpxWapper extends FreeDataBasePool {
             IStorageAttribute stgAttr = rsa.getStorageAttribute();
             String url = FreeAlbianStorageParserService.generateConnectionUrl(rsa);
             cf.setDriverName(DRIVER_CLASSNAME);
+//            try {
+//                Driver driver = (Driver) Class.forName(DRIVER_CLASSNAME, true, AlbianClassLoader.getInstance()).newInstance();
+//                DriverManager.registerDriver(new JDBCDriverWapper(driver));
+//            } catch (ClassNotFoundException e) {
+//                AlbianServiceRouter.getLogger2()
+//                        .logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName, IAlbianLoggerService2.InnerThreadName,
+//                                AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
+//                                AlbianModuleType.AlbianPersistence.getThrowInfo(), "regedit JDBC Driver classname:%s is fail.",
+//                                DRIVER_CLASSNAME);
+//            }
             cf.setUrl(url);
             if (AlbianLevel.Debug == KernelSetting.getAlbianLevel()) {
                 cf.setUsername(stgAttr.getUser());

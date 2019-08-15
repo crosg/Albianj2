@@ -79,23 +79,10 @@ public class AlbianBootService {
             BundleContext bctx =  ApplicationContext.Instance.findCurrentBundleContext(AlbianBootService.class,true);
             Class<?> clss = bctx.getClassLoader()
                     .loadClass("org.albianj.kernel.impl.AlbianTransmitterService");
-//            Class<?> clss = AlbianClassLoader.getInstance()
-//                    .loadClass("org.albianj.kernel.impl.AlbianTransmitterService");
             Method m =  clss.getMethod("start",null);
             if(null != m) {
                 m.invoke(clss.newInstance(),null);
             }
-//            IAlbianTransmitterService abs = (IAlbianTransmitterService) clss.newInstance();
-//            if (!Validate.isNullOrEmptyOrAllSpace(kernelPath) && !Validate.isNullOrEmptyOrAllSpace(configPath)) {
-//                abs.start(kernelPath, configPath);
-//            } else if (Validate.isNullOrEmptyOrAllSpace(kernelPath) && !Validate.isNullOrEmptyOrAllSpace(configPath)) {
-//                abs.start(configPath);
-//            } else {
-//                abs.start();
-//            }
-//            if (AlbianState.Running != abs.getLifeState()) {
-//                return false;
-//            }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             LogServant.Instance.newLogPacketBuilder().addMessage("startup albianj was fail.")

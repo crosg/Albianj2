@@ -5,7 +5,9 @@ import org.albianj.aop.AlbianRetryException;
 import org.albianj.except.AlbianExternalException;
 import org.albianj.except.AlbianInternalException;
 import org.albianj.service.AlbianServiceRouter;
+import org.albianj.service.IAlbianService;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.*;
 
 public class AlbianMethodTimeoutProxyExecutor {
@@ -16,13 +18,13 @@ public class AlbianMethodTimeoutProxyExecutor {
         executorService = Executors.newScheduledThreadPool(100);
     }
 
-    public Object execute(final Object proxy, final Object[] args, final MethodProxy methodProxy,long timeoutMs) {
+    public Object execute(final IAlbianService realService, final Object[] args, final Method method, long timeoutMs) {
 //        ExecutorService executorService = Executors.newSingleThreadExecutor();
         FutureTask<Object> futureTask = new FutureTask<>(new Callable<Object>() {
             @Override
             public Object call() {
                 try {
-                    Object rc = methodProxy.invokeSuper(proxy, args);
+                    Object rc = method.invoke(realService, args);
                     return rc;
                 }catch (AlbianRetryException e){
                     throw e;

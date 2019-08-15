@@ -3,6 +3,7 @@ package org.albianj.aop.impl;
 import net.sf.cglib.proxy.MethodProxy;
 import org.albianj.aop.*;
 import org.albianj.service.AlbianServiceRouter;
+import org.albianj.service.IAlbianService;
 import org.albianj.statistics.IAlbianStatisticsService;
 
 import java.lang.reflect.Method;
@@ -13,10 +14,10 @@ public class AlbianMethodExecutor {
         Instance = new AlbianMethodExecutor();
     }
 
-    public Object call(Object proxy, Method method, Object[] args, MethodProxy methodProxy,
-                           boolean isIgnoreProxy, IAlbianServiceMethodAttribute funcAttr)throws Throwable{
+    public Object call(IAlbianService realService, Method method, Object[] args, MethodProxy methodProxy,
+                       boolean isIgnoreProxy, IAlbianServiceMethodAttribute funcAttr)throws Throwable{
         if(isIgnoreProxy){
-            Object rc = methodProxy.invokeSuper(proxy, args);
+            Object rc = method.invoke(realService, args);
             return rc;
         }
 
@@ -44,9 +45,9 @@ public class AlbianMethodExecutor {
             try {
                 isNeedRetry = false;
                 if (null == mtoa) {
-                    rc = methodProxy.invokeSuper(proxy, args);
+                    rc = method.invoke(realService, args);
                 } else {
-                    rc = AlbianMethodTimeoutProxyExecutor.Instance.execute(proxy, args, methodProxy, mtoa.getTimetampMs());
+                    rc = AlbianMethodTimeoutProxyExecutor.Instance.execute(realService, args, method, mtoa.getTimetampMs());
                 }
             }catch (AlbianRetryException e){
                 isNeedRetry = true;

@@ -1,5 +1,11 @@
 package org.albianj.loader;
 
+import org.albianj.framework.boot.loader.BundleClassLoader;
+import org.albianj.framework.boot.loader.TypeFileMetadata;
+import org.albianj.framework.boot.logging.LogServant;
+import org.albianj.framework.boot.logging.LoggerLevel;
+import org.albianj.verify.Validate;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -8,6 +14,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -27,6 +34,41 @@ public class AlbianClassScanner {
      * @return
      */
     public static HashMap<String, Object> filter(ClassLoader classLoader,
+                                                 String pkgName,
+                                                 IAlbianClassFilter filter,
+                                                 IAlbianClassExcavator excavator)
+            throws ClassNotFoundException, IOException {
+        // 第一个class类的集合
+        HashMap<String, Object> classes = new HashMap<String, Object>();
+        HashMap<String,Object> mapFromFolder = filterFromFolder(classLoader,
+                pkgName,
+                filter,
+                excavator);
+
+        HashMap<String,Object> mapFromTypeDired = filterFromTypeDired(classLoader,
+                pkgName,
+                filter,
+                excavator);
+        if(!Validate.isNullOrEmpty(mapFromFolder)) {
+            classes.putAll(mapFromFolder);
+        }
+        if(!Validate.isNullOrEmpty(mapFromTypeDired)) {
+            classes.putAll(mapFromTypeDired);
+        }
+
+        LogServant.Instance.newLogPacketBuilder().addMessage("PKG -> {0} find class -> {1}.",pkgName,classes.size())
+//                    .aroundBundle(this.bundleName)
+                .atLevel(LoggerLevel.Mark)
+                .byCalled(AlbianClassScanner.class)
+                .alwaysThrow(false)
+                .forSessionId("ClassScanner")
+                .takeBrief("Albianj ClassScanner")
+                .build().toLogger();
+        return classes;
+    }
+
+
+    private static HashMap<String, Object> filterFromFolder(ClassLoader classLoader,
                                                  String pkgName,
                                                  IAlbianClassFilter filter,
                                                  IAlbianClassExcavator excavator)
@@ -77,10 +119,47 @@ public class AlbianClassScanner {
         return classes;
     }
 
+    /**
+     * 从包package中获取所有的Class
+     *
+     * @param pkgName
+     * @return
+     */
+    public static HashMap<String, Object> filterFromTypeDired(ClassLoader classLoader,
+                                                 String pkgName,
+                                                 IAlbianClassFilter filter,
+                                                 IAlbianClassExcavator excavator)
+            throws ClassNotFoundException, IOException {
+
+        // 第一个class类的集合
+        HashMap<String, Object> classes = new HashMap<String, Object>();
+        if(classLoader instanceof BundleClassLoader) {
+            BundleClassLoader loader = (BundleClassLoader) classLoader;
+            Map<String, TypeFileMetadata> typefiles = loader.findChildFileEntries(pkgName);
+            for(Map.Entry<String,TypeFileMetadata> entry : typefiles.entrySet()) {
+                loadClass(classLoader, filter, classes, entry.getValue(), excavator);
+            }
+        }
+        return classes;
+    }
+
     private static void loadClass(ClassLoader classLoader,
                                   IAlbianClassFilter filter,
-                                  HashMap<String,
-                                          Object> classes,
+                                  HashMap<String, Object> classes,
+                                    TypeFileMetadata md,
+                                  IAlbianClassExcavator excavator)
+            throws ClassNotFoundException {
+        Class<?> cls = classLoader.loadClass(md.getFullClassNameWithoutSuffix());
+        if (filter.verify(cls)) {
+            Object info = excavator.finder(cls);
+            classes.put(md.getFullClassNameWithoutSuffix(), info);
+        }
+    }
+
+
+    private static void loadClass(ClassLoader classLoader,
+                                  IAlbianClassFilter filter,
+                                  HashMap<String, Object> classes,
                                   String packageName,
                                   String className,
                                   IAlbianClassExcavator excavator)

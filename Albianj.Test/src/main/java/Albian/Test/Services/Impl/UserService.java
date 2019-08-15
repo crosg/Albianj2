@@ -5,6 +5,7 @@ import Albian.Test.Model.IMultiUser;
 import Albian.Test.Model.ISingleUser;
 import Albian.Test.Services.IUserService;
 import Albian.Test.Services.Metadata.StorageInfo;
+import org.albianj.argument.RefArg;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.persistence.context.dactx.AlbianDataAccessOpt;
@@ -66,7 +67,8 @@ public class UserService extends FreeAlbianService implements IUserService {
         user.setId(BigInteger.valueOf(System.currentTimeMillis()));
         user.setPassword(pwd);
         user.setUserName(uname);
-
+        AlbianServiceHub.addLog("Sessionid", IAlbianLoggerService.AlbianRunningLoggerName,
+                AlbianLoggerLevel.Info, exc, "NewUser success.");
 
         // 创建保存数据的上下文，不推荐使用save或者是create等诸如此类的原来的方法及其重载
         IDataAccessContext dctx = da.newDataAccessContext();
@@ -90,42 +92,41 @@ public class UserService extends FreeAlbianService implements IUserService {
     }
 
     @Override
-    public boolean batchAddUser() {
+    public boolean batchAddUser(RefArg<String> idl, RefArg<String> idr) {
         IDataAccessContext dctx = da.newDataAccessContext();
         IMultiUser mu1 = AlbianServiceHub.newInstance("sessionId", IMultiUser.class);
         String id1 = String.format("%d_%d_%d_%d", System.currentTimeMillis(), ++idx, 1, 1);
         mu1.setId(id1);
         mu1.setUserName("mu1");
         mu1.setPassword("mu1pwd");
+        idl.setValue(id1);
 
         IMultiUser mu2 = AlbianServiceHub.newInstance("sessionId", IMultiUser.class);
         String id2 = String.format("%d_%d_%d_%d", System.currentTimeMillis(), ++idx, 2, 2);
         mu2.setId(id2);
         mu2.setUserName("mu2");
         mu2.setPassword("mu2pwd");
+        idr.setValue(id2);
 
         ISingleUser user = AlbianServiceHub.newInstance("SessionId", ISingleUser.class);
         user.setId(BigInteger.valueOf(System.currentTimeMillis()));
         user.setPassword("batcher");
         user.setUserName("batcher");
         //同时使用数据路由与单数据库保存
-        dctx.add(AlbianDataAccessOpt.Save, mu1)
+        return dctx.add(AlbianDataAccessOpt.Save, mu1)
                 .add(AlbianDataAccessOpt.Save, mu2)
                 .add(AlbianDataAccessOpt.Save, user, StorageInfo.SingleUserStorageName)
                 .commit("sessionId");
-
-
-        return false;
     }
 
     @Override
-    public void queryMulitUserById() {
+    public void queryMulitUserById(String idl, String idr) {
         // where条件推荐使用表达式这种写法
-        IChainExpression whrs1 = new FilterExpression("Id", LogicalOperation.Equal, "1539240117605_1_1_1");
+        IChainExpression whrs1 = new FilterExpression("Id", LogicalOperation.Equal, idl);
 
-        IFilterGroupExpression st = new FilterGroupExpression();
-        st.add("stauts",LogicalOperation.Equal,1).or("stauts","st",LogicalOperation.Equal,3);
-        whrs1.and(st);
+//        IFilterGroupExpression st = new FilterGroupExpression();
+//        st.add("stauts",LogicalOperation.Equal,1).or("stauts","st",LogicalOperation.Equal,3);
+//        whrs1.and(st);
 
         //查询sql推荐使用query ctx，不推荐原来的具体方法，通过重载区分
         IQueryContext qctx = da.newQueryContext();
@@ -134,7 +135,7 @@ public class UserService extends FreeAlbianService implements IUserService {
                 mu1.getId(), mu1.getUserName(), mu1.getPassword()));
         qctx.reset();
 
-        IChainExpression whrs2 = new FilterExpression("Id", LogicalOperation.Equal, "1539240117606_2_2_2");
+        IChainExpression whrs2 = new FilterExpression("Id", LogicalOperation.Equal, idr);
         //查询sql推荐使用query ctx，不推荐原来的具体方法，通过重载区分
         IMultiUser mu2 = qctx.loadObject("sessionId", IMultiUser.class, LoadType.quickly, whrs2);
         System.out.println(String.format("MU2:id->%s uname->%s pwd->%s",

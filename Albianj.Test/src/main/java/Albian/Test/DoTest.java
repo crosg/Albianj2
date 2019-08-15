@@ -4,6 +4,7 @@ import Albian.Test.Services.IOrgUserService;
 import Albian.Test.Services.IUserService;
 import org.albianj.framework.boot.ApplicationContext;
 import org.albianj.framework.boot.BundleContext;
+import org.albianj.framework.boot.IBundleListener;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.service.AlbianServiceRouter;
 
@@ -20,7 +21,12 @@ public class DoTest {
                                 .setLibFolder("D:\\work\\github\\albianj2\\Albianj.Test\\target\\lib")
                                 .setWorkFolder("D:\\work\\github\\albianj2\\Albianj.Test")
                                 .setBundleName("DoTest")
-                                .build());
+                            .setBeginStartupEvent(new IBundleListener() {
+                                @Override
+                                public void onActionExecute(BundleContext bctx) {
+                                    System.out.println("Start bundle -> " + bctx.getBundleName());
+                                }})
+                            .build());
             ApplicationContext.Instance .run(args);
 
 
@@ -129,7 +135,7 @@ public class DoTest {
 //            } else {
 //                System.out.println("batch add user fail.");
 //            }
-        us.queryMulitUserById();
+//        us.queryMulitUserById();
     }
 
     private static void test2() {
