@@ -37,13 +37,13 @@ public class AlbianServiceLoader {
 
             }
 
-            AlbianServiceRouter.addLogV2(sessionId,
-                    IAlbianLoggerService2.AlbianRunningLoggerName,
-                    AlbianServiceRouter.Mark,null,"ClassMatedata",
-                    String.format("Service -> %s class -> %s of loading by %s extends IAlbianService of loading by %s.Current thread loader -> %s.",
-                            id, sImplClzz,cla.getClassLoader().toString(),
-                            IAlbianService.class.getClassLoader().toString(),
-                            Thread.currentThread().getContextClassLoader().toString()));
+//            AlbianServiceRouter.addLogV2(sessionId,
+//                    IAlbianLoggerService2.AlbianRunningLoggerName,
+//                    AlbianServiceRouter.Mark,"ClassMatedata",
+//                    String.format("Service -> %s class -> %s of loading by %s extends IAlbianService of loading by %s.Current thread loader -> %s.",
+//                            id, sImplClzz,cla.getClassLoader().toString(),
+//                            IAlbianService.class.getClassLoader().toString(),
+//                            Thread.currentThread().getContextClassLoader().toString()));
 
             Class<?> itf = null;
             if (!Validate.isNullOrEmptyOrAllSpace(sInterface)) {
@@ -79,20 +79,6 @@ public class AlbianServiceLoader {
                 AlbianServiceProxyExecutor proxy = new AlbianServiceProxyExecutor();
                 IAlbianService serviceProxy = (IAlbianService)proxy.newInstance(service, serviceAttr);
                 rtnService = serviceProxy;
-
-//            } else {
-
-//                IAlbianService serviceProxy = (IAlbianService) AlbianServiceProxyExecutor.Instance.newProxyService(service, serviceAttr);
-
-//                serviceProxy.setRealService(service);
-//                setServiceFields(serviceProxy, serviceAttr, AlbianServiceFieldSetterLifetime.AfterNew, servAttrs);
-//                serviceProxy.beforeLoad();
-//                setServiceFields(serviceProxy, serviceAttr, AlbianServiceFieldSetterLifetime.BeforeLoading, servAttrs);
-//                serviceProxy.loading();
-//                setServiceFields(serviceProxy, serviceAttr, AlbianServiceFieldSetterLifetime.AfterLoading, servAttrs);
-//                serviceProxy.afterLoading();
-//                serviceProxy.setServiceId(id);
-//                serviceProxy.setServiceAttribute(serviceAttr);
             }
         } catch (Exception e) {
             AlbianServiceRouter.throwException(sessionId,

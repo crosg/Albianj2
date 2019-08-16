@@ -5,6 +5,7 @@ import Albian.Test.Services.IUserService;
 import org.albianj.framework.boot.ApplicationContext;
 import org.albianj.framework.boot.BundleContext;
 import org.albianj.framework.boot.IBundleListener;
+import org.albianj.framework.boot.logging.LoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.service.AlbianServiceRouter;
 
@@ -13,7 +14,7 @@ public class DoTest {
         try {
             ApplicationContext.Instance.setAppStartupType(DoTest.class)
                     .setWorkFolder("D:\\work\\github\\albianj2\\Albianj.Test\\src\\main\\resources")
-                    .setLoggerAttr("D:\\work\\github\\albianj2\\Albianj.Test\\logs", true)
+                    .setLoggerAttr("D:\\work\\github\\albianj2\\Albianj.Test\\logs", LoggerLevel.Debug, true)
                     .addBundle(DoTest.class,BundleContext.newInstance().setArgs(args)
                                 .setStartupClassName(TestBundleMain.class.getName())
                                 .setInstallSpxFile(false)
