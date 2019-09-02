@@ -73,8 +73,6 @@ public class TestBundleMain {
             String bundleName =  bctx.getBundleName();
             boolean rc = false;
 
-
-
             try {
                 if(null == args ||0 == args.length) {
                     rc = AlbianBootService.start(bctx.getConfFolder());
@@ -114,6 +112,9 @@ public class TestBundleMain {
 //            cl.findChildFileEntries("org.albianj.comment");
 
             IUserService us = AlbianServiceRouter.getSingletonService(IUserService.class, IUserService.Name);
+            us.addUsers("BatchSubmit","BatchSubmitPwd");
+            us.addUsersV2("NotBatchSubmit","NotBatchSubmitPwd");
+
             logServ.log(AlbianServiceRouter.LoggerRunning, "Sessionid", AlbianLoggerLevel.Mark,
                     "UserService is %s.",null == us ? "NULL" : "NOTNULL");
             us.addUser("uname-SpxDBCP", "pwd");

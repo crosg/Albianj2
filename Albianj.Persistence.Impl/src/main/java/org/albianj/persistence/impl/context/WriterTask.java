@@ -40,6 +40,7 @@ package org.albianj.persistence.impl.context;
 import org.albianj.persistence.context.IWriterTask;
 import org.albianj.persistence.db.IDataBasePool;
 import org.albianj.persistence.db.IPersistenceCommand;
+import org.albianj.persistence.db.localize.IDBClientSection;
 import org.albianj.persistence.object.IRunningStorageAttribute;
 
 import java.sql.Connection;
@@ -56,6 +57,10 @@ public class WriterTask implements IWriterTask {
     private List<Statement> rollbackStatements = null;
     private boolean iscommited = false;
     private IDataBasePool pool = null;
+    private boolean isBatchSubmit = false;
+    private Statement batchStmt = null;
+    private IDBClientSection dbClientSection =null;
+    private List<String> sqlTexts;
 
     public IRunningStorageAttribute getStorage() {
         // TODO Auto-generated method stub
@@ -144,4 +149,39 @@ public class WriterTask implements IWriterTask {
     public void setDatabasePool(IDataBasePool pool) {
         this.pool = pool;
     }
+
+    @Override
+    public boolean isBatchSubmit() {
+        return this.isBatchSubmit;
+    }
+
+    @Override
+    public void setBatchSubmit(boolean isBatchSubmit) {
+        this.isBatchSubmit = isBatchSubmit;
+    }
+
+    @Override
+    public Statement getBatchStmt() {
+        return this.batchStmt;
+    }
+
+    @Override
+    public void setBatchStmt(Statement stmt) {
+        this.batchStmt = stmt;
+    }
+
+    public IDBClientSection getClientSection() {
+        return dbClientSection;
+    }
+    public void setClientSection(IDBClientSection dbClient){
+        this.dbClientSection = dbClient;
+    }
+
+    public List<String> getBatchSqlText(){
+        return this.sqlTexts;
+    }
+    public void setBatchSqlText(List<String> sqlTexts){
+        this.sqlTexts = sqlTexts;
+    }
+
 }

@@ -46,6 +46,7 @@ import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.IDataBasePool;
 import org.albianj.persistence.db.IPersistenceCommand;
 import org.albianj.persistence.db.ISqlParameter;
+import org.albianj.persistence.db.localize.IDBClientSection;
 import org.albianj.persistence.impl.toolkit.ListConvert;
 import org.albianj.persistence.object.IRunningStorageAttribute;
 import org.albianj.persistence.object.IStorageAttribute;
@@ -54,15 +55,22 @@ import org.albianj.runtime.AlbianModuleType;
 import org.albianj.service.AlbianServiceRouter;
 import org.albianj.verify.Validate;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 public class PersistenceTransactionClusterScope extends FreePersistenceTransactionClusterScope
         implements IPersistenceTransactionClusterScope {
+
     protected void preExecute(IWriterJob writerJob) throws AlbianDataServiceException {
         writerJob.setWriterJobLifeTime(WriterJobLifeTime.Opening);
         Map<String, IWriterTask> tasks = writerJob.getWriterTasks();
@@ -78,6 +86,7 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
             IWriterTask t = task.getValue();
             IRunningStorageAttribute rsa = t.getStorage();
             IStorageAttribute storage = rsa.getStorageAttribute();
+            IDBClientSection dbClientSection = t.getClientSection();
             if (null == storage) {
                 AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
                         writerJob.getId(), AlbianLoggerLevel.Error, null, AlbianModuleType.AlbianPersistence,
@@ -103,35 +112,69 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
                         AlbianModuleType.AlbianPersistence.getThrowInfo(),
                         "The commands for task is empty or null");
             }
-            List<Statement> statements = new Vector<Statement>();
-            try {
-                for (IPersistenceCommand cmd : cmds) {
-                    PreparedStatement prepareStatement = t
-                            .getConnection().prepareStatement(cmd.getCommandText());
-                    Map<Integer, String> map = cmd.getParameterMapper();
-                    if (Validate.isNullOrEmpty(map)) {
-                        continue;
-                    } else {
-                        for (int i = 1; i <= map.size(); i++) {
-                            String paraName = map.get(i);
-                            ISqlParameter para = cmd.getParameters().get(paraName);
-                            if (null == para.getValue()) {
-                                prepareStatement.setNull(i, para.getSqlType());
-                            } else {
-                                prepareStatement.setObject(i, para.getValue(),
-                                        para.getSqlType());
+
+            if(cmds.size() > 4) { // open batch submit from jdk
+                try {
+                    t.setBatchSubmit(true);
+                    Connection conn = t.getConnection();
+                    Statement batchStmt = conn.createStatement();
+                    List<String> sqlTexts = new ArrayList<>();
+                    String sqlText = null;
+                    for (IPersistenceCommand cmd : cmds) {
+                        sqlText = cmd.getCommandText();
+                        Map<Integer, String> map = cmd.getParameterMapper();
+                        if (Validate.isNullOrEmpty(map)) {
+                            continue;
+                        } else {
+                            for (int i = 1; i <= map.size(); i++) {
+                                String paraName = map.get(i);
+                                ISqlParameter para = cmd.getParameters().get(paraName);
+                                sqlText = sqlText.replaceFirst("\\?",dbClientSection.toSqlValue(para.getSqlType(),para.getValue(),
+                                        t.getStorage().getStorageAttribute().getCharset()));
                             }
                         }
+                        batchStmt.addBatch(sqlText);
+                        sqlTexts.add(sqlText);
                     }
-                    statements.add(prepareStatement);
+                    t.setBatchStmt(batchStmt);
+                    t.setBatchSqlText(sqlTexts);
+                } catch (SQLException e) {
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                            writerJob.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
+                            AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                            "make sql command for task is empty or null");
                 }
-            } catch (SQLException e) {
-                AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
-                        writerJob.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
-                        AlbianModuleType.AlbianPersistence.getThrowInfo(),
-                        "make sql command for task is empty or null");
+            } else {
+                List<Statement> statements = new Vector<Statement>();
+                try {
+                    for (IPersistenceCommand cmd : cmds) {
+                        PreparedStatement prepareStatement = t
+                                .getConnection().prepareStatement(cmd.getCommandText());
+                        Map<Integer, String> map = cmd.getParameterMapper();
+                        if (Validate.isNullOrEmpty(map)) {
+                            continue;
+                        } else {
+                            for (int i = 1; i <= map.size(); i++) {
+                                String paraName = map.get(i);
+                                ISqlParameter para = cmd.getParameters().get(paraName);
+                                if (null == para.getValue()) {
+                                    prepareStatement.setNull(i, para.getSqlType());
+                                } else {
+                                    prepareStatement.setObject(i, para.getValue(),
+                                            para.getSqlType());
+                                }
+                            }
+                        }
+                        statements.add(prepareStatement);
+                    }
+                } catch (SQLException e) {
+                    AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                            writerJob.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
+                            AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                            "make sql command for task is empty or null");
+                }
+                t.setStatements(statements);
             }
-            t.setStatements(statements);
         }
     }
 
@@ -142,19 +185,21 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
             throw new RuntimeException("The task is null or empty.");
         }
 
+
         for (Map.Entry<String, IWriterTask> task : tasks.entrySet()) {
             IWriterTask t = task.getValue();
             writerJob.setCurrentStorage(task.getKey());
-            List<Statement> statements = t.getStatements();
-            List<IPersistenceCommand> cmds = t.getCommands();
-            for (int i = 0; i < statements.size(); i++) {
-                try {
-                    IPersistenceCommand cmd = cmds.get(i);
+            if(t.isBatchSubmit()) {
+                List<String> sqlTexts = t.getBatchSqlText();
+                Statement batchStmt = t.getBatchStmt();
+                for(String sqlText : sqlTexts){
                     AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                             writerJob.getId(), AlbianLoggerLevel.Info,
-                            "storage:%s,sqltext:%s,parars:%s.",
-                            task.getKey(), cmd.getCommandText(), ListConvert.toString(cmd.getParameters()));
-                    ((PreparedStatement) statements.get(i)).executeUpdate();
+                            "storage:%s,sqltext:%s.",
+                            task.getKey(),sqlText);
+                }
+                try {
+                    int[] rtn = batchStmt.executeBatch();
                 } catch (SQLException e) {
                     IRunningStorageAttribute rsa = t.getStorage();
                     AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
@@ -162,6 +207,26 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
                             AlbianModuleType.AlbianPersistence.getThrowInfo(),
                             "execute to storage:%s dtabase:%s is fail.",
                             rsa.getStorageAttribute().getName(), rsa.getDatabase());
+                }
+            } else {
+                List<Statement> statements = t.getStatements();
+                List<IPersistenceCommand> cmds = t.getCommands();
+                for (int i = 0; i < statements.size(); i++) {
+                    try {
+                        IPersistenceCommand cmd = cmds.get(i);
+                        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+                                writerJob.getId(), AlbianLoggerLevel.Info,
+                                "storage:%s,sqltext:%s,parars:%s.",
+                                task.getKey(), cmd.getCommandText(), ListConvert.toString(cmd.getParameters()));
+                        ((PreparedStatement) statements.get(i)).executeUpdate();
+                    } catch (SQLException e) {
+                        IRunningStorageAttribute rsa = t.getStorage();
+                        AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianSqlLoggerName,
+                                writerJob.getId(), AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
+                                AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                                "execute to storage:%s dtabase:%s is fail.",
+                                rsa.getStorageAttribute().getName(), rsa.getDatabase());
+                    }
                 }
             }
         }
@@ -403,6 +468,4 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
             }
         }
     }
-
-
 }

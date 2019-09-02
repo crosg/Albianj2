@@ -76,9 +76,36 @@ public class UserService extends FreeAlbianService implements IUserService {
     }
 
     @Override
+    public boolean addUsers(String uname, String pwd) {
+        IDataAccessContext dctx = da.newDataAccessContext();
+        for(int i = 0; i< 200;i++) {
+            ISingleUser user = AlbianServiceHub.newInstance("SessionId", ISingleUser.class);
+            user.setId(BigInteger.valueOf(i));
+            user.setPassword(pwd + "-"+ String.valueOf(i));
+            user.setUserName(uname+ "-"+ String.valueOf(i));
+            dctx.add(AlbianDataAccessOpt.Save, user, StorageInfo.SingleUserStorageName);
+        }
+        return dctx.commit("Sessionid");
+    }
+
+    @Override
+    public boolean addUsersV2(String uname, String pwd) {
+        IDataAccessContext dctx = da.newDataAccessContext();
+        for(int i = 1000; i< 1100;i++) {
+            ISingleUser user = AlbianServiceHub.newInstance("SessionId", ISingleUser.class);
+            user.setId(BigInteger.valueOf(i));
+            user.setPassword(pwd + "-"+ String.valueOf(i));
+            user.setUserName(uname+ "-"+ String.valueOf(i));
+            dctx.add(AlbianDataAccessOpt.Save, user, StorageInfo.SingleUserStorageName);
+        }
+        return dctx.commit("Sessionid");
+    }
+
+    @Override
     public boolean modifyPwd(String uname, String orgPwd, String newPwd) {
         // 如果是更改数据库记录，必须先需要load一下数据库记录，
         IChainExpression wheres = new FilterExpression("UserName", LogicalOperation.Equal, uname);
+
         IQueryContext qctx = da.newQueryContext();
         ISingleUser user = qctx.useStorage(StorageInfo.SingleUserStorageName) //指定到storage
                 // 如果需要及其精确，使用LoadType.exact，并且指定主数据库或根据DataRouter走WriteRouters配置

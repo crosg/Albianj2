@@ -10,7 +10,11 @@ public interface IUserService extends IAlbianService {
 
     boolean addUser(String uname, String pwd);
 
-    boolean modifyPwd(String uname, String orgPwd, String newPwd);
+    boolean addUsers(String uname, String pwd);
+    public boolean addUsersV2(String uname, String pwd) ;
+
+
+        boolean modifyPwd(String uname, String orgPwd, String newPwd);
 
     boolean batchAddUser(RefArg<String> id1,RefArg<String> id2);
 

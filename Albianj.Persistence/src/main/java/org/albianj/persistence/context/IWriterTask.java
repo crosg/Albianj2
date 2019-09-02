@@ -39,6 +39,7 @@ package org.albianj.persistence.context;
 
 import org.albianj.persistence.db.IDataBasePool;
 import org.albianj.persistence.db.IPersistenceCommand;
+import org.albianj.persistence.db.localize.IDBClientSection;
 import org.albianj.persistence.object.IRunningStorageAttribute;
 
 import java.sql.Connection;
@@ -149,6 +150,25 @@ public interface IWriterTask {
     public IDataBasePool getDatabasePool();
 
     public void setDatabasePool(IDataBasePool pool);
+
+    /**
+     * 是否开启批量提交
+     */
+    public boolean isBatchSubmit();
+    public void setBatchSubmit(boolean isBatchSubmit);
+
+    /**
+     * 开启batch提交时候的命令
+     */
+    public Statement getBatchStmt();
+    public void setBatchStmt(Statement stmt);
+
+    public List<String> getBatchSqlText();
+    public void setBatchSqlText(List<String> sqlTexts);
+
+    public IDBClientSection getClientSection();
+    public void setClientSection(IDBClientSection dbClient);
+
 
 //    /*
 //        开发者指定storage名称

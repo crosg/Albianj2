@@ -44,6 +44,8 @@ import org.albianj.persistence.context.IWriterTask;
 import org.albianj.persistence.db.AlbianDataServiceException;
 import org.albianj.persistence.db.IPersistenceCommand;
 import org.albianj.persistence.impl.db.IPersistenceUpdateCommand;
+import org.albianj.persistence.impl.db.localize.MysqlClientSection;
+import org.albianj.persistence.impl.db.localize.SqlServerClientSection;
 import org.albianj.persistence.object.*;
 import org.albianj.persistence.service.AlbianEntityMetadata;
 import org.albianj.persistence.service.IAlbianStorageParserService;
@@ -262,7 +264,7 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
             List<IDataRouterAttribute> sltDrtAttr = parserRoutings(job.getId(), entity,
                     drtsAttr, objAttr);
             for (IDataRouterAttribute drtAttr : sltDrtAttr) {
-                IAlbianObjectDataRouter drouter = null == drtsAttr ? null : drtsAttr.getDataRouter();
+                               IAlbianObjectDataRouter drouter = null == drtsAttr ? null : drtsAttr.getDataRouter();
                 String storageName = parserRoutingStorage(job.getId(), entity, drtAttr,
                         drouter, objAttr);
                 IStorageAttribute stgAttr = asps.getStorageAttribute(storageName);
@@ -291,20 +293,30 @@ public class WriterJobAdapter extends FreeWriterJobAdapter {
             task.setCommands(cmds);
             task.setStorage(new RunningStorageAttribute(storage, database));
             tasks.put(key, task);
+            if(PersistenceDatabaseStyle.MySql == storage.getDatabaseStyle()) {
+                task.setClientSection(new MysqlClientSection());
+            } else if(PersistenceDatabaseStyle.SqlServer == storage.getDatabaseStyle()) {
+                task.setClientSection(new SqlServerClientSection());
+            }
             job.setWriterTasks(tasks);
         } else {
             if (job.getWriterTasks().containsKey(key)) {
-                job.getWriterTasks().get(key).getCommands()
-                        .add(pstCmd);
+                job.getWriterTasks().get(key).getCommands().add(pstCmd);
             } else {
                 IWriterTask task = new WriterTask();
                 List<IPersistenceCommand> cmds = new Vector<>();
                 cmds.add(pstCmd);
                 task.setCommands(cmds);
                 task.setStorage(new RunningStorageAttribute(storage, database));
+                if(PersistenceDatabaseStyle.MySql == storage.getDatabaseStyle()) {
+                    task.setClientSection(new MysqlClientSection());
+                } else if(PersistenceDatabaseStyle.SqlServer == storage.getDatabaseStyle()) {
+                    task.setClientSection(new SqlServerClientSection());
+                }
                 job.getWriterTasks().put(key, task);
             }
         }
+
     }
 
 }

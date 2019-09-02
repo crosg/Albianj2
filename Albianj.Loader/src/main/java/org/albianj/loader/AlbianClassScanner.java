@@ -136,8 +136,10 @@ public class AlbianClassScanner {
         if(classLoader instanceof BundleClassLoader) {
             BundleClassLoader loader = (BundleClassLoader) classLoader;
             Map<String, TypeFileMetadata> typefiles = loader.findChildFileEntries(pkgName);
-            for(Map.Entry<String,TypeFileMetadata> entry : typefiles.entrySet()) {
-                loadClass(classLoader, filter, classes, entry.getValue(), excavator);
+            if(!Validate.isNullOrEmpty(typefiles)) {
+                for (Map.Entry<String, TypeFileMetadata> entry : typefiles.entrySet()) {
+                    loadClass(classLoader, filter, classes, entry.getValue(), excavator);
+                }
             }
         }
         return classes;
