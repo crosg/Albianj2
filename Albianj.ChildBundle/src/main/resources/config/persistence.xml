@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 保存对象的映射配置表，使用这个配置的所有对象必须实现IAlbianObject或者直接继承FreeAlbianObject -->
+<AlbianObjects>
+    <!-- 使用rant进行标注的albian object必须要在这里配置所在的包，否则albianj不会加载 -->
+    <Packages>
+        <Package Path="Albianj.ChildBundle.Model.Impl" Enable="true"></Package>
+    </Packages>
+
+    <AlbianObject Interface="Albianj.ChildBundle.Model.IOrgSingleUser" Type="Albianj.ChildBundle.Model.Impl.OrgSingleUser">
+        <Cache Enable="false" LifeTime="300" Name=""></Cache>
+        <!-- 删除了缓存服务。所以这部分配置一直为false，等待开启了缓存服务，再更加实际情况配置 -->
+        <Members> <!-- 所有对象的属性映射，如果使用默认，可以不需要配置 -->
+            <Member Name="Id" FieldName="Id" AllowNull="false"
+                    DbType="Bigint" IsSave="true" PrimaryKey="true"/>
+            <Member Name="password" FieldName="Pwd"/>
+
+        </Members>
+    </AlbianObject>
+
+    <AlbianObject Interface="Albianj.ChildBundle.Model.IOrgMultiUser" Type="Albianj.ChildBundle.Model.Impl.OrgMultiUser">
+        <Cache Enable="false" LifeTime="300" Name=""></Cache>
+        <!-- 删除了缓存服务。所以这部分配置一直为false，等待开启了缓存服务，再更加实际情况配置 -->
+        <Members> <!-- 所有对象的属性映射，如果使用默认，可以不需要配置 -->
+            <Member Name="Id" FieldName="Id" AllowNull="false"
+                    DbType="String" IsSave="true" PrimaryKey="true"/>
+            <Member Name="password" FieldName="Pwd"/>
+        </Members>
+    </AlbianObject>
+
+</AlbianObjects>
+

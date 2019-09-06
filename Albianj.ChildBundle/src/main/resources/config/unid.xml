@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UNID>
+    <Servers>
+        <Server Host="10.97.19.43" Port="9048" Timeout="30000" PoolSize="30"/>
+    </Servers>
+</UNID>

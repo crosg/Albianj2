@@ -19,7 +19,7 @@ public class DoTest {
                                 .setStartupClassName(TestBundleMain.class.getName())
                                 .setInstallSpxFile(false)
                                 .setConfFolder("D:\\work\\github\\albianj2\\Albianj.Test\\src\\main\\resources\\config")
-                                .setLibFolder("D:\\work\\github\\albianj2\\Albianj.Test\\target\\lib")
+                                .setLibFolder("D:\\work\\github\\albianj2\\Albianj.Test\\target\\lib",true)
                                 .setWorkFolder("D:\\work\\github\\albianj2\\Albianj.Test")
                                 .setBundleName("DoTest")
                             .setBeginStartupEvent(new IBundleListener() {

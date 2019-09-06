@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Albianj.Test</artifactId>
+    <artifactId>Albianj.ChildBundle</artifactId>
     <dependencies>
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>
@@ -78,12 +78,6 @@
         </dependency>
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>
-            <artifactId>Albianj.Bundle.Bridge</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.yuewen.nrzx.albianj</groupId>
             <artifactId>Albianj.Loader</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
@@ -118,18 +112,27 @@
                 <!--</configuration>-->
             <!--</plugin>-->
 
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-resources-plugin</artifactId>-->
+                <!--<version>2.6</version>-->
+                <!--<configuration>-->
+                    <!--<encoding>UTF-8</encoding>&lt;!&ndash; 指定编码格式，否则在DOS下运行mvn命令时当发生文件资源copy时将使用系统默认使用GBK编码 &ndash;&gt;-->
+                <!--</configuration>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>false</addClasspath>
-                            <mainClass>Albian.Test.FrameworkMain</mainClass>
-                        </manifest>
-                    </archive>
+                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
+                    <!--<archive>-->
+                        <!--<manifest>-->
+                            <!--<addClasspath>false</addClasspath>-->
+                            <!--<mainClass>Albian.Test.FrameworkMain</mainClass>-->
+                        <!--</manifest>-->
+                    <!--</archive>-->
                 </configuration>
             </plugin>
 

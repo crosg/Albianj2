@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 所有数据库连接的配置 开发环境用户名和密码可以不用加密，online必须加密 -->
+<!-- 注意：如果不在routing.xml中对对象进行数据路由的话，默认都会存放入第一个storage节点的数据库中 -->
+<Storages>
+	
+
+	<Storage>
+		<Name>SingleUserStorage</Name>
+		<DatabaseStyle>MySql</DatabaseStyle>
+		<Server>127.0.0.1</Server>
+		<Port>3306</Port>
+		<Database>userdb</Database>
+		<User>root</User>
+		<Password>123456</Password>
+		<Pooling>true</Pooling>
+		<MinPoolSize>10</MinPoolSize>
+		<MaxPoolSize>20</MaxPoolSize>
+		<Timeout>120</Timeout>
+		<Charset>utf8</Charset>
+		<Transactional>true</Transactional>
+		<AliveTime>300</AliveTime>
+		<!--<PoolStyle>HIKARICP</PoolStyle>-->
+		<PoolStyle>SpxDBCP</PoolStyle>
+		<WaitTimeWhenGetMs>2</WaitTimeWhenGetMs> <!-- 获取连接时，没有连接等到的时间，单位毫秒，设置小于0，不等待 -->
+		<LifeCycleTime>3600000</LifeCycleTime> <!-- 一个连接最长的生命周期，单位毫秒 -->
+		<WaitInFreePoolMs>60000</WaitInFreePoolMs> <!-- 一个连接在free queue中等待的最长时间，单位毫秒，应小于mysql的waittime -->
+		<MaxRemedyConnectionCount>80</MaxRemedyConnectionCount><!-- 池中连接不够用时，补救生成的直接连接最大量 -->
+		<!--<CleanupTimestampMs>30000</CleanupTimestampMs>&lt;!&ndash; 链接池清理时间间隔，单位毫秒 &ndash;&gt;-->
+		<MaxRequestTimeMs>60000</MaxRequestTimeMs><!-- 连接每次执行sql的最大时间，单位毫秒 -->
+	</Storage>
+
+	<Storage>
+		<Name>MUserStorage1</Name>
+		<DatabaseStyle>MySql</DatabaseStyle>
+		<Server>127.0.0.1</Server>
+		<Port>3306</Port>
+		<Database>Muserdb_1</Database>
+		<User>root</User>
+		<Password>123456</Password>
+		<Pooling>true</Pooling>
+		<MinPoolSize>10</MinPoolSize>
+		<MaxPoolSize>20</MaxPoolSize>
+		<Timeout>120</Timeout>
+		<Charset>utf8</Charset>
+		<Transactional>true</Transactional>
+		<AliveTime>120</AliveTime>
+		<PoolStyle>SpxDBCP</PoolStyle>
+		<WaitTimeWhenGetMs>2</WaitTimeWhenGetMs> <!-- 获取连接时，没有连接等到的时间，单位毫秒，设置小于0，不等待 -->
+		<LifeCycleTime>3600000</LifeCycleTime> <!-- 一个连接最长的生命周期，单位毫秒 -->
+		<WaitInFreePoolMs>60000</WaitInFreePoolMs> <!-- 一个连接在free queue中等待的最长时间，单位毫秒，应小于mysql的waittime -->
+		<MaxRemedyConnectionCount>80</MaxRemedyConnectionCount><!-- 池中连接不够用时，补救生成的直接连接最大量 -->
+		<!--<CleanupTimestampMs>30000</CleanupTimestampMs>&lt;!&ndash; 链接池清理时间间隔，单位毫秒 &ndash;&gt;-->
+		<MaxRequestTimeMs>60000</MaxRequestTimeMs><!-- 连接每次执行sql的最大时间，单位毫秒 -->
+	</Storage>
+
+	<Storage>
+		<Name>MUserStorage2</Name>
+		<DatabaseStyle>MySql</DatabaseStyle>
+		<Server>127.0.0.1</Server>
+		<Port>3306</Port>
+		<Database>Muserdb_2</Database>
+		<User>root</User>
+		<Password>123456</Password>
+		<Pooling>true</Pooling>
+		<MinPoolSize>10</MinPoolSize>
+		<MaxPoolSize>20</MaxPoolSize>
+		<Timeout>120</Timeout>
+		<Charset>utf8</Charset>
+		<Transactional>true</Transactional>
+		<AliveTime>120</AliveTime>
+		<PoolStyle>SpxDBCP</PoolStyle>
+		<WaitTimeWhenGetMs>2</WaitTimeWhenGetMs> <!-- 获取连接时，没有连接等到的时间，单位毫秒，设置小于0，不等待 -->
+		<LifeCycleTime>3600000</LifeCycleTime> <!-- 一个连接最长的生命周期，单位毫秒 -->
+		<WaitInFreePoolMs>60000</WaitInFreePoolMs> <!-- 一个连接在free queue中等待的最长时间，单位毫秒，应小于mysql的waittime -->
+		<MaxRemedyConnectionCount>80</MaxRemedyConnectionCount><!-- 池中连接不够用时，补救生成的直接连接最大量 -->
+		<!--<CleanupTimestampMs>30000</CleanupTimestampMs>&lt;!&ndash; 链接池清理时间间隔，单位毫秒 &ndash;&gt;-->
+		<MaxRequestTimeMs>60000</MaxRequestTimeMs><!-- 连接每次执行sql的最大时间，单位毫秒 -->
+	</Storage>
+
+	<Storage>
+		<Name>SpxDBCP</Name>
+		<DatabaseStyle>MySql</DatabaseStyle>
+		<Server>127.0.0.1</Server>
+		<Port>3306</Port>
+		<Database>userdb</Database>
+		<User>root</User>
+		<Password>123456</Password>
+		<Pooling>true</Pooling>
+		<MinPoolSize>10</MinPoolSize>
+		<MaxPoolSize>20</MaxPoolSize>
+		<Timeout>120</Timeout>
+		<Charset>utf8</Charset>
+		<Transactional>true</Transactional>
+		<AliveTime>120</AliveTime>
+		<PoolStyle>SpxDBCP</PoolStyle>
+		<WaitTimeWhenGetMs>2</WaitTimeWhenGetMs> <!-- 获取连接时，没有连接等到的时间，单位毫秒，设置小于0，不等待 -->
+		<LifeCycleTime>3600000</LifeCycleTime> <!-- 一个连接最长的生命周期，单位毫秒 -->
+		<WaitInFreePoolMs>60000</WaitInFreePoolMs> <!-- 一个连接在free queue中等待的最长时间，单位毫秒，应小于mysql的waittime -->
+		<MaxRemedyConnectionCount>80</MaxRemedyConnectionCount><!-- 池中连接不够用时，补救生成的直接连接最大量 -->
+		<!--<CleanupTimestampMs>30000</CleanupTimestampMs>&lt;!&ndash; 链接池清理时间间隔，单位毫秒 &ndash;&gt;-->
+		<MaxRequestTimeMs>60000</MaxRequestTimeMs><!-- 连接每次执行sql的最大时间，单位毫秒 -->
+	</Storage>
+
+	<Storage>
+		<Name>UTF8M64</Name>
+		<DatabaseStyle>MySql</DatabaseStyle>
+		<Server>127.0.0.1</Server>
+		<Port>3306</Port>
+		<Database>test</Database>
+		<User>root</User>
+		<Password>123456</Password>
+		<Pooling>true</Pooling>
+		<MinPoolSize>10</MinPoolSize>
+		<MaxPoolSize>20</MaxPoolSize>
+		<Timeout>120</Timeout>
+		<!--<Charset>utf8</Charset>-->
+		<Transactional>true</Transactional>
+		<AliveTime>300</AliveTime>
+		<PoolStyle>SpxDBCP</PoolStyle>
+		<WaitTimeWhenGetMs>2</WaitTimeWhenGetMs> <!-- 获取连接时，没有连接等到的时间，单位毫秒，设置小于0，不等待 -->
+		<LifeCycleTime>3600000</LifeCycleTime> <!-- 一个连接最长的生命周期，单位毫秒 -->
+		<WaitInFreePoolMs>60000</WaitInFreePoolMs> <!-- 一个连接在free queue中等待的最长时间，单位毫秒，应小于mysql的waittime -->
+		<MaxRemedyConnectionCount>80</MaxRemedyConnectionCount><!-- 池中连接不够用时，补救生成的直接连接最大量 -->
+		<!--<CleanupTimestampMs>30000</CleanupTimestampMs>&lt;!&ndash; 链接池清理时间间隔，单位毫秒 &ndash;&gt;-->
+		<MaxRequestTimeMs>60000</MaxRequestTimeMs><!-- 连接每次执行sql的最大时间，单位毫秒 -->
+	</Storage>
+
+</Storages>

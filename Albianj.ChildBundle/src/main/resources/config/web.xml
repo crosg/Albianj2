@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebConfig>
+    <Host>0.0.0.0</Host>
+    <Port>8082</Port>
+
+    <ConfigFolder>/Users/xuhaifeng/share/tencent/src/cc/java/dev/albianj/Spermbank.Frontend/config</ConfigFolder>
+    <AlbianFolder>/Users/xuhaifeng/share/tencent/src/cc/java/dev/albianJars2.0/jar-pkg/</AlbianFolder>
+
+    <ThreadPoolConfig>
+        <Max>30</Max>
+        <Min>10</Min>
+        <Idle>10</Idle>
+    </ThreadPoolConfig>
+    <!--<content-max-size>10mb</content-max-size>-->
+    <StopTimeout>300000</StopTimeout>
+    <SessionTimeout>720000</SessionTimeout>
+
+
+</WebConfig>

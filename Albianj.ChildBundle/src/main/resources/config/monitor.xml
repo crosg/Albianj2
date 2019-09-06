@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Loggers>
+    <Logger>
+        <LogName>kernel</LogName>
+        <Path>/logs</Path>
+        <OpenMode>New</OpenMode> <!-- 每次open文件都是new一个,文件名带当前时间戳，大鱼maxsize就重open一个文件 -->
+        <FlushTimestampS>30</FlushTimestampS>
+        <MaxSizeMB>10</MaxSizeMB>
+    </Logger>
+    <Logger>
+        <LogName>montior-dbpool</LogName>
+        <Path>/logs</Path>
+        <OpenMode>Append</OpenMode> <!-- 一段时间内new一个文件，文件名按照日期来分 -->
+        <FlushTimestampS>30</FlushTimestampS>
+    </Logger>
+    <Logger>
+        <LogName>montior-runtime</LogName>
+        <Path>/logs</Path>
+        <OpenMode>Append</OpenMode>
+        <FlushTimestampS>30</FlushTimestampS>
+    </Logger>
+    <Logger>
+        <LogName>montior-status</LogName>
+        <Path>/logs</Path>
+        <OpenMode>Rewrite</OpenMode> <!-- 每次都是打开一个固定的文件，每次清空这个文件再写入内容 -->
+        <FlushTimestampS>30</FlushTimestampS>
+    </Logger>
+</Loggers>

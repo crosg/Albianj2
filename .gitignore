@@ -24,3 +24,6 @@ Albianj.DFS.YDB.Client
 target
 pom.xml.versionBackup
 logs
+/out
+/target
+out
