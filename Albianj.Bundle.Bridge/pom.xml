@@ -84,7 +84,7 @@
         </dependency>
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>
-            <artifactId>Albianj.Launcher</artifactId>
+            <artifactId>Albianj.BootLoader</artifactId>
             <version>2019071301-SNAPSHOT</version>
         </dependency>
     </dependencies>
@@ -92,25 +92,25 @@
     <build>
         <plugins>
 
-            <plugin>
-                <!-- 指定maven编译的jdk版本,如果不指定,maven3默认用jdk 1.5 maven2默认用jdk1.3 -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <!-- 一般而言，target与source是保持一致的，但是，有时候为了让程序能在其他版本的jdk中运行(对于低版本目标jdk，源代码中不能使用低版本jdk中不支持的语法)，会存在target不同于source的情况 -->
-                    <source>1.7</source> <!-- 源代码使用的JDK版本 -->
-                    <target>1.7</target> <!-- 需要生成的目标class文件的编译版本 -->
-                    <encoding>UTF-8</encoding><!-- 字符集编码 -->
-                    <verbose>true</verbose>
-                    <debug>true</debug>
-                    <debuglevel>source</debuglevel>
-                    <showWarnings>true</showWarnings>
-                    <meminitial>128m</meminitial><!-- 编译器使用的初始内存 -->
-                    <maxmem>512m</maxmem><!-- 编译器使用的最大内存 -->
-                    <compilerArgument>-g</compilerArgument><!-- 这个选项用来传递编译器自身不包含但是却支持的参数选项 -->
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--&lt;!&ndash; 指定maven编译的jdk版本,如果不指定,maven3默认用jdk 1.5 maven2默认用jdk1.3 &ndash;&gt;-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-compiler-plugin</artifactId>-->
+                <!--<version>3.8.1</version>-->
+                <!--<configuration>-->
+                    <!--&lt;!&ndash; 一般而言，target与source是保持一致的，但是，有时候为了让程序能在其他版本的jdk中运行(对于低版本目标jdk，源代码中不能使用低版本jdk中不支持的语法)，会存在target不同于source的情况 &ndash;&gt;-->
+                    <!--<source>1.7</source> &lt;!&ndash; 源代码使用的JDK版本 &ndash;&gt;-->
+                    <!--<target>1.7</target> &lt;!&ndash; 需要生成的目标class文件的编译版本 &ndash;&gt;-->
+                    <!--<encoding>UTF-8</encoding>&lt;!&ndash; 字符集编码 &ndash;&gt;-->
+                    <!--<verbose>true</verbose>-->
+                    <!--<debug>true</debug>-->
+                    <!--<debuglevel>source</debuglevel>-->
+                    <!--<showWarnings>true</showWarnings>-->
+                    <!--<meminitial>128m</meminitial>&lt;!&ndash; 编译器使用的初始内存 &ndash;&gt;-->
+                    <!--<maxmem>512m</maxmem>&lt;!&ndash; 编译器使用的最大内存 &ndash;&gt;-->
+                    <!--<compilerArgument>-g</compilerArgument>&lt;!&ndash; 这个选项用来传递编译器自身不包含但是却支持的参数选项 &ndash;&gt;-->
+                <!--</configuration>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

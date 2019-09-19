@@ -49,31 +49,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class AlbianBootService {
-    @SuppressWarnings("resource")
-    private static ArrayList<byte[]> unpack(FileInputStream fis) {
-        ArrayList<byte[]> list = null;
-        try {
-            list = new ArrayList<byte[]>();
-            byte[] bsize = new byte[4];
-            fis.read(bsize);
-            long size = MemoryToIOStream.netStreamToInt(bsize, 0);
-            for (int i = 0; i < size; i++) {
-                byte[] blength = new byte[8];
-                fis.read(blength);
-                long length = MemoryToIOStream.netStreamToLong(blength, 0);
-                byte[] ebytes = new byte[(int) length];
-                fis.read(ebytes);
-                Base64 b64 = new Base64();
-                byte[] stream = b64.decode(ebytes);
-                list.add(stream);
-            }
-            return list;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public static boolean start(String classpath, String kernelPath, String configPath) {
         try {
             BundleContext bctx =  ApplicationContext.Instance.findCurrentBundleContext(AlbianBootService.class,true);

@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>
-            <artifactId>Albianj.Launcher</artifactId>
+            <artifactId>Albianj.BootLoader</artifactId>
             <version>2019071301-SNAPSHOT</version>
         </dependency>
     </dependencies>
