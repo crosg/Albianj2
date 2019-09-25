@@ -138,6 +138,9 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
             }
         }
 
+        Map<String, IAlbianServiceAttribute> mapAttr2 = new HashMap<>();
+        mapAttr2.putAll(mapAttr);
+
         Map<String, IAlbianServiceAttribute> failMap = new LinkedHashMap<String, IAlbianServiceAttribute>();
         int lastFailSize = 0;
         int currentFailSize = 0;
@@ -197,6 +200,19 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
             }
         }
 
+        for (Map.Entry<String, IAlbianServiceAttribute> entry :  mapAttr2.entrySet()){
+            IAlbianServiceAttribute serviceAttr = entry.getValue();
+            IAlbianService service =  ServiceContainer.getService(serviceAttr.getId());
+            if(null == service){
+                AlbianServiceRouter.getLogger2().log(IAlbianLoggerService.AlbianRunningLoggerName,
+                        IAlbianLoggerService2.InnerThreadName,
+                        AlbianLoggerLevel.Warn,
+                        "service ->%s is null when set fields in the service makeup!");
+                continue;
+            }
+            AlbianServiceLoader.setServiceFields(service,entry.getValue(),AlbianServiceFieldSetterLifetime.AfterKernelLoaded,mapAttr2);
+        }
+
         // merger kernel service and bussines service
         // then update the all service attribute
         bltSrvAttrs.putAll(bnsSrvAttrs);
@@ -209,6 +225,8 @@ public class AlbianTransmitterService implements IAlbianTransmitterService {
                 "set fields in the service over.Startup albianj is success!");
 
     }
+
+
 
     /* (non-Javadoc)
      * @see org.albianj.kernel.impl.IAlbianBootService#requestHandlerContext()

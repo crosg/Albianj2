@@ -37,14 +37,6 @@ public class AlbianServiceLoader {
 
             }
 
-//            AlbianServiceRouter.addLogV2(sessionId,
-//                    IAlbianLoggerService2.AlbianRunningLoggerName,
-//                    AlbianServiceRouter.Mark,"ClassMatedata",
-//                    String.format("Service -> %s class -> %s of loading by %s extends IAlbianService of loading by %s.Current thread loader -> %s.",
-//                            id, sImplClzz,cla.getClassLoader().toString(),
-//                            IAlbianService.class.getClassLoader().toString(),
-//                            Thread.currentThread().getContextClassLoader().toString()));
-
             Class<?> itf = null;
             if (!Validate.isNullOrEmptyOrAllSpace(sInterface)) {
                 itf = AlbianClassLoader.getInstance().loadClass(sInterface);

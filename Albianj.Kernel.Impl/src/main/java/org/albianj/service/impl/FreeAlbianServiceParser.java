@@ -75,11 +75,6 @@ public abstract class FreeAlbianServiceParser extends FreeAlbianParserService {
         try {
             String fname = findConfigFile(file);
             parserFile(map,fname);
-//            parserFile(map,
-//                    Path.getExtendResourcePath(KernelSetting.getAlbianConfigFilePath()
-//                            + getConfigFileName()));
-
-
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2().logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName,
                     IAlbianLoggerService2.InnerThreadName, AlbianLoggerLevel.Error, null,
