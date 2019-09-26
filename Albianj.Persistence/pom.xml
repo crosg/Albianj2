@@ -5,7 +5,7 @@
     <parent>
         <artifactId>Albianj</artifactId>
         <groupId>com.yuewen.nrzx.albianj</groupId>
-        <version>2019052302-SNAPSHOT</version>
+        <version>2019091601-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -22,12 +22,12 @@
             <artifactId>Albianj.Loader</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.yuewen.nrzx.albianj</groupId>
-            <artifactId>Albianj.Cached</artifactId>
-            <version>${project.version}</version>
-            <optional>true</optional>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.yuewen.nrzx.albianj</groupId>-->
+            <!--<artifactId>Albianj.Cached</artifactId>-->
+            <!--<version>${project.version}</version>-->
+            <!--<optional>true</optional>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
