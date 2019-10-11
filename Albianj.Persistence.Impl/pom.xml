@@ -16,7 +16,7 @@
         <project.build.locales>zh_CN</project.build.locales>
         <project.build.jdk>1.7</project.build.jdk>
         <dbcp2.version>2.1.1</dbcp2.version>
-        <c3p0.version>0.9.5.2</c3p0.version>
+        <c3p0.version>0.9.5.4</c3p0.version>
         <hikari.version>2.4.12</hikari.version>
     </properties>
 
