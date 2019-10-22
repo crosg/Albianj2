@@ -217,6 +217,10 @@ public abstract class FreeAlbianObject implements IAlbianObject {
                 if (!fieldAttr.getIsSave()) continue;
                 Object newVal = fieldAttr.getEntityField().get(this);
                 Object oldValue = getOldAlbianObject(AlbianEntityMetadata.makeFieldsKey(fieldAttr.getPropertyName()));
+                if(null == oldValue) {
+                    oldValue = getOldAlbianObject(fieldAttr.getPropertyName());
+                }
+
 
                 if ((null == newVal && null == oldValue)) {
                     continue;
