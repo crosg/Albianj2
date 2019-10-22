@@ -44,6 +44,7 @@ import org.albianj.except.AlbianInternalException;
 import org.albianj.except.AlbianRuntimeException;
 import org.albianj.except.ExceptionUtil;
 import org.albianj.kernel.IAlbianLogicIdService;
+import org.albianj.logger.AlbianLogPacketBuilder;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService;
 import org.albianj.logger.IAlbianLoggerService2;
@@ -382,4 +383,10 @@ public class AlbianServiceRouter extends ServiceContainer {
 
         throw new AlbianInternalException(ExceptionUtil.logLevel2Code(level), excp,internalMsg,brief, info);
     }
+
+
+    public static AlbianLogPacketBuilder newLogPacketBuilder(){
+        return new AlbianLogPacketBuilder();
+    }
+    
 }

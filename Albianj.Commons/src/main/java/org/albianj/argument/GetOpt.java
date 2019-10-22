@@ -188,8 +188,6 @@ public class GetOpt {
             boolean shouldHaveArg = theOptionMatcher.hasArg(c);
             String arg = theCurrentOption.getArgument();
             if (!theOptionMatcher.match(c)) {
-//                ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_CMDLINE_OPTION_ERR,
-//                                            new Character(c));
                 throw (new IllegalArgumentException(String.format("%s : %s", ILLEGAL_CMDLINE_OPTION_ERR, new Character(c))));
             } else if (shouldHaveArg && (arg == null)) {
                 throw (new IllegalArgumentException(String.format("%s : %s", ILLEGAL_CMDLINE_OPTION_ERR, new Character(c))));
