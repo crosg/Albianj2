@@ -18,6 +18,7 @@ public class DoTest {
     public static void main(String[] argv) {
         try {
             AlbianBootService.start(argv[0]);
+            test1();
 
             IAlbianLoggerService2 logServ = AlbianServiceRouter.getLogger2();
 //            logServ.log("AlbianMonitorLogger","session", AlbianLoggerLevel.Debug,
