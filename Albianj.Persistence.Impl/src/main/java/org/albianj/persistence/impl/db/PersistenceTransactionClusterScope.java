@@ -129,8 +129,9 @@ public class PersistenceTransactionClusterScope extends FreePersistenceTransacti
                             for (int i = 1; i <= map.size(); i++) {
                                 String paraName = map.get(i);
                                 ISqlParameter para = cmd.getParameters().get(paraName);
-                                sqlText = sqlText.replaceFirst("\\?",dbClientSection.toSqlValue(para.getSqlType(),para.getValue(),
-                                        t.getStorage().getStorageAttribute().getCharset()));
+                                String val = dbClientSection.toSqlValue(para.getSqlType(),para.getValue(),
+                                        t.getStorage().getStorageAttribute().getCharset());
+                                sqlText = sqlText.replaceFirst("\\?",val.replace("\\","\\\\"));
                             }
                         }
                         batchStmt.addBatch(sqlText);

@@ -114,9 +114,23 @@ public class TestBundleMain {
 //            BundleClassLoader cl = (BundleClassLoader) bctx.getClassLoader();
 //            cl.findChildFileEntries("org.albianj.comment");
 
+            StringBuilder sb = new StringBuilder();
+            sb.append("作者有话说");
+            sb.append('\'');
+            sb.append('\u001a');
+            sb.append('\'');
+
+            sb.append(',');
+            sb.append('\'');
+            sb.append('\u001a');
+            sb.append('\'');
+            sb.append('\'');
+            sb.append('\u001a');
+            sb.append('\'');
+
             IUserService us = AlbianServiceRouter.getSingletonService(IUserService.class, IUserService.Name);
-            us.addUsers("BatchSubmit","BatchSubmitPwd");
-            us.addUsersV2("NotBatchSubmit","NotBatchSubmitPwd");
+            us.addUsers("BatchSubmit",sb.toString());
+            us.addUsersV2("NotBatchSubmit",sb.toString());
 
             logServ.log(AlbianServiceRouter.LoggerRunning, "Sessionid", AlbianLoggerLevel.Mark,
                     "UserService is %s.",null == us ? "NULL" : "NOTNULL");

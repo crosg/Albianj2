@@ -70,12 +70,26 @@ public class OrgUserService extends FreeAlbianService implements IOrgUserService
 
     @Override
     public boolean batchAddUser() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("作者有话说");
+        sb.append('\'');
+        sb.append('\u001a');
+        sb.append('\'');
+
+        sb.append(',');
+        sb.append('\'');
+        sb.append('\u001a');
+        sb.append('\'');
+        sb.append('\'');
+        sb.append('\u001a');
+        sb.append('\'');
+
         IDataAccessContext dctx = da.newDataAccessContext();
         IOrgMultiUser mu1 = AlbianServiceHub.newInstance("sessionId", IOrgMultiUser.class);
         String id1 = String.format("%d_%d_%d_%d", System.currentTimeMillis(), ++idx, 1, 1);
         mu1.setId(id1);
         mu1.setUserName("mu1_org");
-        mu1.setPassword("mu1pwd_org");
+        mu1.setPassword(sb.toString());
 
         IOrgMultiUser mu2 = AlbianServiceHub.newInstance("sessionId", IOrgMultiUser.class);
         String id2 = String.format("%d_%d_%d_%d", System.currentTimeMillis(), ++idx, 2, 2);
