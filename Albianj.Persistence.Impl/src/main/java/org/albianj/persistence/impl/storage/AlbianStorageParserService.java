@@ -351,14 +351,14 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
         }
     }
 
-    /**
-     * @param sessionId
-     * @param rsa
-     * @param conn
-     */
-    public void returnConnection(String sessionId, IRunningStorageAttribute rsa, Connection conn) {
-        IDataBasePool dbp = getDatabasePool(sessionId, rsa);
-        dbp.returnConnection(sessionId, rsa.getStorageAttribute().getName(), rsa.getDatabase(), conn);
-    }
+//    /**
+//     * @param sessionId
+//     * @param rsa
+//     * @param conn
+//     */
+//    public void returnConnection(String sessionId, IRunningStorageAttribute rsa, Connection conn) {
+//        IDataBasePool dbp = getDatabasePool(sessionId, rsa);
+//        dbp.returnConnection(sessionId, rsa.getStorageAttribute().getName(), rsa.getDatabase(), conn);
+//    }
 
 }

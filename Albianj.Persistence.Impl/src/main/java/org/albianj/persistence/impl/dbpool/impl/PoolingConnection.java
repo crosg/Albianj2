@@ -5,25 +5,28 @@ import org.albianj.persistence.impl.dbpool.IPoolingConnection;
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 
 public class PoolingConnection implements IPoolingConnection {
-    Connection _conn;
+    private Connection _conn;
     //startup timestamp
-    long startupTimeMs;
-    String sessionId;
+    private long startupTimeMs;
+    private String sessionId;
+    private String id;
 
     //     from pool but not return to pool
     // use to bc
-    boolean isPooling;
-    long lastUsedTimeMs;
+    private boolean isPooling;
+    private long lastUsedTimeMs;
     // reuse times in lifecycle
-    long reuseTimes = 0;
+    private long reuseTimes = 0;
 
     public PoolingConnection(Connection conn, long startupTimeMs, boolean isPooling) {
         _conn = conn;
         this.startupTimeMs = startupTimeMs;
         this.isPooling = isPooling;
+        id = UUID.randomUUID().toString().replace("-", "").toLowerCase();
     }
 
     public long getStartupTimeMs() {
@@ -340,5 +343,10 @@ public class PoolingConnection implements IPoolingConnection {
     @Override
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+    @Override
+    public String getId(){
+        return this.id;
     }
 }

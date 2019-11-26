@@ -35,6 +35,6 @@ public interface IDataBasePool {
      */
     public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn, List<Statement> pst);
 
-    public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn);
+//    public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn);
 
 }

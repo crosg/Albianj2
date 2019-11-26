@@ -240,7 +240,9 @@ public class Xml2Object {
         } else if (double.class.isAssignableFrom(type)
                 || Double.class.isAssignableFrom(type)) {
             retVal = Double.parseDouble(value.toString());
-        } else {
+        } else if(boolean.class.isAssignableFrom(type)) {
+            retVal = Boolean.parseBoolean(value.toString());
+        }else {
             retVal = value;
 
         }

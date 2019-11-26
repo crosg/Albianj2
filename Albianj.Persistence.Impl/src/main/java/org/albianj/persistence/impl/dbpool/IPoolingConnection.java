@@ -28,4 +28,5 @@ public interface IPoolingConnection extends Connection {
     void setSessionId(String sessionId);
 
 
+    String getId();
 }

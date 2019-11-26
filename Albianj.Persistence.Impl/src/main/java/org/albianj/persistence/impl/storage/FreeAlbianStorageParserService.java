@@ -106,8 +106,16 @@ public abstract class FreeAlbianStorageParserService extends FreeAlbianParserSer
                 if (0 < timeout) {
                     sb.append("&connectTimeout=").append(timeout * 1000).append("&socketTimeout=").append(timeout * 1000);
                 }
-                sb.append("&autoReconnect=true&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&maxReconnect=3&autoReconnectForPools=true&rewriteBatchedStatements=true");
-//                sb.append("&autoReconnect=true&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull");
+                sb.append("&autoReconnect=true")
+                        .append("&failOverReadOnly=false")
+                        .append("&zeroDateTimeBehavior=convertToNull")
+                        .append("&maxReconnect=3")
+                        .append("&autoReconnectForPools=true")
+                        .append("&rewriteBatchedStatements=true")
+                        .append("&dontTrackOpenResources=true");
+                if(!Validate.isNullOrEmptyOrAllSpace(rsa.getStorageAttribute().getOptions())) {
+                    sb.append("&").append(rsa.getStorageAttribute().getOptions());
+                }
             }
         }
         return sb.toString();

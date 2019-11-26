@@ -145,24 +145,24 @@ public abstract class FreeDataBasePool implements IDataBasePool {
     }
 
 
-    public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn) {
-        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                sessionId, AlbianLoggerLevel.Info,
-                "return the connection from storage:%s and database:%s by connection pool.",
-                storageName, databaseName);
-
-
-        try {
-            if (conn != null) {
-                conn.close();
-            }
-
-        } catch (SQLException e) {
-            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
-                    sessionId, AlbianLoggerLevel.Error, e,
-                    "close the  connection to storage:%s database:%s is fail.",
-                    storageName, databaseName);
-        }
-    }
+//    public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn) {
+//        AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+//                sessionId, AlbianLoggerLevel.Info,
+//                "return the connection from storage:%s and database:%s by connection pool.",
+//                storageName, databaseName);
+//
+//
+//        try {
+//            if (conn != null) {
+//                conn.close();
+//            }
+//
+//        } catch (SQLException e) {
+//            AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
+//                    sessionId, AlbianLoggerLevel.Error, e,
+//                    "close the  connection to storage:%s database:%s is fail.",
+//                    storageName, databaseName);
+//        }
+//    }
 
 }

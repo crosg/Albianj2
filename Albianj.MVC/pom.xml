@@ -74,12 +74,6 @@
             <version>2019081203-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.yuewen.nrzx.albianj</groupId>
-            <artifactId>Albianj.Core</artifactId>
-            <version>2019081203-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
 
     </dependencies>
 

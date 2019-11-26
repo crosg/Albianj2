@@ -1,5 +1,6 @@
 package org.albianj.persistence.impl.dbpool.impl;
 
+import com.mysql.jdbc.NonRegisteringDriver;
 import com.mysql.jdbc.NotImplemented;
 import org.albianj.loader.AlbianClassLoader;
 import org.albianj.logger.AlbianLoggerLevel;
@@ -50,7 +51,8 @@ public class SpxDBPool implements ISpxDBPool {
             AlbianServiceRouter.getLogger2()
                     .logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName, IAlbianLoggerService2.InnerThreadName,
                             AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
-                            AlbianModuleType.AlbianPersistence.getThrowInfo(), "regedit JDBC Driver classname:%s is fail.",
+                            AlbianModuleType.AlbianPersistence.getThrowInfo(),
+                            "regedit JDBC Driver classname:%s is fail.",
                             cf.getDriverName());
         }
 
@@ -207,10 +209,11 @@ public class SpxDBPool implements ISpxDBPool {
             if (pconn.getLastUsedTimeMs() + this.cf.getWaitInFreePoolMs() <= now || !pconn.isValid()) {
                 AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                         sessionId, AlbianLoggerLevel.Warn,
-                        "DBPOOL -> %s.free time expired connection which lastUsedTime -> %d, startup -> %d, reuse -> %d,timout -> %d,valid -> %s.close it and new pooling one.",
-                        cf.getPoolName(), pconn.getLastUsedTimeMs(), pconn.getStartupTimeMs(), pconn.getReuseTimes(),
+                        "DBPOOL -> %s.free time expired connection which id -> %s, lastUsedTime -> %d, startup -> %d, reuse -> %d,timout -> %d,valid -> %s.close it and new pooling one.",
+                        cf.getPoolName(),pconn.getId(), pconn.getLastUsedTimeMs(), pconn.getStartupTimeMs(), pconn.getReuseTimes(),
                         (now - pconn.getLastUsedTimeMs() - cf.getWaitInFreePoolMs()), pconn.isValid() ? "true" : "false");
                 pconn.close();
+                pconn = null;
                 pconn = newConnection(true);
             }
             usePoolingConnection(sessionId, pconn);
@@ -315,6 +318,7 @@ public class SpxDBPool implements ISpxDBPool {
                     "DBPOOL -> %s.back remedy connecton.close it.", cf.getPoolName());
             removeRemedyConnection(pconn);
             pconn.close();
+            pconn = null;
             return;
         }
 
@@ -327,6 +331,7 @@ public class SpxDBPool implements ISpxDBPool {
                     "DBPOOL -> %s.close pooling connection which over the maxlife.startup -> %d,now -> %d,max life -> %d.reuse -> %d.",
                     cf.getPoolName(), pconn.getStartupTimeMs(), now, cf.getLifeCycleTime(), pconn.getReuseTimes());
             pconn.close();
+            pconn = null;
             return;
         }
         if (pconn.isValid()) {
@@ -342,6 +347,7 @@ public class SpxDBPool implements ISpxDBPool {
                     "DBPOOL -> %s.close pooling connection which valid is false.startup -> %d,now -> %d,max life -> %d.reuse -> %d.",
                     cf.getPoolName(), pconn.getStartupTimeMs(), now, cf.getLifeCycleTime(), pconn.getReuseTimes());
             pconn.close();
+            pconn = null;
         }
         this.notifyAll(); // keep wakeup sleep thread
     }
@@ -358,6 +364,7 @@ public class SpxDBPool implements ISpxDBPool {
                 try {
                     if (pconn.isValid()) {
                         pconn.close();
+                        pconn = null;
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -370,6 +377,7 @@ public class SpxDBPool implements ISpxDBPool {
                 try {
                     if (pconn.isValid()) {
                         pconn.close();
+                        pconn = null;
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -382,6 +390,7 @@ public class SpxDBPool implements ISpxDBPool {
                 try {
                     if (pconn.isValid()) {
                         pconn.close();
+                        pconn = null;
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -468,6 +477,7 @@ public class SpxDBPool implements ISpxDBPool {
                                             pool.getPoolName(), pconn.getLastUsedTimeMs(), now, cf.getMaxRequestTimeMs());
                                     removeBusyConnection(pconn);
                                     pconn.close();
+                                    pconn = null;
                                 }
                             } catch (SQLException e) {
                                 e.printStackTrace();
@@ -485,13 +495,13 @@ public class SpxDBPool implements ISpxDBPool {
                                             pool.getPoolName(), pconn.getLastUsedTimeMs(), now, cf.getWaitInFreePoolMs());
                                     removeFreeConnection(pconn);
                                     pconn.close();
+                                    pconn = null;
                                 }
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
                         }
                     }
-
                     synchronized (remebyConnections) {
                         for (IPoolingConnection pconn : remebyConnections) {
                             try {
@@ -502,6 +512,7 @@ public class SpxDBPool implements ISpxDBPool {
                                             pool.getPoolName(), pconn.getLastUsedTimeMs(), now, cf.getMaxRequestTimeMs());
                                     removeRemedyConnection(pconn);
                                     pconn.close();
+                                    pconn = null;
                                 }
                             } catch (SQLException e) {
                                 e.printStackTrace();

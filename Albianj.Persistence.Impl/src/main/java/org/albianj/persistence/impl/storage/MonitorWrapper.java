@@ -67,15 +67,15 @@ public class MonitorWrapper implements IDataBasePool {
 
     }
 
-    @Override
-    public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn) {
-        long start = System.currentTimeMillis();
-        try {
-            delegatePool.returnConnection(sessionId, storageName, databaseName, conn);
-        } finally {
-            connectionMonitorService.monitorConnectionCost(storageName, databaseName,
-                    IAlbianConnectionMonitorService.MonitorMethod.ReturnConnection, System.currentTimeMillis() - start,
-                    true);
-        }
-    }
+//    @Override
+//    public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn) {
+//        long start = System.currentTimeMillis();
+//        try {
+//            delegatePool.returnConnection(sessionId, storageName, databaseName, conn);
+//        } finally {
+//            connectionMonitorService.monitorConnectionCost(storageName, databaseName,
+//                    IAlbianConnectionMonitorService.MonitorMethod.ReturnConnection, System.currentTimeMillis() - start,
+//                    true);
+//        }
+//    }
 }

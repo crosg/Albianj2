@@ -95,4 +95,6 @@ public interface IAlbianService {
     public void setServiceAttribute(IAlbianServiceAttribute attr);
     @Comments("设置当前service的名字，service的子类必须实现该方法，并且值必须和service.xml中配置的Id一致。默认为当前类的名称。")
     public IAlbianServiceAttribute getServiceAttribute();
+
+    void setBandleName(String bundleName);
 }

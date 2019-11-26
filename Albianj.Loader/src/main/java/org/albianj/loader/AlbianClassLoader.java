@@ -53,6 +53,11 @@ public class AlbianClassLoader {
         BundleContext bctx =  ApplicationContext.Instance.findCurrentBundleContext(AlbianBootService.class,true);
         return  bctx.getClassLoader();
     }
+
+    public static String getCurrentBundleName() {
+        BundleContext bctx =  ApplicationContext.Instance.findCurrentBundleContext(AlbianBootService.class,true);
+        return  bctx.getBundleName();
+    }
 }
 //
 //    public boolean existClass(String name) {

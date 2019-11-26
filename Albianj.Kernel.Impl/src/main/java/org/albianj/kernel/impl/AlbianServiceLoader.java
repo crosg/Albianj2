@@ -20,6 +20,7 @@ public class AlbianServiceLoader {
 
         String sInterface = serviceAttr.getInterface();
         try {
+
             Class<?> cla = AlbianClassLoader.getInstance().loadClass(sImplClzz);
             if (null == cla) {
                 AlbianServiceRouter.throwException(sessionId,
@@ -66,6 +67,7 @@ public class AlbianServiceLoader {
             service.afterLoading();
             service.setServiceId(id);
             service.setServiceAttribute(serviceAttr);
+            service.setBandleName(AlbianClassLoader.getCurrentBundleName());
             rtnService = service;
             if (serviceAttr.isUseProxy()) {
                 AlbianServiceProxyExecutor proxy = new AlbianServiceProxyExecutor();

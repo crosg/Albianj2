@@ -63,6 +63,7 @@ public abstract class FreeAlbianService implements IAlbianService {
     boolean enableProxy = false;
     IAlbianService service = null;
     private AlbianServiceLifetime state = AlbianServiceLifetime.Normal;
+    private String bundleName;
 
     @AlbianAopAttribute(avoid = true)
     public AlbianServiceLifetime getAlbianServiceState() {
@@ -226,5 +227,14 @@ public abstract class FreeAlbianService implements IAlbianService {
     @AlbianAopAttribute(avoid = true)
     public IAlbianServiceAttribute getServiceAttribute(){
         return this.attr;
+    }
+
+    public String getCurrentBundleName(){
+        return this.bundleName;
+    }
+
+    @Override
+    public void setBandleName(String bundleName){
+        this.bundleName = bundleName;
     }
 }

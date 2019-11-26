@@ -149,7 +149,7 @@ public class SpxWapper extends FreeDataBasePool {
         this.returnConnection(sessionId, storageName, databaseName, conn);
     }
 
-    public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn) {
+    private void returnConnection(String sessionId, String storageName, String databaseName, Connection conn) {
         try {
             String key = storageName + databaseName;
             DataSource ds = getDatasource(key);

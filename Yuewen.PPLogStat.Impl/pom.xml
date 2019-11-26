@@ -17,10 +17,10 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.yuewen.nrzx.ext</groupId>
-            <artifactId>yuewen.pplogstate</artifactId>
-            <version>0.0.2</version>
-        </dependency>
+        <groupId>com.yuewen.nrzx.ext</groupId>
+        <artifactId>yuewen.pplogstate</artifactId>
+        <version>0.0.2</version>
+    </dependency>
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>
             <artifactId>Yuewen.PPLogStat</artifactId>

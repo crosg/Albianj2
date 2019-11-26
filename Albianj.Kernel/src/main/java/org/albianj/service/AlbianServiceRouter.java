@@ -43,6 +43,9 @@ import org.albianj.except.AlbianExternalException;
 import org.albianj.except.AlbianInternalException;
 import org.albianj.except.AlbianRuntimeException;
 import org.albianj.except.ExceptionUtil;
+import org.albianj.framework.boot.except.DisplayException;
+import org.albianj.framework.boot.except.HiddenException;
+import org.albianj.framework.boot.servants.StringServant;
 import org.albianj.kernel.IAlbianLogicIdService;
 import org.albianj.logger.AlbianLogPacketBuilder;
 import org.albianj.logger.AlbianLoggerLevel;
@@ -388,5 +391,20 @@ public class AlbianServiceRouter extends ServiceContainer {
     public static AlbianLogPacketBuilder newLogPacketBuilder(){
         return new AlbianLogPacketBuilder();
     }
-    
+
+    public static void throwDisplayException(Class<?> refType, Throwable interThrow, String brief, String fmt, Object...obj) {
+        String msg = StringServant.Instance.format(fmt,obj);
+        if(null == interThrow){
+            throw new DisplayException(refType,brief,msg);
+        }
+        throw new DisplayException(refType,interThrow,brief,msg);
+    }
+
+    public static void throwHiddenException(Class<?> refType, Throwable interThrow, String brief, String hideMsg, String fmt, Object... obj) {
+        String msg = StringServant.Instance.format(fmt,obj);
+        if(null == interThrow){
+            throw new HiddenException(refType,brief,hideMsg,msg);
+        }
+        throw new HiddenException(refType,interThrow,brief,hideMsg,msg);
+    }
 }
