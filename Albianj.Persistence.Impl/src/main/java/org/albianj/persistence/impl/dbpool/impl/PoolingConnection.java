@@ -21,6 +21,8 @@ public class PoolingConnection implements IPoolingConnection {
     private long lastUsedTimeMs;
     // reuse times in lifecycle
     private long reuseTimes = 0;
+    private String server;
+    private int port;
 
     public PoolingConnection(Connection conn, long startupTimeMs, boolean isPooling) {
         _conn = conn;
@@ -59,6 +61,26 @@ public class PoolingConnection implements IPoolingConnection {
 
     public void addReuseTimes() {
         ++this.reuseTimes;
+    }
+
+    @Override
+    public String getServer() {
+        return server;
+    }
+
+    @Override
+    public void setServer(String server) {
+        this.server = server;
+    }
+
+    @Override
+    public int getPort() {
+        return port;
+    }
+
+    @Override
+    public void setPort(int port) {
+        this.port = port;
     }
 
     @Override

@@ -62,7 +62,7 @@ public class SpxDBPool implements ISpxDBPool {
 
         for (int i = 0; i < pool.cf.getMinConnections(); i++) {
             try {
-                IPoolingConnection conn = pool.newConnection(true);
+                IPoolingConnection conn = pool.newConnection(true,cf.getServer(),cf.getPort());
                 pool.freeConnections.add(conn);
             } catch (Exception e) {
                 AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
@@ -165,7 +165,7 @@ public class SpxDBPool implements ISpxDBPool {
         }
     }
 
-    private IPoolingConnection newConnection(boolean isPooling) throws SQLException {
+    private IPoolingConnection newConnection(boolean isPooling,String serevr,int port) throws SQLException {
         IPoolingConnection pconn = null;
         long now = System.currentTimeMillis();
         if (this.cf != null) {
@@ -175,6 +175,8 @@ public class SpxDBPool implements ISpxDBPool {
             pconn = new PoolingConnection(conn, System.currentTimeMillis(), isPooling);
             pconn.setLastUsedTimeMs(now);
             pconn.setStartupTimeMs(now);
+            pconn.setServer(serevr);
+            pconn.setPort(port);
         }
         return pconn;
     }
@@ -200,8 +202,28 @@ public class SpxDBPool implements ISpxDBPool {
         throw new NotImplemented();
     }
 
-    @Override
-    public Connection getConnection(String sessionId) throws SQLException {
+    public Connection getConnection(String sessionId,String server,int port) throws SQLException {
+        boolean isRst = false;
+        int times = 3;
+        Connection pconn = null;
+        do {
+            pconn = _getConnection(sessionId,server,port);
+            if(null != pconn) {
+                try {
+                    Statement stat = pconn.createStatement();
+                    isRst = stat.execute("SELECT 1");
+                } catch (Exception e) {
+                }
+            }
+        }while(!isRst && (0 < times--));
+
+        if(null == pconn){
+
+        }
+        return pconn;
+    }
+
+    protected Connection _getConnection(String sessionId,String server,int port) throws SQLException {
         IPoolingConnection pconn = null;
         long now = System.currentTimeMillis();
         pconn = pollFreeConnection();
@@ -214,7 +236,9 @@ public class SpxDBPool implements ISpxDBPool {
                         (now - pconn.getLastUsedTimeMs() - cf.getWaitInFreePoolMs()), pconn.isValid() ? "true" : "false");
                 pconn.close();
                 pconn = null;
-                pconn = newConnection(true);
+                pconn = newConnection(true,server,port);
+            } else {
+
             }
             usePoolingConnection(sessionId, pconn);
             return pconn;
@@ -227,7 +251,7 @@ public class SpxDBPool implements ISpxDBPool {
                     sessionId, AlbianLoggerLevel.Info,
                     "DBPOOL -> %s.not have free connection and new pooling one.",
                     cf.getPoolName());
-            pconn = newConnection(true);
+            pconn = newConnection(true,server,port);
             usePoolingConnection(sessionId, pconn);
             return pconn;
         }
@@ -239,7 +263,7 @@ public class SpxDBPool implements ISpxDBPool {
                         sessionId, AlbianLoggerLevel.Warn,
                         "DBPOOL -> %s.all connection is busy,the config is not waitting and new remedy one.",
                         cf.getPoolName());
-                pconn = newConnection(false);
+                pconn = newConnection(false,server,port);
                 useRemedyConnection(sessionId, pconn);
                 if (this.getRemedyCount() >= cf.getMaxRemedyConnectionCount() / 2) {
                     AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
@@ -272,7 +296,7 @@ public class SpxDBPool implements ISpxDBPool {
         long endWait = System.currentTimeMillis();
         if (beginWait + cf.getWaitTimeWhenGetMs() > endWait) {
             //wakeup by notify
-            return this.getConnection(sessionId);
+            return this.getConnection(sessionId,server,port);
         }
 
         // wait timeout and do remedy
@@ -282,7 +306,7 @@ public class SpxDBPool implements ISpxDBPool {
                     "DBPOOL -> %s.all connection is busy and wait timeout.try new remedy connection.",
                     cf.getPoolName());
 
-            pconn = newConnection(false);
+            pconn = newConnection(false,server,port);
             useRemedyConnection(sessionId, pconn);
             if (this.getRemedyCount() >= cf.getMaxRemedyConnectionCount() / 2) {
                 AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
@@ -526,7 +550,7 @@ public class SpxDBPool implements ISpxDBPool {
                         int sub = cf.getMinConnections() - currConnsCount;
                         for (int i = 0; i < sub; i++) {
                             try {
-                                IPoolingConnection pconn = pool.newConnection(true);
+                                IPoolingConnection pconn = pool.newConnection(true,cf.getServer(),cf.getPort());
                                 pushFreeConnection(pconn);
                             } catch (SQLException e) {
                                 e.printStackTrace();

@@ -130,5 +130,9 @@ public interface IStorageAttribute {
 
     public void setMaxRequestTimeMs(int maxRequestTimeMs);
 
+    String getL5();
+    void setL5(String l5);
+    boolean isEnableL5();
+
 
 }

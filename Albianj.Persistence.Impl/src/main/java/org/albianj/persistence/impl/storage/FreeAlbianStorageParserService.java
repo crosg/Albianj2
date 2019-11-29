@@ -37,6 +37,8 @@ Copyright (c) 2016 著作权由上海阅文信息技术有限公司所有。著�
 */
 package org.albianj.persistence.impl.storage;
 
+import org.albianj.argument.RefArg;
+import org.albianj.l5bridge.IL5BridgeService;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.object.IRunningStorageAttribute;
@@ -69,38 +71,57 @@ public abstract class FreeAlbianStorageParserService extends FreeAlbianParserSer
             return null;
         }
 
-        IStorageAttribute storageAttribute = rsa.getStorageAttribute();
+        IStorageAttribute stgAttr = rsa.getStorageAttribute();
+//        String server = stgAttr.getServer();
+//        int port = stgAttr.getPort();
+        /**
+         * use L5 balance
+         */
+        if(!Validate.isNullOrEmptyOrAllSpace(stgAttr.getL5())) {
+            IL5BridgeService l5bs = AlbianServiceRouter.getSingletonService(IL5BridgeService.class,IL5BridgeService.Name,false);
+            if(null == l5bs){
+                return null;
+            }
+            RefArg<String> refServer = new RefArg<>();
+            RefArg<Integer> refPort = new RefArg<>();
+            l5bs.exchange(stgAttr.getL5(),refServer,refPort);
+//            server = refServer.getValue();
+//            port = refPort.getValue();
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append("jdbc:");
         // String url =
         // "jdbc:mysql://localhost/baseinfo?useUnicode=true&characterEncoding=8859_1";
-        switch (storageAttribute.getDatabaseStyle()) {
+        switch (stgAttr.getDatabaseStyle()) {
             case (PersistenceDatabaseStyle.Oracle): {
-                sb.append("oracle:thin:@").append(storageAttribute.getServer());
-                if (0 != storageAttribute.getPort()) {
-                    sb.append(":").append(storageAttribute.getPort());
-                }
-                sb.append(":").append(rsa.getDatabase());
+//                sb.append("oracle:thin:@").append(server);
+//                if (0 != port) {
+//                    sb.append(":").append(port);
+//                }
+                sb.append("oracle:thin:@{0}:{1}:{2}");
+//                sb.append(":").append(rsa.getDatabase());
             }
             case (PersistenceDatabaseStyle.SqlServer): {
-                sb.append("microsoft:sqlserver://").append(
-                        storageAttribute.getServer());
-                if (0 != storageAttribute.getPort()) {
-                    sb.append(":").append(storageAttribute.getPort());
-                }
-                sb.append(";").append(rsa.getDatabase());
+//                sb.append("microsoft:sqlserver://").append(server);
+//                if (0 != port) {
+//                    sb.append(":").append(port);
+//                }
+//                sb.append(";").append(rsa.getDatabase());
+                sb.append("microsoft:sqlserver://{0}:{1};{2}");
             }
             case (PersistenceDatabaseStyle.MySql):
             default: {
-                sb.append("mysql://").append(storageAttribute.getServer());
-                if (0 != storageAttribute.getPort()) {
-                    sb.append(":").append(storageAttribute.getPort());
-                }
-                sb.append("/").append(rsa.getDatabase());
+//                sb.append("mysql://").append(server);
+//                if (0 != port) {
+//                    sb.append(":").append(port);
+//                }
+//                sb.append("/").append(rsa.getDatabase());
+                sb.append("mysql://{0}:{1}/{2}");
                 sb.append("?useUnicode=true");
-                if (null != storageAttribute.getCharset()) {
+                if (null != stgAttr.getCharset()) {
                     sb.append("&characterEncoding=").append(
-                            storageAttribute.getCharset());
+                            stgAttr.getCharset());
                 }
                 int timeout = rsa.getStorageAttribute().getTimeout();
                 if (0 < timeout) {

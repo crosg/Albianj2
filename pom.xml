@@ -34,6 +34,8 @@
         <module>Albianj.Statistics.Impl</module>
         <module>Albianj.ChildBundle</module>
         <module>Albianj.Bundle.Bridge</module>
+        <module>Albianj.L5Bridge</module>
+        <module>Albianj.L5Bridge.Impl</module>
     </modules>
     <packaging>pom</packaging>
 

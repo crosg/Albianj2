@@ -52,4 +52,12 @@ public interface ISpxDBPoolConfig {
     public long getMaxRequestTimeMs();
 
     public void setMaxRequestTimeMs(long maxRequestTimeMs);
+
+    String getServer();
+
+    void setServer(String server);
+
+    int getPort();
+
+    void setPort(int port);
 }

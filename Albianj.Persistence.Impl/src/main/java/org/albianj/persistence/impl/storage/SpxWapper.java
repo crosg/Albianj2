@@ -1,9 +1,12 @@
 package org.albianj.persistence.impl.storage;
 
+import org.albianj.argument.RefArg;
 import org.albianj.kernel.AlbianLevel;
 import org.albianj.kernel.KernelSetting;
+import org.albianj.l5bridge.IL5BridgeService;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
+import org.albianj.persistence.impl.dbpool.IPoolingConnection;
 import org.albianj.persistence.impl.dbpool.ISpxDBPool;
 import org.albianj.persistence.impl.dbpool.ISpxDBPoolConfig;
 import org.albianj.persistence.impl.dbpool.impl.SpxDBPool;
@@ -13,6 +16,8 @@ import org.albianj.persistence.object.IStorageAttribute;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.security.IAlbianSecurityService;
 import org.albianj.service.AlbianServiceRouter;
+import org.albianj.text.StringFormat;
+import org.albianj.verify.Validate;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -29,8 +34,29 @@ public class SpxWapper extends FreeDataBasePool {
 
     public Connection getConnection(String sessionid, IRunningStorageAttribute rsa,boolean isAutoCommit) {
         IStorageAttribute sa = rsa.getStorageAttribute();
-        String key = sa.getName() + rsa.getDatabase();
-        DataSource ds = getDatasource(key, rsa);
+        String server = null;
+        int port = 0;
+        if(sa.isEnableL5()) {
+            RefArg<String> refServer = new RefArg<>();
+            RefArg<Integer> refPort = new RefArg<>();
+            if (!Validate.isNullOrEmptyOrAllSpace(sa.getL5())) {
+                IL5BridgeService l5bs = AlbianServiceRouter.getSingletonService(IL5BridgeService.class, IL5BridgeService.Name, false);
+                if (null == l5bs) {
+                    return null;
+                }
+                l5bs.exchange(sa.getL5(), refServer, refPort);
+                server = refServer.getValue();
+                port = refPort.getValue();
+            }
+        } else {
+            server = sa.getServer();
+            port = sa.getPort();
+        }
+        /**
+         * key : storageName-databaseName-ip-port
+         */
+        String key = StringFormat.byBlock("{}-{}-{}-{}",sa.getName() ,rsa.getDatabase(),server,port);
+        DataSource ds = getDatasource(key, rsa,server,port); // key:storageName + databaseName
         ISpxDBPool pool = (ISpxDBPool) ds;
 
         AlbianServiceRouter.getLogger2()
@@ -38,7 +64,7 @@ public class SpxWapper extends FreeDataBasePool {
                         "Get the connection from storage:%s and database:%s by connection pool.", sa.getName(),
                         rsa.getDatabase());
         try {
-            Connection conn = pool.getConnection(sessionid);
+            Connection conn = pool.getConnection(sessionid,server,port);
             if (null == conn)
                 return null;
             if (Connection.TRANSACTION_NONE != sa.getTransactionLevel()) {
@@ -56,7 +82,7 @@ public class SpxWapper extends FreeDataBasePool {
     }
 
     @Override
-    public DataSource setupDataSource(String key, IRunningStorageAttribute rsa) {
+    public DataSource setupDataSource(String key, IRunningStorageAttribute rsa,String server,int port) {
         ISpxDBPoolConfig cf = null;
         try {
             cf = new SpxDBPoolConfig();
@@ -71,17 +97,8 @@ public class SpxWapper extends FreeDataBasePool {
             IStorageAttribute stgAttr = rsa.getStorageAttribute();
             String url = FreeAlbianStorageParserService.generateConnectionUrl(rsa);
             cf.setDriverName(DRIVER_CLASSNAME);
-//            try {
-//                Driver driver = (Driver) Class.forName(DRIVER_CLASSNAME, true, AlbianClassLoader.getInstance()).newInstance();
-//                DriverManager.registerDriver(new JDBCDriverWapper(driver));
-//            } catch (ClassNotFoundException e) {
-//                AlbianServiceRouter.getLogger2()
-//                        .logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName, IAlbianLoggerService2.InnerThreadName,
-//                                AlbianLoggerLevel.Error, e, AlbianModuleType.AlbianPersistence,
-//                                AlbianModuleType.AlbianPersistence.getThrowInfo(), "regedit JDBC Driver classname:%s is fail.",
-//                                DRIVER_CLASSNAME);
-//            }
-            cf.setUrl(url);
+            String fmtUrl = StringFormat.byIndex(url,server,port,rsa.getDatabase());
+            cf.setUrl(fmtUrl);
             if (AlbianLevel.Debug == KernelSetting.getAlbianLevel()) {
                 cf.setUsername(stgAttr.getUser());
                 cf.setPassword(stgAttr.getPassword());
@@ -112,6 +129,8 @@ public class SpxWapper extends FreeDataBasePool {
             cf.setMaxRequestTimeMs(stgAttr.getMaxRequestTimeMs());//最大单次执行sql时间为1分钟
             cf.setPoolName(key);
             cf.setWaitTimeWhenGetMs(stgAttr.getWaitTimeWhenGetMs());
+            cf.setServer(server);
+            cf.setPort(port);
         } catch (Exception e) {
             AlbianServiceRouter.getLogger2()
                     .logAndThrow(IAlbianLoggerService2.AlbianRunningLoggerName, IAlbianLoggerService2.InnerThreadName,
@@ -151,7 +170,8 @@ public class SpxWapper extends FreeDataBasePool {
 
     private void returnConnection(String sessionId, String storageName, String databaseName, Connection conn) {
         try {
-            String key = storageName + databaseName;
+            IPoolingConnection pconn = (IPoolingConnection) conn;
+            String key = StringFormat.byBlock("{}-{}-{}-{}",storageName,databaseName,pconn.getServer(),pconn.getPort());
             DataSource ds = getDatasource(key);
             if (null == ds) {
                 AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,

@@ -83,6 +83,7 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
     // <Charset>gb2312</Charset>
     // <Transactional>true</Transactional>
     // <TransactionLevel>0</TransactinLevel>
+    // <L5>L5:912132:23232:0.3</L5>
     // </Storag
 
     public String getServiceName() {
@@ -197,6 +198,7 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
         String sMaxRemedyConnectionCount = XmlParser.getSingleChildNodeValue(node, "MaxRemedyConnectionCount");
         String sCleanupTimestampMs = XmlParser.getSingleChildNodeValue(node, "CleanupTimestampMs");
         String sMaxRequestTimeMs = XmlParser.getSingleChildNodeValue(node, "MaxRequestTimeMs");
+        String sL5 = XmlParser.getSingleChildNodeValue(node, "L5");
 
         if (!Validate.isNullOrEmptyOrAllSpace(sWaitTimeWhenGetMs)) {
             storage.setWaitTimeWhenGetMs(new Integer(sWaitTimeWhenGetMs));
@@ -217,6 +219,7 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
             storage.setMaxRequestTimeMs(new Integer(sMaxRequestTimeMs));
         }
         storage.setOptions(options);
+        storage.setL5(sL5);
 
         if (storage.getTransactional()) {
             if (Validate.isNullOrEmpty(transactionLevel)) {

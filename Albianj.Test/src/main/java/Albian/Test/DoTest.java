@@ -9,9 +9,27 @@ import org.albianj.framework.boot.logging.LoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.service.AlbianServiceRouter;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class DoTest {
+    public static String byBlock(String fmt, Object...values) {
+        StringBuilder formatter = new StringBuilder(fmt);
+        Matcher matcher = Pattern.compile("\\{\\s*\\}").matcher(fmt);
+        while (matcher.find()) {
+            String key = matcher.group();
+            int index = formatter.indexOf(key);
+            if (index != -1) {
+                formatter.replace(index, index + key.length(), "%s");
+            }
+        }
+        return String.format(formatter.toString(), values);
+    }
+
     public static void main(String[] args) {
         try {
+            String fmt = byBlock("WO {}{}love {  } 82 { } ads{ } jiushi block\\{ \\}",
+                    "diyige",2,"di2ge","3th", "di4th","opp");
             ApplicationContext.Instance.setAppStartupType(DoTest.class)
                     .setWorkFolder("D:\\work\\github\\albianj2\\Albianj.Test\\src\\main\\resources")
                     .setLoggerAttr("D:\\work\\github\\albianj2\\Albianj.Test\\logs", LoggerLevel.Debug, true)

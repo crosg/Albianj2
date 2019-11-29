@@ -19,12 +19,11 @@ public abstract class FreeDataBasePool implements IDataBasePool {
 
     private final ConcurrentMap<String, DataSource> _dataSource = new ConcurrentHashMap<>();
 
-    protected DataSource getDatasource(final String key, IRunningStorageAttribute rsa) {
+    protected DataSource getDatasource(final String key, IRunningStorageAttribute rsa,String ip,int port) {
         DataSource ds = _dataSource.get(key);
         if (ds != null) {
             return ds;
         }
-
         synchronized (_dataSource) {
             ds = _dataSource.get(key);
             if (ds == null) {
@@ -32,7 +31,7 @@ public abstract class FreeDataBasePool implements IDataBasePool {
                         .log(IAlbianLoggerService2.AlbianSqlLoggerName, IAlbianLoggerService2.InnerThreadName,
                                 AlbianLoggerLevel.Info, "create datasource storage:%s ,database:%s",
                                 rsa.getStorageAttribute().getName(), rsa.getDatabase());
-                ds = setupDataSource(key, rsa);
+                ds = setupDataSource(key, rsa,ip,port);
                 _dataSource.putIfAbsent(key, ds);
             }
         }
@@ -52,7 +51,7 @@ public abstract class FreeDataBasePool implements IDataBasePool {
     }
 
 
-    protected abstract DataSource setupDataSource(final String key, final IRunningStorageAttribute rsa);
+    protected abstract DataSource setupDataSource(final String key, final IRunningStorageAttribute rsa,String ip,int port);
 
     //释放连接回连接池
     public void returnConnection(String sessionId, String storageName, String databaseName, Connection conn, Statement pst, ResultSet rs) {

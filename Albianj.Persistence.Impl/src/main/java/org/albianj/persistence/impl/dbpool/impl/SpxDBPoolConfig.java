@@ -12,6 +12,8 @@ public class SpxDBPoolConfig implements ISpxDBPoolConfig {
     private int maxConnections = 10;
     private int minConnections = 5;
     private int waitTimeWhenGetMs = 200;
+    private String server;
+    private int port;
 
     //整个生命的时间，最长的生存时间，到了时间
     //不管链接是否可用，全部kill掉
@@ -166,4 +168,23 @@ public class SpxDBPoolConfig implements ISpxDBPoolConfig {
     }
 
 
+    @Override
+    public String getServer() {
+        return server;
+    }
+
+    @Override
+    public void setServer(String server) {
+        this.server = server;
+    }
+
+    @Override
+    public int getPort() {
+        return port;
+    }
+
+    @Override
+    public void setPort(int port) {
+        this.port = port;
+    }
 }

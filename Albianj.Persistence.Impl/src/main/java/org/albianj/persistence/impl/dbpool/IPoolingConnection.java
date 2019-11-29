@@ -21,6 +21,14 @@ public interface IPoolingConnection extends Connection {
 
     public void addReuseTimes();
 
+    String getServer();
+
+    void setServer(String server);
+
+    int getPort();
+
+    void setPort(int port);
+
     public Boolean isValid() throws SQLException;
 
     String getSessionId();
