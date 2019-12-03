@@ -66,6 +66,8 @@ public class StorageAttribute implements IStorageAttribute {
     private int maxRemedyConnectionCount = 50;
     private int cleanupTimestampMs = 30000;
     private int maxRequestTimeMs = 60000;
+    private String l5;
+    private boolean isEnableL5 = false;
 
     public int getWaitTimeWhenGetMs() {
         return waitTimeWhenGetMs;
@@ -113,6 +115,22 @@ public class StorageAttribute implements IStorageAttribute {
 
     public void setMaxRequestTimeMs(int maxRequestTimeMs) {
         this.maxRequestTimeMs = maxRequestTimeMs;
+    }
+
+    @Override
+    public String getL5() {
+        return this.l5;
+    }
+
+    @Override
+    public void setL5(String l5) {
+        this.l5 = l5;
+        this.isEnableL5 = true;
+    }
+
+    @Override
+    public boolean isEnableL5() {
+        return this.isEnableL5;
     }
 
     public String getName() {

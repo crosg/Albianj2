@@ -1,0 +1,21 @@
+启用L5作为数据库的负载均衡方法：
+1 增加maven引用
+  <dependency>
+            <groupId>com.yuewen.nrzx.albianj</groupId>
+            <artifactId>Albianj.L5Bridge</artifactId>
+            <version>版本号按照自己的定</version>
+            <scope>compile</scope>
+        </dependency>
+          <dependency>
+            <groupId>com.yuewen.nrzx.albianj</groupId>
+            <artifactId>Albianj.L5Bridge.impl</artifactId>
+            <version>版本号按照自己的定</version>
+            <scope>runtime</scope>
+         </dependency>
+
+ 2 storage.xml文件中，需要使用L5的配置项增加一项
+    <L5>L5:modId:cmdId:timeout</L5>
+    L5,标识，必须有
+    modId ：模块名，L5配置系统可得
+    cmdId ：命令名，L5配置系统可得
+    timeout : 单位为秒，float类型，可省略，默认为0.3s，即300MS

@@ -49,7 +49,7 @@ public interface ISpxDBPool extends DataSource {
 
     public void setPoolName(String name);
 
-    Connection getConnection(String sessionId) throws SQLException;
+    Connection getConnection(String sessionId,String server,int port) throws SQLException;
 
 //    public int getCurrRemedyConnectionsCount() ;
 

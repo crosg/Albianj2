@@ -2,8 +2,10 @@ package org.albianj.persistence.impl.storage;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.albianj.argument.RefArg;
 import org.albianj.kernel.AlbianLevel;
 import org.albianj.kernel.KernelSetting;
+import org.albianj.l5bridge.IL5BridgeService;
 import org.albianj.logger.AlbianLoggerLevel;
 import org.albianj.logger.IAlbianLoggerService2;
 import org.albianj.persistence.object.IRunningStorageAttribute;
@@ -11,6 +13,8 @@ import org.albianj.persistence.object.IStorageAttribute;
 import org.albianj.runtime.AlbianModuleType;
 import org.albianj.security.IAlbianSecurityService;
 import org.albianj.service.AlbianServiceRouter;
+import org.albianj.text.StringFormat;
+import org.albianj.verify.Validate;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -31,8 +35,29 @@ public class HikariCPWapper extends FreeDataBasePool {
     @Override
     public Connection getConnection(String sessionId, IRunningStorageAttribute rsa,boolean isAutoCommit) {
         IStorageAttribute sa = rsa.getStorageAttribute();
-        String key = sa.getName() + rsa.getDatabase();
-        DataSource ds = getDatasource(key, rsa);
+        String server = null;
+        int port = 0;
+        if(sa.isEnableL5()) {
+            RefArg<String> refServer = new RefArg<>();
+            RefArg<Integer> refPort = new RefArg<>();
+            if (!Validate.isNullOrEmptyOrAllSpace(sa.getL5())) {
+                IL5BridgeService l5bs = AlbianServiceRouter.getSingletonService(IL5BridgeService.class, IL5BridgeService.Name, false);
+                if (null == l5bs) {
+                    return null;
+                }
+                l5bs.exchange(sa.getL5(), refServer, refPort);
+                server = refServer.getValue();
+                port = refPort.getValue();
+            }
+        } else {
+            server = sa.getServer();
+            port = sa.getPort();
+        }
+        /**
+         * key : storageName-databaseName-ip-port
+         */
+        String key = StringFormat.byBlock("{}-{}-{}-{}",sa.getName() ,rsa.getDatabase(),server,port);
+        DataSource ds = getDatasource(key, rsa,server,port);
         AlbianServiceRouter.getLogger2().log(IAlbianLoggerService2.AlbianSqlLoggerName,
                 sessionId, AlbianLoggerLevel.Info,
                 "Get the connection from storage:%s and database:%s by connection pool.",
@@ -55,14 +80,14 @@ public class HikariCPWapper extends FreeDataBasePool {
     }
 
     @Override
-    public DataSource setupDataSource(String key, IRunningStorageAttribute rsa) {
+    public DataSource setupDataSource(String key, IRunningStorageAttribute rsa,String server,int port) {
         HikariConfig config = new HikariConfig();
         try {
             IStorageAttribute storageAttribute = rsa.getStorageAttribute();
-            String url = FreeAlbianStorageParserService
-                    .generateConnectionUrl(rsa);
+            String url = FreeAlbianStorageParserService.generateConnectionUrl(rsa);
+            String fmturl = StringFormat.byIndex(url,server,port,rsa.getDatabase());
             config.setDriverClassName(DRIVER_CLASSNAME);
-            config.setJdbcUrl(url);
+            config.setJdbcUrl(fmturl);
             if (AlbianLevel.Debug == KernelSetting.getAlbianLevel()) {
                 config.setUsername(storageAttribute.getUser());
                 config.setPassword(storageAttribute.getPassword());

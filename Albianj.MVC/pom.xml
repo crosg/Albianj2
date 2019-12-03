@@ -5,7 +5,7 @@
     <parent>
         <artifactId>Albianj</artifactId>
         <groupId>com.yuewen.nrzx.albianj</groupId>
-        <version>2019110601</version>
+        <version>2019120201-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -71,13 +71,13 @@
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>
             <artifactId>Albianj.Core</artifactId>
-            <version>2019110601</version>
+            <version>2019120201-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.yuewen.nrzx.albianj</groupId>
             <artifactId>Albianj.Core</artifactId>
-            <version>2019110601</version>
+            <version>2019120201-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 

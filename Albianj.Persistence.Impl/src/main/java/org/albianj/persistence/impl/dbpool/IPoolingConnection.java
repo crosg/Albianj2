@@ -27,5 +27,10 @@ public interface IPoolingConnection extends Connection {
 
     void setSessionId(String sessionId);
 
+    String getServer();
+    void setServer(String server);
+    int getPort();
+    void setPort(int port);
+
 
 }

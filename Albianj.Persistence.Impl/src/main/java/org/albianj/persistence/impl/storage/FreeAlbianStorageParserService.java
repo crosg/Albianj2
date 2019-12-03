@@ -76,28 +76,30 @@ public abstract class FreeAlbianStorageParserService extends FreeAlbianParserSer
         // "jdbc:mysql://localhost/baseinfo?useUnicode=true&characterEncoding=8859_1";
         switch (storageAttribute.getDatabaseStyle()) {
             case (PersistenceDatabaseStyle.Oracle): {
-                sb.append("oracle:thin:@").append(storageAttribute.getServer());
-                if (0 != storageAttribute.getPort()) {
-                    sb.append(":").append(storageAttribute.getPort());
-                }
-                sb.append(":").append(rsa.getDatabase());
+//                sb.append("oracle:thin:@").append(storageAttribute.getServer());
+//                if (0 != storageAttribute.getPort()) {
+//                    sb.append(":").append(storageAttribute.getPort());
+//                }
+//                sb.append(":").append(rsa.getDatabase());
+                sb.append("oracle:thin:@{0}:{1}:{2}");
             }
             case (PersistenceDatabaseStyle.SqlServer): {
-                sb.append("microsoft:sqlserver://").append(
-                        storageAttribute.getServer());
-                if (0 != storageAttribute.getPort()) {
-                    sb.append(":").append(storageAttribute.getPort());
-                }
-                sb.append(";").append(rsa.getDatabase());
+//                sb.append("microsoft:sqlserver://").append(
+//                        storageAttribute.getServer());
+//                if (0 != storageAttribute.getPort()) {
+//                    sb.append(":").append(storageAttribute.getPort());
+//                }
+//                sb.append(";").append(rsa.getDatabase());
+                sb.append("microsoft:sqlserver://{0}:{1}:{2}");
             }
             case (PersistenceDatabaseStyle.MySql):
             default: {
-                sb.append("mysql://").append(storageAttribute.getServer());
-                if (0 != storageAttribute.getPort()) {
-                    sb.append(":").append(storageAttribute.getPort());
-                }
-                sb.append("/").append(rsa.getDatabase());
-                sb.append("?useUnicode=true");
+//                sb.append("mysql://").append(storageAttribute.getServer());
+//                if (0 != storageAttribute.getPort()) {
+//                    sb.append(":").append(storageAttribute.getPort());
+//                }
+//                sb.append("/").append(rsa.getDatabase());
+                sb.append("mysql://{0}:{1}/{2}").append("?useUnicode=true");
                 if (null != storageAttribute.getCharset()) {
                     sb.append("&characterEncoding=").append(
                             storageAttribute.getCharset());

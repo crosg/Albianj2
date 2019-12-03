@@ -28,6 +28,7 @@ public class AlbianBuiltinServiceNamePair {
 
     // load service.xml
     public final static String AlbianServiceParserName = "AlbianServiceParserService";
+    public final static String L5BridgeServiceName = "L5BridgeService";
 
 
     public final static String[] AlbianLoggerServicePair = {AlbianLoggerServiceName, "org.albianj.logger.impl.AlbianLoggerService"};
@@ -42,6 +43,7 @@ public class AlbianBuiltinServiceNamePair {
     public final static String[] AlbianDataRouterServicePair = {AlbianDataRouterServiceName, "org.albianj.persistence.impl.routing.AlbianDataRouterParserService"};
     public final static String[] AlbianPersistenceServicePair = {AlbianPersistenceServiceName, "org.albianj.persistence.impl.service.AlbianPersistenceService"};
     public final static String[] AlbianDataAccessServicePair = {AlbianDataAccessServiceName, "org.albianj.persistence.impl.service.AlbianDataAccessService"};
+    public final static String[] L5BridgeServicePair = {AlbianDataAccessServiceName, "org.albianj.l5bridge.impl.L5BridgeService"};
 
     public final static String[] AlbianMonitorLoggerServicePair = {AlbianMonitorLoggerServiceName, "org.albianj.logger.impl.monitor.AlbianMonitorLoggerService"};
 
