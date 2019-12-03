@@ -90,7 +90,7 @@ public class AlbianObjectCreator {
     }
 
     public static void copyObject(IAlbianObject dest,IAlbianObject src){
-        copyObject(dest,src);
+        copyObject(dest,src,null);
     }
 
     /**
