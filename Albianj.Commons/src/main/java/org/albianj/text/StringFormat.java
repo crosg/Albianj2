@@ -87,4 +87,29 @@ public class StringFormat {
         }
         return String.format(formatter.toString(), values);
     }
+
+    /**
+     * output by format
+     * format can use {name} or {} or {0}
+     * but must keep conformity in fmt by once call
+     * @param fmt
+     * @param values
+     * @return
+     */
+    public static String output(String fmt, Object...values){
+        Matcher blk = Pattern.compile("\\{\\s*\\}").matcher(fmt);
+        Matcher numb = Pattern.compile("\\{\\d+\\}").matcher(fmt);
+        Matcher name = Pattern.compile("\\$\\{(\\w+)}").matcher(fmt);
+        if(blk.matches()){
+            return byBlock(fmt,values);
+        }
+        if(numb.matches()){
+            return byIndex(fmt,values);
+        }
+        if(name.matches()){
+            Map<String,Object> map = ( Map<String,Object>) values[0];
+            return byName(fmt,map);
+        }
+        return null;
+    }
 }

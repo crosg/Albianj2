@@ -219,7 +219,9 @@ public class AlbianStorageParserService extends FreeAlbianStorageParserService {
             storage.setMaxRequestTimeMs(new Integer(sMaxRequestTimeMs));
         }
         storage.setOptions(options);
-        storage.setL5(sL5);
+        if (!Validate.isNullOrEmptyOrAllSpace(sL5)) {
+            storage.setL5(sL5);
+        }
 
         if (storage.getTransactional()) {
             if (Validate.isNullOrEmpty(transactionLevel)) {
