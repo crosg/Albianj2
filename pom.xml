@@ -6,7 +6,7 @@
 
     <groupId>com.yuewen.nrzx.albianj</groupId>
     <artifactId>Albianj</artifactId>
-    <version>2019120501-SNAPSHOT</version>
+    <version>2019120903-SNAPSHOT</version>
     <modules>
         <module>Albianj.Comment</module>
         <module>Albianj.Commons</module>
@@ -112,15 +112,28 @@
     <distributionManagement>
         <repository>
             <id>yw-qa</id>
-            <name>yw-qa</name>
-            <url>http://maven.yuewen.com/nexus/content/repositories/nrzx-releases/</url>
+            <name>QA team nrzx</name>
+            <url>http://qdnexus.inner.yuewen.local/nexus/content/repositories/nrzx-releases/</url>
         </repository>
 
         <snapshotRepository>
             <id>yw-qa-snapshot</id>
-            <name>yw-qa-snapshot</name>
-            <url>http://maven.yuewen.com/nexus/content/repositories/nrzx-snapshots/</url>
+            <name>QA team nrzx-snapshot</name>
+            <url>http://qdnexus.inner.yuewen.local/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
+
+
+        <!--<repository>-->
+            <!--<id>yw-qa</id>-->
+            <!--<name>yw-qa</name>-->
+            <!--<url>http://maven.yuewen.com/nexus/content/repositories/nrzx-releases/</url>-->
+        <!--</repository>-->
+
+        <!--<snapshotRepository>-->
+            <!--<id>yw-qa-snapshot</id>-->
+            <!--<name>yw-qa-snapshot</name>-->
+            <!--<url>http://maven.yuewen.com/nexus/content/repositories/nrzx-snapshots/</url>-->
+        <!--</snapshotRepository>-->
     </distributionManagement>
 
     <build>

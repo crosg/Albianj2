@@ -43,7 +43,7 @@ public class AlbianBuiltinServiceNamePair {
     public final static String[] AlbianDataRouterServicePair = {AlbianDataRouterServiceName, "org.albianj.persistence.impl.routing.AlbianDataRouterParserService"};
     public final static String[] AlbianPersistenceServicePair = {AlbianPersistenceServiceName, "org.albianj.persistence.impl.service.AlbianPersistenceService"};
     public final static String[] AlbianDataAccessServicePair = {AlbianDataAccessServiceName, "org.albianj.persistence.impl.service.AlbianDataAccessService"};
-    public final static String[] L5BridgeServicePair = {AlbianDataAccessServiceName, "org.albianj.l5bridge.impl.L5BridgeService"};
+    public final static String[] L5BridgeServicePair = {L5BridgeServiceName, "org.albianj.l5bridge.impl.L5BridgeService"};
 
     public final static String[] AlbianMonitorLoggerServicePair = {AlbianMonitorLoggerServiceName, "org.albianj.logger.impl.monitor.AlbianMonitorLoggerService"};
 

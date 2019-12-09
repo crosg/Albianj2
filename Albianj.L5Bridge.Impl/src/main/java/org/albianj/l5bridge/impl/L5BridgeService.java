@@ -39,7 +39,7 @@ public class L5BridgeService extends FreeAlbianService implements IL5BridgeServi
 
         }
         modId.setValue(Integer.valueOf(l5ts[1]));
-        cmdId.setValue(Integer.valueOf(l5ts[3]));
+        cmdId.setValue(Integer.valueOf(l5ts[2]));
         if(l5ts.length == 4){
             totS.setValue(Float.parseFloat(l5ts[3]));
         } else {

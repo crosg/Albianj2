@@ -54,9 +54,13 @@ public class AlbianClassLoader extends ClassLoader {
         super();
     }
 
+    public AlbianClassLoader(ClassLoader cl) {
+        super(cl);
+    }
+
     public static synchronized AlbianClassLoader getInstance() {
         if (null == _cl) {
-            _cl = new AlbianClassLoader();
+            _cl = new AlbianClassLoader(Thread.currentThread().getContextClassLoader());
             entryMap = new HashMap<String, ByteBuffer>();
         }
         return _cl;

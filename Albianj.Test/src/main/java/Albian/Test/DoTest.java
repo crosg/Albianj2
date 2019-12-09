@@ -17,6 +17,19 @@ import java.util.Date;
 public class DoTest {
     public static void main(String[] argv) {
         try {
+
+            String[] l5ts = "L5:1121:322:0.3".split(":");
+
+            int patid = Integer.valueOf(l5ts[1]);
+            int cmdId = Integer.valueOf(l5ts[2]);
+            float tst = Float.valueOf(l5ts[3]);
+//            if(l5ts.length == 4){
+//
+//            } else {
+//                totS.setValue(new Float(0.3));
+//            }
+
+
             AlbianBootService.start(argv[0]);
             test1();
 
