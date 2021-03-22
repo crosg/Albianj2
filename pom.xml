@@ -57,7 +57,7 @@
         <jedis.version>2.7.2</jedis.version>
         <slf4j.log4j.version>1.7.21</slf4j.log4j.version>
         <junit.version>4.12</junit.version>
-        <xstream.version>1.3</xstream.version>
+        <xstream.version>1.4.16</xstream.version>
     </properties>
 
     <dependencyManagement>
