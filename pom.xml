@@ -51,7 +51,7 @@
         <project.build.locales>zh_CN</project.build.locales>
         <project.build.jdk>1.7</project.build.jdk>
         <common.lang3.version>3.4</common.lang3.version>
-        <common.io.version>2.4</common.io.version>
+        <common.io.version>2.7</common.io.version>
         <common.codec.version>1.9</common.codec.version>
         <fastjson.version>1.2.29</fastjson.version>
         <jedis.version>2.7.2</jedis.version>
