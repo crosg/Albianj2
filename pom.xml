@@ -53,7 +53,7 @@
         <common.lang3.version>3.4</common.lang3.version>
         <common.io.version>2.4</common.io.version>
         <common.codec.version>1.9</common.codec.version>
-        <fastjson.version>1.2.29</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <jedis.version>2.7.2</jedis.version>
         <slf4j.log4j.version>1.7.21</slf4j.log4j.version>
         <junit.version>4.12</junit.version>
